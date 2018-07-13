@@ -9,6 +9,8 @@ const Box = styled(tag, props => ({
     ...color(props)
 }))
 
+Box.displayName = 'Box'
+
 Box.propTypes = {
     ...space.propTypes,
     ...width.propTypes,
