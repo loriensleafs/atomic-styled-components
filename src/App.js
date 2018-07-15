@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
+import { withTheme } from 'styled-components'
 import Box from './Box'
 import Flex from './Flex'
 import Text from './Text'
@@ -11,4 +12,4 @@ const App = props => (
   </Flex>
 );
 
-export default App;
+export default withTheme(App);
