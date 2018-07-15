@@ -1,15 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types'
 import { withTheme } from 'styled-components'
-import Box from './Box'
 import Flex from './Flex'
 import Text from './Text'
+import Button from './Button'
 
 
-const App = props => (
-  <Flex width={ 1 / 2 }>
-    <Text fontSize={ [2, 3] } textAlign='center' caps>hello</Text>
-  </Flex>
-);
+const App = props => {
+  console.log(props.theme);
+
+  return (
+    <Flex width={ 1 / 2 }>
+      <Text fontSize={ [2, 3] } textAlign='center'>hello</Text>
+      <Button color='primary' variant='contained'>Button!</Button>
+    </Flex>
+  )
+};
 
 export default withTheme(App);

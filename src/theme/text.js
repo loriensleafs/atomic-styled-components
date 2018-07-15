@@ -1,8 +1,10 @@
+export const fontUnit = 'rem'
+
 export const font = `'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif`
 
-export const fontSizes = ['0.75rem','0.875rem','1rem','1.125rem','1.5rem','1.75rem','2.125rem','2.8125rem','3.5rem','5rem']
+export const fontSizes = [0.75, 0.875, 1, 1.125, 1.5, 1.75, 2.125, 2.8125, 3.5, 5]
 
-export const lineHeights = ['1.125rem','1.25rem','1.5rem','1.75rem','2rem','2.125rem','3rem','4.5rem','5.5rem','6.5rem']
+export const lineHeights = [1.125, 1.25, 1.5, 1.75, 2, 2.125, 3, 4.5, 5.5, 6.5]
 
 export const regular = 400
 export const bold = 600
@@ -21,6 +23,7 @@ export const letterSpacings = {
 }
 
 export default {
+    fontUnit,
     font,
     fontSizes,
     lineHeights,

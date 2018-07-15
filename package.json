@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
+		"clean-element": "^1.0.0",
 		"clean-tag": "^1.0.4",
 		"prop-types": "^15.6.2",
 		"react": "^16.4.1",
@@ -12,7 +13,8 @@
 		"styled-components": "^3.3.3",
 		"styled-system": "^2.3.6",
 		"styletron-engine-atomic": "^1.0.5",
-		"styletron-react": "^4.3.1"
+		"styletron-react": "^4.3.1",
+		"warning": "^4.0.1"
 	},
 	"scripts": {
 		"start": "react-scripts start",

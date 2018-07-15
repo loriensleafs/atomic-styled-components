@@ -1,6 +1,4 @@
-import { withStyle } from 'styletron-react'
 import { alignItems, alignContent, justifyContent, flexWrap, flexDirection, flex, flexBasis, justifySelf, alignSelf, order } from 'styled-system'
-import tag from 'clean-tag'
 import styled from "./../styled"
 import Box from '../Box'
 

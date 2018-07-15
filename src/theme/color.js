@@ -63,18 +63,20 @@ const tabContrastBg = '#C85C44'
 const chipBg = '#E0E0E0'
 const chipContrastBg = '#757575'
 // Actions color palette
-const activeAction = 'rgba(0,0,0,0.45)'
-const activeContrastAction = 'rgba(255,255,255,1)'
-const hoverAction = 'rgba(0,0,0,0.12)'
-const hoverContrastAction = 'rgba(255,255,255,0.12)'
-const selectedAction = 'rgba(0,0,0,0.3)'
-const selectedContrastAction = 'rgba(255,255,255,0.3)'
-const disabledAction = 'rgba(0,0,0,0.12)'
-const disabledContrastAction = 'rgba(255,255,255,0.3)'
+const activeAction = 'rgba(0, 0, 0, 0.45)'
+const activeContrastAction = 'rgba(255, 255, 255, 1)'
+const hoverAction = 'rgba(0, 0, 0, 0.08)'
+const hoverContrastAction = 'rgba(255, 255, 255, 0.08)'
+const selectedAction = 'rgba(0,0,0,0.14)'
+const selectedContrastAction = 'rgba(255, 255, 255, 0.14)'
+const disabledAction = 'rgba(0,0,0,0.26)'
+const disabledContrastAction = 'rgba(255, 255, 255, 0.3)'
+const disabledBgAction = 'rgba(0, 0, 0, 0.12)'
+const disabledBgContrastAction = 'rgba(255, 255, 255, 0.12)'
 
 // tints
 const flatten = (name, colors) => Object.values(colors)
-    .filter((a, b, i) => typeof(a) == 'string')
+    .filter((a, b, i) => typeof(a) === 'string')
     .reduce((a, b, i) => {
         const color = {
             [name + i]: {
@@ -117,24 +119,27 @@ const purplePalette = {
     primary: purple
 }
 const primaryPalette = {
-    primary, 
+    main: primary, 
     light: lightPrimary, 
-    dark: darkPrimary
+    dark: darkPrimary,
+    contrast: white
 }
 const secondaryPalette = {
-    secondary, 
+    main: secondary, 
     light: lightSecondary, 
-    dark: darkSecondary
+    dark: darkSecondary,
+    contrast: white
 }
 const grayPalette = {
-    primary: gray, 
+    main: gray, 
     light: lightGray, 
     dark: darkGray
 }
 const errorPalette = {
-    primary: error, 
+    main: error, 
     light: lightError, 
-    dark: darkError
+    dark: darkError,
+    contrast: white
 }
 const textPalette = {
     primary: text, 
@@ -179,18 +184,20 @@ const actionPalette = {
     hover: hoverAction, 
     selected: selectedAction, 
     disabled: disabledAction, 
+    disabledBg: disabledBgAction,
     contrast: {
         active: activeContrastAction,
         hover: hoverContrastAction,
         selected: selectedContrastAction,
-        disabled: disabledContrastAction
+        disabled: disabledContrastAction,
+        disabledBg: disabledBgContrastAction
     }
 }
 
 const colors = {
+    type: 'light',
     black,
     white,
-    text,
     blue,
     lightBlue,
     darkBlue,
@@ -206,65 +213,24 @@ const colors = {
     purple,
     lightPurple,
     darkPurple,
-    primary, 
-    lightPrimary, 
-    darkPrimary,
-    secondary, 
-    lightSecondary, 
-    darkSecondary,
-    gray, 
-    lightGray, 
-    darkGray,
-    error, 
-    lightError, 
-    darkError,
-    text, 
-    contrastText, 
-    secondaryText, 
-    secondaryContrastText, 
-    lightText, 
-    lightContrastText, 
-    darkText, 
-    darkContrastText,
-    divider, 
-    contrastDivider, 
-    lightDivider, 
-    lightContrastDivider, 
-    darkDivider, 
-    darkContrastDivider,
-    bg, 
-    contrastBg, 
-    paperBg, 
-    paperContrastBg, 
-    appbarBg, 
-    appbarContrastBg, 
-    headerBg, 
-    headerContrastBg, 
-    tabBg, 
-    tabContrastBg, 
-    chipBg, 
-    chipContrastBg,
-    activeAction, 
-    activeContrastAction, 
-    hoverAction, 
-    hoverContrastAction, 
-    selectedAction, 
-    selectedContrastAction, 
-    disabledAction, 
-    disabledContrastAction,
     bluePalette,
     greenPalette,
     redPalette,
     orangePalette,
     purplePalette,
-    primaryPalette,
-    secondaryPalette,
-    grayPalette,
-    errorPalette,
-    textPalette,
-    dividerPalette,
-    bgPalette,
-    actionPalette
+    primary: primaryPalette,
+    secondary: secondaryPalette,
+    gray: grayPalette,
+    error: errorPalette,
+    text: textPalette,
+    divider: dividerPalette,
+    bg: bgPalette,
+    action: {
+        ...actionPalette,
+        ...{
+            hoverOpacity: 0.08
+        }
+    }
 }
 
 Object.defineProperties(colors, {
