@@ -1,22 +1,26 @@
 {
-  "name": "styled-component-lib",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "clean-tag": "^1.0.4",
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-scripts": "1.1.4",
-    "styled-components": "^3.3.3",
-    "styled-system": "^2.3.6",
-    "styletron-engine-atomic": "^1.0.5",
-    "styletron-react": "^4.3.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+	"name": "styled-component-lib",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"clean-tag": "^1.0.4",
+		"prop-types": "^15.6.2",
+		"react": "^16.4.1",
+		"react-dom": "^16.4.1",
+		"react-hot-loader": "^4.3.3",
+		"react-scripts": "1.1.4",
+		"styled-components": "^3.3.3",
+		"styled-system": "^2.3.6",
+		"styletron-engine-atomic": "^1.0.5",
+		"styletron-react": "^4.3.1"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"test": "react-scripts test --env=jsdom",
+		"eject": "react-scripts eject"
+	},
+	"devDependencies": {
+		"babel-preset-react": "^6.24.1"
+	}
 }

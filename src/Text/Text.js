@@ -1,6 +1,7 @@
-import { styled } from 'styletron-react'
 import { fontFamily, fontSize, textAlign, lineHeight, fontWeight, letterSpacing, color, responsiveStyle, style } from 'styled-system'
 import tag from 'clean-tag'
+import styled from "./../styled"
+
 
 export const textTransform = style({
     prop: 'caps',

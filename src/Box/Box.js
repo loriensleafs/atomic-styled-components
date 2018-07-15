@@ -1,6 +1,6 @@
-import { styled } from "styletron-react";
 import { space, width, fontSize, color } from 'styled-system'
 import tag from 'clean-tag'
+import styled from "./../styled"
 
 const Box = styled(tag, props => ({
     ...space(props),

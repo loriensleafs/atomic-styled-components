@@ -1,4 +1,4 @@
-import { styled } from 'styletron-react'
+import styled from "./../styled"
 import { borderRadius, borderColor, borders } from 'styled-system'
 import tag from 'clean-tag'
 
