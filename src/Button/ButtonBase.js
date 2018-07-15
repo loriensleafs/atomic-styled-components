@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import tag from 'clean-tag'
-import { withTheme } from 'styled-components'
-import styled from './../styled'
+import { styled } from './../styled'
 import { buttonPropTypes } from './Button'
 
 const ButtonBase = styled(tag.button, ({theme, ...props}) => ({

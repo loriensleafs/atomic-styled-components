@@ -1,6 +1,6 @@
 import { fontFamily, fontSize, textAlign, lineHeight, fontWeight, letterSpacing, color } from 'styled-system'
 import tag from 'clean-tag'
-import styled from "./../styled"
+import { styled } from "./../styled"
 
 const Text = styled(tag, props => ({
     ...fontFamily(props),

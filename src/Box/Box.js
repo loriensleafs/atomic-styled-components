@@ -1,6 +1,6 @@
 import { space, width, fontSize, color } from 'styled-system'
 import tag from 'clean-tag'
-import styled from "./../styled"
+import { styled } from "./../styled"
 
 const Box = styled(tag, props => ({
     ...space(props),

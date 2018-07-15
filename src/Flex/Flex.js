@@ -1,5 +1,5 @@
 import { alignItems, alignContent, justifyContent, flexWrap, flexDirection, flex, flexBasis, justifySelf, alignSelf, order } from 'styled-system'
-import styled from "./../styled"
+import { styled } from "./../styled"
 import Box from '../Box'
 
 const Flex = styled(Box, props => ({

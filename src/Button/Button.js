@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withTheme } from 'styled-components'
-import { withStyle } from 'styletron-react'
-import styled from "./../styled"
+import { styled, withStyle } from "./../styled"
 import ButtonBase from './ButtonBase'
 import { fade } from './../utils/colorHelpers'
 
@@ -249,4 +247,4 @@ Button.defaultProps = {
     variant: 'text'
 }
 
-export default withTheme(Button)
+export default Button

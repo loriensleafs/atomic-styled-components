@@ -1,4 +1,4 @@
-import styled from "./../styled"
+import { styled } from "./../styled"
 import { borderRadius, borderColor, borders } from 'styled-system'
 import tag from 'clean-tag'
 
