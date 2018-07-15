@@ -73,8 +73,9 @@ const disabledAction = 'rgba(0,0,0,0.12)'
 const disabledContrastAction = 'rgba(255,255,255,0.3)'
 
 // tints
-const flatten = (name, colors) =>
-    colors.reduce((a, b, i) => {
+const flatten = (name, colors) => Object.values(colors)
+    .filter((a, b, i) => typeof(a) == 'string')
+    .reduce((a, b, i) => {
         const color = {
             [name + i]: {
                 enumerable: true,
@@ -95,19 +96,96 @@ const flatten = (name, colors) =>
         return { ...a, ...color }
     }, {})
 
-const bluePalette = [lightBlue, lightBlue, blue, blue]
-const greenPalette = [lightGreen, lightGreen, green, green]
-const redPalette = [lightRed, lightRed, red, red]
-const orangePalette = [lightOrange, lightOrange, orange, orange]
-const purplePalette = [lightPurple, lightPurple, purple, purple]
-const primaryPalette = [primary, lightPrimary, darkPrimary]
-const secondaryPalette = [secondary, lightSecondary, darkSecondary]
-const grayPalette = [gray, lightGray, darkGray]
-const errorPalette = [error, lightError, darkError]
-const textPalette = [text, contrastText, secondaryText, secondaryContrastText, lightText, lightContrastText, darkText, darkContrastText]
-const dividerPalette = [ divider, contrastDivider, lightDivider, lightContrastDivider, darkDivider, darkContrastDivider]
-const bgPalette = [bg, contrastBg, paperBg, paperContrastBg, appbarBg, appbarContrastBg, headerBg, headerContrastBg, tabBg, tabContrastBg, chipBg, chipContrastBg]
-const actionPalette = [activeAction, activeContrastAction, hoverAction, hoverContrastAction, selectedAction, selectedContrastAction, disabledAction, disabledContrastAction]
+const bluePalette = {
+    light: lightBlue, 
+    primary: blue
+}
+const greenPalette = {
+    light: lightGreen, 
+    primary: green
+}
+const redPalette = {
+    light: lightRed, 
+    primary: red
+}
+const orangePalette = {
+    light: lightOrange, 
+    primary: orange
+}
+const purplePalette = {
+    light: lightPurple, 
+    primary: purple
+}
+const primaryPalette = {
+    primary, 
+    light: lightPrimary, 
+    dark: darkPrimary
+}
+const secondaryPalette = {
+    secondary, 
+    light: lightSecondary, 
+    dark: darkSecondary
+}
+const grayPalette = {
+    primary: gray, 
+    light: lightGray, 
+    dark: darkGray
+}
+const errorPalette = {
+    primary: error, 
+    light: lightError, 
+    dark: darkError
+}
+const textPalette = {
+    primary: text, 
+    secondary: secondaryText, 
+    light: lightText, 
+    dark: darkText, 
+    contrast: {
+        primary: contrastText, 
+        secondary: secondaryContrastText, 
+        light: lightContrastText, 
+        dark: darkContrastText,
+    }
+}
+const dividerPalette = { 
+    default: divider, 
+    light: lightDivider, 
+    dark: darkDivider, 
+    contrast: {
+        default: contrastDivider,
+        light: lightContrastDivider,
+        dark: darkContrastDivider
+    }
+}
+const bgPalette = {
+    default: bg, 
+    paper: paperBg, 
+    appbar: appbarBg, 
+    header: headerBg, 
+    tab: tabBg, 
+    chip: chipBg, 
+    contrast: {
+        default: contrastBg, 
+        paper: paperContrastBg, 
+        appbar: appbarContrastBg, 
+        header: headerContrastBg, 
+        tab: tabContrastBg, 
+        chip: chipContrastBg,
+    }
+}
+const actionPalette = {
+    active: activeAction, 
+    hover: hoverAction, 
+    selected: selectedAction, 
+    disabled: disabledAction, 
+    contrast: {
+        active: activeContrastAction,
+        hover: hoverContrastAction,
+        selected: selectedContrastAction,
+        disabled: disabledContrastAction
+    }
+}
 
 const colors = {
     black,
@@ -202,7 +280,11 @@ Object.defineProperties(colors, {
     ...flatten('text', textPalette),
     ...flatten('divider', dividerPalette),
     ...flatten('bg', bgPalette),
-    ...flatten('action', actionPalette)
+    ...flatten('action', actionPalette),
+    ...flatten('textContrast', textPalette.contrast),
+    ...flatten('dividerContrast', dividerPalette.contrast),
+    ...flatten('bgContrast', bgPalette.contrast),
+    ...flatten('actionContrast', actionPalette.contrast)
 })
 
 export default colors
