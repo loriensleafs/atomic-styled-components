@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import {
 	alignItems,
 	alignContent,
@@ -36,6 +37,9 @@ const Flex = styled(Box, (props) => ({
 Flex.displayName = 'Flex';
 
 Flex.propTypes = {
+	...{
+		inline: PropTypes.bool,
+	},
 	...alignItems.propTypes,
 	...alignContent.propTypes,
 	...justifyContent.propTypes,

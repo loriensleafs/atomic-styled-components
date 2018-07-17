@@ -1,6 +1,5 @@
 import tag from 'clean-tag';
-import { withTheme } from 'styled-components';
-import { styled } from 'styletron-react';
+import { styled } from './../styled';
 import { buttonPropTypes } from './Button';
 
 const ButtonBase = styled(tag.button, ({ theme, ...props }) => ({
@@ -40,4 +39,4 @@ ButtonBase.displayName = 'ButtonBase';
 
 ButtonBase.propTypes = buttonPropTypes;
 
-export default withTheme(ButtonBase);
+export default ButtonBase;

@@ -1443,10 +1443,6 @@ clean-css@4.1.x:
   dependencies:
     source-map "0.5.x"
 
-clean-element@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/clean-element/-/clean-element-1.0.0.tgz#e9db041b943b8b6258c4792922306cd03969c227"
-
 clean-tag@2.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/clean-tag/-/clean-tag-2.0.0.tgz#01681c4f22ea6137dbeace87d2a58204429686fa"
