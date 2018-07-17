@@ -1,12 +1,7 @@
 import { space, width, fontSize, color, responsiveStyle } from 'styled-system';
 import tag from 'clean-tag';
 import { styled } from './../styled';
-
-export const num = (n) => typeof n === 'number' && !isNaN(n);
-
-export const px = (n) => (num(n) ? n + 'px' : n);
-
-const getDimension = (n) => (!num(n) || n > 1 ? px(n) : n * 100 + '%');
+import { getDimension } from './../utils/helpers';
 
 export const minWidth = responsiveStyle({
 	prop: 'wMin',

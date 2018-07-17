@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 import tag from 'clean-tag';
 import { styled } from './../styled';
-import { buttonPropTypes } from './Button';
 
 const ButtonBase = styled(tag.button, ({ theme, ...props }) => ({
 	...{
@@ -37,6 +37,20 @@ const ButtonBase = styled(tag.button, ({ theme, ...props }) => ({
 
 ButtonBase.displayName = 'ButtonBase';
 
-ButtonBase.propTypes = buttonPropTypes;
+ButtonBase.propTypes = {
+	children: PropTypes.node.isRequired,
+	className: PropTypes.string,
+	labelClassName: PropTypes.string,
+	color: PropTypes.oneOf([ 'default', 'inherit', 'primary', 'secondary' ]),
+	disabled: PropTypes.bool,
+	disableFocusRipple: PropTypes.bool,
+	disableRipple: PropTypes.bool,
+	fullWidth: PropTypes.bool,
+	href: PropTypes.string,
+	mini: PropTypes.bool,
+	size: PropTypes.oneOf([ 'small', 'medium', 'large' ]),
+	type: PropTypes.string,
+	variant: PropTypes.oneOf([ 'text', 'outlined', 'contained', 'fab', 'extendedFab' ]),
+};
 
 export default ButtonBase;
