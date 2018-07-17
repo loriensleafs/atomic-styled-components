@@ -2,18 +2,25 @@ import {
 	alignItems,
 	alignContent,
 	justifyContent,
-	flexWrap,
 	flexDirection,
 	flex,
 	flexBasis,
 	justifySelf,
 	alignSelf,
 	order,
+	responsiveStyle,
 } from 'styled-system';
 import { styled } from './../styled';
 import Box from '../Box';
 
+export const flexWrap = responsiveStyle({
+	prop: 'flexWrap',
+});
+
 const Flex = styled(Box, (props) => ({
+	...{
+		display: `${props.inline ? 'inline-flex' : 'flex'}`,
+	},
 	...alignItems(props),
 	...alignContent(props),
 	...justifyContent(props),

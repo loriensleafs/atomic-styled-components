@@ -4,14 +4,14 @@
 	"private": true,
 	"dependencies": {
 		"clean-element": "^1.0.0",
-		"clean-tag": "^1.0.4",
+		"clean-tag": "2.0",
 		"prop-types": "^15.6.2",
 		"react": "^16.4.1",
 		"react-dom": "^16.4.1",
 		"react-hot-loader": "^4.3.3",
 		"react-scripts": "1.1.4",
 		"styled-components": "^3.3.3",
-		"styled-system": "^2.3.6",
+		"styled-system": "3.0.1",
 		"styletron-engine-atomic": "^1.0.5",
 		"styletron-react": "^4.3.1",
 		"warning": "^4.0.1"

@@ -119,7 +119,7 @@ const size = ({ theme, ...props }) => {
 // Button variant styles parser
 const variant = ({ theme, ...props }) => {
 	let next = {};
-	debugger;
+
 	if (props.variant === 'contained') {
 		next = {
 			...next,

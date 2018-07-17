@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import tag from 'clean-tag';
-import { styled } from './../styled';
+import { withTheme } from 'styled-components';
+import { styled } from 'styletron-react';
 import { buttonPropTypes } from './Button';
 
 const ButtonBase = styled(tag.button, ({ theme, ...props }) => ({
@@ -37,12 +37,7 @@ const ButtonBase = styled(tag.button, ({ theme, ...props }) => ({
 }));
 
 ButtonBase.displayName = 'ButtonBase';
-ButtonBase.propTypes = {
-	...buttonPropTypes,
-	...{
-		focusRipple: PropTypes.bool,
-		type: PropTypes.string,
-	},
-};
 
-export default ButtonBase;
+ButtonBase.propTypes = buttonPropTypes;
+
+export default withTheme(ButtonBase);
