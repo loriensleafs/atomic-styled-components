@@ -28,7 +28,6 @@ function clamp(value, min = 0, max = 1) {
  */
 export function convertHexToRGB(color) {
 	color = color.substr(1);
-
 	const re = new RegExp(`.{1,${color.length / 3}}`, 'g');
 	let colors = color.match(re);
 
@@ -50,6 +49,7 @@ export function rgbToHex(color) {
 	if (color.indexOf('#') === 0) {
 		return color;
 	}
+	
 	function intToHex(c) {
 		const hex = c.toString(16);
 		return hex.length === 1 ? `0${hex}` : hex;

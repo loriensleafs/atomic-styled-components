@@ -5,7 +5,7 @@ import ButtonBase from './ButtonBase';
 import { fade } from './../utils/colorHelpers';
 
 // Button color styles parser
-const color = ({ theme, ...props }) => {
+export const color = ({ theme, ...props }) => {
 	let next = {};
 	if (props.color === 'primary') {
 		next = {
@@ -32,7 +32,7 @@ const color = ({ theme, ...props }) => {
 };
 
 // Button fab styles parser
-const fab = ({ theme, ...props }) => {
+export const fab = ({ theme, ...props }) => {
 	let next = {};
 	if (props.fab) {
 		next = {
@@ -54,7 +54,7 @@ const fab = ({ theme, ...props }) => {
 };
 
 // Button full width styles parser
-const fullWidth = ({ theme, ...props }) => {
+export const fullWidth = ({ theme, ...props }) => {
 	return props.fullWidth
 		? {
 				width: '100%',
@@ -63,7 +63,7 @@ const fullWidth = ({ theme, ...props }) => {
 };
 
 // Button mini variation styles parser
-const mini = ({ theme, ...props }) => {
+export const mini = ({ theme, ...props }) => {
 	let next = {};
 	if (props.fab && props.mini) {
 		next = {
@@ -78,7 +78,7 @@ const mini = ({ theme, ...props }) => {
 };
 
 // Button size styles parser
-const size = ({ theme, ...props }) => {
+export const size = ({ theme, ...props }) => {
 	switch (props.size) {
 		case 'small':
 			return {
@@ -100,7 +100,7 @@ const size = ({ theme, ...props }) => {
 };
 
 // Button variant styles parser
-const variant = ({ theme, ...props }) => {
+export const variant = ({ theme, ...props }) => {
 	let next = {};
 
 	if (props.variant === 'contained') {
@@ -217,7 +217,7 @@ StyledButton.propTypes = {
 	variant: PropTypes.oneOf([ 'text', 'outlined', 'contained', 'fab', 'extendedFab' ]),
 };
 
-// Button component
+// Composed Button component
 const Button = (props) => {
 	const {
 		children,
