@@ -101,7 +101,9 @@ class ButtonBase extends Component {
 
 	handleFocus = (event) => {};
 
-	render() {}
+	render() {
+		return null;
+	}
 }
 
 ButtonBase.propTypes = {
