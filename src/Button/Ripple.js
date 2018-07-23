@@ -2,11 +2,113 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Transition from 'react-transition-group/Transition';
 import { styled } from './../styled';
+import { DURATION } from './TouchRipple';
 
-const StyledRipple = styled('span', ({ theme, ...props }) => {});
+// StyledRipple component
+const StyledRipple = styled('span', ({ theme, ...props }) => {
+	let next = {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		width: 50,
+		height: 50,
+		opacity: 0,
+	};
 
-const StyledRippleContent = styled('span', ({ theme, ...props }) => {});
+	if (props.visible) {
+		next = {
+			...next,
+			...{
+				opacity: 0.3,
+				transform: 'scale(1)',
+				animationName: {
+					from: {
+						transform: 'scale(0) translate3d(0,0,0)',
+						opacity: 0.1,
+					},
+					to: {
+						transform: 'scale(1) translate3d(0,0,0)',
+						opacity: 0.3,
+					},
+				},
+				animationDuration: `${DURATION}ms`,
+				animationTimingFunction: theme.motion.easing.easeInOut,
+			},
+		};
+	}
 
+	if (props.pulsate) {
+		next = {
+			...next,
+			...{
+				animationDuration: `${theme.motion.DURATION.shorter}ms`,
+			},
+		};
+	}
+
+	return next;
+});
+
+// StyledWave component
+const StyledWave = styled('span', ({ theme, ...props }) => {
+	next = {
+		position: 'relative',
+		width: '100%',
+		height: '100%',
+		display: 'block',
+		opacity: 1,
+		borderRadius: '50%',
+		backgroundColor: 'currentColor',
+	};
+
+	if (props.leaving) {
+		next = {
+			...next,
+			...{
+				animationName: {
+					from: {
+						opacity: 1,
+					},
+					to: {
+						opacity: 0,
+					},
+				},
+				animationDuration: `${DURATION}ms`,
+				animationTimingFunction: theme.motion.easing.easeInOut,
+			},
+		};
+	}
+
+	if (props.pulsate) {
+		next = {
+			...next,
+			...{
+				position: 'absolute',
+				left: 0,
+				top: 0,
+				animationName: {
+					'0%': {
+						transform: 'scale(1)',
+					},
+					'50%': {
+						transform: 'scale(0.92)',
+					},
+					'100%': {
+						transform: 'scale(1)',
+					},
+				},
+				animationDuration: '2500ms',
+				animationTimingFunction: theme.motion.easing.easeInOut,
+				animationDelay: '200ms',
+				animationIterationCount: 'infinite',
+			},
+		};
+	}
+
+	return next;
+});
+
+// Composed Ripple component
 class Ripple extends Component {
 	state = {
 		visible: false,
@@ -37,8 +139,8 @@ class Ripple extends Component {
 
 		return (
 			<Transition onEnter={this.handleEnter} onExit={this.handleExit} {...passThruProps}>
-				<StyledRipple style={rippleStyles}>
-					<StyledRippleContent />
+				<StyledRipple visible={visible} pulsate={pulsate} style={rippleStyles}>
+					<StyledWave leaving={leaving} pulsate={pulsate} />
 				</StyledRipple>
 			</Transition>
 		);

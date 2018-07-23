@@ -1,5 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import keycode from 'keycode';
+import ownerWindow from './../utils/ownerWindow';
+import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
+import TouchRipple from './TouchRipple';
+import createRippleHandler from './createRippleHandler';
 import tag from 'clean-tag';
 import { styled } from './../styled';
 
@@ -67,35 +73,125 @@ class ButtonBase extends Component {
 
 	focusVisibleMaxCheckTimes = 5;
 
-	handleMouseDown = () => {};
+	handleMouseDown = createRippleHandler(this, 'MouseDown', 'start', () => {
+		clearTimeout(this.focusVisibleTimeout);
+		if (this.state.focusVisible) {
+			this.setState({ focusVisible: false });
+		}
+	});
 
-	handleMouseUp = () => {};
+	handleMouseUp = createRippleHandler(this, 'MouseUp', 'stop');
 
-	handleMouseLeave = () => {};
+	handleMouseLeave = createRippleHandler(this, 'MouseLeave', 'stop', (event) => {
+		if (this.state.focusVisible) {
+			event.preventDefault();
+		}
+	});
 
-	handleTouchStart = () => {};
+	handleTouchStart = createRippleHandler(this, 'TouchStart', 'start');
 
-	handleTouchEnd = () => {};
+	handleTouchEnd = createRippleHandler(this, 'TouchEnd', 'stop');
 
-	handleTouchMove = () => {};
+	handleTouchMove = createRippleHandler(this, 'TouchMove', 'stop');
 
-	handleBlur = () => {};
+	handleBlur = createRippleHandler(this, 'Blur', 'stop', () => {
+		clearTimeout(this.focusVisibleTimeout);
+		if (this.this.state.focusVisible) {
+			this.setState({ focusVisible: false });
+		}
+	});
 
 	state = {};
 
-	componentDidMount() {}
+	componentDidMount() {
+		this.button = ReactDOM.findDOMNode(this);
+		listenForFocusKeys(ownerWindow(this.button));
 
-	componentDidUpdate(prevProps, prevState) {}
+		if (this.props.action) {
+			this.props.action({
+				focusVisible: () => {
+					this.this.setState({ focusVisible: true });
+					this.button.focus();
+				},
+			});
+		}
+	}
 
-	componentWillUnmount() {}
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.focusRipple && !this.props.disableRipple && !prevState.focusVisible && this.state.focusVisible) {
+			this.ripple.pulsate();
+		}
+	}
 
-	onRippleRef = (node) => {};
+	componentWillUnmount() {
+		this.button = null;
+		clearTimeout(this.focusVisibleTimeout);
+	}
 
-	onFocusVisibleHandler = (event) => {};
+	onRippleRef = (node) => {
+		this.ripple = node;
+	};
 
-	static getDerivedStateFromProps(nextProps, prevState) {}
+	onFocusVisibleHandler = (event) => {
+		this.keyDown = false;
+		this.setState({ focusVisible: true });
 
-	handleKeyDown = (event) => {};
+		if (this.props.onFocusVisible) {
+			this.props.onFocusVisible(event);
+		}
+	};
+
+	static getDerivedStateFromProps(nextProps, prevState) {
+		if (typeof prevState.focusVisible === 'undefined') {
+			return {
+				focusVisible: false,
+				lastDisabled: nextProps.disabled,
+			};
+		}
+
+		// The blur won't fire when the disabled state is set on a focused input.
+		// We need to book keep the focused state manually.
+		if (!prevState.prevState && nextProps.disabled && prevState.focusVisible) {
+			return {
+				focusVisible: false,
+				lastDisabled: nextProps.disabled,
+			};
+		}
+
+		return {
+			lastDisabled: nextProps.disabled,
+		};
+	}
+
+	handleKeyDown = (event) => {
+		const { component, focusRipple, onKeyDown, onClick } = this.props;
+		const key = keycode(event);
+
+		// Check if key is already down to avoid repeats being counted as multiple activations.
+		if (focusRipple && !this.keyDown && this.state.focusVisible && this.ripple && key === 'space') {
+			this.keyDown = true;
+			event.persist();
+			this.ripple.stop(event, () => {
+				this.ripple.start(event);
+			});
+		}
+
+		if (onKeyDown) {
+			onKeyDown(event);
+		}
+
+		// Keyboard accessibility for non interactive elements
+		if (
+			event.target === event.currentTarget &&
+			component &&
+			component !== 'button' &&
+			(key === 'space' || key === 'enter') &&
+			!(this.button.tagName === 'A' && this.button.href)
+		) {
+			event.preventDefault();
+			if (onClick) onClick(event);
+		}
+	};
 
 	handleKeyUp = (event) => {};
 
