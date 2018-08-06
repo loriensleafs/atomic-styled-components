@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 function createRippleHandler(instance, eventName, action, cb) {
 	return function handleEvent(event) {
 		if (cb) {

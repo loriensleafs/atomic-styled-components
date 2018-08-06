@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import keycode from 'keycode';
 import warning from 'warning';
 import ownerDocument from './../utils/ownerDocument';
@@ -34,7 +36,7 @@ const handleKeyUpEvent = (event) => {
 
 		// Consider that the user is using a keyboard during a window frame of 1s.
 		clearTimeout(internal.keyUpEventTimeout);
-		interal.keyUpEventTimeout = setTimeout(() => {
+		internal.keyUpEventTimeout = setTimeout(() => {
 			internal.focusKeyPressed = false;
 		}, 1e3);
 	}

@@ -1,6 +1,7 @@
 import { space, width, fontSize, color, responsiveStyle } from 'styled-system';
 import tag from 'clean-tag';
-import { styled } from './../styled';
+import { styled } from 'styletron-react';
+import { themify } from './../styled';
 import { getDimension } from './../utils/helpers';
 
 export const minWidth = responsiveStyle({
@@ -59,4 +60,4 @@ Box.propTypes = {
 	...color.propTypes,
 };
 
-export default Box;
+export default themify(Box);

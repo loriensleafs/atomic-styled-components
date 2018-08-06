@@ -1,6 +1,7 @@
 import { fontFamily, fontSize, textAlign, lineHeight, fontWeight, letterSpacing, color } from 'styled-system';
 import tag from 'clean-tag';
-import { styled } from './../styled';
+import { styled } from 'styletron-react';
+import { themify } from './../styled';
 
 const Text = styled(tag, (props) => ({
 	...fontFamily(props),
@@ -23,4 +24,4 @@ Text.propTypes = {
 	...letterSpacing.propTypes,
 };
 
-export default Text;
+export default themify(Text);

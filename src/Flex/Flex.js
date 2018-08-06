@@ -11,7 +11,8 @@ import {
 	order,
 	responsiveStyle,
 } from 'styled-system';
-import { styled } from './../styled';
+import { styled } from 'styletron-react';
+import { themify } from './../styled';
 import Box from '../Box';
 
 export const flexWrap = responsiveStyle({
@@ -52,4 +53,4 @@ Flex.propTypes = {
 	...order.propTypes,
 };
 
-export default Flex;
+export default themify(Flex);

@@ -1,6 +1,7 @@
-import { styled } from './../styled';
+import { styled } from 'styletron-react';
 import { borderRadius, borderColor, borders } from 'styled-system';
 import tag from 'clean-tag';
+import { themify } from './../styled';
 
 const Border = styled(tag, (props) => ({
 	...borderRadius(props),
@@ -16,4 +17,4 @@ Border.propTypes = {
 	...borders.propTypes,
 };
 
-export default Border;
+export default themify(Border);

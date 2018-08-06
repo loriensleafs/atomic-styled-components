@@ -1,11 +1,16 @@
+/* eslint-disable no-unused-vars */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Transition from 'react-transition-group/Transition';
-import { styled } from './../styled';
+import posed from 'react-pose';
+import { tween } from 'popmotion';
+import { styled } from 'styletron-react';
+import { classify, themify } from './../styled';
 import { DURATION } from './TouchRipple';
 
 // StyledRipple component
-const StyledRipple = styled('span', ({ theme, ...props }) => {
+const StyledRipple = styled('span', ({ $theme, ...props }) => {
 	let next = {
 		position: 'absolute',
 		top: 0,
@@ -15,7 +20,7 @@ const StyledRipple = styled('span', ({ theme, ...props }) => {
 		opacity: 0,
 	};
 
-	if (props.visible) {
+	if (props.$visible) {
 		next = {
 			...next,
 			...{
@@ -32,16 +37,16 @@ const StyledRipple = styled('span', ({ theme, ...props }) => {
 					},
 				},
 				animationDuration: `${DURATION}ms`,
-				animationTimingFunction: theme.motion.easing.easeInOut,
+				animationTimingFunction: $theme.easing.easeInOut,
 			},
 		};
 	}
 
-	if (props.pulsate) {
+	if (props.$pulsate) {
 		next = {
 			...next,
 			...{
-				animationDuration: `${theme.motion.DURATION.shorter}ms`,
+				animationDuration: `${$theme.duration.shorter}ms`,
 			},
 		};
 	}
@@ -50,8 +55,8 @@ const StyledRipple = styled('span', ({ theme, ...props }) => {
 });
 
 // StyledWave component
-const StyledWave = styled('span', ({ theme, ...props }) => {
-	next = {
+const StyledWave = styled('span', ({ $theme, ...props }) => {
+	let next = {
 		position: 'relative',
 		width: '100%',
 		height: '100%',
@@ -61,7 +66,7 @@ const StyledWave = styled('span', ({ theme, ...props }) => {
 		backgroundColor: 'currentColor',
 	};
 
-	if (props.leaving) {
+	if (props.$leaving) {
 		next = {
 			...next,
 			...{
@@ -74,12 +79,12 @@ const StyledWave = styled('span', ({ theme, ...props }) => {
 					},
 				},
 				animationDuration: `${DURATION}ms`,
-				animationTimingFunction: theme.motion.easing.easeInOut,
+				animationTimingFunction: $theme.easing.easeInOut,
 			},
 		};
 	}
 
-	if (props.pulsate) {
+	if (props.$pulsate) {
 		next = {
 			...next,
 			...{
@@ -98,7 +103,7 @@ const StyledWave = styled('span', ({ theme, ...props }) => {
 					},
 				},
 				animationDuration: '2500ms',
-				animationTimingFunction: theme.motion.easing.easeInOut,
+				animationTimingFunction: $theme.easing.easeInOut,
 				animationDelay: '200ms',
 				animationIterationCount: 'infinite',
 			},
@@ -128,7 +133,17 @@ class Ripple extends Component {
 	};
 
 	render() {
-		const { className = '', pulstae, rippleX, rippleY, rippleSize, ...passThruProps } = this.props;
+		const {
+			className: classNameProp,
+			pulsate,
+			rippleX,
+			rippleY,
+			rippleSize,
+			styles,
+			theme,
+			...passThruProps
+		} = this.props;
+
 		const { visible, leaving } = this.state;
 		const rippleStyles = {
 			width: rippleSize,
@@ -139,8 +154,13 @@ class Ripple extends Component {
 
 		return (
 			<Transition onEnter={this.handleEnter} onExit={this.handleExit} {...passThruProps}>
-				<StyledRipple visible={visible} pulsate={pulsate} style={rippleStyles}>
-					<StyledWave leaving={leaving} pulsate={pulsate} />
+				<StyledRipple
+					$visible={visible}
+					$pulsate={pulsate}
+					$theme={theme}
+					style={rippleStyles}
+				>
+					<StyledWave $leaving={leaving} $pulsate={pulsate} $theme={theme} />
 				</StyledRipple>
 			</Transition>
 		);
@@ -159,4 +179,4 @@ Ripple.defaultProps = {
 	pulsate: false,
 };
 
-export default Ripple;
+export default themify(Ripple);

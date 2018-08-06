@@ -1,14 +1,16 @@
+/* eslint-disable no-unused-vars */
+
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import { classify, styled } from './../styled';
+import { classify, themify } from './../styled';
 import Ripple from './Ripple';
 
 export const DURATION = 550;
 export const DELAY_RIPPLE = 80;
 
-const rippleBase = ({ theme, ...props }) => ({
+const styles = {
 	zIndex: 0,
 	position: 'absolute',
 	top: 0,
@@ -19,7 +21,7 @@ const rippleBase = ({ theme, ...props }) => ({
 	overflow: 'hidden',
 	borderRadius: 'inherit',
 	pointerEvents: 'none',
-});
+};
 
 class TouchRipple extends PureComponent {
 	// Used to filter out mouse emulated events on mobile.
@@ -42,22 +44,23 @@ class TouchRipple extends PureComponent {
 		clearTimeout(this.startTimer);
 	}
 
-	pulsate = () => this.startTimer({}, { pulsate: true });
+	pulsate = () => this.start({}, { pulsate: true });
 
 	start = (event = {}, options = {}, cb) => {
-		const { pulsate = false, center = this.props.center || options.pulsate } = options;
+		const {
+			pulsate = false,
+			center = this.props.center || options.pulsate,
+			fakeElement = false, // For test purposes
+		} = options;
 
 		if (event.type === 'mousedown' && this.ignoringMouseDown) {
 			this.ignoringMouseDown = false;
 			return;
 		}
 
-		if (event.type === 'touchstart') {
-			this.ignoringMouseDown = true;
-			return;
-		}
+		if (event.type === 'touchstart') this.ignoringMouseDown = true;
 
-		const element = ReactDOM.findDOMNode(this);
+		const element = fakeElement ? null : ReactDOM.findDOMNode(this);
 		const rect = element
 			? element.getBoundingClientRect()
 			: {
@@ -72,8 +75,12 @@ class TouchRipple extends PureComponent {
 		let rippleY;
 		let rippleSize;
 
-		if (center || (event.clientX === 0 && event.clientY === 0) || (!event.clientX && !event.touches)) {
-			rippleX = Math.round(rectwidth / 2);
+		if (
+			center ||
+			(event.clientX === 0 && event.clientY === 0) ||
+			(!event.clientX && !event.touches)
+		) {
+			rippleX = Math.round(rect.width / 2);
 			rippleY = Math.round(rect.height / 2);
 		} else {
 			const clientX = event.clientX ? event.clientX : event.touches[0].clientX;
@@ -85,13 +92,15 @@ class TouchRipple extends PureComponent {
 		if (center) {
 			rippleSize = Math.sqrt((2 * rect.width ** 2 + rect.height ** 2) / 3);
 
-			// For some reason the animation is broken on Mobile Chrome is the size is even.
+			// For some reason the animation is broken on Mobile Chrome if the size if even.
 			if (rippleSize % 2 === 0) {
 				rippleSize += 1;
 			}
 		} else {
-			const sizeX = Math.max(Math.abs((element ? element.clientWidth : 0) - rippleX), rippleX) * 2 + 2;
-			const sizeY = Math.max(Math.abs((element ? element.clientHeight : 0) - rippleY), rippleY) * 2 + 2;
+			const sizeX =
+				Math.max(Math.abs((element ? element.clientWidth : 0) - rippleX), rippleX) * 2 + 2;
+			const sizeY =
+				Math.max(Math.abs((element ? element.clientHeight : 0) - rippleY), rippleY) * 2 + 2;
 			rippleSize = Math.sqrt(sizeX ** 2 + sizeY ** 2);
 		}
 
@@ -99,7 +108,7 @@ class TouchRipple extends PureComponent {
 		if (event.touches) {
 			// Prepare the ripple effect.
 			this.startTimerCommit = () => {
-				this.startTimerCommit({ pulsate, rippleX, rippleY, rippleSize, cb });
+				this.startCommit({ pulsate, rippleX, rippleY, rippleSize, cb });
 			};
 			// Delay the execution of the ripple effect.
 			this.startTimer = setTimeout(() => {
@@ -109,7 +118,7 @@ class TouchRipple extends PureComponent {
 				}
 			}, DELAY_RIPPLE);
 		} else {
-			this.startTimerCommit({ pulsate, rippleX, rippleY, rippleSize, cb });
+			this.startCommit({ pulsate, rippleX, rippleY, rippleSize, cb });
 		}
 	};
 
@@ -123,7 +132,11 @@ class TouchRipple extends PureComponent {
 					...state.ripples,
 					<Ripple
 						key={state.nextKey}
-						timeout={{ exit: DURATION, enter: DURATION }}
+						classes={this.props.classes}
+						timeout={{
+							exit: DURATION,
+							enter: DURATION,
+						}}
 						pulsate={pulsate}
 						rippleX={rippleX}
 						rippleY={rippleY}
@@ -163,14 +176,14 @@ class TouchRipple extends PureComponent {
 	};
 
 	render() {
-		const { center, className, ...passThruProps } = this.props;
+		const { center, className = '', innerRef, ...passThruProps } = this.props;
 
 		return (
 			<TransitionGroup
 				component="span"
 				enter
 				exit
-				className={classify(rippleBase(this.props))}
+				className={classify(styles, className)}
 				{...passThruProps}
 			>
 				{this.state.ripples}
@@ -185,4 +198,4 @@ TouchRipple.defaultProps = {
 	center: false,
 };
 
-export default TouchRipple;
+export default themify(TouchRipple);

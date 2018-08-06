@@ -1,11 +1,17 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
 import React from 'react';
 import PropTypes from 'prop-types';
-import { styled, withStyle } from './../styled';
+import { classify, themify } from './../styled';
 import ButtonBase from './ButtonBase';
 import { fade } from './../utils/colorHelpers';
 
-// Button color styles parser
-export const color = ({ theme, ...props }) => {
+/**
+ * Maps props to styles
+ * Button component color styles
+ */
+export const getColorStyles = ({ theme, ...props }) => {
 	let next = {};
 	if (props.color === 'primary') {
 		next = {
@@ -13,7 +19,10 @@ export const color = ({ theme, ...props }) => {
 			...{
 				color: theme.colors.primary.main,
 				':hover': {
-					backgroundColor: fade(theme.colors.primary.main, theme.colors.action.hoverOpacity),
+					backgroundColor: fade(
+						theme.colors.primary.main,
+						theme.colors.action.hoverOpacity,
+					),
 				},
 			},
 		};
@@ -23,7 +32,10 @@ export const color = ({ theme, ...props }) => {
 			...{
 				color: theme.colors.secondary.main,
 				':hover': {
-					backgroundColor: fade(theme.colors.secondary.main, theme.colors.action.hoverOpacity),
+					backgroundColor: fade(
+						theme.colors.secondary.main,
+						theme.colors.action.hoverOpacity,
+					),
 				},
 			},
 		};
@@ -31,8 +43,11 @@ export const color = ({ theme, ...props }) => {
 	return next;
 };
 
-// Button fab styles parser
-export const fab = ({ theme, ...props }) => {
+/**
+ * Maps props to styles
+ * Button component fab styles
+ */
+export const getFabStyles = ({ theme, ...props }) => {
 	let next = {};
 	if (props.fab) {
 		next = {
@@ -53,8 +68,11 @@ export const fab = ({ theme, ...props }) => {
 	return next;
 };
 
-// Button full width styles parser
-export const fullWidth = ({ theme, ...props }) => {
+/**
+ * Maps props to styles
+ * Button component full width styles
+ */
+export const getFullWidthStyles = ({ theme, ...props }) => {
 	return props.fullWidth
 		? {
 				width: '100%',
@@ -62,8 +80,11 @@ export const fullWidth = ({ theme, ...props }) => {
 		: {};
 };
 
-// Button mini variation styles parser
-export const mini = ({ theme, ...props }) => {
+/**
+ * Maps props to styles
+ * Button component mini variation styles
+ */
+export const getMiniStyles = ({ theme, ...props }) => {
 	let next = {};
 	if (props.fab && props.mini) {
 		next = {
@@ -77,8 +98,11 @@ export const mini = ({ theme, ...props }) => {
 	return next;
 };
 
-// Button size styles parser
-export const size = ({ theme, ...props }) => {
+/**
+ * Maps props to styles
+ * Button component size styles
+ */
+export const getSizeStyles = ({ theme, ...props }) => {
 	switch (props.size) {
 		case 'small':
 			return {
@@ -99,8 +123,11 @@ export const size = ({ theme, ...props }) => {
 	}
 };
 
-// Button variant styles parser
-export const variant = ({ theme, ...props }) => {
+/**
+ * Maps props to styles
+ * Button component variant styles
+ */
+export const getVariantStyles = ({ theme, ...props }) => {
 	let next = {};
 
 	if (props.variant === 'contained') {
@@ -163,16 +190,12 @@ export const variant = ({ theme, ...props }) => {
 	return next;
 };
 
-// StyledButtonLabel component
-const StyledButtonLabel = styled('span', {
-	display: 'inherit',
-	alignItems: 'inherit',
-	justifyContent: 'inherit',
-});
-
-// StyledButton component
-const StyledButton = withStyle(ButtonBase, (props) => {
-	const { colors, fontSizes, fontUnit, lineHeights, radius, space } = props.theme;
+/**
+ * Maps props to styles
+ * Button component composed root styles
+ */
+const getRootStyles = (props) => {
+	const { space, fontSizes, fontUnit, lineHeights, radius, colors } = props.theme;
 
 	return {
 		...{
@@ -183,7 +206,7 @@ const StyledButton = withStyle(ButtonBase, (props) => {
 			fontSize: `${fontSizes[2]}${fontUnit}`,
 			lineHeight: `${lineHeights[2]}${fontUnit}`,
 			borderRadius: `${radius}`,
-			color: `${colors}`,
+			color: `${colors.text.primary}`,
 			':hover': {
 				textDecoration: 'none',
 				backgroundColor: fade(colors.text.primary, 0.8),
@@ -192,37 +215,28 @@ const StyledButton = withStyle(ButtonBase, (props) => {
 				backgroundColor: colors.action.disabled,
 			},
 		},
-		...color(props),
-		...fab(props),
-		...mini(props),
-		...fullWidth(props),
-		...size(props),
-		...variant(props),
+		...getColorStyles(props),
+		...getFabStyles(props),
+		...getMiniStyles(props),
+		...getFullWidthStyles(props),
+		...getSizeStyles(props),
+		...getVariantStyles(props),
 	};
-});
+};
 
-StyledButton.propTypes = {
-	children: PropTypes.node.isRequired,
-	className: PropTypes.string,
-	labelClassName: PropTypes.string,
-	color: PropTypes.oneOf([ 'default', 'inherit', 'primary', 'secondary' ]),
-	disabled: PropTypes.bool,
-	disableFocusRipple: PropTypes.bool,
-	disableRipple: PropTypes.bool,
-	fullWidth: PropTypes.bool,
-	href: PropTypes.string,
-	mini: PropTypes.bool,
-	size: PropTypes.oneOf([ 'small', 'medium', 'large' ]),
-	type: PropTypes.string,
-	variant: PropTypes.oneOf([ 'text', 'outlined', 'contained', 'fab', 'extendedFab' ]),
+const labelStyles = {
+	display: 'inherit',
+	alignItems: 'inherit',
+	justifyContent: 'inherit',
 };
 
 // Composed Button component
 const Button = (props) => {
 	const {
+		blacklist,
 		children,
 		color,
-		className = '',
+		className,
 		disabled,
 		disableFocusRipple,
 		disableRipple,
@@ -231,27 +245,23 @@ const Button = (props) => {
 		labelClassName = '',
 		mini,
 		size,
+		styles,
+		theme,
 		type,
 		variant,
 		...passThruProps
 	} = props;
 
 	return (
-		<StyledButton
-			color={color}
+		<ButtonBase
+			styles={{ ...getRootStyles(props), ...styles }}
 			className={className}
 			disabled={disabled}
-			disableRipple={disableRipple}
 			focusRipple={!disableFocusRipple}
-			fullWidth={fullWidth}
-			mini={mini}
-			size={size}
-			type={type}
-			variant={variant}
 			{...passThruProps}
 		>
-			<StyledButtonLabel className={labelClassName}>{children}</StyledButtonLabel>
-		</StyledButton>
+			<span className={classify(labelStyles, labelClassName)}>{children}</span>
+		</ButtonBase>
 	);
 };
 
@@ -273,7 +283,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
 	color: 'default',
-	// component: 'button',
+	component: 'button',
 	disabled: false,
 	disableFocusRipple: false,
 	fullWidth: false,
@@ -293,4 +303,4 @@ Button.defaultProps = {
 	],
 };
 
-export default Button;
+export default themify(Button);

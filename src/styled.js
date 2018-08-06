@@ -1,17 +1,39 @@
+import React from 'react';
 import { Client } from 'styletron-engine-atomic';
-import { styled as styletronStyled, withStyle as styletronWithStyle } from 'styletron-react';
-import { withTheme } from 'styled-components';
+import hoistStatics from 'hoist-non-react-statics';
+import { ThemeConsumer } from './theme';
 
-export const engine = new Client();
+export const engine = window.styletronClient || new Client();
 
-export const classify = (styles) => engine.renderStyle(styles);
+export const classify = function() {
+	let classes = [];
 
-export const styled = (component, styleArgs) => {
-	const StyledComponent = styletronStyled(component, styleArgs);
-	return withTheme(StyledComponent);
+	for (let i = 0; i < arguments.length; i++) {
+		const arg = arguments[i];
+		if (!arg) continue;
+
+		const argType = typeof arg;
+
+		if (argType === 'string' || argType === 'number') {
+			classes.push(arg);
+		} else if (argType === 'object' && !Array.isArray(arg)) {
+			classes.push(engine.renderStyle(arg));
+		}
+	}
+
+	return classes.join('');
 };
 
-export const withStyle = (component, styleArgs) => {
-	const StyledComponent = styletronWithStyle(component, styleArgs);
-	return withTheme(StyledComponent);
+export const themify = (Component) => {
+	const C = ({ innerRef, ...passThruProps }) => (
+		<ThemeConsumer>
+			{(theme) => <Component {...passThruProps} ref={innerRef} theme={theme} />}
+		</ThemeConsumer>
+	);
+
+	if (Component.propTypes) C.propTypes = Component.propTypes;
+
+	C.displayName = `Themify(${Component.displayName || Component.name || 'Component'})`;
+
+	return hoistStatics(C, Component);
 };

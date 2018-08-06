@@ -2,7 +2,7 @@ import warning from 'warning';
 
 // Follow https://material.google.com/motion/duration-easing.html#duration-easing-natural-easing-curves
 // to learn the context in which each easing should be used.
-export const easing = {
+export const motionEasing = {
 	// This is the most common easing curve.
 	easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
 	// Objects enter the screen at full velocity from off-screen and
@@ -16,7 +16,7 @@ export const easing = {
 
 // Follow https://material.io/guidelines/motion/duration-easing.html#duration-easing-common-durations
 // to learn when use what timing
-export const duration = {
+export const motionDuration = {
 	shortest: 150,
 	shorter: 200,
 	short: 250,
@@ -43,23 +43,29 @@ export const isNumber = (value) => !isNaN(parseFloat(value));
  * @param {number} param.delay
  */
 export default {
-	easing,
-	duration,
-	create(props = [ 'all' ], options = ({ prop, duration, easing, delay } = {})) {
-		const {
-			duration: durationOption = duration.standard,
-			easing: easingOption = easing.easeInOut,
+	easing: motionEasing,
+	duration: motionDuration,
+	createTransition(props = [ 'all' ], options = {}) {
+		let {
+			duration: durationOption = motionDuration.standard,
+			easing: easingOption = motionEasing.easeInOut,
 			delay = 0,
 			...other
 		} = options;
 
-		warning(isString(props) || Array.isArray(props), 'Material-UI: argument "props" must be a string or Array.');
+		warning(
+			isString(props) || Array.isArray(props),
+			'Material-UI: argument "props" must be a string or Array.',
+		);
 		warning(
 			isNumber(durationOption) || isString(durationOption),
 			`Material-UI: argument "duration" must be a number or a string but found ${durationOption}.`,
 		);
 		warning(isString(easingOption), 'Material-UI: argument "easing" must be a string.');
-		warning(isNumber(delay) || isString(delay), 'Material-UI: argument "delay" must be a number or a string.');
+		warning(
+			isNumber(delay) || isString(delay),
+			'Material-UI: argument "delay" must be a number or a string.',
+		);
 		warning(
 			Object.keys(other).length === 0,
 			`Material-UI: unrecognized argument(s) [${Object.keys(other).join(',')}]`,
