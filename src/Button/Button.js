@@ -256,7 +256,6 @@ const Button = (props) => {
 		disableFocusRipple,
 		disableRipple,
 		fullWidth,
-		href,
 		labelStyles: labelStylesProp = {},
 		mini,
 		size,
