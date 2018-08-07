@@ -44,11 +44,6 @@ export const rootStyles = {
 };
 
 class ButtonBase extends Component {
-	// constructor(props) {
-	// 	super(props)
-	// 	this.button = createRef();
-	// }
-
 	ripple = null;
 
 	keyDown = false; // Used to help track keyboard activation keyDown
@@ -238,11 +233,11 @@ class ButtonBase extends Component {
 			tabIndex,
 			TouchRippleProps,
 			type,
-			styles: stylesProp,
+			styles,
 			...passThru
 		} = this.props;
 
-		const className = classify({ ...rootStyles, ...stylesProp }, classNameProp);
+		const className = classify({ ...rootStyles, ...styles }, classNameProp);
 
 		const buttonProps = {};
 
@@ -313,9 +308,6 @@ ButtonBase.propTypes = {
 	 * The content of the component.
 	 */
 	children: PropTypes.node,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	/**
 	 * The component used for the root node.
@@ -346,62 +338,24 @@ ButtonBase.propTypes = {
 	 * The rational for using this feature [is explain here](https://github.com/WICG/focus-visible/blob/master/explainer.md).
 	 */
 	focusVisibleClassName: PropTypes.string,
-	/**
-	 * @ignore
-	 */
 	onBlur: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onClick: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onFocus: PropTypes.func,
 	/**
 	 * Callback fired when the component is focused with a keyboard.
 	 * We trigger a `onFocus` callback too.
 	 */
 	onFocusVisible: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onKeyDown: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onKeyUp: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onMouseDown: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onMouseLeave: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onMouseUp: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onTouchEnd: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onTouchMove: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	onTouchStart: PropTypes.func,
-	/**
-	 * @ignore
-	 */
 	role: PropTypes.string,
-	/**
-	 * @ignore
-	 */
+	styles: PropTypes.object,
 	tabIndex: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
 	/**
 	 * Properties applied to the `TouchRipple` element.

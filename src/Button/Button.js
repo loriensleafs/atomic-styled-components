@@ -242,15 +242,17 @@ const Button = (props) => {
 		disableRipple,
 		fullWidth,
 		href,
-		labelClassName = '',
+		labelStyles: labelStylesProp = {},
 		mini,
 		size,
-		styles,
+		styles = {},
 		theme,
 		type,
 		variant,
-		...passThruProps
+		...passThru
 	} = props;
+
+	const labelClassName = classify({ ...labelStyles, ...labelStylesProp }, labelClassName);
 
 	return (
 		<ButtonBase
@@ -258,9 +260,9 @@ const Button = (props) => {
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
-			{...passThruProps}
+			{...passThru}
 		>
-			<span className={classify(labelStyles, labelClassName)}>{children}</span>
+			<span className={labelClassName}>{children}</span>
 		</ButtonBase>
 	);
 };
@@ -277,6 +279,7 @@ Button.propTypes = {
 	href: PropTypes.string,
 	mini: PropTypes.bool,
 	size: PropTypes.oneOf([ 'small', 'medium', 'large' ]),
+	styles: PropTypes.object,
 	type: PropTypes.string,
 	variant: PropTypes.oneOf([ 'text', 'outlined', 'contained', 'fab', 'extendedFab' ]),
 };

@@ -9,8 +9,10 @@ import { styled } from 'styletron-react';
 import { classify, themify } from './../styled';
 import { DURATION } from './TouchRipple';
 
-// StyledRipple component
-const StyledRipple = styled('span', ({ $theme, ...props }) => {
+/**
+ * StyledRipple component
+ */
+const StyledRipple = styled('span', ({ $theme, $visible, $pulsate }) => {
 	let next = {
 		position: 'absolute',
 		top: 0,
@@ -20,7 +22,7 @@ const StyledRipple = styled('span', ({ $theme, ...props }) => {
 		opacity: 0,
 	};
 
-	if (props.$visible) {
+	if ($visible) {
 		next = {
 			...next,
 			...{
@@ -42,7 +44,7 @@ const StyledRipple = styled('span', ({ $theme, ...props }) => {
 		};
 	}
 
-	if (props.$pulsate) {
+	if ($pulsate) {
 		next = {
 			...next,
 			...{
@@ -55,7 +57,7 @@ const StyledRipple = styled('span', ({ $theme, ...props }) => {
 });
 
 // StyledWave component
-const StyledWave = styled('span', ({ $theme, ...props }) => {
+const StyledWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 	let next = {
 		position: 'relative',
 		width: '100%',
@@ -66,7 +68,7 @@ const StyledWave = styled('span', ({ $theme, ...props }) => {
 		backgroundColor: 'currentColor',
 	};
 
-	if (props.$leaving) {
+	if ($leaving) {
 		next = {
 			...next,
 			...{
@@ -84,7 +86,7 @@ const StyledWave = styled('span', ({ $theme, ...props }) => {
 		};
 	}
 
-	if (props.$pulsate) {
+	if ($pulsate) {
 		next = {
 			...next,
 			...{
@@ -113,6 +115,13 @@ const StyledWave = styled('span', ({ $theme, ...props }) => {
 	return next;
 });
 
+const getRippleStyles = (rippleSize, rippleX, rippleY) => ({
+	width: rippleSize,
+	height: rippleSize,
+	top: -(rippleSize / 2) + rippleY,
+	left: -(rippleSize / 2) + rippleX,
+});
+
 // Composed Ripple component
 class Ripple extends Component {
 	state = {
@@ -120,17 +129,9 @@ class Ripple extends Component {
 		leaving: false,
 	};
 
-	handleEnter = () => {
-		this.setState({
-			visible: true,
-		});
-	};
+	handleEnter = () => this.setState({ visible: true });
 
-	handleExit = () => {
-		this.setState({
-			leaving: true,
-		});
-	};
+	handleExit = () => this.setState({ leaving: true });
 
 	render() {
 		const {
@@ -141,24 +142,18 @@ class Ripple extends Component {
 			rippleSize,
 			styles,
 			theme,
-			...passThruProps
+			...passThru
 		} = this.props;
 
 		const { visible, leaving } = this.state;
-		const rippleStyles = {
-			width: rippleSize,
-			height: rippleSize,
-			top: -(rippleSize / 2) + rippleY,
-			left: -(rippleSize / 2) + rippleX,
-		};
 
 		return (
-			<Transition onEnter={this.handleEnter} onExit={this.handleExit} {...passThruProps}>
+			<Transition onEnter={this.handleEnter} onExit={this.handleExit} {...passThru}>
 				<StyledRipple
 					$visible={visible}
 					$pulsate={pulsate}
 					$theme={theme}
-					style={rippleStyles}
+					style={getRippleStyles(rippleSize, rippleX, rippleY)}
 				>
 					<StyledWave $leaving={leaving} $pulsate={pulsate} $theme={theme} />
 				</StyledRipple>

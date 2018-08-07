@@ -10,7 +10,7 @@ import Ripple from './Ripple';
 export const DURATION = 550;
 export const DELAY_RIPPLE = 80;
 
-const styles = {
+const rootStyles = {
 	zIndex: 0,
 	position: 'absolute',
 	top: 0,
@@ -132,7 +132,6 @@ class TouchRipple extends PureComponent {
 					...state.ripples,
 					<Ripple
 						key={state.nextKey}
-						classes={this.props.classes}
 						timeout={{
 							exit: DURATION,
 							enter: DURATION,
@@ -176,15 +175,15 @@ class TouchRipple extends PureComponent {
 	};
 
 	render() {
-		const { center, className = '', innerRef, ...passThruProps } = this.props;
+		const { center, className = '', innerRef, ...passThru } = this.props;
 
 		return (
 			<TransitionGroup
 				component="span"
 				enter
 				exit
-				className={classify(styles, className)}
-				{...passThruProps}
+				className={classify(rootStyles, className)}
+				{...passThru}
 			>
 				{this.state.ripples}
 			</TransitionGroup>
