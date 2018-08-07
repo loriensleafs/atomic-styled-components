@@ -236,6 +236,9 @@ const getRootStyles = (props) => {
 	};
 };
 
+/**
+ * Button Label component styles
+ */
 const labelStyles = {
 	display: 'inherit',
 	alignItems: 'inherit',

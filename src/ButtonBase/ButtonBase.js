@@ -2,7 +2,6 @@
 
 import PropTypes from 'prop-types';
 import React, { Component, createRef } from 'react';
-import ReactDOM from 'react-dom';
 import keycode from 'keycode';
 import ownerWindow from './../utils/ownerWindow';
 import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
