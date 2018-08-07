@@ -4,7 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { classify, themify } from './../styled';
-import ButtonBase from './ButtonBase';
+import ButtonBase from './../ButtonBase';
 import { fade } from './../utils/colorHelpers';
 
 /**
