@@ -10,6 +10,8 @@ import { fade } from './../utils/colorHelpers';
  */
 export const getColorStyles = (props) => {
 	const { colors } = props.theme;
+
+	return {};
 };
 
 /**
@@ -20,11 +22,12 @@ export const getRootStyles = (props) => {
 
 	return {
 		...{
+			position: 'relative',
 			textAlign: 'center',
 			flex: '0 0 auto',
 			fontSize: '24px',
-			width: 48,
-			height: 48,
+			width: '48px',
+			height: '48px',
 			padding: 0,
 			borderRadius: '50%',
 			color: colors.action.active,
