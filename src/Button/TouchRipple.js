@@ -175,7 +175,7 @@ class TouchRipple extends PureComponent {
 	};
 
 	render() {
-		const { center, className = '', innerRef, ...passThru } = this.props;
+		const { center, className = '', innerRef, theme, ...passThru } = this.props;
 
 		return (
 			<TransitionGroup
@@ -191,7 +191,18 @@ class TouchRipple extends PureComponent {
 	}
 }
 
-TouchRipple.propTypes = {};
+TouchRipple.propTypes = {
+	/**
+	 * If `true`, the ripple starts at the center of the component
+	 * rather than at the point of interaction.
+	 */
+	center: PropTypes.bool,
+	/**
+	 * @ignore
+	 */
+	className: PropTypes.string,
+	theme: PropTypes.object,
+};
 
 TouchRipple.defaultProps = {
 	center: false,
