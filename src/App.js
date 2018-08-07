@@ -6,7 +6,7 @@ import Flex from './Flex';
 import Text from './Text';
 import Button from './Button';
 import IconButton from './IconButton';
-import Icon from './Icon';
+import SvgIcon from './SvgIcon';
 
 const App = (props) => {
 	console.log(props.theme);
@@ -15,10 +15,10 @@ const App = (props) => {
 		<ErrorBoundry>
 			<Box w={1} h={1} bg="bg.default">
 				<IconButton>
-					<svg>
+					<SvgIcon>
 						<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
 						<path fill="none" d="M0 0h24v24H0z" />
-					</svg>
+					</SvgIcon>
 				</IconButton>
 				<Button variant="contained" color="primary">
 					Button
