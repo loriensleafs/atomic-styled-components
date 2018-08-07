@@ -11,18 +11,17 @@ import { fade } from './../utils/colorHelpers';
  * Maps props to styles
  * Button component color styles
  */
-export const getColorStyles = ({ theme, ...props }) => {
+export const getColorStyles = (props) => {
+	const { colors } = props.theme;
 	let next = {};
+
 	if (props.color === 'primary') {
 		next = {
 			...next,
 			...{
-				color: theme.colors.primary.main,
+				color: colors.primary.main,
 				':hover': {
-					backgroundColor: fade(
-						theme.colors.primary.main,
-						theme.colors.action.hoverOpacity,
-					),
+					backgroundColor: fade(colors.primary.main, colors.action.hoverOpacity),
 				},
 			},
 		};
@@ -30,12 +29,9 @@ export const getColorStyles = ({ theme, ...props }) => {
 		next = {
 			...next,
 			...{
-				color: theme.colors.secondary.main,
+				color: colors.secondary.main,
 				':hover': {
-					backgroundColor: fade(
-						theme.colors.secondary.main,
-						theme.colors.action.hoverOpacity,
-					),
+					backgroundColor: fade(colors.secondary.main, colors.action.hoverOpacity),
 				},
 			},
 		};
@@ -47,8 +43,10 @@ export const getColorStyles = ({ theme, ...props }) => {
  * Maps props to styles
  * Button component fab styles
  */
-export const getFabStyles = ({ theme, ...props }) => {
+export const getFabStyles = (props) => {
+	const { elevation } = props.theme;
 	let next = {};
+
 	if (props.fab) {
 		next = {
 			...next,
@@ -58,9 +56,9 @@ export const getFabStyles = ({ theme, ...props }) => {
 				minWidth: 0,
 				width: 56,
 				height: 56,
-				boxShadow: theme.elevation[6],
+				boxShadow: elevation[6],
 				':active': {
-					boxShadow: theme.elevation[12],
+					boxShadow: elevation[12],
 				},
 			},
 		};
@@ -72,7 +70,7 @@ export const getFabStyles = ({ theme, ...props }) => {
  * Maps props to styles
  * Button component full width styles
  */
-export const getFullWidthStyles = ({ theme, ...props }) => {
+export const getFullWidthStyles = (props) => {
 	return props.fullWidth
 		? {
 				width: '100%',
@@ -84,8 +82,9 @@ export const getFullWidthStyles = ({ theme, ...props }) => {
  * Maps props to styles
  * Button component mini variation styles
  */
-export const getMiniStyles = ({ theme, ...props }) => {
+export const getMiniStyles = (props) => {
 	let next = {};
+
 	if (props.fab && props.mini) {
 		next = {
 			...next,
@@ -102,21 +101,23 @@ export const getMiniStyles = ({ theme, ...props }) => {
  * Maps props to styles
  * Button component size styles
  */
-export const getSizeStyles = ({ theme, ...props }) => {
+export const getSizeStyles = (props) => {
+	const { fontSizes, fontUnit, space } = props.theme;
+
 	switch (props.size) {
 		case 'small':
 			return {
-				padding: `${theme.space[2] - 1}px ${theme.space[2]}px`,
+				padding: `${space[2] - 1}px ${space[2]}px`,
 				minWidth: 64,
 				minHeight: 32,
-				fontSize: `${theme.fontSizes[2] - 0.7}${theme.fontUnit}`,
+				fontSize: `${fontSizes[2] - 0.7}${fontUnit}`,
 			};
 		case 'large':
 			return {
-				padding: `${theme.space[2]}px ${theme.space[3] + theme.space[2]}px`,
+				padding: `${space[2]}px ${space[3] + space[2]}px`,
 				minWidth: 112,
 				minHeight: 32,
-				fontSize: `${theme.fontSizes[2]}${theme.fontUnit}`,
+				fontSize: `${fontSizes[2]}${fontUnit}`,
 			};
 		default:
 			return {};
@@ -127,29 +128,30 @@ export const getSizeStyles = ({ theme, ...props }) => {
  * Maps props to styles
  * Button component variant styles
  */
-export const getVariantStyles = ({ theme, ...props }) => {
+export const getVariantStyles = (props) => {
+	const { colors, elevation, space } = props.theme;
 	let next = {};
 
 	if (props.variant === 'contained') {
 		next = {
 			...next,
 			...{
-				color: theme.colors.text.secondary,
-				backgroundColor: theme.colors.gray.light,
-				boxShadow: theme.elevation[4],
+				color: colors.text.secondary,
+				backgroundColor: colors.gray.light,
+				boxShadow: elevation[4],
 				':focus': {
-					boxShadow: theme.elevation[6],
+					boxShadow: elevation[6],
 				},
 				':active': {
-					boxShadow: theme.elevation[8],
+					boxShadow: elevation[8],
 				},
 				':disabled': {
-					color: theme.colors.action.disabled,
+					color: colors.action.disabled,
 					boxShadow: 'none',
-					backgroundColor: theme.colors.action.disabledBg,
+					backgroundColor: colors.action.disabledBg,
 				},
 				':hover': {
-					backgroundColor: theme.colors.gray.light,
+					backgroundColor: colors.gray.light,
 				},
 			},
 		};
@@ -158,10 +160,10 @@ export const getVariantStyles = ({ theme, ...props }) => {
 			next = {
 				...next,
 				...{
-					color: theme.colors[props.color].contrast,
-					backgroundColor: theme.colors[props.color].main,
+					color: colors[props.color].contrast,
+					backgroundColor: colors[props.color].main,
 					':hover': {
-						backgroundColor: theme.colors[props.color].dark,
+						backgroundColor: colors[props.color].dark,
 					},
 				},
 			};
@@ -170,9 +172,9 @@ export const getVariantStyles = ({ theme, ...props }) => {
 		next = {
 			...next,
 			...{
-				border: `1px solid ${theme.colors.type === 'light'
-					? theme.colors.divider.light
-					: theme.colors.divider.contrast.light}`,
+				border: `1px solid ${colors.type === 'light'
+					? colors.divider.light
+					: colors.divider.contrast.light}`,
 			},
 		};
 	} else if (props.variant === 'extendedFab') {
@@ -180,7 +182,7 @@ export const getVariantStyles = ({ theme, ...props }) => {
 			...next,
 			...{
 				borderRadius: 48 / 2,
-				padding: `0 ${theme.space[3]}`,
+				padding: `0 ${space[3]}`,
 				width: 'auto',
 				minWidth: 48,
 				height: 48,
@@ -195,7 +197,16 @@ export const getVariantStyles = ({ theme, ...props }) => {
  * Button component composed root styles
  */
 const getRootStyles = (props) => {
-	const { space, fontSizes, fontUnit, lineHeights, radius, colors } = props.theme;
+	const {
+		colors,
+		duration,
+		easing,
+		fontSizes,
+		fontUnit,
+		lineHeights,
+		radius,
+		space,
+	} = props.theme;
 
 	return {
 		...{
@@ -207,6 +218,7 @@ const getRootStyles = (props) => {
 			lineHeight: `${lineHeights[2]}${fontUnit}`,
 			borderRadius: `${radius}`,
 			color: `${colors.text.primary}`,
+			transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}`,
 			':hover': {
 				textDecoration: 'none',
 				backgroundColor: fade(colors.text.primary, 0.8),
