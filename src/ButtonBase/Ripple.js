@@ -129,10 +129,6 @@ class Ripple extends Component {
 		leaving: false,
 	};
 
-	shouldComponentUpdate(nextProps, nextState) {
-		return this.props !== nextProps && this.state === nextState;
-	}
-
 	handleEnter = () => this.setState({ visible: true });
 
 	handleExit = () => this.setState({ leaving: true });

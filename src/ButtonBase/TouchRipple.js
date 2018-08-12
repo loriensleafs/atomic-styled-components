@@ -7,8 +7,8 @@ import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { classify, themify } from './../styled';
 import Ripple from './Ripple';
 
-export const DURATION = 550;
-export const DELAY_RIPPLE = 80;
+export const DURATION = 700;
+export const DELAY_RIPPLE = 100;
 
 const rootStyles = {
 	zIndex: 0,
@@ -136,7 +136,7 @@ class TouchRipple extends PureComponent {
 					<Ripple
 						key={state.nextKey}
 						timeout={{
-							exit: DURATION,
+							exit: DURATION - 50,
 							enter: DURATION,
 						}}
 						pulsate={pulsate}
