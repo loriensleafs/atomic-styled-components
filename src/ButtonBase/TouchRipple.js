@@ -200,9 +200,6 @@ TouchRipple.propTypes = {
 	 * rather than at the point of interaction.
 	 */
 	center: PropTypes.bool,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	theme: PropTypes.object,
 };

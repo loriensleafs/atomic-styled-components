@@ -3,6 +3,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import merge from 'deep-extend';
 import { classify, themify } from './../styled';
 import ButtonBase from './../ButtonBase';
 import { fade } from './../utils/colorHelpers';
@@ -16,25 +17,19 @@ export const getColorStyles = (props) => {
 	let next = {};
 
 	if (props.color === 'primary') {
-		next = {
-			...next,
-			...{
-				color: colors.primary.main,
-				':hover': {
-					backgroundColor: fade(colors.primary.main, colors.action.hoverOpacity),
-				},
+		next = merge(next, {
+			color: colors.primary.main,
+			':hover': {
+				backgroundColor: fade(colors.primary.main, colors.action.hoverOpacity),
 			},
-		};
+		});
 	} else if (props.color === 'secondary') {
-		next = {
-			...next,
-			...{
-				color: colors.secondary.main,
-				':hover': {
-					backgroundColor: fade(colors.secondary.main, colors.action.hoverOpacity),
-				},
+		next = merge(next, {
+			color: colors.secondary.main,
+			':hover': {
+				backgroundColor: fade(colors.secondary.main, colors.action.hoverOpacity),
 			},
-		};
+		});
 	}
 	return next;
 };
@@ -48,20 +43,17 @@ export const getFabStyles = (props) => {
 	let next = {};
 
 	if (props.fab) {
-		next = {
-			...next,
-			...{
-				borderRadius: '50%',
-				padding: 0,
-				minWidth: 0,
-				width: 56,
-				height: 56,
-				boxShadow: elevation[6],
-				':active': {
-					boxShadow: elevation[12],
-				},
+		next = merge(next, {
+			borderRadius: '50%',
+			padding: 0,
+			minWidth: 0,
+			width: 56,
+			height: 56,
+			boxShadow: elevation[6],
+			':active': {
+				boxShadow: elevation[12],
 			},
-		};
+		});
 	}
 	return next;
 };
@@ -86,13 +78,10 @@ export const getMiniStyles = (props) => {
 	let next = {};
 
 	if (props.fab && props.mini) {
-		next = {
-			...next,
-			...{
-				width: 40,
-				height: 40,
-			},
-		};
+		next = merge(next, {
+			width: 40,
+			height: 40,
+		});
 	}
 	return next;
 };
@@ -133,61 +122,49 @@ export const getVariantStyles = (props) => {
 	let next = {};
 
 	if (props.variant === 'contained') {
-		next = {
-			...next,
-			...{
-				color: colors.text.secondary,
-				backgroundColor: colors.gray.light,
-				boxShadow: elevation[4],
-				':focus': {
-					boxShadow: elevation[6],
-				},
-				':active': {
-					boxShadow: elevation[8],
-				},
-				':disabled': {
-					color: colors.action.disabled,
-					boxShadow: 'none',
-					backgroundColor: colors.action.disabledBg,
-				},
-				':hover': {
-					backgroundColor: colors.gray.light,
-				},
+		next = merge(next, {
+			color: colors.text.secondary,
+			backgroundColor: colors.gray.light,
+			boxShadow: elevation[4],
+			':focus': {
+				boxShadow: elevation[6],
 			},
-		};
+			':active': {
+				boxShadow: elevation[8],
+			},
+			':disabled': {
+				color: colors.action.disabled,
+				boxShadow: 'none',
+				backgroundColor: colors.action.disabledBg,
+			},
+			':hover': {
+				backgroundColor: colors.gray.light,
+			},
+		});
 
 		if (props.color === 'primary' || props.color === 'secondary') {
-			next = {
-				...next,
-				...{
-					color: colors[props.color].contrast,
-					backgroundColor: colors[props.color].main,
-					':hover': {
-						backgroundColor: colors[props.color].dark,
-					},
+			next = merge(next, {
+				color: colors[props.color].contrast,
+				backgroundColor: colors[props.color].main,
+				':hover': {
+					backgroundColor: colors[props.color].dark,
 				},
-			};
+			});
 		}
 	} else if (props.variant === 'outlined') {
-		next = {
-			...next,
-			...{
-				border: `1px solid ${colors.type === 'light'
-					? colors.divider.light
-					: colors.divider.contrast.light}`,
-			},
-		};
+		next = merge(next, {
+			border: `1px solid ${colors.type === 'light'
+				? colors.divider.light
+				: colors.divider.contrast.light}`,
+		});
 	} else if (props.variant === 'extendedFab') {
-		next = {
-			...next,
-			...{
-				borderRadius: 48 / 2,
-				padding: `0 ${space[3]}`,
-				width: 'auto',
-				minWidth: 48,
-				height: 48,
-			},
-		};
+		next = merge(next, {
+			borderRadius: 48 / 2,
+			padding: `0 ${space[3]}`,
+			width: 'auto',
+			minWidth: 48,
+			height: 48,
+		});
 	}
 	return next;
 };
@@ -208,8 +185,8 @@ const getRootStyles = (props) => {
 		space,
 	} = props.theme;
 
-	return {
-		...{
+	return merge(
+		{
 			boxSizing: 'border-box',
 			minWidth: 64,
 			minHeight: 36,
@@ -227,13 +204,13 @@ const getRootStyles = (props) => {
 				backgroundColor: colors.action.disabled,
 			},
 		},
-		...getColorStyles(props),
-		...getFabStyles(props),
-		...getMiniStyles(props),
-		...getFullWidthStyles(props),
-		...getSizeStyles(props),
-		...getVariantStyles(props),
-	};
+		getColorStyles(props),
+		getFabStyles(props),
+		getMiniStyles(props),
+		getFullWidthStyles(props),
+		getSizeStyles(props),
+		getVariantStyles(props),
+	);
 };
 
 /**
@@ -266,8 +243,6 @@ const Button = (props) => {
 		...passThru
 	} = props;
 
-	const labelClassName = classify({ ...labelStyles, ...labelStylesProp }, labelClassName);
-
 	return (
 		<ButtonBase
 			styles={{ ...getRootStyles(props), ...styles }}
@@ -276,7 +251,7 @@ const Button = (props) => {
 			focusRipple={!disableFocusRipple}
 			{...passThru}
 		>
-			<span className={labelClassName}>{children}</span>
+			<span className={classify(merge(labelStyles, labelStylesProp))}>{children}</span>
 		</ButtonBase>
 	);
 };

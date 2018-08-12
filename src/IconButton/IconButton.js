@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import merge from 'deep-extend';
 import { classify, themify } from './../styled';
 import ButtonBase from './../ButtonBase';
 import { fade } from './../utils/colorHelpers';
@@ -20,32 +21,30 @@ export const getColorStyles = (props) => {
 export const getRootStyles = (props) => {
 	const { colors, duration, easing } = props.theme;
 
-	return {
-		...{
-			position: 'relative',
-			textAlign: 'center',
-			flex: '0 0 auto',
-			fontSize: '24px',
-			width: '48px',
-			height: '48px',
-			padding: 0,
-			borderRadius: '50%',
-			color: colors.action.active,
-			transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
-			':hover': {
-				backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
-				'@media (hover: none)': {
-					backgroundColor: 'transparent',
-				},
-				':disabled': {
-					backgroundColor: 'transparent',
-				},
+	return merge({
+		position: 'relative',
+		textAlign: 'center',
+		flex: '0 0 auto',
+		fontSize: '24px',
+		width: '48px',
+		height: '48px',
+		padding: 0,
+		borderRadius: '50%',
+		color: colors.action.active,
+		transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
+		':hover': {
+			backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
+			'@media (hover: none)': {
+				backgroundColor: 'transparent',
 			},
 			':disabled': {
-				color: colors.action.disabled,
+				backgroundColor: 'transparent',
 			},
 		},
-	};
+		':disabled': {
+			color: colors.action.disabled,
+		},
+	});
 };
 
 /**
@@ -66,7 +65,7 @@ const IconButton = (props) => {
 
 	return (
 		<ButtonBase
-			styles={{ ...getRootStyles(props), ...styles }}
+			styles={merge(getRootStyles(props), styles)}
 			className={className}
 			centerRipple
 			focusRipple

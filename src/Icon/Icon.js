@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import merge from 'deep-extend';
 import { classify, themify } from './../styled';
 
 /**
@@ -41,8 +42,8 @@ export const getColorStyles = (props) => {
 export const getRootStyles = (props) => {
 	const {} = props.theme;
 
-	return {
-		...{
+	return merge(
+		{
 			userSelect: 'none',
 			fontSize: 24,
 			width: '1em',
@@ -50,20 +51,15 @@ export const getRootStyles = (props) => {
 			overflow: 'hidden',
 			flexShrink: 0,
 		},
-		...getColorStyles(props),
-	};
-};
-
-const Icon = (props) => {
-	const { children, className: classNameProp, color, fontSize, ...passThru } = props;
-	const className = classify(getRootStyles(props), classNameProp);
-
-	return (
-		<span className={className} aria-hidden="true" {...passThru}>
-			{children}
-		</span>
+		getColorStyles(props),
 	);
 };
+
+const Icon = ({ children, className, color, fontSize, ...passThru }) => (
+	<span className={classify(getRootStyles(props), className)} aria-hidden="true" {...passThru}>
+		{children}
+	</span>
+);
 
 Icon.propTypes = {
 	/**

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import merge from 'deep-extend';
 import { themify, classify } from './../styled';
 
 /**
@@ -41,8 +42,8 @@ export const getColorStyles = (props) => {
 export const getRootStyles = (props) => {
 	const { duration, easing } = props.theme;
 
-	return {
-		...{
+	return merge(
+		{
 			userSelect: 'none',
 			fontSize: 24,
 			width: '1em',
@@ -52,8 +53,8 @@ export const getRootStyles = (props) => {
 			fill: 'currentColor',
 			transition: `fill ${duration.shorter}ms ${easing.easeIn}`,
 		},
-		...getColorStyles(props),
-	};
+		getColorStyles(props),
+	);
 };
 
 const SvgIcon = (props) => {
