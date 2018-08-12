@@ -6,7 +6,7 @@ import Transition from 'react-transition-group/Transition';
 import posed from 'react-pose';
 import { tween } from 'popmotion';
 import { styled } from 'styletron-react';
-import { classify, themify } from './../styled';
+import { themify } from './../styled';
 import { DURATION } from './TouchRipple';
 
 /**
@@ -129,6 +129,10 @@ class Ripple extends Component {
 		leaving: false,
 	};
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return this.props !== nextProps && this.state === nextState;
+	}
+
 	handleEnter = () => this.setState({ visible: true });
 
 	handleExit = () => this.setState({ leaving: true });
@@ -150,6 +154,7 @@ class Ripple extends Component {
 		return (
 			<Transition onEnter={this.handleEnter} onExit={this.handleExit} {...passThru}>
 				<StyledRipple
+					className={classNameProp}
 					$visible={visible}
 					$pulsate={pulsate}
 					$theme={theme}

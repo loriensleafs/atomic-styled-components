@@ -21,6 +21,9 @@ const rootStyles = {
 	overflow: 'hidden',
 	borderRadius: 'inherit',
 	pointerEvents: 'none',
+	backfaceVisibility: 'hidden',
+	perspective: 1000,
+	willChange: 'transform',
 };
 
 class TouchRipple extends PureComponent {
