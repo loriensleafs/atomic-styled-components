@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
-import { classify, themify } from './../styled';
 import ButtonBase from './../ButtonBase';
+import { classify, themify } from './../styled';
 import { fade } from './../utils/colorHelpers';
 
 /**

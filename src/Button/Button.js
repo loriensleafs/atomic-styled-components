@@ -17,14 +17,14 @@ export const getColorStyles = (props) => {
 	let next = {};
 
 	if (props.color === 'primary') {
-		next = merge(next, {
+		next = merge({}, next, {
 			color: colors.primary.main,
 			':hover': {
 				backgroundColor: fade(colors.primary.main, colors.action.hoverOpacity),
 			},
 		});
 	} else if (props.color === 'secondary') {
-		next = merge(next, {
+		next = merge({}, next, {
 			color: colors.secondary.main,
 			':hover': {
 				backgroundColor: fade(colors.secondary.main, colors.action.hoverOpacity),
@@ -43,7 +43,7 @@ export const getFabStyles = (props) => {
 	let next = {};
 
 	if (props.fab) {
-		next = merge(next, {
+		next = merge({}, next, {
 			borderRadius: '50%',
 			padding: 0,
 			minWidth: 0,
@@ -78,7 +78,7 @@ export const getMiniStyles = (props) => {
 	let next = {};
 
 	if (props.fab && props.mini) {
-		next = merge(next, {
+		next = merge({}, next, {
 			width: 40,
 			height: 40,
 		});
@@ -122,7 +122,7 @@ export const getVariantStyles = (props) => {
 	let next = {};
 
 	if (props.variant === 'contained') {
-		next = merge(next, {
+		next = merge({}, next, {
 			color: colors.text.secondary,
 			backgroundColor: colors.gray.light,
 			boxShadow: elevation[4],
@@ -143,7 +143,7 @@ export const getVariantStyles = (props) => {
 		});
 
 		if (props.color === 'primary' || props.color === 'secondary') {
-			next = merge(next, {
+			next = merge({}, next, {
 				color: colors[props.color].contrast,
 				backgroundColor: colors[props.color].main,
 				':hover': {
@@ -152,13 +152,13 @@ export const getVariantStyles = (props) => {
 			});
 		}
 	} else if (props.variant === 'outlined') {
-		next = merge(next, {
+		next = merge({}, next, {
 			border: `1px solid ${colors.type === 'light'
 				? colors.divider.light
 				: colors.divider.contrast.light}`,
 		});
 	} else if (props.variant === 'extendedFab') {
-		next = merge(next, {
+		next = merge({}, next, {
 			borderRadius: 48 / 2,
 			padding: `0 ${space[3]}`,
 			width: 'auto',

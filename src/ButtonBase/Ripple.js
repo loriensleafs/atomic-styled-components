@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Transition from 'react-transition-group/Transition';
+import merge from 'deep-extend';
 import posed from 'react-pose';
 import { tween } from 'popmotion';
 import { styled } from 'styletron-react';
@@ -23,34 +24,28 @@ const StyledRipple = styled('span', ({ $theme, $visible, $pulsate }) => {
 	};
 
 	if ($visible) {
-		next = {
-			...next,
-			...{
-				opacity: 0.3,
-				transform: 'scale(1)',
-				animationName: {
-					from: {
-						transform: 'scale(0) translate3d(0,0,0)',
-						opacity: 0.1,
-					},
-					to: {
-						transform: 'scale(1) translate3d(0,0,0)',
-						opacity: 0.3,
-					},
+		next = merge({}, next, {
+			opacity: 0.3,
+			transform: 'scale(1)',
+			animationName: {
+				from: {
+					transform: 'scale(0) translate3d(0,0,0)',
+					opacity: 0.1,
 				},
-				animationDuration: `${DURATION}ms`,
-				animationTimingFunction: $theme.easing.easeInOut,
+				to: {
+					transform: 'scale(1) translate3d(0,0,0)',
+					opacity: 0.3,
+				},
 			},
-		};
+			animationDuration: `${DURATION}ms`,
+			animationTimingFunction: $theme.easing.easeInOut,
+		});
 	}
 
 	if ($pulsate) {
-		next = {
-			...next,
-			...{
-				animationDuration: `${$theme.duration.shorter}ms`,
-			},
-		};
+		next = merge({}, next, {
+			animationDuration: `${$theme.duration.shorter}ms`,
+		});
 	}
 
 	return next;
@@ -69,47 +64,41 @@ const StyledWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 	};
 
 	if ($leaving) {
-		next = {
-			...next,
-			...{
-				animationName: {
-					from: {
-						opacity: 1,
-					},
-					to: {
-						opacity: 0,
-					},
+		next = merge({}, next, {
+			animationName: {
+				from: {
+					opacity: 1,
 				},
-				animationDuration: `${DURATION}ms`,
-				animationTimingFunction: $theme.easing.easeInOut,
+				to: {
+					opacity: 0,
+				},
 			},
-		};
+			animationDuration: `${DURATION}ms`,
+			animationTimingFunction: $theme.easing.easeInOut,
+		});
 	}
 
 	if ($pulsate) {
-		next = {
-			...next,
-			...{
-				position: 'absolute',
-				left: 0,
-				top: 0,
-				animationName: {
-					'0%': {
-						transform: 'scale(1)',
-					},
-					'50%': {
-						transform: 'scale(0.92)',
-					},
-					'100%': {
-						transform: 'scale(1)',
-					},
+		next = merge({}, next, {
+			position: 'absolute',
+			left: 0,
+			top: 0,
+			animationName: {
+				'0%': {
+					transform: 'scale(1)',
 				},
-				animationDuration: '2500ms',
-				animationTimingFunction: $theme.easing.easeInOut,
-				animationDelay: '200ms',
-				animationIterationCount: 'infinite',
+				'50%': {
+					transform: 'scale(0.92)',
+				},
+				'100%': {
+					transform: 'scale(1)',
+				},
 			},
-		};
+			animationDuration: '2500ms',
+			animationTimingFunction: $theme.easing.easeInOut,
+			animationDelay: '200ms',
+			animationIterationCount: 'infinite',
+		});
 	}
 
 	return next;
