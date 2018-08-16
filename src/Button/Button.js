@@ -245,7 +245,7 @@ const Button = (props) => {
 
 	return (
 		<ButtonBase
-			styles={{ ...getRootStyles(props), ...styles }}
+			styles={merge({}, getRootStyles(props), styles)}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}

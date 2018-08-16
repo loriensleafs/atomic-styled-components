@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types';
 import React, { Component, createRef } from 'react';
 import keycode from 'keycode';
+import merge from 'deep-extend';
 import ownerWindow from './../utils/ownerWindow';
 import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
 import TouchRipple from './TouchRipple';
@@ -237,7 +238,7 @@ class ButtonBase extends Component {
 			...passThru
 		} = this.props;
 
-		const className = classify({ ...rootStyles, ...styles }, classNameProp);
+		const className = classify(merge({}, rootStyles, styles), classNameProp);
 
 		const buttonProps = {};
 
