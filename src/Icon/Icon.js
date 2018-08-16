@@ -55,7 +55,7 @@ export const getRootStyles = (props) => {
 	);
 };
 
-const Icon = ({ children, className, color, fontSize, ...passThru }) => (
+const Icon = ({ children, className, color, fontSize, theme, ...passThru }) => (
 	<span className={classify(getRootStyles(props), className)} aria-hidden="true" {...passThru}>
 		{children}
 	</span>

@@ -232,6 +232,7 @@ class ButtonBase extends Component {
 			tabIndex,
 			TouchRippleProps,
 			type,
+			theme,
 			styles,
 			...passThru
 		} = this.props;
