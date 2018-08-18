@@ -2,45 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
 import { themify, classify } from './../themify';
-
-/**
-  * Maps props to color styles
-  * @param {object} props
-  * @param {object} props.theme
-  * @param {string} [props.color='default']
-  */
-export const getColorStyles = (props) => {
-	const { colors } = props.theme;
-
-	switch (props.color) {
-		case 'inherit':
-			return {
-				color: 'inherit',
-			};
-		case 'primary':
-			return {
-				color: colors.primary.main,
-			};
-		case 'secondary':
-			return {
-				color: colors.secondary.main,
-			};
-		case 'active':
-			return {
-				color: colors.action.active,
-			};
-		case 'error':
-			return {
-				color: colors.error.main,
-			};
-		case 'disabled':
-			return {
-				color: colors.action.disabled,
-			};
-		default:
-			return {};
-	}
-};
+import { getColorStyles } from './../Icon/Icon';
 
 /**
   * Maps props to font-size styles

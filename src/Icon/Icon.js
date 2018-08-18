@@ -67,11 +67,19 @@ export const getRootStyles = (props) => {
  * Creates a styled Icon component
  * @param {object} props
  */
-const Icon = ({ children, className, color, fontSize, theme, ...passThru }) => (
-	<span className={classify(getRootStyles(props), className)} aria-hidden="true" {...passThru}>
-		{children}
-	</span>
-);
+const Icon = (props) => {
+	const { children, className, color, fontSize, theme, ...passThru } = props;
+
+	return (
+		<span
+			className={classify(getRootStyles(props), className)}
+			aria-hidden="true"
+			{...passThru}
+		>
+			{children}
+		</span>
+	);
+};
 
 Icon.propTypes = {
 	/**
