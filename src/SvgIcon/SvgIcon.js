@@ -80,6 +80,10 @@ export const getRootStyles = (props) => {
 	);
 };
 
+/**
+ * Creates a styled SvgIcon component
+ * @param {object} props
+ */
 const SvgIcon = (props) => {
 	const {
 		children,

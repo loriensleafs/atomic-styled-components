@@ -4,9 +4,11 @@ import merge from 'deep-extend';
 import { classify, themify } from './../themify';
 
 /**
- * Maps props to styles
- * Icon component color styles
- */
+  * Maps props to color styles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {string} [props.color='default']
+  */
 export const getColorStyles = (props) => {
 	const { colors } = props.theme;
 
@@ -41,8 +43,10 @@ export const getColorStyles = (props) => {
 };
 
 /**
- * Icon component root styles
- */
+  * Maps props to root styles
+  * @param {object} props
+  * @param {object} props.theme
+  */
 export const getRootStyles = (props) => {
 	const {} = props.theme;
 
@@ -59,6 +63,10 @@ export const getRootStyles = (props) => {
 	);
 };
 
+/**
+ * Creates a styled Icon component
+ * @param {object} props
+ */
 const Icon = ({ children, className, color, fontSize, theme, ...passThru }) => (
 	<span className={classify(getRootStyles(props), className)} aria-hidden="true" {...passThru}>
 		{children}
