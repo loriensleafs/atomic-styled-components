@@ -143,6 +143,7 @@ SvgIcon.propTypes = {
 	 * https://www.w3.org/TR/SVG-access/#Equivalent
 	 */
 	styles: PropTypes.object,
+	theme: PropTypes.object,
 	titleAccess: PropTypes.string,
 	/**
 	 * Allows you to redefine what the coordinates without units mean inside an SVG element.

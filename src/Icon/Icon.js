@@ -90,6 +90,7 @@ Icon.propTypes = {
 	 * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
 	 */
 	fontSize: PropTypes.oneOf([ 'inherit', 'default' ]),
+	theme: PropTypes.object,
 };
 
 Icon.defaultProps = {

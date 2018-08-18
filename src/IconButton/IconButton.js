@@ -121,6 +121,7 @@ IconButton.propTypes = {
 	 */
 	disableRipple: PropTypes.bool,
 	styles: PropTypes.object,
+	theme: PropTypes.object,
 };
 
 IconButton.defaultProps = {
