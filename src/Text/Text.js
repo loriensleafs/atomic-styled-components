@@ -1,7 +1,15 @@
-import { fontFamily, fontSize, textAlign, lineHeight, fontWeight, letterSpacing, color } from 'styled-system';
 import tag from 'clean-tag';
+import {
+	fontFamily,
+	fontSize,
+	textAlign,
+	lineHeight,
+	fontWeight,
+	letterSpacing,
+	color,
+} from 'styled-system';
 import { styled } from 'styletron-react';
-import { themify } from './../styled';
+import { themify } from './../themify';
 
 const Text = styled(tag, (props) => ({
 	...fontFamily(props),

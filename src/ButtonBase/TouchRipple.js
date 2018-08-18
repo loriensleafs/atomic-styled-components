@@ -4,8 +4,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import { classify, themify } from './../styled';
 import Ripple from './Ripple';
+import { classify, themify } from './../themify';
 
 export const DURATION = 700;
 export const DELAY_RIPPLE = 100;
@@ -203,7 +203,6 @@ TouchRipple.propTypes = {
 	 */
 	center: PropTypes.bool,
 	className: PropTypes.string,
-	innerRef: PropTypes.element,
 	theme: PropTypes.object,
 };
 

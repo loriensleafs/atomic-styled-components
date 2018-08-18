@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider as StyletronProvider } from 'styletron-react';
 import { ThemeProvider, theme } from './theme';
-import { engine } from './styled';
+import { engine } from './themify';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { injectGlobal } from 'styled-components';

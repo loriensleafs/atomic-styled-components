@@ -1,5 +1,5 @@
 import React from 'react';
-import { themify } from './styled';
+import { themify } from './themify';
 import Box from './Box';
 import ErrorBoundry from './ErrorBoundry';
 import Flex from './Flex';

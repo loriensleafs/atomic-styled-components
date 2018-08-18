@@ -1,7 +1,7 @@
-import { space, width, fontSize, color, responsiveStyle } from 'styled-system';
 import tag from 'clean-tag';
+import { space, width, fontSize, color, responsiveStyle } from 'styled-system';
 import { styled } from 'styletron-react';
-import { themify } from './../styled';
+import { themify } from './../themify';
 import { getDimension } from './../utils/helpers';
 
 export const minWidth = responsiveStyle({

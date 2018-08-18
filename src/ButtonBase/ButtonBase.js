@@ -8,7 +8,7 @@ import ownerWindow from './../utils/ownerWindow';
 import TouchRipple from './TouchRipple';
 import createRippleHandler from './createRippleHandler';
 import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
-import { classify } from './../styled';
+import { classify } from './../themify';
 
 export const styles = {
 	root: {

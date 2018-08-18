@@ -1,20 +1,25 @@
 // color palette
 const black = '#000';
 const white = '#fff';
+// primary
+const blue = '#007aff';
 const lightBlue = '#cdf';
-const blue = '#007aff'; // primary
 const darkBlue = '#049';
+// secondary
+const green = '#0a0';
 const lightGreen = '#cec';
-const green = '#0a0'; // secondary
 const darkGreen = '#060';
+// secondary
+const red = '#c00';
 const lightRed = '#fcc';
-const red = '#c00'; // secondary
 const darkRed = '#800';
+// secondary
+const orange = '#fa0';
 const lightOrange = '#feb';
-const orange = '#fa0'; // secondary
 const darkOrange = '#a50';
+// secondary
+const purple = '#70b';
 const lightPurple = '#ecf';
-const purple = '#70b'; // secondary
 const darkPurple = '#407';
 
 // Primary color palette
@@ -82,10 +87,13 @@ const flatten = (name, colors) =>
 				enumerable: true,
 				get() {
 					console.warn(
-						`Priceline Design System Warning: Using numbered colors like ${[
+						`Theme[color warning]: Using numbered colors like ${[
 							name + i,
-						]} will be deprecated in the next theme. Use light${name.charAt(0).toUpperCase() +
-							name.slice(1)}, ${name} or dark${name.charAt(0).toUpperCase() + name.slice(1)} instead.`,
+						]} will be deprecated in the next theme. Use light${name
+							.charAt(0)
+							.toUpperCase() + name.slice(1)}, ${name} or dark${name
+							.charAt(0)
+							.toUpperCase() + name.slice(1)} instead.`,
 					);
 					return b;
 				},

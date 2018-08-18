@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
-import { classify, themify } from './../styled';
+import { classify, themify } from './../themify';
 
 /**
  * Maps props to styles

@@ -1,7 +1,7 @@
+import tag from 'clean-tag';
 import { styled } from 'styletron-react';
 import { borderRadius, borderColor, borders } from 'styled-system';
-import tag from 'clean-tag';
-import { themify } from './../styled';
+import { themify } from './../themify';
 
 const Border = styled(tag, (props) => ({
 	...borderRadius(props),

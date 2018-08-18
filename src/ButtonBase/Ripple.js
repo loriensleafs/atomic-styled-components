@@ -7,7 +7,7 @@ import merge from 'deep-extend';
 import posed from 'react-pose';
 import { tween } from 'popmotion';
 import { styled } from 'styletron-react';
-import { themify } from './../styled';
+import { themify } from './../themify';
 import { DURATION } from './TouchRipple';
 
 const RippleSurface = styled('span', ({ $theme, $visible, $pulsate }) => {

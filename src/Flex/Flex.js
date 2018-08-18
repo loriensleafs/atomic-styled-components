@@ -12,7 +12,7 @@ import {
 	responsiveStyle,
 } from 'styled-system';
 import { styled } from 'styletron-react';
-import { themify } from './../styled';
+import { themify } from './../themify';
 import Box from '../Box';
 
 export const flexWrap = responsiveStyle({
