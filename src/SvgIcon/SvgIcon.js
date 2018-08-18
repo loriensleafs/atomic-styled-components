@@ -4,13 +4,19 @@ import merge from 'deep-extend';
 import { themify, classify } from './../themify';
 
 /**
- * Maps props to styles
- * SvgIcon component color styles
- */
+  * Maps props to color styles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {string} [props.color='default']
+  */
 export const getColorStyles = (props) => {
 	const { colors } = props.theme;
 
 	switch (props.color) {
+		case 'inherit':
+			return {
+				color: 'inherit',
+			};
 		case 'primary':
 			return {
 				color: colors.primary.main,
@@ -37,22 +43,39 @@ export const getColorStyles = (props) => {
 };
 
 /**
- * SvgIcon component root styles
- */
+  * Maps props to font-size styles
+  * @param {object} props
+  * @param {object} props.theme
+  */
+export const getFontSizeStyles = (props) => {
+	if (props.fontSize && props.fontSize === 'inherit') {
+		return {
+			fontSize: 'inherit',
+		};
+	}
+	return {};
+};
+
+/**
+  * Maps props to root styles
+  * @param {object} props
+  * @param {object} props.theme
+  */
 export const getRootStyles = (props) => {
 	const { duration, easing } = props.theme;
 
 	return merge(
 		{
-			userSelect: 'none',
-			fontSize: 24,
 			width: '1em',
 			height: '1em',
+			userSelect: 'none',
+			fontSize: 24,
 			display: 'inline-block',
 			flexShrink: 0,
 			fill: 'currentColor',
 			transition: `fill ${duration.shorter}ms ${easing.easeIn}`,
 		},
+		getFontSizeStyles(props),
 		getColorStyles(props),
 	);
 };
@@ -67,13 +90,14 @@ const SvgIcon = (props) => {
 		nativeColor,
 		titleAccess,
 		viewBox,
+		styles,
 		theme,
 		...passThru
 	} = props;
 
 	return (
 		<Component
-			className={classify(getRootStyles(props), className)}
+			className={classify(merge({}, getRootStyles(props), styles.root), className)}
 			focusable="false"
 			viewBox={viewBox}
 			color={nativeColor}
@@ -114,6 +138,7 @@ SvgIcon.propTypes = {
 	 * Provides a human-readable title for the element that contains it.
 	 * https://www.w3.org/TR/SVG-access/#Equivalent
 	 */
+	styles: PropTypes.object,
 	titleAccess: PropTypes.string,
 	/**
 	 * Allows you to redefine what the coordinates without units mean inside an SVG element.
@@ -129,6 +154,7 @@ SvgIcon.defaultProps = {
 	color: 'inherit',
 	component: 'svg',
 	fontSize: 'default',
+	styles: { root: {} },
 	viewBox: '0 0 24 24',
 };
 

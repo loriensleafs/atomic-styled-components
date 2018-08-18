@@ -244,7 +244,7 @@ class ButtonBase extends Component {
 			...passThru
 		} = this.props;
 
-		const className = classify(merge({}, styles.root, stylesProp), classNameProp);
+		const className = classify(merge({}, styles.root, stylesProp.root), classNameProp);
 
 		const buttonProps = {};
 
@@ -382,6 +382,7 @@ ButtonBase.defaultProps = {
 	disableRipple: false,
 	disableTouchRipple: false,
 	focusRipple: false,
+	styles: { root: {} },
 	tabIndex: '0',
 	type: 'button',
 };

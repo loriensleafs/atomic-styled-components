@@ -11,6 +11,10 @@ export const getColorStyles = (props) => {
 	const { colors } = props.theme;
 
 	switch (props.color) {
+		case 'inherit':
+			return {
+				color: 'inherit',
+			};
 		case 'primary':
 			return {
 				color: colors.primary.main,

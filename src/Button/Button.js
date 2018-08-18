@@ -10,8 +10,6 @@ import { fade } from './../utils/colorHelpers';
 
 /**
   * Maps props to color styles
-  * @function
-  * @name getColorStyles
   * @param {object} props
   * @param {object} props.theme
   * @param {string} [props.color='default']
@@ -22,16 +20,9 @@ export const getColorStyles = (props) => {
 
 	if (props.color === 'primary') {
 		next = merge({}, next, {
-			color: colors.primary.main,
+			color: colors[props.color].main,
 			':hover': {
-				backgroundColor: fade(colors.primary.main, colors.action.hoverOpacity),
-			},
-		});
-	} else if (props.color === 'secondary') {
-		next = merge({}, next, {
-			color: colors.secondary.main,
-			':hover': {
-				backgroundColor: fade(colors.secondary.main, colors.action.hoverOpacity),
+				backgroundColor: fade(colors[props.color].main, colors.action.hoverOpacity),
 			},
 		});
 	}
@@ -40,8 +31,6 @@ export const getColorStyles = (props) => {
 
 /**
   * Maps props to fab styles
-  * @function
-  * @name getFabStyles
   * @param {object} props
   * @param {object} props.theme
   * @param {boolean} [props.fab=false]
@@ -68,8 +57,6 @@ export const getFabStyles = (props) => {
 
 /**
   * Maps props to full width styles
-  * @function
-  * @name getFullWidthStyles
   * @param {object} props
   * @param {object} props.theme
   * @param {boolean} [props.fullWidth=false]
@@ -84,8 +71,6 @@ export const getFullWidthStyles = (props) => {
 
 /**
   * Maps props to mini button type styles
-  * @function
-  * @name getMiniStyles
   * @param {object} props
   * @param {object} props.theme
   * @param {boolean} [props.fab=false]
@@ -105,8 +90,6 @@ export const getMiniStyles = (props) => {
 
 /**
   * Maps props to size styles
-  * @function
-  * @name getSizeStyles
   * @param {object} props
   * @param {object} props.theme
   * @param {string} [props.size='medium']
@@ -136,8 +119,6 @@ export const getSizeStyles = (props) => {
 
 /**
   * Maps props to variant styles
-  * @function
-  * @name getVariantStyles
   * @param {object} props
   * @param {object} props.theme
   * @param {string} [props.variant='text']
@@ -196,8 +177,6 @@ export const getVariantStyles = (props) => {
 
 /**
   * Maps props to root styles
-  * @function
-  * @name getRootStyles
   * @param {object} props
   * @param {object} props.theme
   */
@@ -243,8 +222,6 @@ const getRootStyles = (props) => {
 
 /**
   * Gets styles for all components/elements
-  * @function
-  * @name getStyles
   * @param {object} props
   */
 const getStyles = (props) => ({
@@ -283,7 +260,7 @@ const Button = (props) => {
 
 	return (
 		<ButtonBase
-			styles={merge({}, styles.root, stylesProp.root)}
+			styles={merge({}, styles, stylesProp)}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}

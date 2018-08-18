@@ -6,18 +6,36 @@ import { classify, themify } from './../themify';
 import { fade } from './../utils/colorHelpers';
 
 /**
- * Maps props to styles
- * IconButton component color styles
- */
+  * Maps props to color styles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {string} [props.color='default']
+  */
 export const getColorStyles = (props) => {
 	const { colors } = props.theme;
+	let next = {};
 
-	return {};
+	if (props.color === 'inherit') {
+		next = merge({}, next, {
+			color: 'inherit',
+		});
+	} else if (props.color === 'primary' || props.color === 'secondary') {
+		next = merge({}, next, {
+			color: colors[props.color].main,
+			':hover': {
+				backgroundColor: fade(colors[props.color].main, colors.action.hoverOpacity),
+			},
+		});
+	}
+
+	return next;
 };
 
 /**
- * IconButton component root styles
- */
+  * Maps props to root styles
+  * @param {object} props
+  * @param {object} props.theme
+  */
 export const getRootStyles = (props) => {
 	const { colors, duration, easing } = props.theme;
 
@@ -48,31 +66,38 @@ export const getRootStyles = (props) => {
 };
 
 /**
- * IconButton Label component styles
- */
-const labelStyles = {
-	width: '100%',
-	display: 'flex',
-	alignItems: 'inherit',
-	justifyContent: 'inherit',
-};
+  * Gets styles for all components/elements
+  * @param {object} props
+  */
+const getStyles = (props) => ({
+	root: getRootStyles(props),
+	label: {
+		width: '100%',
+		display: 'flex',
+		alignItems: 'inherit',
+		justifyContent: 'inherit',
+	},
+});
 
 /**
- * IconButton component
+ * Creates a styled IconButton component
+ * @param {object} props
  */
 const IconButton = (props) => {
-	const { children, className, color, disabled, styles = {}, themes, ...passThru } = props;
+	const { children, className, color, disabled, styles: stylesProp, themes, ...passThru } = props;
+
+	const styles = getStyles(props);
 
 	return (
 		<ButtonBase
-			styles={merge(getRootStyles(props), styles)}
+			styles={merge({}, styles, stylesProp)}
 			className={className}
 			centerRipple
 			focusRipple
 			disabled={disabled}
 			{...passThru}
 		>
-			<span className={classify(labelStyles)}>{children}</span>
+			<span className={classify(merge({}, styles.label, stylesProp.label))}>{children}</span>
 		</ButtonBase>
 	);
 };
@@ -101,6 +126,10 @@ IconButton.propTypes = {
 IconButton.defaultProps = {
 	color: 'default',
 	disabled: false,
+	styles: {
+		root: {},
+		label: {},
+	},
 };
 
 export default themify(IconButton);
