@@ -4,14 +4,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
-import { classify, themify } from './../styled';
 import ButtonBase from './../ButtonBase';
+import { classify, themify } from './../styled';
 import { fade } from './../utils/colorHelpers';
 
 /**
- * Maps props to styles
- * Button component color styles
- */
+  * Maps props to color styles
+  * @function
+  * @name getColorStyles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {string} [props.color='default']
+  */
 export const getColorStyles = (props) => {
 	const { colors } = props.theme;
 	let next = {};
@@ -35,9 +39,13 @@ export const getColorStyles = (props) => {
 };
 
 /**
- * Maps props to styles
- * Button component fab styles
- */
+  * Maps props to fab styles
+  * @function
+  * @name getFabStyles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {boolean} [props.fab=false]
+  */
 export const getFabStyles = (props) => {
 	const { elevation } = props.theme;
 	let next = {};
@@ -59,9 +67,13 @@ export const getFabStyles = (props) => {
 };
 
 /**
- * Maps props to styles
- * Button component full width styles
- */
+  * Maps props to full width styles
+  * @function
+  * @name getFullWidthStyles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {boolean} [props.fullWidth=false]
+  */
 export const getFullWidthStyles = (props) => {
 	return props.fullWidth
 		? {
@@ -71,9 +83,14 @@ export const getFullWidthStyles = (props) => {
 };
 
 /**
- * Maps props to styles
- * Button component mini variation styles
- */
+  * Maps props to mini button type styles
+  * @function
+  * @name getMiniStyles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {boolean} [props.fab=false]
+  * @param {boolean} [props.mini=false]
+  */
 export const getMiniStyles = (props) => {
 	let next = {};
 
@@ -87,9 +104,13 @@ export const getMiniStyles = (props) => {
 };
 
 /**
- * Maps props to styles
- * Button component size styles
- */
+  * Maps props to size styles
+  * @function
+  * @name getSizeStyles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {string} [props.size='medium']
+  */
 export const getSizeStyles = (props) => {
 	const { fontSizes, fontUnit, space } = props.theme;
 
@@ -114,9 +135,13 @@ export const getSizeStyles = (props) => {
 };
 
 /**
- * Maps props to styles
- * Button component variant styles
- */
+  * Maps props to variant styles
+  * @function
+  * @name getVariantStyles
+  * @param {object} props
+  * @param {object} props.theme
+  * @param {string} [props.variant='text']
+  */
 export const getVariantStyles = (props) => {
 	const { colors, elevation, space } = props.theme;
 	let next = {};
@@ -170,9 +195,12 @@ export const getVariantStyles = (props) => {
 };
 
 /**
- * Maps props to styles
- * Button component composed root styles
- */
+  * Maps props to root styles
+  * @function
+  * @name getRootStyles
+  * @param {object} props
+  * @param {object} props.theme
+  */
 const getRootStyles = (props) => {
 	const {
 		colors,
@@ -214,15 +242,24 @@ const getRootStyles = (props) => {
 };
 
 /**
- * Button Label component styles
- */
-const labelStyles = {
-	display: 'inherit',
-	alignItems: 'inherit',
-	justifyContent: 'inherit',
-};
+  * Gets styles for all components/elements
+  * @function
+  * @name getStyles
+  * @param {object} props
+  */
+const getStyles = (props) => ({
+	root: getRootStyles(props),
+	label: {
+		display: 'inherit',
+		alignItems: 'inherit',
+		justifyContent: 'inherit',
+	},
+});
 
-// Composed Button component
+/**
+ * Creates a styled Button component
+ * @param {object} props
+ */
 const Button = (props) => {
 	const {
 		blacklist,
@@ -233,25 +270,26 @@ const Button = (props) => {
 		disableFocusRipple,
 		disableRipple,
 		fullWidth,
-		labelStyles: labelStylesProp = {},
 		mini,
 		size,
-		styles = {},
+		styles: stylesProp,
 		theme,
 		type,
 		variant,
 		...passThru
 	} = props;
 
+	const styles = getStyles(props);
+
 	return (
 		<ButtonBase
-			styles={merge({}, getRootStyles(props), styles)}
+			styles={merge({}, styles.root, stylesProp.root)}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
 			{...passThru}
 		>
-			<span className={classify(merge(labelStyles, labelStylesProp))}>{children}</span>
+			<span className={classify(merge({}, styles.label, stylesProp.label))}>{children}</span>
 		</ButtonBase>
 	);
 };
@@ -269,6 +307,7 @@ Button.propTypes = {
 	mini: PropTypes.bool,
 	size: PropTypes.oneOf([ 'small', 'medium', 'large' ]),
 	styles: PropTypes.object,
+	theme: PropTypes.object,
 	type: PropTypes.string,
 	variant: PropTypes.oneOf([ 'text', 'outlined', 'contained', 'fab', 'extendedFab' ]),
 };
@@ -281,6 +320,10 @@ Button.defaultProps = {
 	fullWidth: false,
 	mini: false,
 	size: 'medium',
+	styles: {
+		root: {},
+		label: {},
+	},
 	type: 'button',
 	variant: 'text',
 	blacklist: [

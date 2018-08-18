@@ -1,24 +1,27 @@
 /* eslint-disable no-unused-vars */
 
+/**
+ * Creates an event handler for a component with ripples
+ * @function
+ * @name createRippleHandler
+ * @param {class} instance
+ * @param {string} eventName
+ * @param {string} action
+ * @param {function} cb
+ */
 function createRippleHandler(instance, eventName, action, cb) {
 	return function handleEvent(event) {
-		if (cb) {
-			cb.call(instance, event);
-		}
+		if (cb) cb.call(instance, event);
 
 		let ignore = false;
 
-		if (event.defaultPrevented) {
-			ignore = true;
-		}
+		if (event.defaultPrevented) ignore = true;
 
 		if (instance.props.disableTouchRipple && eventName !== 'Blur') {
 			ignore = true;
 		}
 
-		if (!ignore && instance.ripple) {
-			instance.ripple[action](event);
-		}
+		if (!ignore && instance.ripple) instance.ripple[action](event);
 
 		if (typeof instance.props[`on${eventName}`] === 'function') {
 			instance.props[`on${eventName}`](event);

@@ -5,44 +5,50 @@ import React, { Component, createRef } from 'react';
 import keycode from 'keycode';
 import merge from 'deep-extend';
 import ownerWindow from './../utils/ownerWindow';
-import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
 import TouchRipple from './TouchRipple';
 import createRippleHandler from './createRippleHandler';
+import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
 import { classify } from './../styled';
 
-export const rootStyles = {
-	position: 'relative',
-	display: 'inline-flex',
-	alignItems: 'center',
-	justifyContent: 'center',
-	// Removes the grey highlight.
-	WebkitTapHighlightColor: 'transparent',
-	// Reset default value
-	backgroundColor: 'transparent',
-	// Disable the focus ring for mouse, touch and keyboard users.
-	outline: 'none',
-	border: 0,
-	// Remove the margin in Safari.
-	margin: 0,
-	// Remove the padding in Firefox.
-	padding: 0,
-	borderRadius: 0,
-	cursor: 'pointer',
-	userSelect: 'none',
-	verticalAlign: 'middle',
-	// Reset
-	'-moz-appearance': 'none',
-	'-webkit-appearance': 'none',
-	textDecoration: 'none',
-	// So we take precedent over the style of a native <a /> element.
-	color: 'inherit',
-	':disabled': {
-		// Disable the link interactions.
-		pointerEvents: 'none',
-		cursor: 'default',
+export const styles = {
+	root: {
+		position: 'relative',
+		display: 'inline-flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		// Removes the grey highlight.
+		WebkitTapHighlightColor: 'transparent',
+		// Reset default value
+		backgroundColor: 'transparent',
+		// Disable the focus ring for mouse, touch and keyboard users.
+		outline: 'none',
+		border: 0,
+		// Remove the margin in Safari.
+		margin: 0,
+		// Remove the padding in Firefox.
+		padding: 0,
+		borderRadius: 0,
+		cursor: 'pointer',
+		userSelect: 'none',
+		verticalAlign: 'middle',
+		// Reset
+		'-moz-appearance': 'none',
+		'-webkit-appearance': 'none',
+		textDecoration: 'none',
+		// So we take precedent over the style of a native <a /> element.
+		color: 'inherit',
+		':disabled': {
+			// Disable the link interactions.
+			pointerEvents: 'none',
+			cursor: 'default',
+		},
 	},
 };
 
+/**
+ * Creates a ButtonBase component
+ * @class
+ */
 class ButtonBase extends Component {
 	ripple = null;
 
@@ -213,7 +219,7 @@ class ButtonBase extends Component {
 			buttonRef,
 			centerRipple,
 			children,
-			className: classNameProp = '',
+			className: classNameProp,
 			component,
 			disabled,
 			disableRipple,
@@ -234,11 +240,11 @@ class ButtonBase extends Component {
 			TouchRippleProps,
 			type,
 			theme,
-			styles,
+			styles: stylesProp,
 			...passThru
 		} = this.props;
 
-		const className = classify(merge({}, rootStyles, styles), classNameProp);
+		const className = classify(merge({}, styles.root, stylesProp), classNameProp);
 
 		const buttonProps = {};
 
@@ -292,7 +298,7 @@ ButtonBase.propTypes = {
 	 * This is useful when you want to trigger an action programmatically.
 	 * It currently only supports `focusVisible()` action.
 	 *
-	 * @param {object} actions This object contains all possible actions
+	 * @param {object} actions - This object contains all possible actions
 	 * that can be triggered programmatically.
 	 */
 	action: PropTypes.func,

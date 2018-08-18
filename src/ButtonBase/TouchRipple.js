@@ -10,20 +10,22 @@ import Ripple from './Ripple';
 export const DURATION = 700;
 export const DELAY_RIPPLE = 100;
 
-const rootStyles = {
-	zIndex: 0,
-	position: 'absolute',
-	top: 0,
-	left: 0,
-	width: '100%',
-	height: '100%',
-	display: 'block',
-	overflow: 'hidden',
-	borderRadius: 'inherit',
-	pointerEvents: 'none',
-	backfaceVisibility: 'hidden',
-	perspective: 1000,
-	willChange: 'transform',
+const styles = {
+	root: {
+		zIndex: 0,
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		width: '100%',
+		height: '100%',
+		display: 'block',
+		overflow: 'hidden',
+		borderRadius: 'inherit',
+		pointerEvents: 'none',
+		backfaceVisibility: 'hidden',
+		perspective: 1000,
+		willChange: 'transform',
+	},
 };
 
 class TouchRipple extends PureComponent {
@@ -178,14 +180,14 @@ class TouchRipple extends PureComponent {
 	};
 
 	render() {
-		const { center, className = '', innerRef, theme, ...passThru } = this.props;
+		const { center, className, innerRef, theme, ...passThru } = this.props;
 
 		return (
 			<TransitionGroup
+				className={classify(styles.root, className)}
 				component="span"
 				enter
 				exit
-				className={classify(rootStyles, className)}
 				{...passThru}
 			>
 				{this.state.ripples}
@@ -201,6 +203,7 @@ TouchRipple.propTypes = {
 	 */
 	center: PropTypes.bool,
 	className: PropTypes.string,
+	innerRef: PropTypes.element,
 	theme: PropTypes.object,
 };
 

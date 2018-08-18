@@ -10,10 +10,7 @@ import { styled } from 'styletron-react';
 import { themify } from './../styled';
 import { DURATION } from './TouchRipple';
 
-/**
- * StyledRipple component
- */
-const StyledRipple = styled('span', ({ $theme, $visible, $pulsate }) => {
+const RippleSurface = styled('span', ({ $theme, $visible, $pulsate }) => {
 	let next = {
 		position: 'absolute',
 		top: 0,
@@ -51,8 +48,15 @@ const StyledRipple = styled('span', ({ $theme, $visible, $pulsate }) => {
 	return next;
 });
 
-// StyledWave component
-const StyledWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
+RippleSurface.propTypes = {
+	$pulsate: PropTypes.bool,
+	$theme: PropTypes.object,
+	$visible: PropTypes.bool,
+};
+
+RippleSurface.displayName = 'RippleSurface';
+
+const RippleWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 	let next = {
 		position: 'relative',
 		width: '100%',
@@ -104,14 +108,21 @@ const StyledWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 	return next;
 });
 
-const getRippleStyles = (rippleSize, rippleX, rippleY) => ({
+RippleWave.propTypes = {
+	$leaving: PropTypes.bool,
+	$pulsate: PropTypes.bool,
+	$theme: PropTypes.object,
+};
+
+RippleWave.displayName = 'RippleWave';
+
+const getInlineStyles = (rippleSize, rippleX, rippleY) => ({
 	width: rippleSize,
 	height: rippleSize,
 	top: -(rippleSize / 2) + rippleY,
 	left: -(rippleSize / 2) + rippleX,
 });
 
-// Composed Ripple component
 class Ripple extends Component {
 	state = {
 		visible: false,
@@ -138,15 +149,15 @@ class Ripple extends Component {
 
 		return (
 			<Transition onEnter={this.handleEnter} onExit={this.handleExit} {...passThru}>
-				<StyledRipple
+				<RippleSurface
 					className={classNameProp}
-					$visible={visible}
 					$pulsate={pulsate}
+					style={getInlineStyles(rippleSize, rippleX, rippleY)}
 					$theme={theme}
-					style={getRippleStyles(rippleSize, rippleX, rippleY)}
+					$visible={visible}
 				>
-					<StyledWave $leaving={leaving} $pulsate={pulsate} $theme={theme} />
-				</StyledRipple>
+					<RippleWave $leaving={leaving} $pulsate={pulsate} $theme={theme} />
+				</RippleSurface>
 			</Transition>
 		);
 	}
