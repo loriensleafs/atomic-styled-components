@@ -14,20 +14,15 @@ import { fade } from './../utils/colorHelpers';
   * @param {object} props.theme
   * @param {string} [props.color='default']
   */
-export const getColorStyles = (props) => {
-	const { colors } = props.theme;
-	let next = {};
-
-	if (props.color === 'primary') {
-		next = merge({}, next, {
-			color: colors[props.color].main,
-			':hover': {
-				backgroundColor: fade(colors[props.color].main, colors.action.hoverOpacity),
-			},
-		});
-	}
-	return next;
-};
+export const getColorStyles = ({ color, theme }) =>
+	color === 'primary' || color === 'secondary'
+		? {
+				color: theme.colors[color].main,
+				':hover': {
+					backgroundColor: fade(theme.colors[color].main, theme.colors.action.hoverOpacity),
+				},
+			}
+		: {};
 
 /**
   * Maps props to fab styles
@@ -35,25 +30,20 @@ export const getColorStyles = (props) => {
   * @param {object} props.theme
   * @param {boolean} [props.fab=false]
   */
-export const getFabStyles = (props) => {
-	const { elevation } = props.theme;
-	let next = {};
-
-	if (props.fab) {
-		next = merge({}, next, {
-			borderRadius: '50%',
-			padding: 0,
-			minWidth: 0,
-			width: 56,
-			height: 56,
-			boxShadow: elevation[6],
-			':active': {
-				boxShadow: elevation[12],
-			},
-		});
-	}
-	return next;
-};
+export const getFabStyles = ({ fab, theme }) =>
+	fab
+		? {
+				borderRadius: '50%',
+				padding: 0,
+				minWidth: 0,
+				width: 56,
+				height: 56,
+				boxShadow: theme.elevation[6],
+				':active': {
+					boxShadow: theme.elevation[12],
+				},
+			}
+		: {};
 
 /**
   * Maps props to full width styles
@@ -61,13 +51,12 @@ export const getFabStyles = (props) => {
   * @param {object} props.theme
   * @param {boolean} [props.fullWidth=false]
   */
-export const getFullWidthStyles = (props) => {
-	return props.fullWidth
+export const getFullWidthStyles = ({ fullWidth }) =>
+	fullWidth
 		? {
 				width: '100%',
 			}
 		: {};
-};
 
 /**
   * Maps props to mini button type styles
@@ -76,17 +65,13 @@ export const getFullWidthStyles = (props) => {
   * @param {boolean} [props.fab=false]
   * @param {boolean} [props.mini=false]
   */
-export const getMiniStyles = (props) => {
-	let next = {};
-
-	if (props.fab && props.mini) {
-		next = merge({}, next, {
-			width: 40,
-			height: 40,
-		});
-	}
-	return next;
-};
+export const getMiniStyles = ({ fab, mini }) =>
+	fab && mini
+		? {
+				width: 40,
+				height: 40,
+			}
+		: {};
 
 /**
   * Maps props to size styles

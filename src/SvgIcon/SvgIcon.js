@@ -9,14 +9,12 @@ import { getColorStyles } from './../Icon/Icon';
   * @param {object} props
   * @param {object} props.theme
   */
-export const getFontSizeStyles = (props) => {
-	if (props.fontSize && props.fontSize === 'inherit') {
-		return {
-			fontSize: 'inherit',
-		};
-	}
-	return {};
-};
+export const getFontSizeStyles = ({ fontSize }) =>
+	fontSize && fontSize === 'inherit'
+		? {
+				fontSize: 'inherit',
+			}
+		: {};
 
 /**
   * Maps props to root styles
