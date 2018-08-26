@@ -53,7 +53,7 @@ export const styles = (props) => {
 	return merge(
 		{
 			userSelect: 'none',
-			fontSize: 24,
+			fontSize: '24px',
 			width: '1em',
 			height: '1em',
 			overflow: 'hidden',

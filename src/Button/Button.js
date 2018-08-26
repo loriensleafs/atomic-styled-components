@@ -34,10 +34,10 @@ export const getFabStyles = ({ fab, theme }) =>
 	fab
 		? {
 				borderRadius: '50%',
-				padding: 0,
-				minWidth: 0,
-				width: 56,
-				height: 56,
+				padding: '0px',
+				minWidth: '0px',
+				width: '56px',
+				height: '56px',
 				boxShadow: theme.elevation[6],
 				':active': {
 					boxShadow: theme.elevation[12],
@@ -68,8 +68,8 @@ export const getFullWidthStyles = ({ fullWidth }) =>
 export const getMiniStyles = ({ fab, mini }) =>
 	fab && mini
 		? {
-				width: 40,
-				height: 40,
+				width: '40px',
+				height: '40px',
 			}
 		: {};
 
@@ -86,16 +86,16 @@ export const getSizeStyles = (props) => {
 		case 'small':
 			return {
 				padding: `${space[2] - 1}px ${space[2]}px`,
-				minWidth: 64,
-				minHeight: 32,
-				fontSize: `${fontSizes[2] - 0.7}${fontUnit}`,
+				minWidth: '64px',
+				minHeight: '32px',
+				fontSize: `${fontSizes[1] - 0.07}${fontUnit}`,
 			};
 		case 'large':
 			return {
 				padding: `${space[2]}px ${space[3] + space[2]}px`,
-				minWidth: 112,
-				minHeight: 32,
-				fontSize: `${fontSizes[2]}${fontUnit}`,
+				minWidth: '112px',
+				minHeight: '40px',
+				fontSize: `${fontSizes[1] + 0.0625}${fontUnit}`,
 			};
 		default:
 			return {};
@@ -150,11 +150,11 @@ export const getVariantStyles = (props) => {
 		});
 	} else if (props.variant === 'extendedFab') {
 		next = merge({}, next, {
-			borderRadius: 48 / 2,
+			borderRadius: `${48 / 2}px`,
 			padding: `0 ${space[3]}`,
 			width: 'auto',
-			minWidth: 48,
-			height: 48,
+			minWidth: '48px',
+			height: '48px',
 		});
 	}
 	return next;
@@ -180,13 +180,14 @@ const styles = (props) => {
 		root: merge(
 			{
 				boxSizing: 'border-box',
-				minWidth: 64,
-				minHeight: 36,
+				minWidth: '64px',
+				minHeight: '36px',
 				padding: `${space[2]}px ${space[3]}px`,
-				fontSize: `${fontSizes[2]}${fontUnit}`,
-				lineHeight: `${lineHeights[2]}${fontUnit}`,
+				fontSize: `${fontSizes[1]}${fontUnit}`,
+				lineHeight: `${lineHeights[1]}${fontUnit}`,
 				borderRadius: `${radius}`,
 				color: `${colors.text.primary}`,
+				textTransform: 'uppercase',
 				transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}`,
 				':hover': {
 					textDecoration: 'none',
@@ -200,8 +201,8 @@ const styles = (props) => {
 			getFabStyles(props),
 			getMiniStyles(props),
 			getFullWidthStyles(props),
-			getSizeStyles(props),
 			getVariantStyles(props),
+			getSizeStyles(props),
 		),
 		label: {
 			display: 'inherit',

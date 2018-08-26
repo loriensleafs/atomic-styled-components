@@ -29,7 +29,7 @@ export const styles = (props) => {
 			width: '1em',
 			height: '1em',
 			userSelect: 'none',
-			fontSize: 24,
+			fontSize: '24px',
 			display: 'inline-block',
 			flexShrink: 0,
 			fill: 'currentColor',
