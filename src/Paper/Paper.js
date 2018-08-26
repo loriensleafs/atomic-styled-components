@@ -12,6 +12,8 @@ const Paper = styled(tag, ({ $elevation, $square, $styles, theme }) => ({
 	...$styles.root,
 }));
 
+Paper.displayName = 'Paper';
+
 Paper.propTypes = {
 	/**
 	 * Shadow depth, corresponds to `dp` in the spec.

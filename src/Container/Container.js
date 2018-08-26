@@ -6,6 +6,8 @@ const Container = withStyle(Box, ({ theme }) => ({
 	maxWidth: theme.maxWidth,
 }));
 
+Container.displayName = 'Container';
+
 Container.defaultProps = {
 	mx: 'auto',
 	px: 3,

@@ -20,6 +20,8 @@ const Card = ({ className, raised, $styles, ...passThru }) => (
 	/>
 );
 
+Card.displayName = 'Card';
+
 Card.propTypes = {
 	className: PropTypes.string,
 	/**
