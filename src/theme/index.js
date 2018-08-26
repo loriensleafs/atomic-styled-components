@@ -1,6 +1,4 @@
-import {
-	createContext
-} from 'react'
+import { createContext } from 'react';
 import colors from './color';
 import elevation from './elevation';
 import motion from './motion';
@@ -10,14 +8,14 @@ import text from './text';
 
 // styled-system's `borderRadius` function can hook into the `radii`
 // object/array
-export const radii = [0, 4, 6];
+export const radii = [ 0, 4, 6 ];
 export const radius = '4px';
 
-export const maxContainerWidth = '1280px';
+export const maxWidth = '1280px';
 
 export const theme = {
 	...{
-		boxShadow: elevation
+		boxShadow: elevation,
 	},
 	elevation,
 	...motion,
@@ -27,15 +25,9 @@ export const theme = {
 	colors,
 	radii,
 	radius,
-	maxContainerWidth
+	maxWidth,
 };
 
-const {
-	Provider,
-	Consumer
-} = createContext(theme);
+const { Provider, Consumer } = createContext(theme);
 
-export {
-	Provider as ThemeProvider,
-	Consumer as ThemeConsumer
-}
+export { Provider as ThemeProvider, Consumer as ThemeConsumer };

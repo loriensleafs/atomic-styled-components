@@ -6,6 +6,7 @@ import Flex from './Flex';
 import Text from './Text';
 import Button from './Button';
 import Card from './Card';
+import Container from './Container';
 import IconButton from './IconButton';
 import SvgIcon from './SvgIcon';
 
@@ -15,7 +16,7 @@ const App = (props) => {
 	return (
 		<ErrorBoundry>
 			<Box width={1} height={1} bg="bg.default">
-				<Box maxWidth={1024} mx="auto" py={3}>
+				<Container pt={3}>
 					<Card>
 						<Flex flexWrap="wrap" mx={2} p={4}>
 							<Box width={1} pt={2} pb={4} px={2}>
@@ -70,7 +71,7 @@ const App = (props) => {
 							</Box>
 						</Flex>
 					</Card>
-				</Box>
+				</Container>
 			</Box>
 		</ErrorBoundry>
 	);
