@@ -7,6 +7,7 @@ import Text from './Text';
 import Button from './Button';
 import Card from './Card';
 import Container from './Container';
+import Divider from './Divider';
 import IconButton from './IconButton';
 import SvgIcon from './SvgIcon';
 
@@ -24,51 +25,54 @@ const App = (props) => {
 									Button
 								</Button>
 							</Box>
-							<Box px={2} py={1} width={1 / 2}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/2
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 2}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/2
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 3}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/3
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 3}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/3
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 3}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/3
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 4}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/4
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 4}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/4
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 4}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/4
-								</Text>
-							</Box>
-							<Box px={2} py={1} width={1 / 4}>
-								<Text p={1} color="text.contrast.primary" bg="primary.main">
-									1/4
-								</Text>
-							</Box>
+							<Divider />
+							<Flex flexWrap="wrap" width={1} pt={4}>
+								<Box px={2} py={1} width={1 / 2}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/2
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 2}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/2
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 3}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/3
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 3}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/3
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 3}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/3
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 4}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/4
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 4}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/4
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 4}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/4
+									</Text>
+								</Box>
+								<Box px={2} py={1} width={1 / 4}>
+									<Text p={1} color="text.contrast.primary" bg="primary.main">
+										1/4
+									</Text>
+								</Box>
+							</Flex>
 						</Flex>
 					</Card>
 				</Container>
