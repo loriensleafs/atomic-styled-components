@@ -84,20 +84,20 @@ const getStyles = (props) => ({
  * @param {object} props
  */
 const IconButton = (props) => {
-	const { children, className, color, disabled, $styles: stylesProp, theme, ...passThru } = props;
+	const { children, className, color, disabled, $styles, theme, ...passThru } = props;
 
 	const styles = getStyles(props);
 
 	return (
 		<ButtonBase
-			$styles={merge({}, styles, stylesProp)}
+			$styles={merge({}, styles, $styles)}
 			className={className}
 			centerRipple
 			focusRipple
 			disabled={disabled}
 			{...passThru}
 		>
-			<span className={classify(merge({}, styles.label, stylesProp.label))}>{children}</span>
+			<span className={classify(merge({}, styles.label, $styles.label))}>{children}</span>
 		</ButtonBase>
 	);
 };

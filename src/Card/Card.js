@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import tag from 'clean-tag';
 import merge from 'deep-extend';
 import Paper from './../Paper';
-import { classify, themify } from './../themify';
+import { classify } from './../themify';
 
 const styles = {
 	root: {
 		overflow: 'hidden',
 	},
+	paper: {},
 };
 
 const Card = (props) => {
@@ -16,8 +16,8 @@ const Card = (props) => {
 
 	return (
 		<Paper
-			className={className}
-			styles={merge({}, styles, stylesProp)}
+			className={classify(merge({}, styles.root, stylesProp.root), className)}
+			$styles={{ root: merge({}, styles.paper, stylesProp.paper) }}
 			$elevation={raised ? 8 : 1}
 			{...passThru}
 		/>
@@ -37,6 +37,7 @@ Card.defaultProps = {
 	raised: false,
 	styles: {
 		root: {},
+		paper: {},
 	},
 };
 

@@ -249,7 +249,7 @@ const Button = (props) => {
 		fullWidth,
 		mini,
 		size,
-		styles: stylesProp,
+		$styles,
 		theme,
 		type,
 		variant,
@@ -260,13 +260,13 @@ const Button = (props) => {
 
 	return (
 		<ButtonBase
-			styles={merge({}, styles, stylesProp)}
+			$styles={merge({}, styles, $styles)}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
 			{...passThru}
 		>
-			<span className={classify(merge({}, styles.label, stylesProp.label))}>{children}</span>
+			<span className={classify(merge({}, styles.label, $styles.label))}>{children}</span>
 		</ButtonBase>
 	);
 };
@@ -283,7 +283,7 @@ Button.propTypes = {
 	href: PropTypes.string,
 	mini: PropTypes.bool,
 	size: PropTypes.oneOf([ 'small', 'medium', 'large' ]),
-	styles: PropTypes.object,
+	$styles: PropTypes.object,
 	theme: PropTypes.object,
 	type: PropTypes.string,
 	variant: PropTypes.oneOf([ 'text', 'outlined', 'contained', 'fab', 'extendedFab' ]),
@@ -297,7 +297,7 @@ Button.defaultProps = {
 	fullWidth: false,
 	mini: false,
 	size: 'medium',
-	styles: {
+	$styles: {
 		root: {},
 		label: {},
 	},

@@ -236,15 +236,15 @@ class ButtonBase extends Component {
 			onTouchEnd,
 			onTouchMove,
 			onTouchStart,
+			$styles,
 			tabIndex,
 			TouchRippleProps,
 			type,
 			theme,
-			styles: stylesProp,
 			...passThru
 		} = this.props;
 
-		const className = classify(merge({}, styles.root, stylesProp.root), classNameProp);
+		const className = classify(merge({}, styles.root, $styles.root), classNameProp);
 
 		const buttonProps = {};
 
@@ -362,7 +362,7 @@ ButtonBase.propTypes = {
 	onTouchMove: PropTypes.func,
 	onTouchStart: PropTypes.func,
 	role: PropTypes.string,
-	styles: PropTypes.object,
+	$styles: PropTypes.object,
 	tabIndex: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
 	/**
 	 * Properties applied to the `TouchRipple` element.
@@ -382,7 +382,7 @@ ButtonBase.defaultProps = {
 	disableRipple: false,
 	disableTouchRipple: false,
 	focusRipple: true,
-	styles: { root: {} },
+	$styles: { root: {} },
 	tabIndex: '0',
 	type: 'button',
 };

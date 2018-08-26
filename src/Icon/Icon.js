@@ -72,7 +72,7 @@ const Icon = (props) => {
 
 	return (
 		<span
-			className={classify(merge({}, $styles.root, getRootStyles(props)), className)}
+			className={classify(merge({}, getRootStyles(props), $styles.root), className)}
 			aria-hidden="true"
 			{...passThru}
 		>
