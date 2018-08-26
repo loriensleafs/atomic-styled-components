@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types';
 import React, { Component, createRef } from 'react';
+import { findDOMNode } from 'react-dom';
 import keycode from 'keycode';
 import merge from 'deep-extend';
 import ownerWindow from './../utils/ownerWindow';
@@ -89,13 +90,14 @@ class ButtonBase extends Component {
 	state = {};
 
 	componentDidMount() {
-		listenForFocusKeys(ownerWindow(this.button.current));
+		this.button = findDOMNode(this);
+		listenForFocusKeys(ownerWindow(this.button));
 
 		if (this.props.action) {
 			this.props.action({
 				focusVisible: () => {
 					this.this.setState({ focusVisible: true });
-					this.button.current.focus();
+					this.button.focus();
 				},
 			});
 		}
@@ -206,9 +208,7 @@ class ButtonBase extends Component {
 		if (!this.button) this.button = event.currentTarget;
 
 		event.persist();
-		detectFocusVisible(this, this.button, () => {
-			this.onFocusVisibleHandler(event);
-		});
+		detectFocusVisible(this, this.button, () => this.onFocusVisibleHandler(event));
 
 		if (this.props.onFocus) this.props.onFocus(event);
 	};
@@ -263,6 +263,7 @@ class ButtonBase extends Component {
 
 		return (
 			<ComponentProp
+				className={className}
 				onBlur={this.handleBlur}
 				onFocus={this.handleFocus}
 				onKeyDown={this.handleKeyDown}
@@ -273,9 +274,8 @@ class ButtonBase extends Component {
 				onTouchEnd={this.handleTouchEnd}
 				onTouchMove={this.handleTouchMove}
 				onTouchStart={this.handleTouchStart}
-				tabIndex={disabled ? '-1' : tabIndex}
-				className={className}
 				ref={buttonRef}
+				tabIndex={disabled ? '-1' : tabIndex}
 				{...buttonProps}
 				{...passThru}
 			>
@@ -381,7 +381,7 @@ ButtonBase.defaultProps = {
 	component: 'button',
 	disableRipple: false,
 	disableTouchRipple: false,
-	focusRipple: false,
+	focusRipple: true,
 	styles: { root: {} },
 	tabIndex: '0',
 	type: 'button',

@@ -16,7 +16,10 @@ export function detectFocusVisible(instance, element, callback, attempt = 1) {
 	instance.focusVisibleTimeout = setTimeout(() => {
 		const doc = ownerDocument(element);
 
-		if (internal.focusKeyPressed && (doc.activeElement === element || element.contains(doc.activeElement))) {
+		if (
+			internal.focusKeyPressed &&
+			(doc.activeElement === element || element.contains(doc.activeElement))
+		) {
 			callback();
 		} else if (attempt < instance.focusVisibleMaxCheckTimes) {
 			detectFocusVisible(instance, element, callback, attempt + 1);
@@ -30,7 +33,7 @@ function isFocusKey(event) {
 	return FOCUS_KEYS.indexOf(keycode(event)) > -1;
 }
 
-const handleKeyUpEvent = (event) => {
+function handleKeyUpEvent(event) {
 	if (isFocusKey(event)) {
 		internal.focusKeyPressed = true;
 
@@ -40,7 +43,7 @@ const handleKeyUpEvent = (event) => {
 			internal.focusKeyPressed = false;
 		}, 1e3);
 	}
-};
+}
 
 export function listenForFocusKeys(win) {
 	// The event listener will only be added once per window.
