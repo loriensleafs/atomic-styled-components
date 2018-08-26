@@ -47,7 +47,7 @@ export const getColorStyles = (props) => {
   * @param {object} props
   * @param {object} props.theme
   */
-export const getRootStyles = (props) => {
+export const styles = (props) => {
 	const {} = props.theme;
 
 	return merge(
@@ -72,7 +72,7 @@ const Icon = (props) => {
 
 	return (
 		<span
-			className={classify(merge({}, getRootStyles(props), $styles.root), className)}
+			className={classify(merge({}, styles(props), $styles.root), className)}
 			aria-hidden="true"
 			{...passThru}
 		>

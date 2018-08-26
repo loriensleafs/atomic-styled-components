@@ -32,52 +32,48 @@ export const getColorStyles = (props) => {
 };
 
 /**
-  * Maps props to root styles
-  * @param {object} props
-  * @param {object} props.theme
-  */
-export const getRootStyles = (props) => {
-	const { colors, duration, easing } = props.theme;
-
-	return merge({
-		position: 'relative',
-		textAlign: 'center',
-		flex: '0 0 auto',
-		fontSize: '24px',
-		width: '48px',
-		height: '48px',
-		padding: 0,
-		borderRadius: '50%',
-		color: colors.action.active,
-		transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
-		':hover': {
-			backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
-			'@media (hover: none)': {
-				backgroundColor: 'transparent',
-			},
-			':disabled': {
-				backgroundColor: 'transparent',
-			},
-		},
-		':disabled': {
-			color: colors.action.disabled,
-		},
-	});
-};
-
-/**
   * Gets styles for all components/elements
   * @param {object} props
   */
-const getStyles = (props) => ({
-	root: getRootStyles(props),
-	label: {
-		width: '100%',
-		display: 'flex',
-		alignItems: 'inherit',
-		justifyContent: 'inherit',
-	},
-});
+export const styles = (props) => {
+	const { colors, duration, easing } = props.theme;
+
+	return {
+		root: merge(
+			{
+				position: 'relative',
+				textAlign: 'center',
+				flex: '0 0 auto',
+				fontSize: '24px',
+				width: '48px',
+				height: '48px',
+				padding: 0,
+				borderRadius: '50%',
+				color: colors.action.active,
+				transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
+				':hover': {
+					backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
+					'@media (hover: none)': {
+						backgroundColor: 'transparent',
+					},
+					':disabled': {
+						backgroundColor: 'transparent',
+					},
+				},
+				':disabled': {
+					color: colors.action.disabled,
+				},
+			},
+			getColorStyles(props),
+		),
+		label: {
+			width: '100%',
+			display: 'flex',
+			alignItems: 'inherit',
+			justifyContent: 'inherit',
+		},
+	};
+};
 
 /**
  * Creates a styled IconButton component
@@ -86,18 +82,18 @@ const getStyles = (props) => ({
 const IconButton = (props) => {
 	const { children, className, color, disabled, $styles, theme, ...passThru } = props;
 
-	const styles = getStyles(props);
+	const { root: rootStyles, label: labelStyles } = styles(props);
 
 	return (
 		<ButtonBase
-			$styles={merge({}, styles, $styles)}
+			$styles={merge({}, rootStyles, $styles)}
 			className={className}
 			centerRipple
 			focusRipple
 			disabled={disabled}
 			{...passThru}
 		>
-			<span className={classify(merge({}, styles.label, $styles.label))}>{children}</span>
+			<span className={classify(merge({}, labelStyles, $styles.label))}>{children}</span>
 		</ButtonBase>
 	);
 };

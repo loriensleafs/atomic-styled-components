@@ -176,11 +176,10 @@ export const getVariantStyles = (props) => {
 };
 
 /**
-  * Maps props to root styles
+  * Gets styles for all components/elements
   * @param {object} props
-  * @param {object} props.theme
   */
-const getRootStyles = (props) => {
+const styles = (props) => {
 	const {
 		colors,
 		duration,
@@ -192,46 +191,40 @@ const getRootStyles = (props) => {
 		space,
 	} = props.theme;
 
-	return merge(
-		{
-			boxSizing: 'border-box',
-			minWidth: 64,
-			minHeight: 36,
-			padding: `${space[2]}px ${space[3]}px`,
-			fontSize: `${fontSizes[2]}${fontUnit}`,
-			lineHeight: `${lineHeights[2]}${fontUnit}`,
-			borderRadius: `${radius}`,
-			color: `${colors.text.primary}`,
-			transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}`,
-			':hover': {
-				textDecoration: 'none',
-				backgroundColor: fade(colors.text.primary, 0.8),
+	return {
+		root: merge(
+			{
+				boxSizing: 'border-box',
+				minWidth: 64,
+				minHeight: 36,
+				padding: `${space[2]}px ${space[3]}px`,
+				fontSize: `${fontSizes[2]}${fontUnit}`,
+				lineHeight: `${lineHeights[2]}${fontUnit}`,
+				borderRadius: `${radius}`,
+				color: `${colors.text.primary}`,
+				transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}`,
+				':hover': {
+					textDecoration: 'none',
+					backgroundColor: fade(colors.text.primary, 0.8),
+				},
+				':disabled': {
+					backgroundColor: colors.action.disabled,
+				},
 			},
-			':disabled': {
-				backgroundColor: colors.action.disabled,
-			},
+			getColorStyles(props),
+			getFabStyles(props),
+			getMiniStyles(props),
+			getFullWidthStyles(props),
+			getSizeStyles(props),
+			getVariantStyles(props),
+		),
+		label: {
+			display: 'inherit',
+			alignItems: 'inherit',
+			justifyContent: 'inherit',
 		},
-		getColorStyles(props),
-		getFabStyles(props),
-		getMiniStyles(props),
-		getFullWidthStyles(props),
-		getSizeStyles(props),
-		getVariantStyles(props),
-	);
+	};
 };
-
-/**
-  * Gets styles for all components/elements
-  * @param {object} props
-  */
-const getStyles = (props) => ({
-	root: getRootStyles(props),
-	label: {
-		display: 'inherit',
-		alignItems: 'inherit',
-		justifyContent: 'inherit',
-	},
-});
 
 /**
  * Creates a styled Button component
@@ -255,18 +248,17 @@ const Button = (props) => {
 		variant,
 		...passThru
 	} = props;
-
-	const styles = getStyles(props);
+	const { root: rootStyles, label: labelStyles } = styles(props);
 
 	return (
 		<ButtonBase
-			$styles={merge({}, styles, $styles)}
+			$styles={merge({}, rootStyles, $styles)}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
 			{...passThru}
 		>
-			<span className={classify(merge({}, styles.label, $styles.label))}>{children}</span>
+			<span className={classify(merge({}, labelStyles, $styles.label))}>{children}</span>
 		</ButtonBase>
 	);
 };

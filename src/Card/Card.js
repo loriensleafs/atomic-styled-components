@@ -11,18 +11,14 @@ const styles = {
 	paper: {},
 };
 
-const Card = (props) => {
-	const { className, raised, styles: stylesProp, ...passThru } = props;
-
-	return (
-		<Paper
-			className={classify(merge({}, styles.root, stylesProp.root), className)}
-			$styles={{ root: merge({}, styles.paper, stylesProp.paper) }}
-			$elevation={raised ? 8 : 1}
-			{...passThru}
-		/>
-	);
-};
+const Card = ({ className, raised, $styles, ...passThru }) => (
+	<Paper
+		className={classify(merge({}, styles.root, $styles.root), className)}
+		$styles={{ root: merge({}, styles.paper, $styles.paper) }}
+		$elevation={raised ? 8 : 1}
+		{...passThru}
+	/>
+);
 
 Card.propTypes = {
 	className: PropTypes.string,
@@ -30,12 +26,12 @@ Card.propTypes = {
 	 * If `true`, the card will use raised styling.
 	 */
 	raised: PropTypes.bool,
-	styles: PropTypes.object,
+	$styles: PropTypes.object,
 };
 
 Card.defaultProps = {
 	raised: false,
-	styles: {
+	$styles: {
 		root: {},
 		paper: {},
 	},

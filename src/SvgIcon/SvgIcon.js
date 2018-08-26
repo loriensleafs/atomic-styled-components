@@ -23,7 +23,7 @@ export const getFontSizeStyles = (props) => {
   * @param {object} props
   * @param {object} props.theme
   */
-export const getRootStyles = (props) => {
+export const styles = (props) => {
 	const { duration, easing } = props.theme;
 
 	return merge(
@@ -63,7 +63,7 @@ const SvgIcon = (props) => {
 
 	return (
 		<Component
-			className={classify(merge({}, getRootStyles(props), $styles.root), className)}
+			className={classify(merge({}, styles(props), $styles.root), className)}
 			focusable="false"
 			viewBox={viewBox}
 			color={nativeColor}
