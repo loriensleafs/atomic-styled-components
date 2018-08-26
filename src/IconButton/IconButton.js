@@ -84,13 +84,13 @@ const getStyles = (props) => ({
  * @param {object} props
  */
 const IconButton = (props) => {
-	const { children, className, color, disabled, styles: stylesProp, themes, ...passThru } = props;
+	const { children, className, color, disabled, $styles: stylesProp, theme, ...passThru } = props;
 
 	const styles = getStyles(props);
 
 	return (
 		<ButtonBase
-			styles={merge({}, styles, stylesProp)}
+			$styles={merge({}, styles, stylesProp)}
 			className={className}
 			centerRipple
 			focusRipple
@@ -120,14 +120,14 @@ IconButton.propTypes = {
 	 * If `true`, the ripple will be disabled.
 	 */
 	disableRipple: PropTypes.bool,
-	styles: PropTypes.object,
+	$styles: PropTypes.object,
 	theme: PropTypes.object,
 };
 
 IconButton.defaultProps = {
 	color: 'default',
 	disabled: false,
-	styles: {
+	$styles: {
 		root: {},
 		label: {},
 	},

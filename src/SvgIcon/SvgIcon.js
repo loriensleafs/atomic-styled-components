@@ -56,14 +56,14 @@ const SvgIcon = (props) => {
 		nativeColor,
 		titleAccess,
 		viewBox,
-		styles,
+		$styles,
 		theme,
 		...passThru
 	} = props;
 
 	return (
 		<Component
-			className={classify(merge({}, getRootStyles(props), styles.root), className)}
+			className={classify(merge({}, getRootStyles(props), $styles.root), className)}
 			focusable="false"
 			viewBox={viewBox}
 			color={nativeColor}
@@ -104,7 +104,7 @@ SvgIcon.propTypes = {
 	 * Provides a human-readable title for the element that contains it.
 	 * https://www.w3.org/TR/SVG-access/#Equivalent
 	 */
-	styles: PropTypes.object,
+	$styles: PropTypes.object,
 	theme: PropTypes.object,
 	titleAccess: PropTypes.string,
 	/**
@@ -121,7 +121,7 @@ SvgIcon.defaultProps = {
 	color: 'inherit',
 	component: 'svg',
 	fontSize: 'default',
-	styles: { root: {} },
+	$styles: { root: {} },
 	viewBox: '0 0 24 24',
 };
 

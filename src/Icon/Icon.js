@@ -68,11 +68,11 @@ export const getRootStyles = (props) => {
  * @param {object} props
  */
 const Icon = (props) => {
-	const { children, className, color, fontSize, styles, theme, ...passThru } = props;
+	const { children, className, color, fontSize, $styles, theme, ...passThru } = props;
 
 	return (
 		<span
-			className={classify(merge({}, styles.root, getRootStyles(props)), className)}
+			className={classify(merge({}, $styles.root, getRootStyles(props)), className)}
 			aria-hidden="true"
 			{...passThru}
 		>
@@ -98,13 +98,14 @@ Icon.propTypes = {
 	 * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
 	 */
 	fontSize: PropTypes.oneOf([ 'inherit', 'default' ]),
+	$styles: PropTypes.object,
 	theme: PropTypes.object,
 };
 
 Icon.defaultProps = {
 	color: 'inherit',
 	fontSize: 'default',
-	styles: { root: {} },
+	$styles: { root: {} },
 };
 
 Icon.displayName = 'Icon';

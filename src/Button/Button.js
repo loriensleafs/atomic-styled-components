@@ -303,16 +303,6 @@ Button.defaultProps = {
 	},
 	type: 'button',
 	variant: 'text',
-	blacklist: [
-		'color',
-		'disableFocusRipple',
-		'disableRipple',
-		'fullWidth',
-		'focusRipple',
-		'mini',
-		'size',
-		'variant',
-	],
 };
 
 export default themify(Button);

@@ -3,9 +3,9 @@ import hoistStatics from 'hoist-non-react-statics';
 import { ThemeConsumer } from './../theme';
 
 export default (Component) => {
-	const C = ({ innerRef, ...passThruProps }) => (
+	const C = ({ innerRef, ...passThru }) => (
 		<ThemeConsumer>
-			{(theme) => <Component {...passThruProps} ref={innerRef} theme={theme} />}
+			{(theme) => <Component {...passThru} ref={innerRef} theme={theme} />}
 		</ThemeConsumer>
 	);
 

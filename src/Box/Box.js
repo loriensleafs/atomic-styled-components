@@ -5,13 +5,13 @@ import { themify } from './../themify';
 import { getDimension } from './../utils/helpers';
 
 export const minWidth = responsiveStyle({
-	prop: 'wMin',
+	prop: 'minWidth',
 	cssProperty: 'minWidth',
 	transformValue: getDimension,
 });
 
 export const maxWidth = responsiveStyle({
-	prop: 'wMax',
+	prop: 'maxWidth',
 	cssProperty: 'maxWidth',
 	transformValue: getDimension,
 });
@@ -23,13 +23,13 @@ export const height = responsiveStyle({
 });
 
 export const maxHeight = responsiveStyle({
-	prop: 'hMax',
+	prop: 'maxHeight',
 	cssProperty: 'maxHeight',
 	transformValue: getDimension,
 });
 
 export const minHeight = responsiveStyle({
-	prop: 'hMin',
+	prop: 'minHeight',
 	cssProperty: 'minHeight',
 	transformValue: getDimension,
 });
