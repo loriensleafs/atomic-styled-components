@@ -1,0 +1,21 @@
+{
+    "presets": [
+        "es2015",
+        "es2017",
+        "react",
+        "stage-0",
+        "stage-1", [
+            "env",
+            {
+                "targets": {
+                    "browsers": ["last 2 versions"]
+                }
+            }
+        ]
+    ],
+    "plugins": [
+        "syntax-dynamic-import",
+        "transform-class-properties",
+        "transform-decorators-legacy"
+    ]
+}
