@@ -144,11 +144,25 @@ export const getVariantStyles = (props) => {
 			});
 		}
 	} else if (props.variant === 'outlined') {
-		next = merge({}, next, {
-			border: `1px solid ${colors.type === 'light'
-				? colors.divider.light
-				: colors.divider.contrast.light}`,
-		});
+		if (props.color === 'primary' || props.color === 'secondary') {
+			next = merge({}, next, {
+				border: `1px solid ${fade(colors[props.color].main, 0.5)}`,
+				':hover': {
+					border: `1px solid ${colors[props.color].main}`,
+				},
+			});
+		} else {
+			next = merge({}, next, {
+				border: `1px solid ${colors.type === 'light'
+					? colors.divider.light
+					: colors.divider.contrast.light}`,
+				':hover': {
+					border: `1px solid ${colors.type === 'light'
+						? colors.divider.primary
+						: colors.divider.contrast.primary}`,
+				},
+			});
+		}
 	} else if (props.variant === 'extendedFab') {
 		next = merge({}, next, {
 			borderRadius: `${48 / 2}px`,
@@ -191,13 +205,14 @@ const styles = (props) => {
 					borderRadius: `${radius}`,
 					color: `${colors.text.primary}`,
 					textTransform: 'uppercase',
-					transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}`,
+					transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}, border ${duration.short}ms ${easing.easeIn}`,
 					':hover': {
 						textDecoration: 'none',
-						backgroundColor: fade(colors.text.primary, 0.8),
+						backgroundColor: colors.text.light,
 					},
 					':disabled': {
-						backgroundColor: colors.action.disabled,
+						color: colors.action.disabled,
+						backgroundColor: colors.action.disabledBg,
 					},
 				},
 				...getColorStyles(props),
