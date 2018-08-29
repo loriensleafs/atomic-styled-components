@@ -21,13 +21,13 @@ const App = (props) => {
 					<Card>
 						<Flex flexWrap="wrap" mx={2} p={4}>
 							<Box width={1} pt={2} pb={4} px={2}>
-								<Button variant="contained" color="primary" size="small">
+								<Button variant="contained" color="primary" size="small" ml={2}>
 									Small
 								</Button>
-								<Button variant="contained" color="primary">
+								<Button variant="contained" color="primary" ml={2}>
 									Medium
 								</Button>
-								<Button variant="contained" color="primary" size="large">
+								<Button variant="contained" color="primary" size="large" ml={2}>
 									Large
 								</Button>
 							</Box>
