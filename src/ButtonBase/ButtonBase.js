@@ -25,7 +25,10 @@ export const styles = {
 		outline: 'none',
 		border: 0,
 		// Remove the margin in Safari.
-		margin: 0,
+		marginTop: 0,
+		marginRight: 0,
+		marginBottom: 0,
+		marginLeft: 0,
 		// Remove the padding in Firefox.
 		padding: 0,
 		borderRadius: 0,

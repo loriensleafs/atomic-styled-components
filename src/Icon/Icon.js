@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
+import { space as spaceSystem } from 'styled-system';
 import { classify, themify } from './../themify';
 
 /**
@@ -52,14 +53,18 @@ export const styles = (props) => {
 
 	return merge(
 		{
-			userSelect: 'none',
-			fontSize: '24px',
-			width: '1em',
-			height: '1em',
-			overflow: 'hidden',
-			flexShrink: 0,
+			...{
+				userSelect: 'none',
+				fontSize: '24px',
+				width: '1em',
+				height: '1em',
+				overflow: 'hidden',
+				flexShrink: 0,
+			},
+			...getColorStyles(props),
+			...spaceSystem(props),
 		},
-		getColorStyles(props),
+		props.$style,
 	);
 };
 
@@ -68,14 +73,32 @@ export const styles = (props) => {
  * @param {object} props
  */
 const Icon = (props) => {
-	const { children, className, color, fontSize, $styles, theme, ...passThru } = props;
+	const {
+		children,
+		className,
+		color,
+		fontSize,
+		m,
+		ml,
+		mr,
+		mt,
+		mb,
+		mx,
+		my,
+		p,
+		pl,
+		pr,
+		pt,
+		pb,
+		px,
+		py,
+		$styles,
+		theme,
+		...passThru
+	} = props;
 
 	return (
-		<span
-			className={classify(merge({}, styles(props), $styles.root), className)}
-			aria-hidden="true"
-			{...passThru}
-		>
+		<span className={classify(styles(props).root, className)} aria-hidden="true" {...passThru}>
 			{children}
 		</span>
 	);
@@ -100,6 +123,7 @@ Icon.propTypes = {
 	fontSize: PropTypes.oneOf([ 'inherit', 'default' ]),
 	$styles: PropTypes.object,
 	theme: PropTypes.object,
+	...spaceSystem.propTypes,
 };
 
 Icon.defaultProps = {

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
+import { space as spaceSystem } from 'styled-system';
 import ButtonBase from './../ButtonBase';
 import { classify, themify } from './../themify';
 import { fade } from './../utils/colorHelpers';
@@ -38,41 +39,45 @@ export const getColorStyles = (props) => {
 export const styles = (props) => {
 	const { colors, duration, easing } = props.theme;
 
-	return {
-		root: merge(
-			{
-				position: 'relative',
-				textAlign: 'center',
-				flex: '0 0 auto',
-				fontSize: '24px',
-				width: '48px',
-				height: '48px',
-				padding: 0,
-				borderRadius: '50%',
-				color: colors.action.active,
-				transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
-				':hover': {
-					backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
-					'@media (hover: none)': {
-						backgroundColor: 'transparent',
+	return merge(
+		{
+			root: {
+				...{
+					position: 'relative',
+					textAlign: 'center',
+					flex: '0 0 auto',
+					fontSize: '24px',
+					width: '48px',
+					height: '48px',
+					padding: 0,
+					borderRadius: '50%',
+					color: colors.action.active,
+					transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
+					':hover': {
+						backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
+						'@media (hover: none)': {
+							backgroundColor: 'transparent',
+						},
+						':disabled': {
+							backgroundColor: 'transparent',
+						},
 					},
 					':disabled': {
-						backgroundColor: 'transparent',
+						color: colors.action.disabled,
 					},
 				},
-				':disabled': {
-					color: colors.action.disabled,
-				},
+				...getColorStyles(props),
+				...spaceSystem(props),
 			},
-			getColorStyles(props),
-		),
-		label: {
-			width: '100%',
-			display: 'flex',
-			alignItems: 'inherit',
-			justifyContent: 'inherit',
+			label: {
+				width: '100%',
+				display: 'flex',
+				alignItems: 'inherit',
+				justifyContent: 'inherit',
+			},
 		},
-	};
+		props.$style,
+	);
 };
 
 /**
@@ -80,20 +85,42 @@ export const styles = (props) => {
  * @param {object} props
  */
 const IconButton = (props) => {
-	const { children, className, color, disabled, $styles, theme, ...passThru } = props;
+	const {
+		children,
+		className,
+		color,
+		disabled,
+		m,
+		ml,
+		mr,
+		mt,
+		mb,
+		mx,
+		my,
+		p,
+		pl,
+		pr,
+		pt,
+		pb,
+		px,
+		py,
+		$styles,
+		theme,
+		...passThru
+	} = props;
 
 	const { root: rootStyles, label: labelStyles } = styles(props);
 
 	return (
 		<ButtonBase
-			$styles={merge({}, rootStyles, $styles)}
+			$styles={{ root: rootStyles }}
 			className={className}
 			centerRipple
 			focusRipple
 			disabled={disabled}
 			{...passThru}
 		>
-			<span className={classify(merge({}, labelStyles, $styles.label))}>{children}</span>
+			<span className={classify(labelStyles)}>{children}</span>
 		</ButtonBase>
 	);
 };
@@ -118,6 +145,7 @@ IconButton.propTypes = {
 	disableRipple: PropTypes.bool,
 	$styles: PropTypes.object,
 	theme: PropTypes.object,
+	...spaceSystem.propTypes,
 };
 
 IconButton.defaultProps = {

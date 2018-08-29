@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
+import { space as spaceSystem } from 'styled-system';
 import { themify, classify } from './../themify';
 import { getColorStyles } from './../Icon/Icon';
 
@@ -26,17 +27,21 @@ export const styles = (props) => {
 
 	return merge(
 		{
-			width: '1em',
-			height: '1em',
-			userSelect: 'none',
-			fontSize: '24px',
-			display: 'inline-block',
-			flexShrink: 0,
-			fill: 'currentColor',
-			transition: `fill ${duration.shorter}ms ${easing.easeIn}`,
+			...{
+				width: '1em',
+				height: '1em',
+				userSelect: 'none',
+				fontSize: '24px',
+				display: 'inline-block',
+				flexShrink: 0,
+				fill: 'currentColor',
+				transition: `fill ${duration.shorter}ms ${easing.easeIn}`,
+			},
+			...getFontSizeStyles(props),
+			...getColorStyles(props),
+			...spaceSystem(props),
 		},
-		getFontSizeStyles(props),
-		getColorStyles(props),
+		props.$style,
 	);
 };
 
@@ -52,6 +57,20 @@ const SvgIcon = (props) => {
 		component: Component,
 		fontSize,
 		nativeColor,
+		m,
+		ml,
+		mr,
+		mt,
+		mb,
+		mx,
+		my,
+		p,
+		pl,
+		pr,
+		pt,
+		pb,
+		px,
+		py,
 		titleAccess,
 		viewBox,
 		$styles,
@@ -61,7 +80,7 @@ const SvgIcon = (props) => {
 
 	return (
 		<Component
-			className={classify(merge({}, styles(props), $styles.root), className)}
+			className={classify(styles(props).root, className)}
 			focusable="false"
 			viewBox={viewBox}
 			color={nativeColor}
@@ -113,6 +132,7 @@ SvgIcon.propTypes = {
 	 * to bottom right (50,20) and each unit will be worth 10px.
 	 */
 	viewBox: PropTypes.string,
+	...spaceSystem.propTypes,
 };
 
 SvgIcon.defaultProps = {

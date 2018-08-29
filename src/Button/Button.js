@@ -4,6 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
+import { space as spaceSystem } from 'styled-system';
 import ButtonBase from './../ButtonBase';
 import { classify, themify } from './../themify';
 import { fade } from './../utils/colorHelpers';
@@ -174,42 +175,47 @@ const styles = (props) => {
 		lineHeights,
 		radius,
 		space,
+		$styles,
 	} = props.theme;
 
-	return {
-		root: merge(
-			{
-				boxSizing: 'border-box',
-				minWidth: '64px',
-				minHeight: '36px',
-				padding: `${space[2]}px ${space[3]}px`,
-				fontSize: `${fontSizes[1]}${fontUnit}`,
-				lineHeight: `${lineHeights[1]}${fontUnit}`,
-				borderRadius: `${radius}`,
-				color: `${colors.text.primary}`,
-				textTransform: 'uppercase',
-				transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}`,
-				':hover': {
-					textDecoration: 'none',
-					backgroundColor: fade(colors.text.primary, 0.8),
+	return merge(
+		{
+			root: {
+				...{
+					boxSizing: 'border-box',
+					minWidth: '64px',
+					minHeight: '36px',
+					padding: `${space[2]}px ${space[3]}px`,
+					fontSize: `${fontSizes[1]}${fontUnit}`,
+					lineHeight: `${lineHeights[1]}${fontUnit}`,
+					borderRadius: `${radius}`,
+					color: `${colors.text.primary}`,
+					textTransform: 'uppercase',
+					transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}`,
+					':hover': {
+						textDecoration: 'none',
+						backgroundColor: fade(colors.text.primary, 0.8),
+					},
+					':disabled': {
+						backgroundColor: colors.action.disabled,
+					},
 				},
-				':disabled': {
-					backgroundColor: colors.action.disabled,
-				},
+				...getColorStyles(props),
+				...getFabStyles(props),
+				...getMiniStyles(props),
+				...getFullWidthStyles(props),
+				...getVariantStyles(props),
+				...getSizeStyles(props),
+				...spaceSystem(props),
 			},
-			getColorStyles(props),
-			getFabStyles(props),
-			getMiniStyles(props),
-			getFullWidthStyles(props),
-			getVariantStyles(props),
-			getSizeStyles(props),
-		),
-		label: {
-			display: 'inherit',
-			alignItems: 'inherit',
-			justifyContent: 'inherit',
+			label: {
+				display: 'inherit',
+				alignItems: 'inherit',
+				justifyContent: 'inherit',
+			},
 		},
-	};
+		$styles,
+	);
 };
 
 /**
@@ -227,6 +233,20 @@ const Button = (props) => {
 		disableRipple,
 		fullWidth,
 		mini,
+		m,
+		ml,
+		mr,
+		mt,
+		mb,
+		mx,
+		my,
+		p,
+		pl,
+		pr,
+		pt,
+		pb,
+		px,
+		py,
 		size,
 		$styles,
 		theme,
@@ -238,13 +258,13 @@ const Button = (props) => {
 
 	return (
 		<ButtonBase
-			$styles={merge({}, { root: rootStyles }, $styles)}
+			$styles={{ root: rootStyles }}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
 			{...passThru}
 		>
-			<span className={classify(merge({}, labelStyles, $styles.label))}>{children}</span>
+			<span className={classify(labelStyles)}>{children}</span>
 		</ButtonBase>
 	);
 };
@@ -265,6 +285,7 @@ Button.propTypes = {
 	theme: PropTypes.object,
 	type: PropTypes.string,
 	variant: PropTypes.oneOf([ 'text', 'outlined', 'contained', 'fab', 'extendedFab' ]),
+	...spaceSystem.propTypes,
 };
 
 Button.defaultProps = {
