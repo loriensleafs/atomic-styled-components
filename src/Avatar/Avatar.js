@@ -1,13 +1,16 @@
 import React, { cloneElement, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { styled } from 'styletron-react';
+import { space as spaceSystem } from 'styled-system';
 import { classify, themify } from './../themify';
 
 export const getColorStyles = ({ color, theme }) =>
 	color === 'default'
 		? {
-				color: theme.colors.bg.default,
-				backgroundColor: theme.colors.grey[theme.colors.type],
+				root: {
+					color: theme.colors.bg.default,
+					backgroundColor: theme.colors.grey[theme.colors.type],
+				},
 			}
 		: {};
 
@@ -15,21 +18,19 @@ export const styles = (props) =>
 	merge(
 		{
 			root: {
-				...{
-					position: 'relative',
-					display: 'flex',
-					alignItems: 'center',
-					justifyItems: 'center',
-					flexShrink: 0,
-					width: 40,
-					height: 40,
-					fontFamily: props.theme.font,
-					fontSize: `${props.theme.fontSizes[2]}${props.theme.fontUnit}`,
-					borderRadius: '50%',
-					overflow: 'hidden',
-					userSelect: 'none',
-				},
-				...getColorStyles(props),
+				position: 'relative',
+				display: 'flex',
+				alignItems: 'center',
+				justifyItems: 'center',
+				flexShrink: 0,
+				width: 40,
+				height: 40,
+				fontFamily: props.theme.font,
+				fontSize: `${props.theme.fontSizes[2]}${props.theme.fontUnit}`,
+				borderRadius: '50%',
+				overflow: 'hidden',
+				userSelect: 'none',
+				...spaceSystem(props),
 			},
 			img: {
 				width: '100%',
@@ -38,6 +39,7 @@ export const styles = (props) =>
 				objectFit: 'cover',
 			},
 		},
+		getColorStyles(props),
 		props.$style,
 	);
 
