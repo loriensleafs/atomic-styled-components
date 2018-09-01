@@ -18,13 +18,17 @@ export const getColorStyles = (props) => {
 
 	if (props.color === 'inherit') {
 		next = merge({}, next, {
-			color: 'inherit',
+			root: {
+				color: 'inherit',
+			},
 		});
 	} else if (props.color === 'primary' || props.color === 'secondary') {
 		next = merge({}, next, {
-			color: colors[props.color].main,
-			':hover': {
-				backgroundColor: fade(colors[props.color].main, colors.action.hoverOpacity),
+			root: {
+				color: colors[props.color].main,
+				':hover': {
+					backgroundColor: fade(colors[props.color].main, colors.action.hoverOpacity),
+				},
 			},
 		});
 	}
@@ -42,31 +46,28 @@ export const styles = (props) => {
 	return merge(
 		{
 			root: {
-				...{
-					position: 'relative',
-					textAlign: 'center',
-					flex: '0 0 auto',
-					fontSize: '24px',
-					width: '48px',
-					height: '48px',
-					padding: 0,
-					borderRadius: '50%',
-					color: colors.action.active,
-					transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
-					':hover': {
-						backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
-						'@media (hover: none)': {
-							backgroundColor: 'transparent',
-						},
-						':disabled': {
-							backgroundColor: 'transparent',
-						},
+				position: 'relative',
+				textAlign: 'center',
+				flex: '0 0 auto',
+				fontSize: '24px',
+				width: '48px',
+				height: '48px',
+				padding: 0,
+				borderRadius: '50%',
+				color: colors.action.active,
+				transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
+				':hover': {
+					backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
+					'@media (hover: none)': {
+						backgroundColor: 'transparent',
 					},
 					':disabled': {
-						color: colors.action.disabled,
+						backgroundColor: 'transparent',
 					},
 				},
-				...getColorStyles(props),
+				':disabled': {
+					color: colors.action.disabled,
+				},
 				...spaceSystem(props),
 			},
 			label: {
@@ -76,7 +77,8 @@ export const styles = (props) => {
 				justifyContent: 'inherit',
 			},
 		},
-		props.$style,
+		getColorStyles(props),
+		props.$styles,
 	);
 };
 
