@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from 'deep-extend';
-import { space as spaceSystem } from 'styled-system';
+import { space as spaceSystem, fontSize as fontSizeSystem } from 'styled-system';
 import { themify, classify } from './../themify';
 import { getColorStyles } from './../Icon/Icon';
 
@@ -40,6 +40,7 @@ export const styles = (props) => {
 			...getFontSizeStyles(props),
 			...getColorStyles(props),
 			...spaceSystem(props),
+			...fontSizeSystem(props),
 		},
 		props.$style,
 	);
@@ -80,7 +81,7 @@ const SvgIcon = (props) => {
 
 	return (
 		<Component
-			className={classify(styles(props).root, className)}
+			className={classify(styles(props), className)}
 			focusable="false"
 			viewBox={viewBox}
 			color={nativeColor}
@@ -132,13 +133,14 @@ SvgIcon.propTypes = {
 	 * to bottom right (50,20) and each unit will be worth 10px.
 	 */
 	viewBox: PropTypes.string,
+	...fontSizeSystem.propTypes,
 	...spaceSystem.propTypes,
 };
 
 SvgIcon.defaultProps = {
 	color: 'inherit',
 	component: 'svg',
-	fontSize: 'default',
+	fontSize: '24px',
 	$styles: { root: {} },
 	viewBox: '0 0 24 24',
 };
