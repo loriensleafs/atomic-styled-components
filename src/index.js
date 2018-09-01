@@ -9,7 +9,8 @@ import { ThemeProvider, theme } from './theme';
 import { engine } from './themify';
 import { injectGlobal } from 'styled-components';
 
-injectGlobal`* { box-sizing: border-box; } html { min-height: 100%; } html,body,#root {  position: relative; height: 100%; margin: 0; padding: 0; }`;
+injectGlobal`* { box-sizing: border-box; } html { margin: 0; min-height:100%; background-color: ${theme
+	.colors.bg.default}; } body, #root { height: 100%; }`;
 
 ReactDOM.render(
 	<StyletronProvider value={engine}>
