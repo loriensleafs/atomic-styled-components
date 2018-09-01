@@ -86,7 +86,7 @@ export const getSizeStyles = (props) => {
 	switch (props.size) {
 		case 'small':
 			return {
-				padding: `${space[2] - 1}px ${space[2]}px`,
+				padding: `${space[2] - 1}px ${space[2] + 1}px`,
 				minWidth: '64px',
 				minHeight: '32px',
 				fontSize: `${fontSizes[1] - 0.07}${fontUnit}`,
@@ -186,6 +186,7 @@ const styles = (props) => {
 		easing,
 		fontSizes,
 		fontUnit,
+		fontWeights,
 		lineHeights,
 		radius,
 		space,
@@ -201,6 +202,7 @@ const styles = (props) => {
 					minHeight: '36px',
 					padding: `${space[2]}px ${space[3]}px`,
 					fontSize: `${fontSizes[1]}${fontUnit}`,
+					fontWeight: fontWeights.medium,
 					lineHeight: `${lineHeights[1]}${fontUnit}`,
 					borderRadius: `${radius}`,
 					color: `${colors.text.primary}`,
