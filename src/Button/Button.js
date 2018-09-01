@@ -18,9 +18,14 @@ import { fade } from './../utils/colorHelpers';
 export const getColorStyles = ({ color, theme }) =>
 	color === 'primary' || color === 'secondary'
 		? {
-				color: theme.colors[color].main,
-				':hover': {
-					backgroundColor: fade(theme.colors[color].main, theme.colors.action.hoverOpacity),
+				root: {
+					color: theme.colors[color].main,
+					':hover': {
+						backgroundColor: fade(
+							theme.colors[color].main,
+							theme.colors.action.hoverOpacity,
+						),
+					},
 				},
 			}
 		: {};
@@ -34,14 +39,16 @@ export const getColorStyles = ({ color, theme }) =>
 export const getFabStyles = ({ fab, theme }) =>
 	fab
 		? {
-				borderRadius: '50%',
-				padding: '0px',
-				minWidth: '0px',
-				width: '56px',
-				height: '56px',
-				boxShadow: theme.elevation[6],
-				':active': {
-					boxShadow: theme.elevation[12],
+				root: {
+					borderRadius: '50%',
+					padding: '0px',
+					minWidth: '0px',
+					width: '56px',
+					height: '56px',
+					boxShadow: theme.elevation[6],
+					':active': {
+						boxShadow: theme.elevation[12],
+					},
 				},
 			}
 		: {};
@@ -55,7 +62,9 @@ export const getFabStyles = ({ fab, theme }) =>
 export const getFullWidthStyles = ({ fullWidth }) =>
 	fullWidth
 		? {
-				width: '100%',
+				root: {
+					width: '100%',
+				},
 			}
 		: {};
 
@@ -69,8 +78,10 @@ export const getFullWidthStyles = ({ fullWidth }) =>
 export const getMiniStyles = ({ fab, mini }) =>
 	fab && mini
 		? {
-				width: '40px',
-				height: '40px',
+				root: {
+					width: '40px',
+					height: '40px',
+				},
 			}
 		: {};
 
@@ -86,17 +97,21 @@ export const getSizeStyles = (props) => {
 	switch (props.size) {
 		case 'small':
 			return {
-				padding: `${space[2] - 1}px ${space[2] + 1}px`,
-				minWidth: '64px',
-				minHeight: '32px',
-				fontSize: `${fontSizes[1] - 0.07}${fontUnit}`,
+				root: {
+					padding: `${space[2] - 1}px ${space[2] + 1}px`,
+					minWidth: '64px',
+					minHeight: '32px',
+					fontSize: `${fontSizes[1] - 0.07}${fontUnit}`,
+				},
 			};
 		case 'large':
 			return {
-				padding: `${space[2]}px ${space[3] + space[2]}px`,
-				minWidth: '112px',
-				minHeight: '40px',
-				fontSize: `${fontSizes[1] + 0.0625}${fontUnit}`,
+				root: {
+					padding: `${space[2]}px ${space[3] + space[2]}px`,
+					minWidth: '112px',
+					minHeight: '40px',
+					fontSize: `${fontSizes[1] + 0.0625}${fontUnit}`,
+				},
 			};
 		default:
 			return {};
@@ -115,61 +130,77 @@ export const getVariantStyles = (props) => {
 
 	if (props.variant === 'contained') {
 		next = merge({}, next, {
-			color: colors.text.secondary,
-			backgroundColor: colors.gray.light,
-			boxShadow: elevation[4],
-			':focus': {
-				boxShadow: elevation[6],
-			},
-			':active': {
-				boxShadow: elevation[8],
-			},
-			':disabled': {
-				color: colors.action.disabled,
-				boxShadow: 'none',
-				backgroundColor: colors.action.disabledBg,
-			},
-			':hover': {
+			root: {
+				color: colors.text.secondary,
 				backgroundColor: colors.gray.light,
+				boxShadow: elevation[2],
+				':active': {
+					boxShadow: elevation[8],
+				},
+				':disabled': {
+					color: colors.action.disabled,
+					boxShadow: 'none',
+					backgroundColor: colors.action.disabledBg,
+				},
+				':hover': {
+					backgroundColor: colors.gray.light,
+				},
 			},
 		});
 
 		if (props.color === 'primary' || props.color === 'secondary') {
 			next = merge({}, next, {
-				color: colors[props.color].contrast,
-				backgroundColor: colors[props.color].main,
-				':hover': {
-					backgroundColor: colors[props.color].dark,
+				root: {
+					color: colors[props.color].contrast,
+					backgroundColor: colors[props.color].main,
+					':hover': {
+						backgroundColor: colors[props.color].dark,
+					},
 				},
 			});
 		}
 	} else if (props.variant === 'outlined') {
+		next = merge({}, next, {
+			root: {
+				':disabled': {
+					color: colors.action.disabled,
+					backgroundColor: 'transparent',
+					border: `1px solid ${colors.action.disabled}`,
+				},
+			},
+		});
 		if (props.color === 'primary' || props.color === 'secondary') {
 			next = merge({}, next, {
-				border: `1px solid ${fade(colors[props.color].main, 0.5)}`,
-				':hover': {
-					border: `1px solid ${colors[props.color].main}`,
+				root: {
+					border: `1px solid ${fade(colors[props.color].main, 0.5)}`,
+					':hover': {
+						border: `1px solid ${colors[props.color].main}`,
+					},
 				},
 			});
 		} else {
 			next = merge({}, next, {
-				border: `1px solid ${colors.type === 'light'
-					? colors.divider.light
-					: colors.divider.contrast.light}`,
-				':hover': {
+				root: {
 					border: `1px solid ${colors.type === 'light'
-						? colors.divider.primary
-						: colors.divider.contrast.primary}`,
+						? colors.gray.main
+						: colors.divider.contrast.light}`,
+					':hover': {
+						border: `1px solid ${colors.type === 'light'
+							? colors.gray.dark
+							: colors.divider.contrast.primary}`,
+					},
 				},
 			});
 		}
 	} else if (props.variant === 'extendedFab') {
 		next = merge({}, next, {
-			borderRadius: `${48 / 2}px`,
-			padding: `0 ${space[3]}`,
-			width: 'auto',
-			minWidth: '48px',
-			height: '48px',
+			root: {
+				borderRadius: `${48 / 2}px`,
+				padding: `0 ${space[3]}`,
+				width: 'auto',
+				minWidth: '48px',
+				height: '48px',
+			},
 		});
 	}
 	return next;
@@ -196,32 +227,25 @@ const styles = (props) => {
 	return merge(
 		{
 			root: {
-				...{
-					boxSizing: 'border-box',
-					minWidth: '64px',
-					minHeight: '36px',
-					padding: `${space[2]}px ${space[3]}px`,
-					fontSize: `${fontSizes[1]}${fontUnit}`,
-					fontWeight: fontWeights.medium,
-					lineHeight: `${lineHeights[1]}${fontUnit}`,
-					borderRadius: `${radius}`,
-					color: `${colors.text.primary}`,
-					textTransform: 'uppercase',
-					transition: `background-color ${duration.short}ms ${easing.easeIn}, color ${duration.short}ms ${easing.easeIn}, box-shadow ${duration.short}ms ${easing.easeIn}, border ${duration.short}ms ${easing.easeIn}`,
-					':hover': {
-						textDecoration: 'none',
-						backgroundColor: colors.text.light,
-					},
-					':disabled': {
-						color: colors.action.disabled,
-						backgroundColor: colors.action.disabledBg,
-					},
+				boxSizing: 'border-box',
+				minWidth: '64px',
+				minHeight: '36px',
+				padding: `${space[2]}px ${space[3]}px`,
+				fontSize: `${fontSizes[1]}${fontUnit}`,
+				fontWeight: fontWeights.medium,
+				lineHeight: `${lineHeights[1]}${fontUnit}`,
+				borderRadius: `${radius}`,
+				color: `${colors.text.primary}`,
+				textTransform: 'uppercase',
+				transition: `background-color ${duration.short}ms ${easing.easeInOut}, color ${duration.short}ms ${easing.easeInOut}, box-shadow ${duration.short}ms ${easing.easeIn}, border ${duration.short}ms ${easing.easeInOut}`,
+				':hover': {
+					textDecoration: 'none',
+					backgroundColor: colors.text.light,
 				},
-				...getColorStyles(props),
-				...getFabStyles(props),
-				...getMiniStyles(props),
-				...getFullWidthStyles(props),
-				...getVariantStyles(props),
+				':disabled': {
+					color: colors.action.disabled,
+					backgroundColor: colors.action.disabledBg,
+				},
 				...getSizeStyles(props),
 				...spaceSystem(props),
 			},
@@ -231,6 +255,11 @@ const styles = (props) => {
 				justifyContent: 'inherit',
 			},
 		},
+		getColorStyles(props),
+		getFabStyles(props),
+		getMiniStyles(props),
+		getFullWidthStyles(props),
+		getVariantStyles(props),
 		$styles,
 	);
 };
