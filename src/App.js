@@ -60,179 +60,175 @@ const SaveIcon = (props) => (
 );
 
 const ButtonDemo = () => (
-	<Box my={2}>
-		<Card>
-			<Box width={1} py={4} px={2}>
-				<Flex pb={3} justifyContent="center">
-					<Button color="primary" size="small" ml={2}>
-						Small
-					</Button>
-					<Button color="primary" ml={2}>
-						Medium
-					</Button>
-					<Button color="primary" size="large" ml={2}>
-						Large
-					</Button>
-				</Flex>
-				<Flex pb={3} justifyContent="center">
-					<Button variant="outlined" color="primary" size="small" ml={2}>
-						Small
-					</Button>
-					<Button variant="outlined" color="primary" ml={2}>
-						Medium
-					</Button>
-					<Button variant="outlined" color="primary" size="large" ml={2}>
-						Large
-					</Button>
-				</Flex>
-				<Flex pb={3} justifyContent="center">
-					<Button variant="contained" color="primary" size="small" ml={2}>
-						Small
-					</Button>
-					<Button variant="contained" color="primary" ml={2}>
-						Medium
-					</Button>
-					<Button variant="contained" color="primary" size="large" ml={2}>
-						Large
-					</Button>
-				</Flex>
-			</Box>
-			<Divider />
-			<Flex width={1} py={4} px={2} justifyContent="center">
-				<Button ml={2}>Default</Button>
+	<Card my={2}>
+		<Box width={1} py={4} px={2}>
+			<Flex pb={3} justifyContent="center">
+				<Button color="primary" size="small" ml={2}>
+					Small
+				</Button>
 				<Button color="primary" ml={2}>
-					Primary
+					Medium
 				</Button>
-				<Button color="secondary" ml={2}>
-					Secondary
-				</Button>
-				<Button disabled ml={2}>
-					Disabled
+				<Button color="primary" size="large" ml={2}>
+					Large
 				</Button>
 			</Flex>
-			<Divider />
-			<Flex width={1} py={4} px={2} justifyContent="center">
-				<Button variant="outlined" ml={2}>
-					Default
+			<Flex pb={3} justifyContent="center">
+				<Button variant="outlined" color="primary" size="small" ml={2}>
+					Small
 				</Button>
 				<Button variant="outlined" color="primary" ml={2}>
-					Primary
+					Medium
 				</Button>
-				<Button variant="outlined" color="secondary" ml={2}>
-					Secondary
-				</Button>
-				<Button variant="outlined" disabled ml={2}>
-					Disabled
+				<Button variant="outlined" color="primary" size="large" ml={2}>
+					Large
 				</Button>
 			</Flex>
-			<Divider />
-			<Flex width={1} py={4} px={2} justifyContent="center">
-				<Button variant="contained" ml={2}>
-					Default
+			<Flex pb={3} justifyContent="center">
+				<Button variant="contained" color="primary" size="small" ml={2}>
+					Small
 				</Button>
 				<Button variant="contained" color="primary" ml={2}>
-					Primary
+					Medium
 				</Button>
-				<Button variant="contained" color="secondary" ml={2}>
-					Secondary
-				</Button>
-				<Button variant="contained" disabled ml={2}>
-					Disabled
+				<Button variant="contained" color="primary" size="large" ml={2}>
+					Large
 				</Button>
 			</Flex>
-			<Divider />
-			<Flex width={1} py={4} px={2} justifyContent="center">
-				<IconButton>
-					<DeleteIcon />
-				</IconButton>
-				<IconButton disabled>
-					<DeleteIcon />
-				</IconButton>
-				<IconButton color="primary">
-					<AlarmIcon />
-				</IconButton>
-				<IconButton color="secondary">
-					<AddShoppingCartIcon />
-				</IconButton>
-				<IconButton color="secondary">
-					<CameraIcon />
-				</IconButton>
-			</Flex>
-			<Divider />
-			<Flex width={1} py={4} px={2} justifyContent="center">
-				<Button variant="contained" ml={2}>
-					Delete
-					<DeleteIcon ml={2} />
-				</Button>
-				<Button variant="contained" color="primary" ml={2}>
-					Send
-					<SendIcon ml={2} />
-				</Button>
-				<Button variant="contained" color="secondary" ml={2} disabled>
-					<KeyboardVoiceIcon mr={1} />
-					Talk
-				</Button>
-				<Button variant="contained" size="small" ml={2}>
-					<SaveIcon mr={2} fontSize="20px" />
-					Save
-				</Button>
-			</Flex>
-		</Card>
-	</Box>
+		</Box>
+		<Divider />
+		<Flex width={1} py={4} px={2} justifyContent="center">
+			<Button ml={2}>Default</Button>
+			<Button color="primary" ml={2}>
+				Primary
+			</Button>
+			<Button color="secondary" ml={2}>
+				Secondary
+			</Button>
+			<Button disabled ml={2}>
+				Disabled
+			</Button>
+		</Flex>
+		<Divider />
+		<Flex width={1} py={4} px={2} justifyContent="center">
+			<Button variant="outlined" ml={2}>
+				Default
+			</Button>
+			<Button variant="outlined" color="primary" ml={2}>
+				Primary
+			</Button>
+			<Button variant="outlined" color="secondary" ml={2}>
+				Secondary
+			</Button>
+			<Button variant="outlined" disabled ml={2}>
+				Disabled
+			</Button>
+		</Flex>
+		<Divider />
+		<Flex width={1} py={4} px={2} justifyContent="center">
+			<Button variant="contained" ml={2}>
+				Default
+			</Button>
+			<Button variant="contained" color="primary" ml={2}>
+				Primary
+			</Button>
+			<Button variant="contained" color="secondary" ml={2}>
+				Secondary
+			</Button>
+			<Button variant="contained" disabled ml={2}>
+				Disabled
+			</Button>
+		</Flex>
+		<Divider />
+		<Flex width={1} py={4} px={2} justifyContent="center">
+			<IconButton>
+				<DeleteIcon />
+			</IconButton>
+			<IconButton disabled>
+				<DeleteIcon />
+			</IconButton>
+			<IconButton color="primary">
+				<AlarmIcon />
+			</IconButton>
+			<IconButton color="secondary">
+				<AddShoppingCartIcon />
+			</IconButton>
+			<IconButton color="secondary">
+				<CameraIcon />
+			</IconButton>
+		</Flex>
+		<Divider />
+		<Flex width={1} py={4} px={2} justifyContent="center">
+			<Button variant="contained" ml={2}>
+				Delete
+				<DeleteIcon ml={2} />
+			</Button>
+			<Button variant="contained" color="primary" ml={2}>
+				Send
+				<SendIcon ml={2} />
+			</Button>
+			<Button variant="contained" color="secondary" ml={2} disabled>
+				<KeyboardVoiceIcon mr={1} />
+				Talk
+			</Button>
+			<Button variant="contained" size="small" ml={2}>
+				<SaveIcon mr={2} fontSize="20px" />
+				Save
+			</Button>
+		</Flex>
+	</Card>
 );
 
 const GridDemo = () => (
-	<Box my={2}>
-		<Card>
-			<Flex flexWrap="wrap" mx={2} p={4}>
-				<Box px={2} py={1} width={1 / 2}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/2
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 2}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/2
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 3}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/3
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 3}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/3
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 3}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/3
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 4}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/4
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 4}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/4
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 4}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/4
-					</Text>
-				</Box>
-				<Box px={2} py={1} width={1 / 4}>
-					<Text p={1} color="text.contrast.primary" bg="primary.main">
-						1/4
-					</Text>
-				</Box>
-			</Flex>
-		</Card>
-	</Box>
+	<Card my={2}>
+		<Flex flexWrap="wrap" mx={2} p={4}>
+			<Box px={2} py={1} width={1 / 2}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/2
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 2}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/2
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 3}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/3
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 3}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/3
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 3}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/3
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 4}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/4
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 4}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/4
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 4}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/4
+				</Text>
+			</Box>
+			<Box px={2} py={1} width={1 / 4}>
+				<Text p={1} color="text.contrast.primary" bg="primary.main">
+					1/4
+				</Text>
+			</Box>
+		</Flex>
+	</Card>
 );
 
 const App = (props) => {
