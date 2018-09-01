@@ -1,3 +1,6 @@
+export const capitalize = (string) =>
+	typeof string === 'string' ? string.charAt(0).toUpperCase() + string.slice(1) : string;
+
 export const num = (n) => typeof n === 'number' && !isNaN(n);
 
 export const px = (n) => (num(n) ? n + 'px' : n);
