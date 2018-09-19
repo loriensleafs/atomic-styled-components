@@ -9,6 +9,7 @@ import Card from './Card';
 import Container from './Container';
 import Divider from './Divider';
 import IconButton from './IconButton';
+import Switch from './Switch';
 import SvgIcon from './SvgIcon';
 
 const AddShoppingCartIcon = (props) => (
@@ -62,7 +63,7 @@ const SaveIcon = (props) => (
 const ButtonDemo = () => (
 	<Card my={2}>
 		<Box width={1} py={4} px={2}>
-			<Flex pb={3} justifyContent="center">
+			<Flex pb={3} justifyContent="center" alignItems="center">
 				<Button color="primary" size="small" ml={2}>
 					Small
 				</Button>
@@ -73,7 +74,7 @@ const ButtonDemo = () => (
 					Large
 				</Button>
 			</Flex>
-			<Flex pb={3} justifyContent="center">
+			<Flex pb={3} justifyContent="center" alignItems="center">
 				<Button variant="outlined" color="primary" size="small" ml={2}>
 					Small
 				</Button>
@@ -84,7 +85,7 @@ const ButtonDemo = () => (
 					Large
 				</Button>
 			</Flex>
-			<Flex pb={3} justifyContent="center">
+			<Flex pb={3} justifyContent="center" alignItems="center">
 				<Button variant="contained" color="primary" size="small" ml={2}>
 					Small
 				</Button>
@@ -97,7 +98,7 @@ const ButtonDemo = () => (
 			</Flex>
 		</Box>
 		<Divider />
-		<Flex width={1} py={4} px={2} justifyContent="center">
+		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button ml={2}>Default</Button>
 			<Button color="primary" ml={2}>
 				Primary
@@ -110,7 +111,7 @@ const ButtonDemo = () => (
 			</Button>
 		</Flex>
 		<Divider />
-		<Flex width={1} py={4} px={2} justifyContent="center">
+		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="outlined" ml={2}>
 				Default
 			</Button>
@@ -125,7 +126,7 @@ const ButtonDemo = () => (
 			</Button>
 		</Flex>
 		<Divider />
-		<Flex width={1} py={4} px={2} justifyContent="center">
+		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Default
 			</Button>
@@ -140,7 +141,7 @@ const ButtonDemo = () => (
 			</Button>
 		</Flex>
 		<Divider />
-		<Flex width={1} py={4} px={2} justifyContent="center">
+		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<IconButton>
 				<DeleteIcon />
 			</IconButton>
@@ -158,7 +159,7 @@ const ButtonDemo = () => (
 			</IconButton>
 		</Flex>
 		<Divider />
-		<Flex width={1} py={4} px={2} justifyContent="center">
+		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Delete
 				<DeleteIcon ml={2} />
@@ -238,6 +239,9 @@ const App = (props) => {
 		<ErrorBoundry>
 			<Box width={1} height={1}>
 				<Container pt={3}>
+					<Card my={2}>
+						<Switch />
+					</Card>
 					<ButtonDemo />
 					<GridDemo />
 				</Container>

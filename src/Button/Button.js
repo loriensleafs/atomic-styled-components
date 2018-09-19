@@ -246,7 +246,6 @@ const styles = (props) => {
 					color: colors.action.disabled,
 					backgroundColor: colors.action.disabledBg,
 				},
-				...getSizeStyles(props),
 				...spaceSystem(props),
 			},
 			label: {
@@ -260,6 +259,7 @@ const styles = (props) => {
 		getMiniStyles(props),
 		getFullWidthStyles(props),
 		getVariantStyles(props),
+		getSizeStyles(props),
 		$styles,
 	);
 };

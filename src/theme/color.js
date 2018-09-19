@@ -229,6 +229,10 @@ const colors = {
 	text: textPalette,
 	divider: dividerPalette,
 	bg: bgPalette,
+	common: {
+		black,
+		white,
+	},
 	action: {
 		...actionPalette,
 		...{
