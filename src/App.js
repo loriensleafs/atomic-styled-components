@@ -9,7 +9,6 @@ import Card from './Card';
 import Container from './Container';
 import Divider from './Divider';
 import IconButton from './IconButton';
-import Switch from './Switch';
 import SvgIcon from './SvgIcon';
 
 const AddShoppingCartIcon = (props) => (
@@ -239,9 +238,6 @@ const App = (props) => {
 		<ErrorBoundry>
 			<Box width={1} height={1}>
 				<Container pt={3}>
-					<Card my={2}>
-						<Switch />
-					</Card>
 					<ButtonDemo />
 					<GridDemo />
 				</Container>
