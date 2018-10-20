@@ -237,7 +237,7 @@ const styles = (props) => {
 				borderRadius: `${radius}`,
 				color: `${colors.text.primary}`,
 				textTransform: 'uppercase',
-				transition: `background-color ${duration.short}ms ${easing.easeInOut}, color ${duration.short}ms ${easing.easeInOut}, box-shadow ${duration.short}ms ${easing.easeIn}, border ${duration.short}ms ${easing.easeInOut}`,
+				transition: `background-color ${duration.short}ms cubic-bezier(${easing.easeInOut.join()}), color ${duration.short}ms cubic-bezier(${easing.easeInOut.join()}), box-shadow ${duration.shortest}ms cubic-bezier(${easing.easeIn.join()}), border ${duration.short}ms cubic-bezier(${easing.easeInOut.join()})`,
 				':hover': {
 					textDecoration: 'none',
 					backgroundColor: colors.text.light,

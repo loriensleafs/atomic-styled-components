@@ -35,7 +35,7 @@ export const styles = (props) => {
 				display: 'inline-block',
 				flexShrink: 0,
 				fill: 'currentColor',
-				transition: `fill ${duration.shorter}ms ${easing.easeIn}`,
+				transition: `fill ${duration.shorter}ms cubic-bezier(${easing.easeIn.join()})`,
 			},
 			...getFontSizeStyles(props),
 			...getColorStyles(props),

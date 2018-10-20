@@ -55,7 +55,7 @@ export const styles = (props) => {
 				padding: 0,
 				borderRadius: '50%',
 				color: colors.action.active,
-				transition: `background-color ${duration.shortest}ms ${easing.easeIn}`,
+				transition: `background-color ${duration.shortest}ms cubic-bezier(${easing.easeIn.join()})`,
 				':hover': {
 					backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
 					'@media (hover: none)': {

@@ -35,13 +35,13 @@ const RippleSurface = styled('span', ({ $theme, $visible, $pulsate }) => {
 				},
 			},
 			animationDuration: `${DURATION}ms`,
-			animationTimingFunction: $theme.easing.easeInOut,
+			animationTimingFunction: `cubic-bezier(${$theme.easing.easeInOut.join()})`,
 		});
 	}
 
 	if ($pulsate) {
 		next = merge({}, next, {
-			animationDuration: `${$theme.duration.shorter}ms`,
+			animationDuration: `${$theme.duration.shortest}ms`,
 		});
 	}
 
@@ -78,7 +78,7 @@ const RippleWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 				},
 			},
 			animationDuration: `${DURATION}ms`,
-			animationTimingFunction: $theme.easing.easeInOut,
+			animationTimingFunction: `cubic-bezier(${$theme.easing.easeInOut.join()})`,
 		});
 	}
 
@@ -99,7 +99,7 @@ const RippleWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 				},
 			},
 			animationDuration: '2500ms',
-			animationTimingFunction: $theme.easing.easeInOut,
+			animationTimingFunction: `cubic-bezier(${$theme.easing.easeInOut.join()}`,
 			animationDelay: '200ms',
 			animationIterationCount: 'infinite',
 		});
