@@ -42,6 +42,10 @@ export const isNumber = (value) => !isNaN(parseFloat(value));
  * @param {string} param.easing
  * @param {number} param.delay
  */
+export { motionEasing as easing };
+
+export { motionDuration as duration };
+
 export default {
 	easing: motionEasing,
 	duration: motionDuration,

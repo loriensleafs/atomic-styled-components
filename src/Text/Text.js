@@ -6,8 +6,8 @@ import {
 	lineHeight,
 	fontWeight,
 	letterSpacing,
-	color,
 } from 'styled-system';
+import { bgColor, textColor } from './../styles';
 import { styled } from 'styletron-react';
 import { themify } from './../themify';
 
@@ -18,7 +18,8 @@ const Text = styled(tag, (props) => ({
 	...lineHeight(props),
 	...fontWeight(props),
 	...letterSpacing(props),
-	...color(props),
+	...bgColor(props),
+	...textColor(props),
 }));
 
 Text.displayName = 'Text';

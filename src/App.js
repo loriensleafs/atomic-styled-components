@@ -185,7 +185,6 @@ const SwitchDemo = () => (
 		<Box width={1} py={4} px={2}>
 			<Flex pb={3} justifyContent="center" alignItems="center">
 				<Switch value="checkedA" />
-				<Switch value="checkedB" color="primary" />
 			</Flex>
 		</Box>
 	</Card>
@@ -195,47 +194,47 @@ const GridDemo = () => (
 	<Card my={2}>
 		<Flex flexWrap="wrap" mx={2} p={4}>
 			<Box px={2} py={1} width={1 / 2}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/2
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 2}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/2
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 3}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/3
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 3}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/3
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 3}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/3
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 4}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/4
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 4}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/4
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 4}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/4
 				</Text>
 			</Box>
 			<Box px={2} py={1} width={1 / 4}>
-				<Text p={1} color="text.contrast.primary" bg="primary.main">
+				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/4
 				</Text>
 			</Box>
@@ -243,7 +242,7 @@ const GridDemo = () => (
 	</Card>
 );
 
-const App = (props) => {
+const App = (props = {}) => {
 	console.log(props.theme);
 
 	return (

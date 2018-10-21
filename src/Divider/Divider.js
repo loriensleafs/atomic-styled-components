@@ -23,7 +23,7 @@ const Divider = styled(tag, (props) =>
 				margin: props.$inset ? '72px' : 0,
 				border: 'none',
 				flexShrink: 0,
-				backgroundColor: props.theme.colors.divider[props.$light ? 'light' : 'default'],
+				backgroundColor: props.theme.palette.divider[props.$light ? 'light' : 'main'],
 			},
 			...getAbsoluteStyles(props),
 		},

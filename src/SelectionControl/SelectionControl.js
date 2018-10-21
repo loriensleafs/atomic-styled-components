@@ -1,74 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import merge from 'deep-extend';
+import merge from './../utils/pureRecursiveMerge';
 import IconButton from './../IconButton';
 import { classify, themify } from './../themify';
-
-/**
-  * Maps props to checked state styles
-  * @param {object} props
-  * @param {object} props.theme
-  * @param {string} [props.checked]
-  */
-export const getCheckedStyles = ({ checked, theme }) =>
-	checked
-		? {
-				iconButton: {
-					transform: 'translate3d(14px, 0px, 0px)',
-				},
-				icon: {
-					boxShadow: theme.elevation[2],
-				},
-				bar: {
-					opacity: 0.5,
-				},
-			}
-		: {};
-
-/**
-  * Maps props to color styles
-  * @param {object} props
-  * @param {object} props.theme
-  * @param {string} [props.color='secondary']
-  */
-export const getColorStyles = ({ color, theme }) =>
-	color === 'primary' || color === 'secondary'
-		? {
-				iconButton: {
-					color: theme.colors[color].main,
-				},
-				bar: {
-					backgroundColor: theme.colors[color].main,
-				},
-			}
-		: {};
-
-/**
-	   * Maps props to disabled state styles
-	   * @param {object} props
-	   * @param {object} props.theme
-	   * @param {string} [props.disabled=false]
-	   */
-export const getDisabledStyles = ({ disabled, theme }) =>
-	disabled
-		? {
-				iconButton: {
-					color:
-						theme.colors.type === 'light'
-							? theme.colors.gray.main
-							: theme.colors.gray.dark,
-				},
-				icon: {
-					boxShadow: theme.elevation[1],
-				},
-				bar: {
-					backgroundColor:
-						theme.colors.type === 'light'
-							? theme.colors.common.black
-							: theme.colors.common.white,
-				},
-			}
-		: {};
 
 /**
   * Gets styles for all components/elements
@@ -77,7 +11,8 @@ export const getDisabledStyles = ({ disabled, theme }) =>
 const styles = (props) =>
 	merge(
 		{
-			root: {
+			root: {},
+			iconButton: {
 				display: 'inline-flex',
 				alignItems: 'center',
 				transition: 'none',
@@ -86,40 +21,9 @@ const styles = (props) =>
 					backgroundColor: 'transparent',
 				},
 			},
-			bar: {
-				position: 'absolute',
-				top: '50%',
-				left: '50%',
-				width: '34px',
-				height: '14px',
-				marginTop: '-7px',
-				marginLeft: '-17px',
-				display: 'block',
-				borderRadius: `${14 / 2}px`,
-				backgroundColor:
-					props.theme.colors.type === 'light'
-						? props.theme.colors.common.black
-						: props.theme.colors.common.white,
-				opacity: props.theme.colors.type === 'light' ? 0.38 : 0.3,
-				transition: `opacity ${props.theme.duration.shortest}ms ${props.theme.easing
-					.easeInOut}`,
-			},
-			icon: {
-				width: '20px',
-				height: '20px',
-				boxShadow: props.theme.elevation[1],
-				backgroundColor: 'currentColor',
-				borderRadius: '50%',
-			},
-			iconButton: {
-				zIndex: 1,
-				color:
-					props.theme.colors.type === 'light'
-						? props.theme.colors.gray.light
-						: props.theme.colors.gray.main,
-				transition: `transform ${props.theme.duration.shortest} ${props.theme.easing
-					.easeInOut}`,
-			},
+			checked: {},
+			disabled: {},
+			icon: {},
 			input: {
 				position: 'absolute',
 				top: '0px',
@@ -132,29 +36,23 @@ const styles = (props) =>
 				opacity: 0,
 			},
 		},
-		getCheckedStyles(props),
-		props.$styles,
+		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
 	);
 
 /**
  * Creates a styled SwitchBase component
  * @param {object} props
  */
-class Switch extends Component {
-	input = null;
-
-	isControlled = null;
-
+class SelectionControl extends Component {
 	constructor(props) {
 		super();
 		this.isControlled = props.checked != null;
+		this.state = {};
 		if (!this.isControlled) {
 			// Not a controlled component, use internal state
 			this.state.checked = props.defaultChecked !== undefined ? props.defaultChecked : false;
 		}
 	}
-
-	state = {};
 
 	handleFocus = (event) => {
 		if (this.props.onFocus) this.props.onFocus(event);
@@ -166,20 +64,18 @@ class Switch extends Component {
 
 	handleInputChange = (event) => {
 		const checked = event.target.checked;
-
 		if (!this.isControlled) this.setState({ checked });
-
-		if (this.props.onChange) this.props.onChange(event);
+		if (this.props.onChange) this.props.onChange(event, checked);
 	};
 
 	render() {
 		const {
 			autoFocus,
 			checked: checkedProp,
-			checkedIcon,
 			className,
+			color,
 			disabled: disabledProp,
-			icon,
+			icon: IconComponent,
 			id,
 			inputProps,
 			inputRef,
@@ -190,11 +86,19 @@ class Switch extends Component {
 			readOnly,
 			required,
 			tabIndex,
+			theme,
 			type,
 			value,
 			...passThru
 		} = this.props;
-		const { root: rootStyles, input: inputStyles } = styles({ ...this.state, ...this.props });
+		const {
+			root: rootStyles,
+			icon: iconStyles,
+			iconButton: iconButtonStyles,
+			checked: checkedStyles,
+			disabled: disabledStyles,
+			input: inputStyles,
+		} = styles({ ...this.state, ...this.props });
 
 		let disabled = disabledProp;
 
@@ -204,6 +108,7 @@ class Switch extends Component {
 		return (
 			<span>
 				<IconButton
+					color={checked ? color : null}
 					component="span"
 					$styles={{ root: rootStyles }}
 					disabled={disabled}
@@ -213,7 +118,7 @@ class Switch extends Component {
 					onBlur={this.onBlur}
 					{...passThru}
 				>
-					{checked ? checkedIcon : icon}
+					<IconComponent checked={checked} color={color} theme={theme} />
 					<input
 						autoFocus={autoFocus}
 						checked={checked}
@@ -231,13 +136,12 @@ class Switch extends Component {
 						{...inputProps}
 					/>
 				</IconButton>
-				<span />
 			</span>
 		);
 	}
 }
 
-Switch.propTypes = {
+SelectionControl.propTypes = {
 	/**
 	 * If `true`, the input will be focused during the first mount.
 	 */
@@ -246,10 +150,6 @@ Switch.propTypes = {
 	 * If `true`, the component is checked.
 	 */
 	checked: PropTypes.oneOfType([ PropTypes.bool, PropTypes.string ]),
-	/**
-	 * The icon to display when the component is checked.
-	 */
-	checkedIcon: PropTypes.node.isRequired,
 	className: PropTypes.string,
 	defaultChecked: PropTypes.bool,
 	/**
@@ -263,7 +163,7 @@ Switch.propTypes = {
 	/**
 	 * The icon to display when the component is unchecked.
 	 */
-	icon: PropTypes.node.isRequired,
+	icon: PropTypes.func.isRequired,
 	/**
 	 * The id of the `input` element.
 	 */
@@ -307,7 +207,7 @@ Switch.propTypes = {
 	 * If `true`, the input will be required.
 	 */
 	required: PropTypes.bool,
-	$styles: PropTypes.object,
+	$styles: PropTypes.oneOfType([ PropTypes.func, PropTypes.object ]),
 	tabIndex: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
 	/**
 	 * The input component property `type`.
@@ -319,4 +219,4 @@ Switch.propTypes = {
 	value: PropTypes.string,
 };
 
-export default themify(Switch);
+export default themify(SelectionControl);

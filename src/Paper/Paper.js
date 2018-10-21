@@ -1,15 +1,22 @@
 import PropTypes from 'prop-types';
 import tag from 'clean-tag';
+import { style, variant } from 'styled-system';
 import { styled } from 'styletron-react';
 import { themify } from './../themify';
 
-const Paper = styled(tag, ({ $elevation, $square, $styles, theme }) => ({
+const elevation = style({
+	prop: 'elevation',
+	cssProperty: 'boxShadow',
+	key: 'elevation',
+});
+
+const Paper = styled(tag, (props) => ({
 	...{
-		backgroundColor: theme.colors.bg.paper,
-		borderRadius: $square ? '0px' : theme.radius,
-		boxShadow: theme.elevation[$elevation],
+		backgroundColor: props.theme.palette.bg.paper,
+		borderRadius: props.$square ? '0px' : props.theme.radius,
 	},
-	...$styles.root,
+	...elevation(props),
+	...props.$styles.root,
 }));
 
 Paper.displayName = 'Paper';
@@ -19,7 +26,7 @@ Paper.propTypes = {
 	 * Shadow depth, corresponds to `dp` in the spec.
 	 * It's accepting values between 0 and 24 inclusive.
 	 */
-	$elevation: PropTypes.number,
+	...elevation.propTypes,
 	$styles: PropTypes.object,
 	/**
 	 * If `true`, rounded corners are disabled.
@@ -29,7 +36,7 @@ Paper.propTypes = {
 };
 
 Paper.defaultProps = {
-	$elevation: 2,
+	elevation: 2,
 	$styles: { root: {} },
 	$square: false,
 };

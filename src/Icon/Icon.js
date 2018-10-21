@@ -11,7 +11,7 @@ import { classify, themify } from './../themify';
   * @param {string} [props.color='default']
   */
 export const getColorStyles = (props) => {
-	const { colors } = props.theme;
+	const { palette } = props.theme;
 
 	switch (props.color) {
 		case 'inherit':
@@ -20,23 +20,23 @@ export const getColorStyles = (props) => {
 			};
 		case 'primary':
 			return {
-				color: colors.primary.main,
+				color: palette.primary.main,
 			};
 		case 'secondary':
 			return {
-				color: colors.secondary.main,
+				color: palette.secondary.main,
 			};
 		case 'active':
 			return {
-				color: colors.action.active,
+				color: palette.action.active,
 			};
 		case 'error':
 			return {
-				color: colors.error.main,
+				color: palette.error.main,
 			};
 		case 'disabled':
 			return {
-				color: colors.action.disabled,
+				color: palette.action.disabled,
 			};
 		default:
 			return {};

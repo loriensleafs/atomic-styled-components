@@ -1,13 +1,10 @@
 export const fontUnit = 'rem';
 
-export const font = `'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif`;
+export const fontFamily = `'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif`;
 
 export const fontSizes = [ 0.75, 0.875, 1, 1.125, 1.5, 1.75, 2.125, 2.8125, 3.5, 5 ];
 
 export const lineHeights = [ 1.125, 1.25, 1.5, 1.75, 2, 2.125, 3, 4.5, 5.5, 6.5 ];
-
-export const regular = 400;
-export const bold = 600;
 
 // styled-system's `fontWeight` function can hook into the `fontWeights` object
 export const fontWeights = {
@@ -24,7 +21,7 @@ export const letterSpacings = {
 
 export default {
 	fontUnit,
-	font,
+	fontFamily,
 	fontSizes,
 	lineHeights,
 	fontWeights,

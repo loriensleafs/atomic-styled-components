@@ -1,17 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import merge from './../utils/pureRecursiveMerge';
-import { space, width, color } from 'styled-system';
-import { height, maxHeight, maxWidth, minHeight, minWidth } from './../styles';
+import { space, width } from 'styled-system';
+import { bgColor, textColor, height, maxHeight, maxWidth, minHeight, minWidth } from './../styles';
 import Paper from './../Paper';
-import { classify } from './../themify';
+import { classify, themify } from './../themify';
 
-const styles = ({ color: colorProp, ...props }) =>
+const styles = (props) =>
 	merge(
 		{
 			root: {
 				overflow: 'hidden',
-				...color(props),
+				...bgColor(props),
+				...textColor(props),
 				...height(props),
 				...maxHeight(props),
 				...maxWidth(props),
@@ -25,7 +26,7 @@ const styles = ({ color: colorProp, ...props }) =>
 		props.$styles,
 	);
 
-const Card = (props) => {
+const Card = (props = {}) => {
 	const {
 		className,
 		raised,
@@ -75,7 +76,8 @@ Card.propTypes = {
 	 */
 	raised: PropTypes.bool,
 	$styles: PropTypes.object,
-	...color.propTypes,
+	...bgColor.propTypes,
+	...textColor.propTypes,
 	...height.propTypes,
 	...maxHeight.propTypes,
 	...maxWidth.propTypes,
@@ -93,4 +95,4 @@ Card.defaultProps = {
 	},
 };
 
-export default Card;
+export default themify(Card);

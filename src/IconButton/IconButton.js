@@ -12,8 +12,8 @@ import { fade } from './../utils/colorHelpers';
   * @param {object} props.theme
   * @param {string} [props.color='default']
   */
-export const getColorStyles = (props) => {
-	const { colors } = props.theme;
+export const getpalettetyles = (props) => {
+	const { palette } = props.theme;
 	let next = {};
 
 	if (props.color === 'inherit') {
@@ -25,9 +25,9 @@ export const getColorStyles = (props) => {
 	} else if (props.color === 'primary' || props.color === 'secondary') {
 		next = merge({}, next, {
 			root: {
-				color: colors[props.color].main,
+				color: palette[props.color].main,
 				':hover': {
-					backgroundColor: fade(colors[props.color].main, colors.action.hoverOpacity),
+					backgroundColor: fade(palette[props.color].main, palette.action.hoverOpacity),
 				},
 			},
 		});
@@ -41,7 +41,7 @@ export const getColorStyles = (props) => {
   * @param {object} props
   */
 export const styles = (props) => {
-	const { colors, duration, easing } = props.theme;
+	const { palette, duration, easing } = props.theme;
 
 	return merge(
 		{
@@ -54,10 +54,10 @@ export const styles = (props) => {
 				height: '48px',
 				padding: 0,
 				borderRadius: '50%',
-				color: colors.action.active,
+				color: palette.action.active,
 				transition: `background-color ${duration.shortest}ms cubic-bezier(${easing.in.join()})`,
 				':hover': {
-					backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
+					backgroundColor: fade(palette.action.active, palette.action.hoverOpacity),
 					'@media (hover: none)': {
 						backgroundColor: 'transparent',
 					},
@@ -66,7 +66,7 @@ export const styles = (props) => {
 					},
 				},
 				':disabled': {
-					color: colors.action.disabled,
+					color: palette.action.disabled,
 				},
 				...spaceSystem(props),
 			},
@@ -77,7 +77,7 @@ export const styles = (props) => {
 				justifyContent: 'inherit',
 			},
 		},
-		getColorStyles(props),
+		getpalettetyles(props),
 		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
 	);
 };
@@ -134,7 +134,7 @@ IconButton.propTypes = {
 	children: PropTypes.node,
 	className: PropTypes.string,
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme palette that make sense for this component.
 	 */
 	color: PropTypes.oneOf([ 'default', 'inherit', 'primary', 'secondary' ]),
 	/**
@@ -145,7 +145,7 @@ IconButton.propTypes = {
 	 * If `true`, the ripple will be disabled.
 	 */
 	disableRipple: PropTypes.bool,
-	$styles: PropTypes.object,
+	$styles: PropTypes.oneOfType([ PropTypes.func, PropTypes.object ]),
 	theme: PropTypes.object,
 	...spaceSystem.propTypes,
 };

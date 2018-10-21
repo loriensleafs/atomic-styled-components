@@ -19,11 +19,11 @@ export const getColorStyles = ({ color, theme }) =>
 	color === 'primary' || color === 'secondary'
 		? {
 				root: {
-					color: theme.colors[color].main,
+					color: theme.palette[color].main,
 					':hover': {
 						backgroundColor: fade(
-							theme.colors[color].main,
-							theme.colors.action.hoverOpacity,
+							theme.palette[color].main,
+							theme.palette.action.hoverOpacity,
 						),
 					},
 				},
@@ -125,25 +125,25 @@ export const getSizeStyles = (props) => {
   * @param {string} [props.variant='text']
   */
 export const getVariantStyles = (props) => {
-	const { colors, elevation, space } = props.theme;
+	const { palette, elevation, space } = props.theme;
 	let next = {};
 
 	if (props.variant === 'contained') {
 		next = merge({}, next, {
 			root: {
-				color: colors.text.secondary,
-				backgroundColor: colors.gray.light,
+				color: palette.text.primary,
+				backgroundColor: palette.grey.light,
 				boxShadow: elevation[2],
 				':active': {
 					boxShadow: elevation[8],
 				},
 				':disabled': {
-					color: colors.action.disabled,
+					color: palette.action.disabled,
 					boxShadow: 'none',
-					backgroundColor: colors.action.disabledBg,
+					backgroundColor: palette.action.disabledBg,
 				},
 				':hover': {
-					backgroundColor: colors.gray.light,
+					backgroundColor: palette.grey.light,
 				},
 			},
 		});
@@ -151,10 +151,10 @@ export const getVariantStyles = (props) => {
 		if (props.color === 'primary' || props.color === 'secondary') {
 			next = merge({}, next, {
 				root: {
-					color: colors[props.color].contrast,
-					backgroundColor: colors[props.color].main,
+					color: palette[props.color].contrastText,
+					backgroundColor: palette[props.color].main,
 					':hover': {
-						backgroundColor: colors[props.color].dark,
+						backgroundColor: palette[props.color].dark,
 					},
 				},
 			});
@@ -163,31 +163,31 @@ export const getVariantStyles = (props) => {
 		next = merge({}, next, {
 			root: {
 				':disabled': {
-					color: colors.action.disabled,
+					color: palette.action.disabled,
 					backgroundColor: 'transparent',
-					border: `1px solid ${colors.action.disabled}`,
+					border: `1px solid ${palette.action.disabled}`,
 				},
 			},
 		});
 		if (props.color === 'primary' || props.color === 'secondary') {
 			next = merge({}, next, {
 				root: {
-					border: `1px solid ${fade(colors[props.color].main, 0.5)}`,
+					border: `1px solid ${fade(palette[props.color].main, 0.5)}`,
 					':hover': {
-						border: `1px solid ${colors[props.color].main}`,
+						border: `1px solid ${palette[props.color].main}`,
 					},
 				},
 			});
 		} else {
 			next = merge({}, next, {
 				root: {
-					border: `1px solid ${colors.type === 'light'
-						? colors.gray.main
-						: colors.divider.contrast.light}`,
+					border: `1px solid ${palette.type === 'light'
+						? palette.grey.main
+						: palette.divider.dark.light}`,
 					':hover': {
-						border: `1px solid ${colors.type === 'light'
-							? colors.gray.dark
-							: colors.divider.contrast.primary}`,
+						border: `1px solid ${palette.type === 'light'
+							? palette.grey.dark
+							: palette.divider.dark.primary}`,
 					},
 				},
 			});
@@ -212,7 +212,7 @@ export const getVariantStyles = (props) => {
   */
 const styles = (props) => {
 	const {
-		colors,
+		palette,
 		duration,
 		easing,
 		fontSizes,
@@ -235,16 +235,16 @@ const styles = (props) => {
 				fontWeight: fontWeights.medium,
 				lineHeight: `${lineHeights[1]}${fontUnit}`,
 				borderRadius: `${radius}`,
-				color: `${colors.text.primary}`,
+				color: `${palette.text.primary}`,
 				textTransform: 'uppercase',
 				transition: `background-color ${duration.short}ms cubic-bezier(${easing.inOut.join()}), color ${duration.short}ms cubic-bezier(${easing.inOut.join()}), box-shadow ${duration.shortest}ms cubic-bezier(${easing.in.join()}), border ${duration.short}ms cubic-bezier(${easing.inOut.join()})`,
 				':hover': {
 					textDecoration: 'none',
-					backgroundColor: colors.text.light,
+					backgroundColor: palette.grey.light,
 				},
 				':disabled': {
-					color: colors.action.disabled,
-					backgroundColor: colors.action.disabledBg,
+					color: palette.action.disabled,
+					backgroundColor: palette.action.disabledBg,
 				},
 				...spaceSystem(props),
 			},
