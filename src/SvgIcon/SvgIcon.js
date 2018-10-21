@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import merge from 'deep-extend';
+import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem, fontSize as fontSizeSystem } from 'styled-system';
 import { themify, classify } from './../themify';
 import { getColorStyles } from './../Icon/Icon';
@@ -35,7 +35,7 @@ export const styles = (props) => {
 				display: 'inline-block',
 				flexShrink: 0,
 				fill: 'currentColor',
-				transition: `fill ${duration.shorter}ms cubic-bezier(${easing.easeIn.join()})`,
+				transition: `fill ${duration.shorter}ms cubic-bezier(${easing.in.join()})`,
 			},
 			...getFontSizeStyles(props),
 			...getColorStyles(props),

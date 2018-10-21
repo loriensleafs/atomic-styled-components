@@ -3,7 +3,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import merge from 'deep-extend';
+import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem } from 'styled-system';
 import ButtonBase from './../ButtonBase';
 import { classify, themify } from './../themify';
@@ -237,7 +237,7 @@ const styles = (props) => {
 				borderRadius: `${radius}`,
 				color: `${colors.text.primary}`,
 				textTransform: 'uppercase',
-				transition: `background-color ${duration.short}ms cubic-bezier(${easing.easeInOut.join()}), color ${duration.short}ms cubic-bezier(${easing.easeInOut.join()}), box-shadow ${duration.shortest}ms cubic-bezier(${easing.easeIn.join()}), border ${duration.short}ms cubic-bezier(${easing.easeInOut.join()})`,
+				transition: `background-color ${duration.short}ms cubic-bezier(${easing.inOut.join()}), color ${duration.short}ms cubic-bezier(${easing.inOut.join()}), box-shadow ${duration.shortest}ms cubic-bezier(${easing.in.join()}), border ${duration.short}ms cubic-bezier(${easing.inOut.join()})`,
 				':hover': {
 					textDecoration: 'none',
 					backgroundColor: colors.text.light,

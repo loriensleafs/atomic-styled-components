@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import tag from 'clean-tag';
-import merge from 'deep-extend';
+import merge from './../utils/pureRecursiveMerge';
 import { styled } from 'styletron-react';
 import { themify } from './../themify';
 

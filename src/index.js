@@ -7,9 +7,9 @@ import App from './App';
 import { Provider as StyletronProvider } from 'styletron-react';
 import { ThemeProvider, theme } from './theme';
 import { engine } from './themify';
-import { injectGlobal } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
-injectGlobal`* { box-sizing: border-box; } html { margin: 0; min-height:100%; background-color: ${theme
+createGlobalStyle`* { box-sizing: border-box; } html { margin: 0; min-height:100%; background-color: ${theme
 	.colors.bg.default}; } body, #root { height: 100%; }`;
 
 ReactDOM.render(

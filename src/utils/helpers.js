@@ -5,19 +5,10 @@ export const num = (n) => typeof n === 'number' && !isNaN(n);
 
 export const px = (n) => (num(n) ? n + 'px' : n);
 
-export const merge = (a, b) =>
-	Object.assign(
-		{},
-		a,
-		b,
-		Object.keys(b || {}).reduce(
-			(obj, key) =>
-				Object.assign(obj, {
-					[key]:
-						a[key] !== null && typeof a[key] === 'object'
-							? merge(a[key], b[key])
-							: b[key],
-				}),
-			{},
-		),
-	);
+export const isNil = (n) => n === null || typeof n === 'undefined';
+
+export const isFunc = (n) => typeof n === 'function';
+
+export const isArray = (n) => Array.isArray(n);
+
+export const isObject = (n) => !isNil(n) && !isArray(n) && typeof n === 'object';

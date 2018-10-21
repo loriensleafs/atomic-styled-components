@@ -3,9 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Transition from 'react-transition-group/Transition';
-import merge from 'deep-extend';
-import posed from 'react-pose';
-import { tween } from 'popmotion';
+import merge from './../utils/pureRecursiveMerge';
 import { styled } from 'styletron-react';
 import { themify } from './../themify';
 import { DURATION } from './TouchRipple';
@@ -35,7 +33,7 @@ const RippleSurface = styled('span', ({ $theme, $visible, $pulsate }) => {
 				},
 			},
 			animationDuration: `${DURATION}ms`,
-			animationTimingFunction: `cubic-bezier(${$theme.easing.easeInOut.join()})`,
+			animationTimingFunction: `cubic-bezier(${$theme.easing.inOut.join()})`,
 		});
 	}
 
@@ -78,7 +76,7 @@ const RippleWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 				},
 			},
 			animationDuration: `${DURATION}ms`,
-			animationTimingFunction: `cubic-bezier(${$theme.easing.easeInOut.join()})`,
+			animationTimingFunction: `cubic-bezier(${$theme.easing.inOut.join()})`,
 		});
 	}
 
@@ -99,7 +97,7 @@ const RippleWave = styled('span', ({ $theme, $leaving, $pulsate }) => {
 				},
 			},
 			animationDuration: '2500ms',
-			animationTimingFunction: `cubic-bezier(${$theme.easing.easeInOut.join()}`,
+			animationTimingFunction: `cubic-bezier(${$theme.easing.inOut.join()}`,
 			animationDelay: '200ms',
 			animationIterationCount: 'infinite',
 		});

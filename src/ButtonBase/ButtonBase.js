@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import React, { Component, createRef } from 'react';
 import { findDOMNode } from 'react-dom';
 import keycode from 'keycode';
-import merge from 'deep-extend';
 import ownerWindow from './../utils/ownerWindow';
 import TouchRipple from './TouchRipple';
 import createRippleHandler from './createRippleHandler';
 import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
 import { classify } from './../themify';
+import merge from './../utils/pureRecursiveMerge';
 
 export const styles = {
 	root: {

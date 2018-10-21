@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import merge from 'deep-extend';
+import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem } from 'styled-system';
 import ButtonBase from './../ButtonBase';
 import { classify, themify } from './../themify';
@@ -55,7 +55,7 @@ export const styles = (props) => {
 				padding: 0,
 				borderRadius: '50%',
 				color: colors.action.active,
-				transition: `background-color ${duration.shortest}ms cubic-bezier(${easing.easeIn.join()})`,
+				transition: `background-color ${duration.shortest}ms cubic-bezier(${easing.in.join()})`,
 				':hover': {
 					backgroundColor: fade(colors.action.active, colors.action.hoverOpacity),
 					'@media (hover: none)': {
@@ -78,7 +78,7 @@ export const styles = (props) => {
 			},
 		},
 		getColorStyles(props),
-		props.$styles,
+		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
 	);
 };
 

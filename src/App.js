@@ -9,6 +9,7 @@ import Card from './Card';
 import Container from './Container';
 import Divider from './Divider';
 import IconButton from './IconButton';
+import Switch from './Switch';
 import SvgIcon from './SvgIcon';
 
 const AddShoppingCartIcon = (props) => (
@@ -179,6 +180,17 @@ const ButtonDemo = () => (
 	</Card>
 );
 
+const SwitchDemo = () => (
+	<Card my={2}>
+		<Box width={1} py={4} px={2}>
+			<Flex pb={3} justifyContent="center" alignItems="center">
+				<Switch value="checkedA" />
+				<Switch value="checkedB" color="primary" />
+			</Flex>
+		</Box>
+	</Card>
+);
+
 const GridDemo = () => (
 	<Card my={2}>
 		<Flex flexWrap="wrap" mx={2} p={4}>
@@ -238,6 +250,7 @@ const App = (props) => {
 		<ErrorBoundry>
 			<Box width={1} height={1}>
 				<Container pt={3}>
+					<SwitchDemo />
 					<ButtonDemo />
 					<GridDemo />
 				</Container>

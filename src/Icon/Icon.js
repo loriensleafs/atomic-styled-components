@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import merge from 'deep-extend';
+import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem } from 'styled-system';
 import { classify, themify } from './../themify';
 

@@ -1,13 +1,13 @@
-import { responsiveStyle } from 'styled-system';
+import { style } from 'styled-system';
 import { dimension } from './utils';
 
-export const minWidth = responsiveStyle({
+export const minWidth = style({
 	prop: 'minWidth',
 	cssProperty: 'minWidth',
 	transformValue: dimension,
 });
 
-export const maxWidth = responsiveStyle({
+export const maxWidth = style({
 	prop: 'maxWidth',
 	cssProperty: 'maxWidth',
 	transformValue: dimension,

@@ -9,13 +9,13 @@ import {
 	justifySelf,
 	alignSelf,
 	order,
-	responsiveStyle,
+	style,
 } from 'styled-system';
 import { styled } from 'styletron-react';
 import { themify } from './../themify';
 import Box from '../Box';
 
-export const flexWrap = responsiveStyle({
+export const flexWrap = style({
 	prop: 'flexWrap',
 });
 

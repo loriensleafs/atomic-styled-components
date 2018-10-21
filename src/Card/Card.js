@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import merge from 'deep-extend';
+import merge from './../utils/pureRecursiveMerge';
 import { space, width, color } from 'styled-system';
 import { height, maxHeight, maxWidth, minHeight, minWidth } from './../styles';
 import Paper from './../Paper';
