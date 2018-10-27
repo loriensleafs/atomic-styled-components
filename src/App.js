@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { themify } from './themify';
+import GlobalStyles from './GlobalStyles';
 import Box from './Box';
 import ErrorBoundry from './ErrorBoundry';
 import Flex from './Flex';
@@ -11,6 +12,20 @@ import Divider from './Divider';
 import IconButton from './IconButton';
 import Switch from './Switch';
 import SvgIcon from './SvgIcon';
+
+const getGlobalStyles = ({ theme }) => `
+	* {
+		box-sizing: border-box;
+	}
+	html {
+		margin: 0;
+		min-height:100%;
+		background-color: ${theme.palette.bg.default};
+	}
+	body, #root {
+		height: 100%;
+	}
+`;
 
 const AddShoppingCartIcon = (props) => (
 	<SvgIcon {...props}>
@@ -97,7 +112,7 @@ const ButtonDemo = () => (
 				</Button>
 			</Flex>
 		</Box>
-		<Divider />
+		<Divider $light />
 		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button ml={2}>Default</Button>
 			<Button color="primary" ml={2}>
@@ -110,7 +125,7 @@ const ButtonDemo = () => (
 				Disabled
 			</Button>
 		</Flex>
-		<Divider />
+		<Divider $light />
 		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="outlined" ml={2}>
 				Default
@@ -125,7 +140,7 @@ const ButtonDemo = () => (
 				Disabled
 			</Button>
 		</Flex>
-		<Divider />
+		<Divider $light />
 		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Default
@@ -140,7 +155,7 @@ const ButtonDemo = () => (
 				Disabled
 			</Button>
 		</Flex>
-		<Divider />
+		<Divider $light />
 		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<IconButton>
 				<DeleteIcon />
@@ -158,7 +173,7 @@ const ButtonDemo = () => (
 				<CameraIcon />
 			</IconButton>
 		</Flex>
-		<Divider />
+		<Divider $light />
 		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Delete
@@ -246,15 +261,18 @@ const App = (props = {}) => {
 	console.log(props.theme);
 
 	return (
-		<ErrorBoundry>
-			<Box width={1} height={1}>
-				<Container pt={3}>
-					<SwitchDemo />
-					<ButtonDemo />
-					<GridDemo />
-				</Container>
-			</Box>
-		</ErrorBoundry>
+		<Fragment>
+			<GlobalStyles styles={getGlobalStyles} />
+			<ErrorBoundry>
+				<Box width={1} height={1}>
+					<Container pt={3}>
+						<SwitchDemo />
+						<ButtonDemo />
+						<GridDemo />
+					</Container>
+				</Box>
+			</ErrorBoundry>
+		</Fragment>
 	);
 };
 
