@@ -1,44 +1,32 @@
 import PropTypes from 'prop-types';
 import tag from 'clean-tag';
-import { style, variant } from 'styled-system';
 import { styled } from 'styletron-react';
 import { themify } from './../themify';
 
-const elevation = style({
-	prop: '$elevation',
-	cssProperty: 'boxShadow',
-	key: 'elevation',
-});
-
-const Paper = styled(tag, (props) => ({
+const Paper = styled(tag, ({ $elevation = 2, $square = false, $styles, theme, ...passThru }) => ({
 	...{
-		backgroundColor: props.theme.palette.bg.paper,
-		borderRadius: props.$square ? '0px' : props.theme.radius,
+		backgroundColor: theme.palette.bg.paper,
+		boxShadow: theme.elevation[$elevation],
+		borderRadius: $square ? '0px' : theme.radius,
 	},
-	...elevation(props),
-	...props.$styles.root,
+	...(typeof $styles === 'function'
+		? $styles({ $elevation, $square, $styles, theme, ...passThru })
+		: $styles),
 }));
 
 Paper.displayName = 'Paper';
 
 Paper.propTypes = {
-	/**
-	 * Shadow depth, corresponds to `dp` in the spec.
-	 * It's accepting values between 0 and 24 inclusive.
-	 */
-	...elevation.propTypes,
 	$styles: PropTypes.object,
 	/**
 	 * If `true`, rounded corners are disabled.
 	 */
 	$square: PropTypes.bool,
+	/**
+	 * Shadow depth, corresponds to `dp` in the spec.
+	 * It's accepting values between 0 and 24 inclusive.
+	 */
+	elevation: PropTypes.number,
 	theme: PropTypes.object,
 };
-
-Paper.defaultProps = {
-	$elevation: 2,
-	$styles: { root: {} },
-	$square: false,
-};
-
 export default themify(Paper);

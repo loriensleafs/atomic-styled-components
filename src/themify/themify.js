@@ -5,13 +5,14 @@ import { ThemeConsumer } from './../theme';
 export default (Component) => {
 	const C = ({ innerRef, ref, ...passThru }) => (
 		<ThemeConsumer>
-			{(theme) => <Component {...passThru} ref={innerRef || ref} theme={theme} />}
+			{(theme) => <Component ref={innerRef || ref} theme={theme} {...passThru} />}
 		</ThemeConsumer>
 	);
 
-	if (Component.propTypes) C.propTypes = Component.propTypes;
-
+	hoistStatics(C, Component);
 	C.displayName = `Themified(${Component.displayName || Component.name || 'Component'})`;
+	C.propTypes = Component.propTypes || {};
+	C.defaultProps = Component.defaultProps || {};
 
-	return hoistStatics(C, Component);
+	return C;
 };

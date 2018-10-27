@@ -62,6 +62,13 @@ Flex.propTypes = {
 	...justifySelf.propTypes,
 	...alignSelf.propTypes,
 	...order.propTypes,
+	...{
+		theme: PropTypes.object,
+	},
+};
+
+Flex.defaultProps = {
+	blacklist: Object.keys(Flex.propTypes),
 };
 
 export default themify(Flex);

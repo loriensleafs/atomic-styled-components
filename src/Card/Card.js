@@ -19,45 +19,37 @@ import { classify, themify } from './../themify';
 const styles = (props) =>
 	merge(
 		{
-			rootStyles: {
-				overflow: 'hidden',
-				...bgColor(props),
-				...textColor(props),
-				...height(props),
-				...maxHeight(props),
-				...maxWidth(props),
-				...minHeight(props),
-				...minWidth(props),
-				...space(props),
-				...width(props),
-			},
-			paperStyles: {},
+			overflow: 'hidden',
 		},
-		props.$styles,
+		bgColor(props),
+		textColor(props),
+		height(props),
+		maxHeight(props),
+		maxWidth(props),
+		minHeight(props),
+		minWidth(props),
+		space(props),
+		width(props),
+		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
 	);
 
-const Card = withWrapper(Paper, (Styled) => (props) => {
-	const { raised, className, ...passThru } = props;
-	const { rootStyles, paperStyles } = styles(props);
-	return (
-		<Styled
-			className={classify(rootStyles, className)}
-			$styles={{ root: paperStyles }}
-			$elevation={raised ? 8 : 1}
-			{...passThru}
-		/>
-	);
-});
+const Card = withWrapper(Paper, (Styled) => ({ $styles, bg, blacklist, raised, ...passThru }) => (
+	<Styled
+		$styles={styles({ ...$styles, ...bg, ...passThru })}
+		$elevation={raised ? 8 : 1}
+		{...passThru}
+	/>
+));
 
 Card.displayName = 'Card';
 
 Card.propTypes = {
+	$styles: PropTypes.object,
 	className: PropTypes.string,
 	/**
 	 * If `true`, the card will use raised styling.
 	 */
 	raised: PropTypes.bool,
-	$styles: PropTypes.object,
 	...bgColor.propTypes,
 	...textColor.propTypes,
 	...height.propTypes,
@@ -70,11 +62,9 @@ Card.propTypes = {
 };
 
 Card.defaultProps = {
+	blacklist: Object.keys(Card.propTypes),
 	raised: false,
-	$styles: {
-		root: {},
-		paper: {},
-	},
+	$styles: {},
 };
 
 export default themify(Card);

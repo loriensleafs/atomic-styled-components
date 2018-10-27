@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import tag from 'clean-tag';
 import { styled } from 'styletron-react';
 import { space, fontSize } from 'styled-system';
@@ -39,6 +40,11 @@ Box.propTypes = {
 	...minWidth.propTypes,
 	...space.propTypes,
 	...width.propTypes,
+	theme: PropTypes.object,
+};
+
+Box.defaultProps = {
+	blacklist: Object.keys(Box.propTypes),
 };
 
 export default themify(Box);
