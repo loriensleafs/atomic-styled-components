@@ -17,7 +17,7 @@ import {
 
 export default () => (
 	<Card my={2}>
-		<Box width={1} py={4} px={2}>
+		<Box w={1} py={4} px={2}>
 			<Flex pb={3} justifyContent="center" alignItems="center">
 				<Button color="primary" size="small" ml={2}>
 					Small
@@ -53,7 +53,7 @@ export default () => (
 			</Flex>
 		</Box>
 		<Divider $light />
-		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
+		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button ml={2}>Default</Button>
 			<Button color="primary" ml={2}>
 				Primary
@@ -66,7 +66,7 @@ export default () => (
 			</Button>
 		</Flex>
 		<Divider $light />
-		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
+		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="outlined" ml={2}>
 				Default
 			</Button>
@@ -81,7 +81,7 @@ export default () => (
 			</Button>
 		</Flex>
 		<Divider $light />
-		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
+		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Default
 			</Button>
@@ -96,7 +96,7 @@ export default () => (
 			</Button>
 		</Flex>
 		<Divider $light />
-		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
+		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<IconButton>
 				<DeleteIcon />
 			</IconButton>
@@ -114,7 +114,7 @@ export default () => (
 			</IconButton>
 		</Flex>
 		<Divider $light />
-		<Flex width={1} py={4} px={2} justifyContent="center" alignItems="center">
+		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Delete
 				<DeleteIcon ml={2} />

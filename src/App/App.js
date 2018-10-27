@@ -29,7 +29,7 @@ const App = (props = {}) => {
 		<Fragment>
 			<GlobalStyle styles={getGlobalStyles} />
 			<ErrorBoundry>
-				<Box width={1} height={1}>
+				<Box w={1} h={1}>
 					<Container pt={3}>
 						<SwitchDemo />
 						<ButtonDemo />

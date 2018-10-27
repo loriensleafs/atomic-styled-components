@@ -2,8 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withWrapper } from 'styletron-react';
 import merge from './../utils/pureRecursiveMerge';
-import { space, width } from 'styled-system';
-import { bgColor, textColor, height, maxHeight, maxWidth, minHeight, minWidth } from './../styles';
+import { space } from 'styled-system';
+import {
+	bgColor,
+	textColor,
+	height,
+	maxHeight,
+	maxWidth,
+	minHeight,
+	minWidth,
+	width,
+} from './../styles';
 import Paper from './../Paper';
 import { classify, themify } from './../themify';
 

@@ -3,7 +3,6 @@ import {
 	alignItems,
 	alignContent,
 	justifyContent,
-	flexDirection,
 	flex,
 	flexBasis,
 	justifySelf,
@@ -19,10 +18,24 @@ export const flexWrap = style({
 	prop: 'flexWrap',
 });
 
+export const flexDirection = style({
+	prop: 'direction',
+	cssProperty: 'flexDirection',
+	transformValue: (n) => (n === 'col' ? 'column' : 'row'),
+});
+flexDirection.propTypes = {
+	direction: PropTypes.oneOfType([ PropTypes.array, PropTypes.string ]),
+};
+
+export const flexDisplay = (props) => ({
+	display: props.inline ? 'inline-flex' : 'flex',
+});
+flexDisplay.propTypes = {
+	inline: PropTypes.bool,
+};
+
 const Flex = styled(Box, (props) => ({
-	...{
-		display: `${props.inline ? 'inline-flex' : 'flex'}`,
-	},
+	...flexDisplay(props),
 	...alignItems(props),
 	...alignContent(props),
 	...justifyContent(props),
@@ -38,9 +51,7 @@ const Flex = styled(Box, (props) => ({
 Flex.displayName = 'Flex';
 
 Flex.propTypes = {
-	...{
-		inline: PropTypes.bool,
-	},
+	...flexDisplay.propTypes,
 	...alignItems.propTypes,
 	...alignContent.propTypes,
 	...justifyContent.propTypes,

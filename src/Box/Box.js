@@ -1,7 +1,16 @@
 import tag from 'clean-tag';
 import { styled } from 'styletron-react';
-import { space, width, fontSize } from 'styled-system';
-import { bgColor, textColor, height, maxHeight, maxWidth, minHeight, minWidth } from './../styles';
+import { space, fontSize } from 'styled-system';
+import {
+	bgColor,
+	textColor,
+	height,
+	maxHeight,
+	maxWidth,
+	minHeight,
+	minWidth,
+	width,
+} from './../styles';
 import { themify } from './../themify';
 
 const Box = styled(tag, (props) => ({
