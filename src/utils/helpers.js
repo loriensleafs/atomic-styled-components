@@ -11,4 +11,12 @@ export const isFunc = (n) => typeof n === 'function';
 
 export const isArray = (n) => Array.isArray(n);
 
+export const isString = (n) => typeof n === 'string';
+
+export const isNum = (n) => !isNaN(parseFloat(n));
+
 export const isObject = (n) => !isNil(n) && !isArray(n) && typeof n === 'object';
+
+export const arr = (val) => (isArray(val) ? val : [ val ]);
+
+export const formatMs = (milliseconds) => `${Math.round(milliseconds)}ms`;

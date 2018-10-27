@@ -10,40 +10,30 @@ const makeGetContrastText = ({ contrastThreshold, light, dark }) => (background)
 export default (palette = {}) => {
 	palette = merge(defaultPalette, palette);
 	const {
-		action,
-		bg,
-		common,
+		type,
 		contrastThreshold,
-		divider,
-		error,
-		grey,
+		tonalOffset,
 		primary,
 		secondary,
-		text,
-		tonalOffset,
-		type,
+		error,
+		grey,
+		common,
+		light,
+		dark,
 	} = palette;
-	const types = {
-		light: {
-			action: action.light,
-			bg: bg.light,
-			divider: divider.light,
-			text: text.light,
-		},
-		dark: {
-			action: action.dark,
-			bg: bg.dark,
-			divider: divider.dark,
-			text: text.dark,
-		},
-	};
-	const getContrastText = makeGetContrastText({ ...types, ...{ contrastThreshold } });
+
+	const getContrastText = makeGetContrastText(palette);
 	const augmentColor = (color, mainShade = 500, lightShade = 300, darkShade = 700) => {
-		if (!color.main && color[mainShade]) color.main = color[mainShade];
+		if (!color.main && color[mainShade]) {
+			color.main = color[mainShade];
+		}
 
 		addLightOrDark(color, 'light', lightShade, tonalOffset);
 		addLightOrDark(color, 'dark', darkShade, tonalOffset);
-		if (!color.contrastText) color.contrastText = getContrastText(color.main);
+
+		if (!color.contrastText) {
+			color.contrastText = getContrastText(color.main);
+		}
 	};
 
 	augmentColor(primary);
@@ -51,20 +41,16 @@ export default (palette = {}) => {
 	augmentColor(error);
 
 	return {
-		...types,
-		action: action[type],
-		bg: bg[type],
-		common,
+		type,
 		contrastThreshold,
-		divider: divider[type],
-		error,
-		grey,
+		tonalOffset,
 		primary,
 		secondary,
-		text: text[type],
-		tonalOffset,
-		type,
-		getContrastText,
-		augmentColor,
+		error,
+		grey,
+		common,
+		light,
+		dark,
+		...palette[type],
 	};
 };

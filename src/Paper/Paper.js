@@ -5,7 +5,7 @@ import { styled } from 'styletron-react';
 import { themify } from './../themify';
 
 const elevation = style({
-	prop: 'elevation',
+	prop: '$elevation',
 	cssProperty: 'boxShadow',
 	key: 'elevation',
 });
@@ -36,7 +36,7 @@ Paper.propTypes = {
 };
 
 Paper.defaultProps = {
-	elevation: 2,
+	$elevation: 2,
 	$styles: { root: {} },
 	$square: false,
 };

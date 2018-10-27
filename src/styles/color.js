@@ -1,4 +1,3 @@
-import compose from './../utils/compose';
 import { style } from 'styled-system';
 
 export const bgColor = style({

@@ -12,18 +12,18 @@ import { fade } from './../utils/colorHelpers';
   * @param {object} props.theme
   * @param {string} [props.color='default']
   */
-export const getpalettetyles = (props) => {
+export const getColorStyles = (props) => {
 	const { palette } = props.theme;
 	let next = {};
 
 	if (props.color === 'inherit') {
-		next = merge({}, next, {
+		next = merge(next, {
 			root: {
 				color: 'inherit',
 			},
 		});
 	} else if (props.color === 'primary' || props.color === 'secondary') {
-		next = merge({}, next, {
+		next = merge(next, {
 			root: {
 				color: palette[props.color].main,
 				':hover': {
@@ -77,7 +77,7 @@ export const styles = (props) => {
 				justifyContent: 'inherit',
 			},
 		},
-		getpalettetyles(props),
+		getColorStyles(props),
 		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
 	);
 };

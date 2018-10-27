@@ -1,10 +1,24 @@
+const grey = [
+	'#ffffff',
+	'#fafafa',
+	'#f5f5f5',
+	'#eeeeee',
+	'#e0e0e0',
+	'#bdbdbd',
+	'#9e9e9e',
+	'#757575',
+	'#616161',
+	'#424242',
+	'#000000',
+];
+
 const common = {
-	black: '#000',
-	white: '#fff',
+	white: grey[0],
+	black: grey[10],
 };
 
-const action = {
-	light: {
+const light = {
+	action: {
 		active: 'rgba(0, 0, 0, 0.54)',
 		hover: 'rgba(0, 0, 0, 0.08)',
 		hoverOpacity: 0.08,
@@ -12,7 +26,22 @@ const action = {
 		disabled: 'rgba(0, 0, 0, 0.26)',
 		disabledBg: 'rgba(0, 0, 0, 0.12)',
 	},
-	dark: {
+	bg: {
+		default: grey[1],
+		paper: common.white,
+	},
+	divider: 'rgba(0, 0, 0, 0.12)',
+	text: {
+		primary: 'rgba(0, 0, 0, 0.87)',
+		secondary: 'rgba(0, 0, 0, 0.54)',
+		disabled: 'rgba(0, 0, 0, 0.38)',
+		hint: 'rgba(0, 0, 0, 0.38)',
+		icon: 'rgba(0, 0, 0, 0.54)',
+	},
+};
+
+const dark = {
+	action: {
 		active: common.white,
 		hover: 'rgba(255, 255, 255, 0.1)',
 		hoverOpacity: 0.01,
@@ -20,49 +49,12 @@ const action = {
 		disabled: 'rgba(255, 255, 255, 0.3)',
 		disabledBg: 'rgba(255, 255, 255, 0.12)',
 	},
-};
-
-const bg = {
-	light: {
-		main: '#edf0f2',
-		appbar: '#fff',
-		chip: '#E0E0E0',
-		header: '#fff',
-		paper: '#fff',
-		tab: '#fff',
+	bg: {
+		default: '#303030',
+		paper: grey[9],
 	},
-	dark: {
-		main: '#303030',
-		appbar: '#166EA3',
-		chip: '#757575',
-		header: '#166EA3',
-		paper: '#616161',
-		tab: '#C85C44',
-	},
-};
-
-const divider = {
-	light: {
-		main: 'rgba(0,0,0,0.075)',
-		light: 'rgba(0, 0, 0, 0.05)',
-		dark: 'rgba(0,0,0,0.1)',
-	},
-	dark: {
-		main: 'rgba(255,255,255,0.09)',
-		light: 'rgba(255,255,255,0.075)',
-		dark: 'rgba(255,255,255,0.1)',
-	},
-};
-
-const text = {
-	light: {
-		primary: 'rgba(0, 0, 0, 0.87)',
-		secondary: 'rgba(0, 0, 0, 0.54)',
-		disabled: 'rgba(0, 0, 0, 0.38)',
-		hint: 'rgba(0, 0, 0, 0.38)',
-		icon: 'rgba(0, 0, 0, 0.6)',
-	},
-	dark: {
+	divider: 'rgba(255, 255, 255, 0.12)',
+	text: {
 		primary: common.white,
 		secondary: 'rgba(255, 255, 255, 0.7)',
 		disabled: 'rgba(255, 255, 255, 0.5)',
@@ -77,27 +69,19 @@ export default {
 	tonalOffset: 0.2,
 	primary: {
 		main: '#61ac47',
-		light: '#7ece62',
-		dark: '#508a3c',
 	},
 	secondary: {
 		main: '#ed7653',
-		light: '#F07051',
-		dark: 'C85C44',
 	},
 	error: {
 		main: '#f44336',
-		light: '#e57373',
-		dark: '#d32f2f',
 	},
 	grey: {
-		main: '#bdbdbd',
-		light: '#eeeeee',
-		dark: '#757575',
+		main: grey[5],
+		light: grey[3],
+		dark: grey[7],
 	},
-	action,
-	bg,
 	common,
-	divider,
-	text,
+	light,
+	dark,
 };

@@ -1,20 +1,20 @@
 import { style } from 'styled-system';
-import { dimension } from './utils';
+import { getDimension } from './utils';
 
 export const height = style({
 	prop: 'height',
 	cssProperty: 'height',
-	transformValue: dimension,
+	transformValue: getDimension,
 });
 
 export const maxHeight = style({
 	prop: 'maxHeight',
 	cssProperty: 'maxHeight',
-	transformValue: dimension,
+	transformValue: getDimension,
 });
 
 export const minHeight = style({
 	prop: 'minHeight',
 	cssProperty: 'minHeight',
-	transformValue: dimension,
+	transformValue: getDimension,
 });

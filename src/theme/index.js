@@ -3,21 +3,17 @@ import { createContext } from 'react';
 import merge from './../utils/pureRecursiveMerge';
 import createPalette from './palette/createPalette';
 import elevation from './elevation';
-import { duration, easing } from './motion';
+import { easing, duration, transition, getAutoHeightDuration } from './motion';
 import { breakpoints, mediaQueries } from './responsive';
 import space from './space';
 import { fontUnit, fontFamily, fontSizes, lineHeights, fontWeights, letterSpacings } from './text';
 
-// styled-system's `borderRadius` function can hook into the `radii`
-// object/array
-export const radii = [ 0, 4, 6 ];
-export const radius = '4px';
-export const maxWidth = '1280px';
-
 export const defaultTheme = {
 	breakpoints,
-	duration,
 	easing,
+	duration,
+	transition,
+	getAutoHeightDuration,
 	elevation,
 	fontUnit,
 	fontFamily,
@@ -25,10 +21,10 @@ export const defaultTheme = {
 	fontWeights,
 	lineHeights,
 	letterSpacings,
-	maxWidth,
+	maxWidth: '1280px',
 	mediaQueries,
 	palette: createPalette(),
-	radius,
+	radius: '4px',
 	space,
 };
 

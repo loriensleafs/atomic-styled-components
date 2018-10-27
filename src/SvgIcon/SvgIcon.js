@@ -27,21 +27,19 @@ export const styles = (props) => {
 
 	return merge(
 		{
-			...{
-				width: '1em',
-				height: '1em',
-				userSelect: 'none',
-				fontSize: '24px',
-				display: 'inline-block',
-				flexShrink: 0,
-				fill: 'currentColor',
-				transition: `fill ${duration.shorter}ms cubic-bezier(${easing.in.join()})`,
-			},
-			...getFontSizeStyles(props),
-			...getColorStyles(props),
-			...spaceSystem(props),
-			...fontSizeSystem(props),
+			width: '1em',
+			height: '1em',
+			userSelect: 'none',
+			fontSize: '24px',
+			display: 'inline-block',
+			flexShrink: 0,
+			fill: 'currentColor',
+			transition: `fill ${duration.shorter}ms cubic-bezier(${easing.in.join()})`,
 		},
+		getFontSizeStyles(props),
+		getColorStyles(props),
+		spaceSystem(props),
+		fontSizeSystem(props),
 		props.$style,
 	);
 };

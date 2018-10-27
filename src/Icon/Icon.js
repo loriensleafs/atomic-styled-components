@@ -53,17 +53,15 @@ export const styles = (props) => {
 
 	return merge(
 		{
-			...{
-				userSelect: 'none',
-				fontSize: '24px',
-				width: '1em',
-				height: '1em',
-				overflow: 'hidden',
-				flexShrink: 0,
-			},
-			...getColorStyles(props),
-			...spaceSystem(props),
+			userSelect: 'none',
+			fontSize: '24px',
+			width: '1em',
+			height: '1em',
+			overflow: 'hidden',
+			flexShrink: 0,
 		},
+		getColorStyles(props),
+		spaceSystem(props),
 		props.$style,
 	);
 };

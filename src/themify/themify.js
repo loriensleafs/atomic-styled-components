@@ -11,7 +11,7 @@ export default (Component) => {
 
 	if (Component.propTypes) C.propTypes = Component.propTypes;
 
-	C.displayName = `Themify(${Component.displayName || Component.name || 'Component'})`;
+	C.displayName = `Themified(${Component.displayName || Component.name || 'Component'})`;
 
 	return hoistStatics(C, Component);
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withWrapper } from 'styletron-react';
 import merge from './../utils/pureRecursiveMerge';
 import { space, width } from 'styled-system';
 import { bgColor, textColor, height, maxHeight, maxWidth, minHeight, minWidth } from './../styles';
@@ -9,7 +10,7 @@ import { classify, themify } from './../themify';
 const styles = (props) =>
 	merge(
 		{
-			root: {
+			rootStyles: {
 				overflow: 'hidden',
 				...bgColor(props),
 				...textColor(props),
@@ -21,51 +22,23 @@ const styles = (props) =>
 				...space(props),
 				...width(props),
 			},
-			paper: {},
+			paperStyles: {},
 		},
 		props.$styles,
 	);
 
-const Card = (props = {}) => {
-	const {
-		className,
-		raised,
-		$styles,
-		color,
-		bg,
-		height,
-		maxHeight,
-		maxWidth,
-		minHeight,
-		minWidth,
-		m,
-		ml,
-		mr,
-		mt,
-		mb,
-		mx,
-		my,
-		p,
-		pl,
-		pr,
-		pt,
-		pb,
-		px,
-		py,
-		width,
-		...passThru
-	} = props;
-	const { root: rootStyles, paper: paperStyles } = styles(props);
-
+const Card = withWrapper(Paper, (Styled) => (props) => {
+	const { raised, className, ...passThru } = props;
+	const { rootStyles, paperStyles } = styles(props);
 	return (
-		<Paper
+		<Styled
 			className={classify(rootStyles, className)}
 			$styles={{ root: paperStyles }}
 			$elevation={raised ? 8 : 1}
 			{...passThru}
 		/>
 	);
-};
+});
 
 Card.displayName = 'Card';
 

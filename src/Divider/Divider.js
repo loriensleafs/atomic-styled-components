@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import tag from 'clean-tag';
 import merge from './../utils/pureRecursiveMerge';
+import { fade } from './../utils/colorHelpers';
 import { styled } from 'styletron-react';
 import { themify } from './../themify';
 
@@ -12,22 +13,20 @@ const getAbsoluteStyles = ({ $absolute }) =>
 				left: 0,
 				width: '100%',
 			}
-		: {};
+		: null;
 
-const Divider = styled(tag, (props) =>
+const Divider = styled(tag, ({ $absolute, $inset, $light, $styles, theme: { palette } }) =>
 	merge(
 		{
-			...{
-				width: '100%',
-				height: '1px',
-				margin: props.$inset ? '72px' : 0,
-				border: 'none',
-				flexShrink: 0,
-				backgroundColor: props.theme.palette.divider[props.$light ? 'light' : 'main'],
-			},
-			...getAbsoluteStyles(props),
+			width: '100%',
+			height: '1px',
+			margin: $inset ? '72px' : 0,
+			border: 'none',
+			flexShrink: 0,
+			backgroundColor: $light ? fade(palette.divider, 0.08) : palette.divider,
 		},
-		props.$styles,
+		getAbsoluteStyles({ $absolute }),
+		$styles,
 	),
 );
 
