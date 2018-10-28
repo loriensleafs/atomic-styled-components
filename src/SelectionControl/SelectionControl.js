@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import merge from './../utils/pureRecursiveMerge';
 import IconButton from './../IconButton';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 
 /**
   * Gets styles for all components/elements

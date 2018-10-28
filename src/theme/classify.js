@@ -1,4 +1,5 @@
 import engine from './engine';
+import { isObject } from './../utils/helpers';
 
 export default function() {
 	let classes = [];
@@ -11,7 +12,7 @@ export default function() {
 
 		if (argType === 'string' || argType === 'number') {
 			classes.push(arg);
-		} else if (argType === 'object' && !Array.isArray(arg)) {
+		} else if (isObject(arg)) {
 			classes.push(engine.renderStyle(arg));
 		}
 	}

@@ -2,7 +2,7 @@ import React, { cloneElement, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { styled } from 'styletron-react';
 import { space as spaceSystem } from 'styled-system';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 
 export const getColorStyles = ({ color, theme }) =>
 	color === 'default'

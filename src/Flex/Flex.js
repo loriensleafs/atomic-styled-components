@@ -11,7 +11,7 @@ import {
 	style,
 } from 'styled-system';
 import { styled } from 'styletron-react';
-import { themify } from './../themify';
+import { themify } from './../theme';
 import Box from '../Box';
 
 export const flexWrap = style({

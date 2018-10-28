@@ -14,7 +14,7 @@ import {
 	width,
 } from './../styles';
 import Paper from './../Paper';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 
 const styles = (props) =>
 	merge(

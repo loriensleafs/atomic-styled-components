@@ -8,7 +8,7 @@ import ownerWindow from './../utils/ownerWindow';
 import TouchRipple from './TouchRipple';
 import createRippleHandler from './createRippleHandler';
 import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
-import { classify } from './../themify';
+import { classify } from './../theme';
 import merge from './../utils/pureRecursiveMerge';
 
 export const styles = {

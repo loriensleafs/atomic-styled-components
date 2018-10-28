@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem } from 'styled-system';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 
 /**
   * Maps props to color styles

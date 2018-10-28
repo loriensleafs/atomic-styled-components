@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem } from 'styled-system';
 import ButtonBase from './../ButtonBase';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 import { fade } from './../utils/colorHelpers';
 
 /**

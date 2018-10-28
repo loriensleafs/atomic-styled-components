@@ -3,7 +3,7 @@ import tag from 'clean-tag';
 import merge from './../utils/pureRecursiveMerge';
 import { fade } from './../utils/colorHelpers';
 import { styled } from 'styletron-react';
-import { themify } from './../themify';
+import { themify } from './../theme';
 
 const getAbsoluteStyles = ({ $absolute }) =>
 	$absolute

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Transition from 'react-transition-group/Transition';
 import merge from './../utils/pureRecursiveMerge';
 import { styled } from 'styletron-react';
-import { themify } from './../themify';
+import { themify } from './../theme';
 import { DURATION } from './TouchRipple';
 
 const RippleSurface = styled('span', ({ $theme, $visible, $pulsate }) => {

@@ -17,6 +17,6 @@ export const isNum = (n) => !isNaN(parseFloat(n));
 
 export const isObject = (n) => !isNil(n) && !isArray(n) && typeof n === 'object';
 
-export const arr = (val) => (isArray(val) ? val : [ val ]);
+export const arr = (n) => (isArray(n) ? n : [ n ]);
 
 export const formatMs = (milliseconds) => `${Math.round(milliseconds)}ms`;

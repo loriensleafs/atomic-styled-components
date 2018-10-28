@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import Ripple from './Ripple';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 
 export const DURATION = 700;
 export const DELAY_RIPPLE = 100;

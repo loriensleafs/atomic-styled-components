@@ -1,5 +1,4 @@
-import React, { Fragment } from 'react';
-import { themify } from './../themify';
+import React from 'react';
 import GlobalStyle from './../GlobalStyle';
 import Box from './../Box';
 import ErrorBoundry from './../ErrorBoundry';
@@ -7,6 +6,7 @@ import Container from './../Container';
 import ButtonDemo from './ButtonDemo';
 import GridDemo from './GridDemo';
 import SwitchDemo from './SwitchDemo';
+import { themify } from './../theme';
 
 const getGlobalStyles = ({ theme }) => `
 	* {
@@ -26,18 +26,16 @@ const App = (props = {}) => {
 	console.log(props.theme);
 
 	return (
-		<Fragment>
+		<ErrorBoundry>
 			<GlobalStyle styles={getGlobalStyles} />
-			<ErrorBoundry>
-				<Box w={1} h={1}>
-					<Container pt={3}>
-						<SwitchDemo />
-						<ButtonDemo />
-						<GridDemo />
-					</Container>
-				</Box>
-			</ErrorBoundry>
-		</Fragment>
+			<Box w={1} h={1}>
+				<Container pt={3}>
+					<SwitchDemo />
+					<ButtonDemo />
+					<GridDemo />
+				</Container>
+			</Box>
+		</ErrorBoundry>
 	);
 };
 

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem } from 'styled-system';
 import ButtonBase from './../ButtonBase';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 import { fade } from './../utils/colorHelpers';
 
 /**
@@ -219,7 +219,7 @@ const styles = (props) => {
 		fontUnit,
 		fontWeights,
 		lineHeights,
-		radius,
+		shape,
 		space,
 		$styles,
 	} = props.theme;
@@ -234,7 +234,7 @@ const styles = (props) => {
 				fontSize: `${fontSizes[1]}${fontUnit}`,
 				fontWeight: fontWeights.medium,
 				lineHeight: `${lineHeights[1]}${fontUnit}`,
-				borderRadius: `${radius}`,
+				borderRadius: `${shape.borderRadius}`,
 				color: `${palette.text.primary}`,
 				textTransform: 'uppercase',
 				transition: `background-color ${duration.short}ms cubic-bezier(${easing.inOut.join()}), color ${duration.short}ms cubic-bezier(${easing.inOut.join()}), box-shadow ${duration.shortest}ms cubic-bezier(${easing.in.join()}), border ${duration.short}ms cubic-bezier(${easing.inOut.join()})`,

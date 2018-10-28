@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import tag from 'clean-tag';
 import { styled } from 'styletron-react';
-import { themify } from './../themify';
+import { themify } from './../theme';
 
 const Paper = styled(tag, ({ $elevation = 2, $square = false, $styles, theme, ...passThru }) => ({
 	...{
 		backgroundColor: theme.palette.bg.paper,
 		boxShadow: theme.elevation[$elevation],
-		borderRadius: $square ? '0px' : theme.radius,
+		borderRadius: $square ? '0px' : theme.shape.borderRadius,
 	},
 	...(typeof $styles === 'function'
 		? $styles({ $elevation, $square, $styles, theme, ...passThru })

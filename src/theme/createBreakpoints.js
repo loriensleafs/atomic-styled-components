@@ -19,7 +19,4 @@ const aliases = [ 'xs', 'sm', 'md', 'lg', 'xl' ];
 addAliases(breakpoints, aliases);
 addAliases(mediaQueries, aliases);
 
-export default {
-	breakpoints,
-	mediaQueries,
-};
+export default () => breakpoints;

@@ -5,8 +5,7 @@ import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 import App from './App';
 import { Provider as StyletronProvider } from 'styletron-react';
-import { ThemeProvider } from './theme';
-import { engine } from './themify';
+import { engine, ThemeProvider } from './theme';
 
 ReactDOM.render(
 	<StyletronProvider value={engine}>

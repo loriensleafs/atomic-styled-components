@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import { styled } from 'styletron-react';
-import { classify, themify } from './../themify';
+import { classify, themify } from './../theme';
 import merge from 'deep-extend';
 import SelectionControl from './../SelectionControl';
 import { debug } from 'util';

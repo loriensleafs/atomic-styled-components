@@ -1,5 +1,5 @@
 import { withStyle } from 'styletron-react';
-import { themify } from './../themify';
+import { themify } from './../theme';
 import Box from './../Box';
 
 const Container = withStyle(Box, ({ theme }) => ({

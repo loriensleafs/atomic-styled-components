@@ -9,7 +9,7 @@ import {
 } from 'styled-system';
 import { bgColor, textColor } from './../styles';
 import { styled } from 'styletron-react';
-import { themify } from './../themify';
+import { themify } from './../theme';
 
 const Text = styled(tag, (props) => ({
 	...fontFamily(props),

@@ -12,7 +12,7 @@ import {
 	minWidth,
 	width,
 } from './../styles';
-import { themify } from './../themify';
+import { themify } from './../theme';
 
 const Box = styled(tag, (props) => ({
 	...bgColor(props),

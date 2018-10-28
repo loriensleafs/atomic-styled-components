@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import merge from './../utils/pureRecursiveMerge';
 import { space as spaceSystem, fontSize as fontSizeSystem } from 'styled-system';
-import { themify, classify } from './../themify';
+import { themify, classify } from './../theme';
 import { getColorStyles } from './../Icon/Icon';
 
 /**
