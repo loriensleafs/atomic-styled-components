@@ -64,6 +64,7 @@ class SelectionControl extends Component {
 		const {
 			autoFocus,
 			checked: checkedProp,
+			checkedIcon,
 			className,
 			color,
 			disabled: disabledProp,
@@ -105,7 +106,7 @@ class SelectionControl extends Component {
 				onFocus={this.handleFocus}
 				onBlur={this.onBlur}
 				{...passThru}>
-				{icon}
+				{checked ? (checkedIcon ? checkedIcon : icon) : icon}
 				<input
 					autoFocus={autoFocus}
 					checked={checked}

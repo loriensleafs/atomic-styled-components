@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 import ThemeContext from './../theme/ThemeContext';
 import { isFunc, isString } from './../utils/helpers';
 
-const GlobalStyle = ({ styles }) => {
+function GlobalStyle({ styles }) {
 	const { theme } = useContext(ThemeContext);
 	const GlobalStyles = isFunc(styles)
 		? createGlobalStyle([styles({ theme })])
@@ -12,6 +12,6 @@ const GlobalStyle = ({ styles }) => {
 			: createGlobalStyle([]);
 
 	return <GlobalStyles />;
-};
+}
 
 export default GlobalStyle;

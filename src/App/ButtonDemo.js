@@ -52,7 +52,7 @@ const ButtonDemo = () => (
 				</Button>
 			</Flex>
 		</Box>
-		<Divider $light />
+		<Divider light />
 		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button ml={2}>Default</Button>
 			<Button color="primary" ml={2}>
@@ -65,7 +65,7 @@ const ButtonDemo = () => (
 				Disabled
 			</Button>
 		</Flex>
-		<Divider $light />
+		<Divider light />
 		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="outlined" ml={2}>
 				Default
@@ -80,7 +80,7 @@ const ButtonDemo = () => (
 				Disabled
 			</Button>
 		</Flex>
-		<Divider $light />
+		<Divider light />
 		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Default
@@ -95,7 +95,7 @@ const ButtonDemo = () => (
 				Disabled
 			</Button>
 		</Flex>
-		<Divider $light />
+		<Divider light />
 		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<IconButton>
 				<DeleteIcon />
@@ -113,7 +113,7 @@ const ButtonDemo = () => (
 				<CameraIcon />
 			</IconButton>
 		</Flex>
-		<Divider $light />
+		<Divider light />
 		<Flex w={1} py={4} px={2} justifyContent="center" alignItems="center">
 			<Button variant="contained" ml={2}>
 				Delete

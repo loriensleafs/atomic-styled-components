@@ -11,7 +11,7 @@ import ThemeContext from './../theme/ThemeContext';
 import cn from './../styles/className';
 import { bgColor, textColor } from './../styles';
 
-const Text = props => {
+function Text(props) {
 	const { theme } = useContext(ThemeContext);
 	const styleProps = { ...props, ...{ theme } };
 	const className = cn(props.className, {
@@ -26,7 +26,7 @@ const Text = props => {
 	});
 
 	return <div className={className}>{props.children}</div>;
-};
+}
 
 Text.displayName = 'Text';
 

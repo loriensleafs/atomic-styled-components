@@ -34,7 +34,7 @@ export const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
-const SvgIcon = props => {
+function SvgIcon(props) {
 	const { theme } = useContext(ThemeContext);
 	const {
 		children,
@@ -75,7 +75,7 @@ const SvgIcon = props => {
 			{titleAccess ? <title>{titleAccess}</title> : null}
 		</Component>
 	);
-};
+}
 
 SvgIcon.propTypes = {
 	/**

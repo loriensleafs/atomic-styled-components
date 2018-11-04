@@ -52,7 +52,7 @@ export const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
-const Icon = props => {
+function Icon(props) {
 	const { theme } = useContext(ThemeContext);
 	const {
 		children,
@@ -85,7 +85,7 @@ const Icon = props => {
 			{children}
 		</span>
 	);
-};
+}
 
 Icon.propTypes = {
 	/**

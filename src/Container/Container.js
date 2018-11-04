@@ -2,14 +2,14 @@ import React, { useContext } from 'react';
 import ThemeContext from './../theme/ThemeContext';
 import Box from './../Box';
 
-const Container = props => {
+function Container(props) {
 	const { theme } = useContext(ThemeContext);
 	return (
 		<Box $styles={{ maxWidth: theme.maxWidth }} {...props}>
 			{props.children}
 		</Box>
 	);
-};
+}
 
 Container.displayName = 'Container';
 

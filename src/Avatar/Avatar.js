@@ -42,7 +42,7 @@ export const styles = props =>
 		props.style,
 	);
 
-const Avatar = props => {
+function Avatar(props) {
 	const { theme } = useContext(ThemeContext);
 	const {
 		alt,
@@ -81,4 +81,6 @@ const Avatar = props => {
 			{children}
 		</Component>
 	);
-};
+}
+
+export default Avatar;

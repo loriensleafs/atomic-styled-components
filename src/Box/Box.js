@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../styles/className';
 import { space, fontSize } from 'styled-system';
@@ -12,10 +13,11 @@ import {
 	minWidth,
 	width,
 } from './../styles';
+import { isFunc } from './../utils/helpers';
 
-const Box = props => {
+function Box(props) {
 	const { theme } = useContext(ThemeContext);
-	const { $styles = {}, as: C } = props;
+	const { styles, as: C } = props;
 	const styleProps = { ...props, ...{ theme } };
 	const className = cn(props.className, {
 		...bgColor(styleProps),
@@ -28,11 +30,11 @@ const Box = props => {
 		...minWidth(styleProps),
 		...space(styleProps),
 		...width(styleProps),
-		...$styles,
+		...(isFunc(styles) ? styles(props) : styles),
 	});
 
 	return <C className={className}>{props.children}</C>;
-};
+}
 
 Box.displayName = 'Box';
 
@@ -47,10 +49,12 @@ Box.propTypes = {
 	...minWidth.propTypes,
 	...space.propTypes,
 	...width.propTypes,
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 Box.defaultProps = {
 	as: 'div',
+	styles: {},
 };
 
 export default Box;

@@ -177,7 +177,7 @@ class TouchRipple extends Component {
 	};
 
 	render() {
-		const { center, className, innerRef, ...passThru } = this.props;
+		const { center, className, innerRef, theme, ...passThru } = this.props;
 
 		return (
 			<TransitionGroup

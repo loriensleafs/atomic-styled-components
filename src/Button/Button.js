@@ -208,7 +208,7 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
-const Button = props => {
+function Button(props) {
 	const { theme } = useContext(ThemeContext);
 	const {
 		children,
@@ -251,7 +251,7 @@ const Button = props => {
 			<span className={cn(labelStyles)}>{children}</span>
 		</ButtonBase>
 	);
-};
+}
 
 Button.propTypes = {
 	children: PropTypes.node.isRequired,

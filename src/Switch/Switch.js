@@ -125,7 +125,7 @@ const AnimatedSwitch = posed.span({
 	},
 });
 
-const Switch = props => {
+function Switch(props) {
 	const { theme } = useContext(ThemeContext);
 	const [isChecked, setChecked] = useState(isNil(props.checked) ? false : props.checked);
 	const checked = isNil(props.checked) ? isChecked : props.checked;
@@ -161,7 +161,7 @@ const Switch = props => {
 			</AnimatedSwitch>
 		</span>
 	);
-};
+}
 
 Switch.propTypes = {
 	/**

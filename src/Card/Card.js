@@ -14,8 +14,9 @@ import {
 	minWidth,
 	width,
 } from './../styles';
+import { isFunc } from './../utils/helpers';
 
-const styles = props =>
+const getStyles = props =>
 	merge(
 		{
 			overflow: 'hidden',
@@ -29,29 +30,28 @@ const styles = props =>
 		minWidth(props),
 		space(props),
 		width(props),
-		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
-const Card = ({ $styles, bg, blacklist, raised, ...passThru }) => {
+function Card(props) {
 	const { theme } = useContext(ThemeContext);
+	const { bg, raised, styles, ...passThru } = props;
+
 	return (
 		<Paper
-			$styles={styles({
-				...$styles,
-				...bg,
-				...passThru,
+			styles={getStyles({
+				...props,
 				...{ theme },
 			})}
-			$elevation={raised ? 8 : 1}
+			elevation={raised ? 8 : 1}
 			{...passThru}
 		/>
 	);
-};
+}
 
 Card.displayName = 'Card';
 
 Card.propTypes = {
-	$styles: PropTypes.object,
 	className: PropTypes.string,
 	/**
 	 * If `true`, the card will use raised styling.
@@ -66,12 +66,12 @@ Card.propTypes = {
 	...minWidth.propTypes,
 	...space.propTypes,
 	...width.propTypes,
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 Card.defaultProps = {
-	blacklist: Object.keys(Card.propTypes),
 	raised: false,
-	$styles: {},
+	styles: {},
 };
 
 export default Card;

@@ -34,7 +34,7 @@ flexDisplay.propTypes = {
 	inline: PropTypes.bool,
 };
 
-const Flex = props => {
+function Flex(props) {
 	const { theme } = useContext(ThemeContext);
 	const styleProps = { ...props, ...{ theme } };
 	const styles = {
@@ -51,11 +51,11 @@ const Flex = props => {
 		...order(styleProps),
 	};
 	return (
-		<Box $styles={styles} {...props}>
+		<Box styles={styles} {...props}>
 			{props.children}
 		</Box>
 	);
-};
+}
 
 Flex.displayName = 'Flex';
 
@@ -71,10 +71,6 @@ Flex.propTypes = {
 	...justifySelf.propTypes,
 	...alignSelf.propTypes,
 	...order.propTypes,
-};
-
-Flex.defaultProps = {
-	blacklist: Object.keys(Flex.propTypes),
 };
 
 export default Flex;
