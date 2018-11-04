@@ -1,8 +1,7 @@
-import React, { cloneElement, isValidElement } from 'react';
-import PropTypes from 'prop-types';
-import { styled } from 'styletron-react';
+import React, { cloneElement, isValidElement, useContext } from 'react';
+import ThemeContext from './../theme/ThemeContext';
+import cn from './../styles/className';
 import { space as spaceSystem } from 'styled-system';
-import { classify, themify } from './../theme';
 
 export const getColorStyles = ({ color, theme }) =>
 	color === 'default'
@@ -11,10 +10,10 @@ export const getColorStyles = ({ color, theme }) =>
 					color: theme.colors.bg.default,
 					backgroundColor: theme.colors.grey[theme.colors.type],
 				},
-			}
+		  }
 		: {};
 
-export const styles = (props) =>
+export const styles = props =>
 	merge(
 		{
 			root: {
@@ -40,10 +39,11 @@ export const styles = (props) =>
 			},
 		},
 		getColorStyles(props),
-		props.$style,
+		props.style,
 	);
 
-const Avatar = (props) => {
+const Avatar = props => {
+	const { theme } = useContext(ThemeContext);
 	const {
 		alt,
 		children: childrenProps,
@@ -53,12 +53,11 @@ const Avatar = (props) => {
 		sizes,
 		src,
 		srcSet,
-		$styles,
-		theme,
+		styles,
 		...passThru
 	} = props;
 
-	const { root: rootStyles, img: imgStyles } = styles(props);
+	const { root: rootStyles, img: imgStyles } = styles({ ...props, ...{ theme } });
 
 	let children = childrenProp;
 
@@ -74,7 +73,7 @@ const Avatar = (props) => {
 			/>
 		);
 	} else if (isValidElement(childrenProp)) {
-		children = cloneElement(childrenProp, { className: classify(imgStyles) });
+		children = cloneElement(childrenProp, { className: cn(imgStyles) });
 	}
 
 	return (

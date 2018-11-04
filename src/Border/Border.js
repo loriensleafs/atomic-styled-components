@@ -1,13 +1,19 @@
-import tag from 'clean-tag';
-import { styled } from 'styletron-react';
+import React, { useContext } from 'react';
+import ThemeContext from './../theme/ThemeContext';
+import cn from './../styles/className';
 import { borderRadius, borderColor, borders } from 'styled-system';
-import { themify } from './../theme';
 
-const Border = styled(tag, (props) => ({
-	...borderRadius(props),
-	...borderColor(props),
-	...borders(props),
-}));
+const Border = props => {
+	const theme = useContext(ThemeContext);
+	const styleProps = { ...props, ...{ theme: theme } };
+	const className = cn({
+		...borderRadius(styleProps),
+		...borderColor(styleProps),
+		...borders(styleProps),
+	});
+
+	return <div className={className} />;
+};
 
 Border.displayName = 'Border';
 
@@ -17,4 +23,4 @@ Border.propTypes = {
 	...borders.propTypes,
 };
 
-export default themify(Border);
+export default Border;

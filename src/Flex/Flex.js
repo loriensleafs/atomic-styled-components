@@ -1,4 +1,7 @@
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import ThemeContext from './../theme/ThemeContext';
+import Box from '../Box';
 import {
 	alignItems,
 	alignContent,
@@ -10,9 +13,6 @@ import {
 	order,
 	style,
 } from 'styled-system';
-import { styled } from 'styletron-react';
-import { themify } from './../theme';
-import Box from '../Box';
 
 export const flexWrap = style({
 	prop: 'flexWrap',
@@ -21,32 +21,41 @@ export const flexWrap = style({
 export const flexDirection = style({
 	prop: 'direction',
 	cssProperty: 'flexDirection',
-	transformValue: (n) => (n === 'col' ? 'column' : 'row'),
+	transformValue: n => (n === 'col' ? 'column' : 'row'),
 });
 flexDirection.propTypes = {
-	direction: PropTypes.oneOfType([ PropTypes.array, PropTypes.string ]),
+	direction: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
 };
 
-export const flexDisplay = (props) => ({
+export const flexDisplay = props => ({
 	display: props.inline ? 'inline-flex' : 'flex',
 });
 flexDisplay.propTypes = {
 	inline: PropTypes.bool,
 };
 
-const Flex = styled(Box, (props) => ({
-	...flexDisplay(props),
-	...alignItems(props),
-	...alignContent(props),
-	...justifyContent(props),
-	...flexWrap(props),
-	...flexDirection(props),
-	...flex(props),
-	...flexBasis(props),
-	...justifySelf(props),
-	...alignSelf(props),
-	...order(props),
-}));
+const Flex = props => {
+	const { theme } = useContext(ThemeContext);
+	const styleProps = { ...props, ...{ theme } };
+	const styles = {
+		...flexDisplay(styleProps),
+		...alignItems(styleProps),
+		...alignContent(styleProps),
+		...justifyContent(styleProps),
+		...flexWrap(styleProps),
+		...flexDirection(styleProps),
+		...flex(styleProps),
+		...flexBasis(styleProps),
+		...justifySelf(styleProps),
+		...alignSelf(styleProps),
+		...order(styleProps),
+	};
+	return (
+		<Box $styles={styles} {...props}>
+			{props.children}
+		</Box>
+	);
+};
 
 Flex.displayName = 'Flex';
 
@@ -62,13 +71,10 @@ Flex.propTypes = {
 	...justifySelf.propTypes,
 	...alignSelf.propTypes,
 	...order.propTypes,
-	...{
-		theme: PropTypes.object,
-	},
 };
 
 Flex.defaultProps = {
 	blacklist: Object.keys(Flex.propTypes),
 };
 
-export default themify(Flex);
+export default Flex;

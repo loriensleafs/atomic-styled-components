@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
 import IconButton from './../IconButton';
-import { classify, themify } from './../theme';
+import cn from './../styles/className';
+import { isFunc } from './../utils/helpers';
 
-/**
-  * Gets styles for all components/elements
-  * @param {object} props
-  */
-const styles = (props) =>
+const getStyles = props =>
 	merge(
 		{
-			root: {},
-			iconButton: {
+			iconButtonStyles: {
 				display: 'inline-flex',
 				alignItems: 'center',
 				transition: 'none',
@@ -21,10 +18,8 @@ const styles = (props) =>
 					backgroundColor: 'transparent',
 				},
 			},
-			checked: {},
-			disabled: {},
-			icon: {},
-			input: {
+			inputStyles: {
+				zIndex: 2,
 				position: 'absolute',
 				top: '0px',
 				left: '0px',
@@ -36,13 +31,9 @@ const styles = (props) =>
 				opacity: 0,
 			},
 		},
-		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
-/**
- * Creates a styled SwitchBase component
- * @param {object} props
- */
 class SelectionControl extends Component {
 	constructor(props) {
 		super();
@@ -54,28 +45,29 @@ class SelectionControl extends Component {
 		}
 	}
 
-	handleFocus = (event) => {
+	handleFocus = event => {
 		if (this.props.onFocus) this.props.onFocus(event);
 	};
 
-	handleBlur = (event) => {
+	handleBlur = event => {
 		if (this.props.onBlur) this.props.onBlur(event);
 	};
 
-	handleInputChange = (event) => {
+	handleInputChange = event => {
 		const checked = event.target.checked;
 		if (!this.isControlled) this.setState({ checked });
 		if (this.props.onChange) this.props.onChange(event, checked);
 	};
 
 	render() {
+		const { theme } = this.context;
 		const {
 			autoFocus,
 			checked: checkedProp,
 			className,
 			color,
 			disabled: disabledProp,
-			icon: IconComponent,
+			icon,
 			id,
 			inputProps,
 			inputRef,
@@ -85,20 +77,17 @@ class SelectionControl extends Component {
 			onFocus,
 			readOnly,
 			required,
+			styles,
 			tabIndex,
-			theme,
 			type,
 			value,
 			...passThru
 		} = this.props;
-		const {
-			root: rootStyles,
-			icon: iconStyles,
-			iconButton: iconButtonStyles,
-			checked: checkedStyles,
-			disabled: disabledStyles,
-			input: inputStyles,
-		} = styles({ ...this.state, ...this.props });
+		const { iconButtonStyles, inputStyles } = getStyles({
+			...this.state,
+			...this.props,
+			...{ theme },
+		});
 
 		let disabled = disabledProp;
 
@@ -106,40 +95,39 @@ class SelectionControl extends Component {
 		const hasLabelFor = type === 'checkbox' || type === 'radio';
 
 		return (
-			<span>
-				<IconButton
-					color={checked ? color : null}
-					component="span"
-					$styles={{ root: rootStyles }}
+			<IconButton
+				color={checked ? color : null}
+				component="span"
+				styles={{ rootStyles: iconButtonStyles }}
+				disabled={disabled}
+				tabIndex={null}
+				role={undefined}
+				onFocus={this.handleFocus}
+				onBlur={this.onBlur}
+				{...passThru}>
+				{icon}
+				<input
+					autoFocus={autoFocus}
+					checked={checked}
+					className={cn(inputStyles)}
 					disabled={disabled}
-					tabIndex={null}
-					role={undefined}
-					onFocus={this.handleFocus}
-					onBlur={this.onBlur}
-					{...passThru}
-				>
-					<IconComponent checked={checked} color={color} theme={theme} />
-					<input
-						autoFocus={autoFocus}
-						checked={checked}
-						className={classify(inputStyles)}
-						disabled={disabled}
-						id={hasLabelFor && id}
-						name={name}
-						onChange={this.handleInputChange}
-						readOnly={readOnly}
-						ref={inputRef}
-						required={required}
-						tabIndex={tabIndex}
-						type={type}
-						value={value}
-						{...inputProps}
-					/>
-				</IconButton>
-			</span>
+					id={hasLabelFor && id}
+					name={name}
+					onChange={this.handleInputChange}
+					readOnly={readOnly}
+					ref={inputRef}
+					required={required}
+					tabIndex={tabIndex}
+					type={type}
+					value={value}
+					{...inputProps}
+				/>
+			</IconButton>
 		);
 	}
 }
+
+SelectionControl.contextType = ThemeContext;
 
 SelectionControl.propTypes = {
 	/**
@@ -149,7 +137,7 @@ SelectionControl.propTypes = {
 	/**
 	 * If `true`, the component is checked.
 	 */
-	checked: PropTypes.oneOfType([ PropTypes.bool, PropTypes.string ]),
+	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 	className: PropTypes.string,
 	defaultChecked: PropTypes.bool,
 	/**
@@ -163,7 +151,7 @@ SelectionControl.propTypes = {
 	/**
 	 * The icon to display when the component is unchecked.
 	 */
-	icon: PropTypes.func.isRequired,
+	icon: PropTypes.node.isRequired,
 	/**
 	 * The id of the `input` element.
 	 */
@@ -183,7 +171,7 @@ SelectionControl.propTypes = {
 	/**
 	 * Use that property to pass a ref callback to the native input component.
 	 */
-	inputRef: PropTypes.oneOfType([ PropTypes.func, PropTypes.object ]),
+	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/*
 	 * @ignore
 	 */
@@ -207,8 +195,8 @@ SelectionControl.propTypes = {
 	 * If `true`, the input will be required.
 	 */
 	required: PropTypes.bool,
-	$styles: PropTypes.oneOfType([ PropTypes.func, PropTypes.object ]),
-	tabIndex: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	tabIndex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	/**
 	 * The input component property `type`.
 	 */
@@ -219,4 +207,4 @@ SelectionControl.propTypes = {
 	value: PropTypes.string,
 };
 
-export default themify(SelectionControl);
+export default SelectionControl;

@@ -1,105 +1,37 @@
-import React, { Fragment } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
-import { styled } from 'styletron-react';
-import { classify, themify } from './../theme';
-import merge from 'deep-extend';
+import ThemeContext from './../theme/ThemeContext';
 import SelectionControl from './../SelectionControl';
-import { debug } from 'util';
+import cn from './../styles/className';
+import merge from 'deep-extend';
+import { isFunc, isNil } from './../utils/helpers';
 
-/**
-  * Maps props to disabled state styles
-  * @param {object} props
-  * @param {object} props.theme
-  * @param {string} [props.disabled=false]
-  */
-export const getDisabledStyles = ({ disabled, theme }) =>
-	disabled
-		? {
-				bar: {
-					backgroundColor:
-						theme.palette.type === 'light'
-							? theme.palette.common.black
-							: theme.palette.common.white,
-				},
-				icon: {
-					boxShadow: theme.elevation[1],
-				},
-			}
-		: {};
+export const getDisabledStyles = ({ disabled, theme: { elevation, palette } }) =>
+	disabled && {
+		barStyles: {
+			backgroundColor: palette.type === 'light' ? palette.common.black : palette.common.white,
+			opacity: palette.type === 'light' ? 0.12 : 0.1,
+		},
+	};
 
-const switchIconTransition = {
-	transform: ({ theme }) => ({
-		duration: theme.duration.shortest,
-		ease: theme.easing.inOut,
-	}),
-};
+const getCheckedStyles = ({ checked, color, theme: { palette } }) =>
+	checked && {
+		barStyles: {
+			backgroundColor:
+				color === 'primary' || color === 'secondary'
+					? palette[color].main
+					: palette.type === 'light'
+						? palette.common.black
+						: palette.common.white,
+			opacity: 0.5,
+		},
+	};
 
-const AnimatedSwitchIcon = posed.span({
-	init: {
-		width: '20px',
-		height: '20px',
-		backgroundColor: 'currentColor',
-		borderRadius: '50%',
-	},
-	unchecked: {
-		color: ({ theme }) => theme.palette.common.white,
-		boxShadow: ({ theme }) => theme.elevation[1],
-		transform: 'translate3d(0px, 0px, 0px)',
-		transition: switchIconTransition,
-	},
-	checked: {
-		color: ({ color, theme }) => theme.palette[color].main,
-		boxShadow: ({ theme }) => theme.elevation[2],
-		transform: 'translate3d(14px, 0px, 0px)',
-		transition: switchIconTransition,
-	},
-});
-
-// const switchBarTransition = {
-// 	opacity: ({ theme }) => ({
-// 		duration: theme.duration.shortest,
-// 		easing: theme.easing.inOut,
-// 	}),
-// };
-
-// const SwitchBar = posed.span({
-// 	init: {
-// 		position: 'absolute',
-// 		top: '50%',
-// 		left: '50%',
-// 		width: '34px',
-// 		height: '14px',
-// 		transform: 'translate3d(0, -50%, 0 )',
-// 		marginLeft: '-17px',
-// 		display: 'block',
-// 		borderRadius: `${14 / 2}px`,
-// 	},
-// 	unchecked: {
-// 		backgroundColor: ({ theme }) =>
-// 			theme.palette.type === 'light' ? theme.palette.common.black : theme.palette.common.white,
-// 		opacity: ({ theme }) => (theme.palette.type === 'light' ? 0.38 : 0.3),
-// 		transition: switchBarTransition,
-// 	},
-// 	checked: {
-// 		backgroundColor: ({ color, theme }) => theme.palette[color].main,
-// 		opacity: 0.5,
-// 		transition: switchBarTransition,
-// 	},
-// });
-
-const SwitchIcon = ({ checked, color, theme }) => (
-	<AnimatedSwitchIcon color={color} theme={theme} pose={checked ? 'checked' : 'unchecked'} />
-);
-
-/**
-  * Gets styles for all components/elements
-  * @param {object} props
-  */
-const styles = (props) =>
+const getStyles = props =>
 	merge(
 		{
-			root: {
+			rootStyles: {
 				position: 'relative',
 				display: 'inline-flex',
 				width: '62px',
@@ -107,131 +39,185 @@ const styles = (props) =>
 				// For correct alignment with text
 				verticalAlign: 'middle',
 			},
-			selectionControl: {
-				':after': {
-					content: '" "',
-					position: 'absolute',
-					top: '50%',
-					left: '50%',
-					width: '34px',
-					height: '14px',
-					marginTop: '-7px',
-					marginLeft: '-17px',
-					display: 'block',
-					backgroundColor: props.checked
-						? props.theme.palette[props.color].main
-						: props.theme.palette.type === 'light'
-							? props.theme.palette.common.black
-							: props.theme.palette.common.white,
-					borderRadius: `${14 / 2}px`,
-					opacity: props.checked
-						? 0.5
-						: props.theme.palette.type === 'light' ? 0.38 : 0.3,
-					transition: `opacity ${props.theme.duration
-						.shortest}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
-				},
+			barStyles: {
+				position: 'absolute',
+				top: '50%',
+				left: '50%',
+				width: '34px',
+				height: '14px',
+				marginTop: '-7px',
+				marginLeft: '-17px',
+				display: 'block',
+				backgroundColor:
+					props.theme.palette.type === 'light'
+						? props.theme.palette.common.black
+						: props.theme.palette.common.white,
+				borderRadius: `${14 / 2}px`,
+				opacity: props.theme.palette.type === 'light' ? 0.38 : 0.3,
+				transition: `opacity ${
+					props.theme.duration.shortest
+				}ms cubic-bezier(${props.theme.easing.inOut.join()}), background-color ${
+					props.theme.duration.shortest
+				}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
 			},
-			icon: {
+			iconStyles: {
 				width: '20px',
 				height: '20px',
-				boxShadow: props.theme.elevation[1],
 				backgroundColor: 'currentColor',
 				borderRadius: '50%',
-				transition: `transform ${props.theme.duration
-					.shortest} cubic-bezier(${props.theme.easing.inOut.join()})`,
+				transition: `box-shadow ${
+					props.theme.duration.shortest
+				}ms cubic-bezier(${props.theme.easing.inOut.join()}), background-color ${
+					props.theme.duration.shortest
+				}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
 			},
-			iconButton: {
+			iconButtonStyles: {
 				zIndex: 1,
 				padding: '0px',
 				height: '48px',
 				width: '48px',
 			},
 		},
-		//getDisabledStyles(props),
-		props.$styles,
+		getCheckedStyles(props),
+		getDisabledStyles(props),
+		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
-/**
- * Creates a styled Switch component
- * @param {object} props
- */
-const Switch = (props) => {
-	const { className, icon, $styles, theme, ...passThru } = props;
-	const {
-		root: rootStyles,
-		bar: barStyles,
-		icon: iconStyles,
-		iconButton: iconButtonStyles,
-	} = styles(props);
+const transition = {
+	transform: ({ theme }) => ({
+		duration: theme.duration.shortest,
+		ease: theme.easing.inOut,
+	}),
+};
+
+const AnimatedIcon = posed.span({
+	disabled: {
+		boxShadow: ({ theme }) => theme.elevation[1],
+		color: ({ theme: { palette } }) =>
+			palette.type === 'light' ? palette.grey.main : palette.grey.dark,
+	},
+	unchecked: {
+		boxShadow: ({ theme }) => theme.elevation[1],
+		color: ({ theme }) => theme.palette.common.white,
+		transition: transition,
+	},
+	checked: {
+		boxShadow: ({ theme }) => theme.elevation[2],
+		color: ({ color, theme }) =>
+			color === 'primary' || color === 'secondary'
+				? theme.palette[color].main
+				: theme.palette.common.white,
+		transition: transition,
+	},
+});
+
+const AnimatedSwitch = posed.span({
+	disabled: {
+		transform: 'translate3d(0px, 0px, 0px)',
+	},
+	unchecked: {
+		transform: 'translate3d(0px, 0px, 0px)',
+		transition: transition,
+	},
+	checked: {
+		transform: 'translate3d(14px, 0px, 0px)',
+		transition: transition,
+	},
+});
+
+const Switch = props => {
+	const { theme } = useContext(ThemeContext);
+	const [isChecked, setChecked] = useState(isNil(props.checked) ? false : props.checked);
+	const checked = isNil(props.checked) ? isChecked : props.checked;
+	const { className, icon, styles, ...passThru } = props;
+	const { rootStyles, barStyles, iconStyles, iconButtonStyles } = getStyles({
+		...props,
+		...{ checked, theme },
+	});
 
 	return (
-		<span className={classify(rootStyles, className)}>
-			<SelectionControl
-				type="checkbox"
-				icon={icon ? icon : SwitchIcon}
-				$styles={styles}
-				{...passThru}
-			/>
+		<span className={cn(rootStyles, className)}>
+			<span className={cn(barStyles)} />
+			<AnimatedSwitch
+				theme={theme}
+				pose={props.disabled ? 'disabled' : checked ? 'checked' : 'unchecked'}>
+				<SelectionControl
+					onChange={event => {
+						if (isNil(props.checked)) setChecked(!isChecked);
+						if (props.onChange) props.onChange(event);
+					}}
+					type="checkbox"
+					icon={
+						<AnimatedIcon
+							className={cn(iconStyles)}
+							color={props.color}
+							theme={theme}
+							pose={props.disabled ? 'disabled' : checked ? 'checked' : 'unchecked'}
+						/>
+					}
+					styles={{ iconButtonStyles }}
+					{...passThru}
+				/>
+			</AnimatedSwitch>
 		</span>
 	);
 };
 
 Switch.propTypes = {
 	/**
-   * If `true`, the component is checked.
-   */
-	checked: PropTypes.oneOfType([ PropTypes.bool, PropTypes.string ]),
+	 * If `true`, the component is checked.
+	 */
+	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 	/**
-   * The icon to display when the component is checked.
-   */
+	 * The icon to display when the component is checked.
+	 */
 	checkedIcon: PropTypes.node,
 	className: PropTypes.string,
 	/**
-   * The color of the component. It supports those theme colors that make sense for this component.
-   */
-	color: PropTypes.oneOf([ 'primary', 'secondary', 'default' ]),
+	 * The color of the component. It supports those theme colors that make sense for this component.
+	 */
+	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 	defaultChecked: PropTypes.bool,
 	/**
-   * If `true`, the switch will be disabled.
-   */
+	 * If `true`, the switch will be disabled.
+	 */
 	disabled: PropTypes.bool,
 	/**
-   * If `true`, the ripple effect will be disabled.
-   */
+	 * If `true`, the ripple effect will be disabled.
+	 */
 	disableRipple: PropTypes.bool,
 	/**
-   * The icon to display when the component is unchecked.
-   */
-	icon: PropTypes.node,
+	 * The icon to display when the component is unchecked.
+	 */
+	// icon: PropTypes.node,
 	/**
-   * The id of the `input` element.
-   */
+	 * The id of the `input` element.
+	 */
 	id: PropTypes.string,
 	/**
-   * Attributes applied to the `input` element.
-   */
+	 * Attributes applied to the `input` element.
+	 */
 	inputProps: PropTypes.object,
 	/**
-   * Use that property to pass a ref callback to the native input component.
-   */
-	inputRef: PropTypes.oneOfType([ PropTypes.func, PropTypes.object ]),
+	 * Use that property to pass a ref callback to the native input component.
+	 */
+	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/**
-   * Callback fired when the state is changed.
-   *
-   * @param {object} event The event source of the callback.
-   * You can pull out the new value by accessing `event.target.checked`.
-   * @param {boolean} checked The `checked` value of the switch
-   */
+	 * Callback fired when the state is changed.
+	 *
+	 * @param {object} event The event source of the callback.
+	 * You can pull out the new value by accessing `event.target.checked`.
+	 * @param {boolean} checked The `checked` value of the switch
+	 */
 	onChange: PropTypes.func,
-	$styles: PropTypes.oneOfType([ PropTypes.func, PropTypes.object ]),
-	theme: PropTypes.object,
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/**
-   * The input component property `type`.
-   */
+	 * The input component property `type`.
+	 */
 	type: PropTypes.string,
 	/**
-   * The value of the component.
-   */
+	 * The value of the component.
+	 */
 	value: PropTypes.string,
 };
 
@@ -239,4 +225,4 @@ Switch.defaultProps = {
 	color: 'secondary',
 };
 
-export default themify(Switch);
+export default Switch;

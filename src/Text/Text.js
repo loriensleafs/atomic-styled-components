@@ -1,4 +1,4 @@
-import tag from 'clean-tag';
+import React, { useContext } from 'react';
 import {
 	fontFamily,
 	fontSize,
@@ -7,20 +7,26 @@ import {
 	fontWeight,
 	letterSpacing,
 } from 'styled-system';
+import ThemeContext from './../theme/ThemeContext';
+import cn from './../styles/className';
 import { bgColor, textColor } from './../styles';
-import { styled } from 'styletron-react';
-import { themify } from './../theme';
 
-const Text = styled(tag, (props) => ({
-	...fontFamily(props),
-	...fontSize(props),
-	...textAlign(props),
-	...lineHeight(props),
-	...fontWeight(props),
-	...letterSpacing(props),
-	...bgColor(props),
-	...textColor(props),
-}));
+const Text = props => {
+	const { theme } = useContext(ThemeContext);
+	const styleProps = { ...props, ...{ theme } };
+	const className = cn(props.className, {
+		...fontFamily(styleProps),
+		...fontSize(styleProps),
+		...textAlign(styleProps),
+		...lineHeight(styleProps),
+		...fontWeight(styleProps),
+		...letterSpacing(styleProps),
+		...bgColor(styleProps),
+		...textColor(styleProps),
+	});
+
+	return <div className={className}>{props.children}</div>;
+};
 
 Text.displayName = 'Text';
 
@@ -33,4 +39,4 @@ Text.propTypes = {
 	...letterSpacing.propTypes,
 };
 
-export default themify(Text);
+export default Text;

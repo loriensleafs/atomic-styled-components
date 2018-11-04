@@ -4,8 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 import App from './App';
+import { engine } from './styles';
 import { Provider as StyletronProvider } from 'styletron-react';
-import { engine, ThemeProvider } from './theme';
+import { ThemeProvider } from './theme';
 
 ReactDOM.render(
 	<StyletronProvider value={engine}>

@@ -1,9 +1,9 @@
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import tag from 'clean-tag';
+import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
+import cn from './../styles/className';
 import { fade } from './../utils/colorHelpers';
-import { styled } from 'styletron-react';
-import { themify } from './../theme';
 
 const getAbsoluteStyles = ({ $absolute }) =>
 	$absolute
@@ -12,23 +12,37 @@ const getAbsoluteStyles = ({ $absolute }) =>
 				bottom: 0,
 				left: 0,
 				width: '100%',
-			}
+		  }
 		: null;
 
-const Divider = styled(tag, ({ $absolute, $inset, $light, $styles, theme: { palette } }) =>
-	merge(
-		{
-			width: '100%',
-			height: '1px',
-			margin: $inset ? '72px' : 0,
-			border: 'none',
-			flexShrink: 0,
-			backgroundColor: $light ? fade(palette.divider, 0.08) : palette.divider,
-		},
-		getAbsoluteStyles({ $absolute }),
-		$styles,
-	),
-);
+const Divider = ({
+	$absolute,
+	$inset,
+	$light,
+	$styles,
+	children,
+	className: classNameProp,
+	is: C,
+}) => {
+	const { theme } = useContext(ThemeContext);
+	const className = cn(
+		classNameProp,
+		merge(
+			{
+				width: '100%',
+				height: '1px',
+				margin: $inset ? '72px' : 0,
+				border: 'none',
+				flexShrink: 0,
+				backgroundColor: $light ? fade(theme.palette.divider, 0.08) : theme.palette.divider,
+			},
+			getAbsoluteStyles({ $absolute }),
+			$styles,
+		),
+	);
+
+	return <C className={className}>{children}</C>;
+};
 
 Divider.displayName = 'Divider';
 
@@ -54,4 +68,4 @@ Divider.defaultProps = {
 	$styles: {},
 };
 
-export default themify(Divider);
+export default Divider;

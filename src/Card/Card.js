@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { withWrapper } from 'styletron-react';
+import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
+import Paper from './../Paper';
 import { space } from 'styled-system';
 import {
 	bgColor,
@@ -13,10 +14,8 @@ import {
 	minWidth,
 	width,
 } from './../styles';
-import Paper from './../Paper';
-import { classify, themify } from './../theme';
 
-const styles = (props) =>
+const styles = props =>
 	merge(
 		{
 			overflow: 'hidden',
@@ -33,13 +32,21 @@ const styles = (props) =>
 		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
 	);
 
-const Card = withWrapper(Paper, (Styled) => ({ $styles, bg, blacklist, raised, ...passThru }) => (
-	<Styled
-		$styles={styles({ ...$styles, ...bg, ...passThru })}
-		$elevation={raised ? 8 : 1}
-		{...passThru}
-	/>
-));
+const Card = ({ $styles, bg, blacklist, raised, ...passThru }) => {
+	const { theme } = useContext(ThemeContext);
+	return (
+		<Paper
+			$styles={styles({
+				...$styles,
+				...bg,
+				...passThru,
+				...{ theme },
+			})}
+			$elevation={raised ? 8 : 1}
+			{...passThru}
+		/>
+	);
+};
 
 Card.displayName = 'Card';
 
@@ -67,4 +74,4 @@ Card.defaultProps = {
 	$styles: {},
 };
 
-export default themify(Card);
+export default Card;

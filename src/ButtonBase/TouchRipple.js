@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
 
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import Ripple from './Ripple';
-import { classify, themify } from './../theme';
+import ThemeContext from './../theme/ThemeContext';
+import cn from './../styles/className';
+import themify from './../theme/themify';
 
 export const DURATION = 700;
 export const DELAY_RIPPLE = 100;
@@ -28,19 +30,9 @@ const styles = {
 	},
 };
 
-class TouchRipple extends PureComponent {
-	// Used to filter out mouse emulated events on mobile.
-	// On touch events we set this flag to true.
-	ignoringMouseDown = false;
-
-	// We use a timer in order to only show the ripples for touch "click" like events.
-	// We don't want to display the ripple for touch scroll events.
-	startTimer = null;
-
-	// This i sthe hook called once the previous timeout is ready.
-	startTimerCommit = null;
-
+class TouchRipple extends Component {
 	state = {
+		// eslint-disable-next-line react/no-unused-state
 		nextKey: 0,
 		ripples: [],
 	};
@@ -49,7 +41,9 @@ class TouchRipple extends PureComponent {
 		clearTimeout(this.startTimer);
 	}
 
-	pulsate = () => this.start({}, { pulsate: true });
+	pulsate = () => {
+		this.start({}, { pulsate: true });
+	};
 
 	start = (event = {}, options = {}, cb) => {
 		const {
@@ -63,7 +57,9 @@ class TouchRipple extends PureComponent {
 			return;
 		}
 
-		if (event.type === 'touchstart') this.ignoringMouseDown = true;
+		if (event.type === 'touchstart') {
+			this.ignoringMouseDown = true;
+		}
 
 		const element = fakeElement ? null : ReactDOM.findDOMNode(this);
 		const rect = element
@@ -73,9 +69,9 @@ class TouchRipple extends PureComponent {
 					height: 0,
 					left: 0,
 					top: 0,
-				};
+			  };
 
-		// Get the size of the ripple.
+		// Get the size of the ripple
 		let rippleX;
 		let rippleY;
 		let rippleSize;
@@ -109,36 +105,37 @@ class TouchRipple extends PureComponent {
 			rippleSize = Math.sqrt(sizeX ** 2 + sizeY ** 2);
 		}
 
-		// Touch devices
+		// Touche devices
 		if (event.touches) {
 			// Prepare the ripple effect.
 			this.startTimerCommit = () => {
 				this.startCommit({ pulsate, rippleX, rippleY, rippleSize, cb });
 			};
-			// Delay the execution of the ripple effect.
+			// Deplay the execution of the ripple effect.
 			this.startTimer = setTimeout(() => {
 				if (this.startTimerCommit) {
 					this.startTimerCommit();
 					this.startTimerCommit = null;
 				}
-			}, DELAY_RIPPLE);
+			}, DELAY_RIPPLE); // We have to make a tradeoff with this value.
 		} else {
 			this.startCommit({ pulsate, rippleX, rippleY, rippleSize, cb });
 		}
 	};
 
-	startCommit = (params) => {
+	startCommit = params => {
 		const { pulsate, rippleX, rippleY, rippleSize, cb } = params;
 
-		this.setState((state) => {
+		this.setState(state => {
 			return {
 				nextKey: state.nextKey + 1,
 				ripples: [
 					...state.ripples,
 					<Ripple
 						key={state.nextKey}
+						classes={this.props.classes}
 						timeout={{
-							exit: DURATION - 50,
+							exit: DURATION,
 							enter: DURATION,
 						}}
 						pulsate={pulsate}
@@ -155,8 +152,8 @@ class TouchRipple extends PureComponent {
 		clearTimeout(this.startTimer);
 		const { ripples } = this.state;
 
-		// The touch interaction occurs to quickly.
-		// We still want to show the ripple effect.
+		// The touch interaction occurs too quickly.
+		// We still want to show ripple effect.
 		if (event.type === 'touchend' && this.startTimerCommit) {
 			event.persist();
 			this.startTimerCommit();
@@ -180,21 +177,22 @@ class TouchRipple extends PureComponent {
 	};
 
 	render() {
-		const { center, className, innerRef, theme, ...passThru } = this.props;
+		const { center, className, innerRef, ...passThru } = this.props;
 
 		return (
 			<TransitionGroup
-				className={classify(styles.root, className)}
+				className={cn(styles.root, className)}
 				component="span"
 				enter
 				exit
-				{...passThru}
-			>
+				{...passThru}>
 				{this.state.ripples}
 			</TransitionGroup>
 		);
 	}
 }
+
+TouchRipple.contextType = ThemeContext;
 
 TouchRipple.propTypes = {
 	/**
@@ -203,7 +201,6 @@ TouchRipple.propTypes = {
 	 */
 	center: PropTypes.bool,
 	className: PropTypes.string,
-	theme: PropTypes.object,
 };
 
 TouchRipple.defaultProps = {

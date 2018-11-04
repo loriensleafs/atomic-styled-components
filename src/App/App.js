@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import GlobalStyle from './../GlobalStyle';
 import Box from './../Box';
 import ErrorBoundry from './../ErrorBoundry';
@@ -6,7 +6,7 @@ import Container from './../Container';
 import ButtonDemo from './ButtonDemo';
 import GridDemo from './GridDemo';
 import SwitchDemo from './SwitchDemo';
-import { themify } from './../theme';
+import ThemeContext from './../theme/ThemeContext';
 
 const getGlobalStyles = ({ theme }) => `
 	* {
@@ -23,7 +23,8 @@ const getGlobalStyles = ({ theme }) => `
 `;
 
 const App = (props = {}) => {
-	console.log(props.theme);
+	const { theme } = useContext(ThemeContext);
+	console.log(theme);
 
 	return (
 		<ErrorBoundry>
@@ -39,4 +40,4 @@ const App = (props = {}) => {
 	);
 };
 
-export default themify(App);
+export default App;

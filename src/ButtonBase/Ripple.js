@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Transition from 'react-transition-group/Transition';
 import merge from './../utils/pureRecursiveMerge';
 import { styled } from 'styletron-react';
-import { themify } from './../theme';
+import ThemeContext from './../theme/ThemeContext';
 import { DURATION } from './TouchRipple';
 
 const RippleSurface = styled('span', ({ $theme, $visible, $pulsate }) => {
@@ -127,11 +127,16 @@ class Ripple extends Component {
 		leaving: false,
 	};
 
-	handleEnter = () => this.setState({ visible: true });
+	handleEnter = () => {
+		this.setState({ visible: true });
+	};
 
-	handleExit = () => this.setState({ leaving: true });
+	handleExit = () => {
+		this.setState({ leaving: true });
+	};
 
 	render() {
+		const { theme } = this.context;
 		const {
 			className: classNameProp,
 			pulsate,
@@ -139,7 +144,6 @@ class Ripple extends Component {
 			rippleY,
 			rippleSize,
 			styles,
-			theme,
 			...passThru
 		} = this.props;
 
@@ -152,14 +156,15 @@ class Ripple extends Component {
 					$pulsate={pulsate}
 					style={getInlineStyles(rippleSize, rippleX, rippleY)}
 					$theme={theme}
-					$visible={visible}
-				>
+					$visible={visible}>
 					<RippleWave $leaving={leaving} $pulsate={pulsate} $theme={theme} />
 				</RippleSurface>
 			</Transition>
 		);
 	}
 }
+
+Ripple.contextType = ThemeContext;
 
 Ripple.propTypes = {
 	className: PropTypes.string,
@@ -173,4 +178,4 @@ Ripple.defaultProps = {
 	pulsate: false,
 };
 
-export default themify(Ripple);
+export default Ripple;

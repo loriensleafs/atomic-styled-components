@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
-import tag from 'clean-tag';
-import { styled } from 'styletron-react';
+import React, { useContext } from 'react';
+import ThemeContext from './../theme/ThemeContext';
+import cn from './../styles/className';
 import { space, fontSize } from 'styled-system';
 import {
 	bgColor,
@@ -12,20 +12,27 @@ import {
 	minWidth,
 	width,
 } from './../styles';
-import { themify } from './../theme';
 
-const Box = styled(tag, (props) => ({
-	...bgColor(props),
-	...textColor(props),
-	...fontSize(props),
-	...height(props),
-	...maxHeight(props),
-	...maxWidth(props),
-	...minHeight(props),
-	...minWidth(props),
-	...space(props),
-	...width(props),
-}));
+const Box = props => {
+	const { theme } = useContext(ThemeContext);
+	const { $styles = {}, as: C } = props;
+	const styleProps = { ...props, ...{ theme } };
+	const className = cn(props.className, {
+		...bgColor(styleProps),
+		...textColor(styleProps),
+		...fontSize(styleProps),
+		...height(styleProps),
+		...maxHeight(styleProps),
+		...maxWidth(styleProps),
+		...minHeight(styleProps),
+		...minWidth(styleProps),
+		...space(styleProps),
+		...width(styleProps),
+		...$styles,
+	});
+
+	return <C className={className}>{props.children}</C>;
+};
 
 Box.displayName = 'Box';
 
@@ -40,11 +47,10 @@ Box.propTypes = {
 	...minWidth.propTypes,
 	...space.propTypes,
 	...width.propTypes,
-	theme: PropTypes.object,
 };
 
 Box.defaultProps = {
-	blacklist: Object.keys(Box.propTypes),
+	as: 'div',
 };
 
-export default themify(Box);
+export default Box;

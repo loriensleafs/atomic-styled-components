@@ -1,19 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
-import { space as spaceSystem } from 'styled-system';
-import { classify, themify } from './../theme';
+import cn from './../styles/className';
+import { space } from 'styled-system';
+import { isFunc } from './../utils/helpers';
 
-/**
-  * Maps props to color styles
-  * @param {object} props
-  * @param {object} props.theme
-  * @param {string} [props.color='default']
-  */
-export const getColorStyles = (props) => {
-	const { palette } = props.theme;
-
-	switch (props.color) {
+export const getColorStyles = ({ color, theme: { palette } }) => {
+	switch (color) {
 		case 'inherit':
 			return {
 				color: 'inherit',
@@ -43,15 +37,8 @@ export const getColorStyles = (props) => {
 	}
 };
 
-/**
-  * Maps props to root styles
-  * @param {object} props
-  * @param {object} props.theme
-  */
-export const styles = (props) => {
-	const {} = props.theme;
-
-	return merge(
+export const getStyles = props =>
+	merge(
 		{
 			userSelect: 'none',
 			fontSize: '24px',
@@ -61,16 +48,12 @@ export const styles = (props) => {
 			flexShrink: 0,
 		},
 		getColorStyles(props),
-		spaceSystem(props),
-		props.$style,
+		space(props),
+		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
-};
 
-/**
- * Creates a styled Icon component
- * @param {object} props
- */
-const Icon = (props) => {
+const Icon = props => {
+	const { theme } = useContext(ThemeContext);
 	const {
 		children,
 		className,
@@ -90,13 +73,15 @@ const Icon = (props) => {
 		pb,
 		px,
 		py,
-		$styles,
-		theme,
+		styles,
 		...passThru
 	} = props;
 
 	return (
-		<span className={classify(styles(props).root, className)} aria-hidden="true" {...passThru}>
+		<span
+			className={cn(getStyles({ ...props, ...{ theme } }), className)}
+			aria-hidden="true"
+			{...passThru}>
 			{children}
 		</span>
 	);
@@ -114,22 +99,21 @@ Icon.propTypes = {
 	/**
 	 * The color of the component. It supports those theme colors that make sense for this component.
 	 */
-	color: PropTypes.oneOf([ 'inherit', 'primary', 'secondary', 'action', 'error', 'disabled' ]),
+	color: PropTypes.oneOf(['inherit', 'primary', 'secondary', 'action', 'error', 'disabled']),
 	/**
 	 * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
 	 */
-	fontSize: PropTypes.oneOf([ 'inherit', 'default' ]),
-	$styles: PropTypes.object,
-	theme: PropTypes.object,
-	...spaceSystem.propTypes,
+	fontSize: PropTypes.oneOf(['inherit', 'default']),
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...space.propTypes,
 };
 
 Icon.defaultProps = {
 	color: 'inherit',
 	fontSize: 'default',
-	$styles: { root: {} },
+	styles: {},
 };
 
 Icon.displayName = 'Icon';
 
-export default themify(Icon);
+export default Icon;

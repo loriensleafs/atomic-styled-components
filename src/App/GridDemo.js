@@ -5,9 +5,9 @@ import Divider from './../Divider';
 import Flex from './../Flex';
 import Text from './../Text';
 
-export default () => (
+const GridDemo = () => (
 	<Card my={2}>
-		<Flex flexWrap="wrap" direction={[ 'col', 'row' ]} mx={2} p={4}>
+		<Flex flexWrap="wrap" direction={['col', 'row']} mx={2} p={4}>
 			<Box mx={2} my={1} w={1 / 2}>
 				<Text p={1} color="primary.contrastText" bg="primary.main">
 					1/2
@@ -56,3 +56,5 @@ export default () => (
 		</Flex>
 	</Card>
 );
+
+export default GridDemo;

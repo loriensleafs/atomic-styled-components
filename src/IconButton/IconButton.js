@@ -1,33 +1,28 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
-import { space as spaceSystem } from 'styled-system';
+import cn from './../styles/className';
 import ButtonBase from './../ButtonBase';
-import { classify, themify } from './../theme';
+import { space } from 'styled-system';
+import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
-/**
-  * Maps props to color styles
-  * @param {object} props
-  * @param {object} props.theme
-  * @param {string} [props.color='default']
-  */
-export const getColorStyles = (props) => {
-	const { palette } = props.theme;
+export const getColorStyles = ({ color, theme: { palette } }) => {
 	let next = {};
 
-	if (props.color === 'inherit') {
+	if (color === 'inherit') {
 		next = merge(next, {
-			root: {
+			rootStyles: {
 				color: 'inherit',
 			},
 		});
-	} else if (props.color === 'primary' || props.color === 'secondary') {
+	} else if (color === 'primary' || color === 'secondary') {
 		next = merge(next, {
-			root: {
-				color: palette[props.color].main,
+			rootStyles: {
+				color: palette[color].main,
 				':hover': {
-					backgroundColor: fade(palette[props.color].main, palette.action.hoverOpacity),
+					backgroundColor: fade(palette[color].main, palette.action.hoverOpacity),
 				},
 			},
 		});
@@ -36,16 +31,10 @@ export const getColorStyles = (props) => {
 	return next;
 };
 
-/**
-  * Gets styles for all components/elements
-  * @param {object} props
-  */
-export const styles = (props) => {
-	const { palette, duration, easing } = props.theme;
-
-	return merge(
+export const getStyles = props =>
+	merge(
 		{
-			root: {
+			rootStyles: {
 				position: 'relative',
 				textAlign: 'center',
 				flex: '0 0 auto',
@@ -54,10 +43,15 @@ export const styles = (props) => {
 				height: '48px',
 				padding: 0,
 				borderRadius: '50%',
-				color: palette.action.active,
-				transition: `background-color ${duration.shortest}ms cubic-bezier(${easing.in.join()})`,
+				color: props.theme.palette.action.active,
+				transition: `background-color ${
+					props.theme.duration.shortest
+				}ms cubic-bezier(${props.theme.easing.in.join()})`,
 				':hover': {
-					backgroundColor: fade(palette.action.active, palette.action.hoverOpacity),
+					backgroundColor: fade(
+						props.theme.palette.action.active,
+						props.theme.palette.action.hoverOpacity,
+					),
 					'@media (hover: none)': {
 						backgroundColor: 'transparent',
 					},
@@ -66,11 +60,11 @@ export const styles = (props) => {
 					},
 				},
 				':disabled': {
-					color: palette.action.disabled,
+					color: props.theme.palette.action.disabled,
 				},
-				...spaceSystem(props),
+				...space(props),
 			},
-			label: {
+			labelStyles: {
 				width: '100%',
 				display: 'flex',
 				alignItems: 'inherit',
@@ -78,15 +72,11 @@ export const styles = (props) => {
 			},
 		},
 		getColorStyles(props),
-		typeof props.$styles === 'function' ? props.$styles(props) : props.$styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
-};
 
-/**
- * Creates a styled IconButton component
- * @param {object} props
- */
-const IconButton = (props) => {
+const IconButton = props => {
+	const { theme } = useContext(ThemeContext);
 	const {
 		children,
 		className,
@@ -106,23 +96,21 @@ const IconButton = (props) => {
 		pb,
 		px,
 		py,
-		$styles,
-		theme,
+		styles,
 		...passThru
 	} = props;
 
-	const { root: rootStyles, label: labelStyles } = styles(props);
+	const { rootStyles, labelStyles } = getStyles({ ...props, ...{ theme } });
 
 	return (
 		<ButtonBase
-			$styles={{ root: rootStyles }}
+			styles={rootStyles}
 			className={className}
 			centerRipple
 			focusRipple
 			disabled={disabled}
-			{...passThru}
-		>
-			<span className={classify(labelStyles)}>{children}</span>
+			{...passThru}>
+			<span className={cn(labelStyles)}>{children}</span>
 		</ButtonBase>
 	);
 };
@@ -136,7 +124,7 @@ IconButton.propTypes = {
 	/**
 	 * The color of the component. It supports those theme palette that make sense for this component.
 	 */
-	color: PropTypes.oneOf([ 'default', 'inherit', 'primary', 'secondary' ]),
+	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
 	/**
 	 * If `true`, the button will be disabled.
 	 */
@@ -145,18 +133,14 @@ IconButton.propTypes = {
 	 * If `true`, the ripple will be disabled.
 	 */
 	disableRipple: PropTypes.bool,
-	$styles: PropTypes.oneOfType([ PropTypes.func, PropTypes.object ]),
-	theme: PropTypes.object,
-	...spaceSystem.propTypes,
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...space.propTypes,
 };
 
 IconButton.defaultProps = {
 	color: 'default',
 	disabled: false,
-	$styles: {
-		root: {},
-		label: {},
-	},
+	styles: {},
 };
 
-export default themify(IconButton);
+export default IconButton;

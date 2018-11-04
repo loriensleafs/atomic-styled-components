@@ -15,7 +15,7 @@ import {
 	SaveIcon,
 } from './DemoIcons';
 
-export default () => (
+const ButtonDemo = () => (
 	<Card my={2}>
 		<Box w={1} py={4} px={2}>
 			<Flex pb={3} justifyContent="center" alignItems="center">
@@ -134,3 +134,5 @@ export default () => (
 		</Flex>
 	</Card>
 );
+
+export default ButtonDemo;

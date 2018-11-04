@@ -1,10 +1,15 @@
-import { withStyle } from 'styletron-react';
-import { themify } from './../theme';
+import React, { useContext } from 'react';
+import ThemeContext from './../theme/ThemeContext';
 import Box from './../Box';
 
-const Container = withStyle(Box, ({ theme }) => ({
-	maxWidth: theme.maxWidth,
-}));
+const Container = props => {
+	const { theme } = useContext(ThemeContext);
+	return (
+		<Box $styles={{ maxWidth: theme.maxWidth }} {...props}>
+			{props.children}
+		</Box>
+	);
+};
 
 Container.displayName = 'Container';
 
@@ -13,4 +18,4 @@ Container.defaultProps = {
 	px: 3,
 };
 
-export default themify(Container);
+export default Container;
