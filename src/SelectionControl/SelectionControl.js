@@ -70,6 +70,8 @@ class SelectionControl extends Component {
 			disabled: disabledProp,
 			icon,
 			id,
+			indeterminate,
+			indeterminateIcon,
 			inputProps,
 			inputRef,
 			name,
