@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
@@ -10,7 +10,7 @@ import cn from './../styles/className';
 import themify from './../theme/themify';
 
 export const DURATION = 700;
-export const DELAY_RIPPLE = 100;
+export const DELAY_RIPPLE = 80;
 
 const styles = {
 	root: {
@@ -30,7 +30,7 @@ const styles = {
 	},
 };
 
-class TouchRipple extends Component {
+class TouchRipple extends PureComponent {
 	state = {
 		// eslint-disable-next-line react/no-unused-state
 		nextKey: 0,
