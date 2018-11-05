@@ -223,6 +223,7 @@ Switch.propTypes = {
 
 Switch.defaultProps = {
 	color: 'secondary',
+	styles: {},
 };
 
 export default Switch;
