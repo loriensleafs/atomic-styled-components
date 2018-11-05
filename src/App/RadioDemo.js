@@ -35,6 +35,7 @@ class RadioDemo extends Component {
 							value="b"
 							name="radio-button-demo"
 							aria-label="B"
+							color="primary"
 						/>
 						<Radio
 							checked={this.state.selectedValue === 'c'}

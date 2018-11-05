@@ -1,40 +1,20 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import SelectionControl from './../SelectionControl';
 import CheckBoxIcon from './../svgIcons/CheckBox';
 import CheckboxOutlineBlankIcon from './../svgIcons/CheckBoxOutlineBlank';
 import IndeterminateCheckBoxIcon from './../svgIcons/IndeterminateCheckBox';
-import cn from './../styles/className';
-import merge from 'deep-extend';
-import { isFunc, isNil } from './../utils/helpers';
 
-function Checkbox(props) {
-	const { theme } = useContext(ThemeContext);
-	const [isChecked, setChecked] = useState(isNil(props.checked) ? false : props.checked);
-	const checked = isNil(props.checked) ? isChecked : props.checked;
-	const {
-		checkedIcon,
-		className,
-		icon,
-		indeterminate,
-		indeterminateIcon,
-		inputProps,
-		styles,
-		...passThru
-	} = props;
-
-	return (
-		<SelectionControl
-			type="checkbox"
-			className={className}
-			checkedIcon={indeterminate ? indeterminateIcon : checkedIcon}
-			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
-			icon={indeterminate ? indeterminateIcon : icon}
-			{...passThru}
-		/>
-	);
-}
+const Checkbox = props => (
+	<SelectionControl
+		type="checkbox"
+		className={props.className}
+		checkedIcon={props.indeterminate ? props.indeterminateIcon : props.checkedIcon}
+		inputProps={{ 'data-indeterminate': props.indeterminate, ...props.inputProps }}
+		icon={props.indeterminate ? props.indeterminateIcon : props.icon}
+		{...props}
+	/>
+);
 
 Checkbox.propTypes = {
 	/**

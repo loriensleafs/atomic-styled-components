@@ -5,7 +5,7 @@ import Box from './../Box';
 function Container(props) {
 	const { theme } = useContext(ThemeContext);
 	return (
-		<Box $styles={{ maxWidth: theme.maxWidth }} {...props}>
+		<Box styles={{ maxWidth: theme.maxWidth }} {...props}>
 			{props.children}
 		</Box>
 	);

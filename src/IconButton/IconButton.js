@@ -8,10 +8,16 @@ import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
-export const getColorStyles = ({ color, theme: { palette } }) => {
+export const getColorStyles = ({ color, disabled, theme: { palette } }) => {
 	let next = {};
 
-	if (color === 'inherit') {
+	if (disabled) {
+		next = merge(next, {
+			rootStyles: {
+				color: palette.action.disabled,
+			},
+		});
+	} else if (color === 'inherit') {
 		next = merge(next, {
 			rootStyles: {
 				color: 'inherit',

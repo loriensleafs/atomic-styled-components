@@ -1,29 +1,17 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import posed from 'react-pose';
-import ThemeContext from './../theme/ThemeContext';
 import SelectionControl from './../SelectionControl';
 import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
-import cn from './../styles/className';
-import merge from 'deep-extend';
-import { isFunc, isNil } from './../utils/helpers';
 
-function Radio(props) {
-	const { theme } = useContext(ThemeContext);
-	const [isChecked, setChecked] = useState(isNil(props.checked) ? false : props.checked);
-	const checked = isNil(props.checked) ? isChecked : props.checked;
-	const { className, styles, ...passThru } = props;
-
-	return (
-		<SelectionControl
-			type="radio"
-			icon={<RadioButtonUncheckedIcon />}
-			checkedIcon={<RadioButtonCheckedIcon />}
-			{...passThru}
-		/>
-	);
-}
+const Radio = props => (
+	<SelectionControl
+		type="radio"
+		icon={<RadioButtonUncheckedIcon />}
+		checkedIcon={<RadioButtonCheckedIcon />}
+		{...props}
+	/>
+);
 
 Radio.propTypes = {
 	/**

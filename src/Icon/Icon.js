@@ -6,34 +6,23 @@ import cn from './../styles/className';
 import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 
-export const getColorStyles = ({ color, theme: { palette } }) => {
-	switch (color) {
-		case 'inherit':
-			return {
-				color: 'inherit',
-			};
-		case 'primary':
-			return {
-				color: palette.primary.main,
-			};
-		case 'secondary':
-			return {
-				color: palette.secondary.main,
-			};
-		case 'active':
-			return {
-				color: palette.action.active,
-			};
-		case 'error':
-			return {
-				color: palette.error.main,
-			};
-		case 'disabled':
-			return {
-				color: palette.action.disabled,
-			};
-		default:
-			return {};
+export const getColorStyles = ({ color, disabled, theme: { palette } }) => {
+	if (disabled) {
+		return {
+			color: palette.action.disabled,
+		};
+	} else if (color === 'inherit') {
+		return {
+			color: 'inherit',
+		};
+	} else if (color === 'primary' || color === 'secondary' || color === 'error') {
+		return {
+			color: palette[color].main,
+		};
+	} else if (color === 'active') {
+		return {
+			color: palette.action.active,
+		};
 	}
 };
 
