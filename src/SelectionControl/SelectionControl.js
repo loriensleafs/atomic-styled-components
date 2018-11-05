@@ -10,12 +10,14 @@ const getStyles = props =>
 	merge(
 		{
 			iconButtonStyles: {
-				display: 'inline-flex',
-				alignItems: 'center',
-				transition: 'none',
-				':hover': {
-					// Disable the hover effect for the IconButton
-					backgroundColor: 'transparent',
+				rootStyles: {
+					display: 'inline-flex',
+					alignItems: 'center',
+					transition: 'none',
+					':hover': {
+						// Disable the hover effect for the IconButton
+						backgroundColor: 'transparent',
+					},
 				},
 			},
 			inputStyles: {
@@ -101,7 +103,7 @@ class SelectionControl extends Component {
 			<IconButton
 				color={checked ? color : null}
 				component="span"
-				styles={{ rootStyles: iconButtonStyles }}
+				styles={iconButtonStyles}
 				disabled={disabled}
 				tabIndex={null}
 				role={undefined}

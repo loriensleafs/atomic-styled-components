@@ -72,10 +72,12 @@ const getStyles = props =>
 				}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
 			},
 			iconButtonStyles: {
-				zIndex: 1,
-				padding: '0px',
-				height: '48px',
-				width: '48px',
+				rootStyles: {
+					zIndex: 1,
+					padding: '0px',
+					height: '48px',
+					width: '48px',
+				},
 			},
 		},
 		getCheckedStyles(props),
