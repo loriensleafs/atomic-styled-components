@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import { isFunc } from './../utils/helpers';
 
 const getStyles = props => ({

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
 import IconButton from './../IconButton';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import { isFunc } from './../utils/helpers';
 
 const getStyles = props =>

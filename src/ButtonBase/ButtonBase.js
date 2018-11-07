@@ -7,7 +7,7 @@ import keycode from 'keycode';
 import ownerWindow from './../utils/ownerWindow';
 import TouchRipple from './TouchRipple';
 import createRippleHandler from './createRippleHandler';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import merge from './../utils/pureRecursiveMerge';
 import { listenForFocusKeys, detectFocusVisible } from './focusVisible';
 import { isFunc } from './../utils/helpers';

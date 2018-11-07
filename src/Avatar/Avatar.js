@@ -1,6 +1,6 @@
 import React, { cloneElement, isValidElement, useContext } from 'react';
 import ThemeContext from './../theme/ThemeContext';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import { space as spaceSystem } from 'styled-system';
 
 export const getColorStyles = ({ color, theme }) =>

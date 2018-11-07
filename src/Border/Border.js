@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import ThemeContext from './../theme/ThemeContext';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import { borderRadius, borderColor, borders } from 'styled-system';
 
 const Border = props => {

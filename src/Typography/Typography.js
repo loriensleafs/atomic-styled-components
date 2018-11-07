@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import { space, style, textAlign, variant } from 'styled-system';
 import { textColor } from './../styles';
 import { isFunc, px } from './../utils/helpers';

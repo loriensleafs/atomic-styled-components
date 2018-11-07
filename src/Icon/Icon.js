@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 

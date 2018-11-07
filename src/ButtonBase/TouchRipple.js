@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import Ripple from './Ripple';
 import ThemeContext from './../theme/ThemeContext';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import themify from './../theme/themify';
 
 export const DURATION = 700;

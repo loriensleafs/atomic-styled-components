@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import ThemeContext from './../theme/ThemeContext';
 import SelectionControl from './../SelectionControl';
-import cn from './../styles/className';
+import cn from './../theme/className';
 import merge from 'deep-extend';
 import { isFunc, isNil } from './../utils/helpers';
 
