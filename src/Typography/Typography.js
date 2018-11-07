@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../styles/className';
 import { space, style, textAlign, variant } from 'styled-system';
-import { bgColor, textColor } from './../styles';
-
-export const num = n => typeof n === 'number' && !isNaN(n);
-export const px = n => (num(n) ? n + 'px' : n);
+import { textColor } from './../styles';
+import { isFunc, px } from './../utils/helpers';
 
 export const fontFamily = style({
 	prop: 'font',
@@ -49,19 +47,21 @@ const tagMap = {
 	overline: 'span',
 };
 
+export const getStyles = props => ({
+	...typographyVariants(props),
+	...fontFamily(props),
+	...fontSize(props),
+	...fontWeight(props),
+	...lineHeight(props),
+	...textAlign(props),
+	...textColor(props),
+	...space(props),
+	...(isFunc(props.styles) ? props.styles(props) : props.styles),
+});
+
 function Typography(props) {
 	const { theme } = useContext(ThemeContext);
-	const styleProps = { ...props, ...{ theme } };
-	const className = cn(props.className, {
-		...typographyVariants(styleProps),
-		...fontFamily(styleProps),
-		...fontSize(styleProps),
-		...fontWeight(styleProps),
-		...lineHeight(styleProps),
-		...textAlign(styleProps),
-		...textColor(styleProps),
-		...space(styleProps),
-	});
+	const className = cn(props.className, getStyles({ ...props, ...{ theme } }));
 	const Component = props.paragraph ? 'p' : tagMap[props.variant] || 'span';
 
 	return <Component className={className}>{props.children}</Component>;
@@ -79,6 +79,7 @@ Typography.propTypes = {
 	...{
 		paragraph: PropTypes.bool,
 	},
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 Typography.defaultProps = {

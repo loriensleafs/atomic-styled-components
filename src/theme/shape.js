@@ -1,3 +1,7 @@
 export default {
-	borderRadius: '4px',
+	borderRadius: {
+		square: '0px',
+		round: '4px',
+		circular: '50%',
+	},
 };

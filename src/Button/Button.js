@@ -66,7 +66,7 @@ export const getSizeStyles = ({
 					padding: `${space[2] - 1}px ${space[2] + 1}px`,
 					minWidth: '64px',
 					minHeight: '32px',
-					fontSize: `${fontSizes[1] - 0.07}${fontUnit}`,
+					fontSize: `${fontSizes[2] - 0.07}${fontUnit}`,
 				},
 			};
 		case 'large':
@@ -75,7 +75,7 @@ export const getSizeStyles = ({
 					padding: `${space[2]}px ${space[3] + space[2]}px`,
 					minWidth: '112px',
 					minHeight: '40px',
-					fontSize: `${fontSizes[1] + 0.0625}${fontUnit}`,
+					fontSize: `${fontSizes[2] + 0.0625}${fontUnit}`,
 				},
 			};
 		default:
@@ -174,14 +174,14 @@ const getStyles = props =>
 				minWidth: '64px',
 				minHeight: '36px',
 				padding: `${props.theme.space[2]}px ${props.theme.space[3]}px`,
-				fontSize: `${props.theme.typography.fontSizes[1]}${
+				fontSize: `${props.theme.typography.fontSizes[2]}${
 					props.theme.typography.fontUnit
 				}`,
 				fontWeight: props.theme.typography.fontWeights.medium,
 				lineHeight: `${props.theme.typography.lineHeights[1]}${
 					props.theme.typography.fontUnit
 				}`,
-				borderRadius: `${props.theme.shape.borderRadius}`,
+				borderRadius: `${props.theme.shape.borderRadius.round}`,
 				color: `${props.theme.palette.text.primary}`,
 				textTransform: 'uppercase',
 				transition: `background-color ${

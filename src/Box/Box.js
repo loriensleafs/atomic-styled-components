@@ -5,6 +5,7 @@ import cn from './../styles/className';
 import { space, fontSize, style } from 'styled-system';
 import {
 	bgColor,
+	borderRadius,
 	textColor,
 	height,
 	maxHeight,
@@ -15,32 +16,33 @@ import {
 } from './../styles';
 import { isFunc } from './../utils/helpers';
 
+const getStyles = props => ({
+	...bgColor(props),
+	...borderRadius(props),
+	...textColor(props),
+	...fontSize(props),
+	...height(props),
+	...maxHeight(props),
+	...maxWidth(props),
+	...minHeight(props),
+	...minWidth(props),
+	...space(props),
+	...width(props),
+	...(isFunc(props.styles) ? props.styles(props) : props.styles),
+});
+
 function Box(props) {
 	const { theme } = useContext(ThemeContext);
-	const { styles, as: C } = props;
-	const styleProps = { ...props, ...{ theme } };
-	const className = cn(props.className, {
-		...bgColor(styleProps),
-		...textColor(styleProps),
-		...fontSize(styleProps),
-		...height(styleProps),
-		...maxHeight(styleProps),
-		...maxWidth(styleProps),
-		...minHeight(styleProps),
-		...minWidth(styleProps),
-		...space(styleProps),
-		...width(styleProps),
-		...(props.radius ? { borderRadius: theme.shape.borderRadius } : null),
-		...(isFunc(styles) ? styles(props) : styles),
-	});
-
-	return <C className={className}>{props.children}</C>;
+	const Component = props.as;
+	const className = cn(props.className, getStyles({ ...props, ...{ theme } }));
+	return <Component className={className}>{props.children}</Component>;
 }
 
 Box.displayName = 'Box';
 
 Box.propTypes = {
 	...bgColor.propTypes,
+	...borderRadius.propTypes,
 	...textColor.propTypes,
 	...fontSize.propTypes,
 	...height.propTypes,
@@ -50,8 +52,10 @@ Box.propTypes = {
 	...minWidth.propTypes,
 	...space.propTypes,
 	...width.propTypes,
-	radius: PropTypes.bool,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...{
+		as: PropTypes.node,
+		styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	},
 };
 
 Box.defaultProps = {
