@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import Box from '../Box';
 import {
@@ -13,6 +12,7 @@ import {
 	order,
 	style,
 } from 'styled-system';
+import { isFunc, isNil } from './../utils/helpers';
 
 export const flexWrap = style({
 	prop: 'flexWrap',
@@ -23,35 +23,33 @@ export const flexDirection = style({
 	cssProperty: 'flexDirection',
 	transformValue: n => (n === 'col' ? 'column' : 'row'),
 });
-flexDirection.propTypes = {
-	direction: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-};
 
-export const flexDisplay = props => ({
-	display: props.inline ? 'inline-flex' : 'flex',
+export const flexDisplay = style({
+	prop: 'inline',
+	cssProperty: 'display',
+	transformValue: n => (!n ? 'flex' : 'inline-flex'),
 });
-flexDisplay.propTypes = {
-	inline: PropTypes.bool,
-};
+
+export const getStyles = props => ({
+	...flexDisplay(props),
+	...alignItems(props),
+	...alignContent(props),
+	...justifyContent(props),
+	...flexWrap(props),
+	...flexDirection(props),
+	...flex(props),
+	...flexBasis(props),
+	...justifySelf(props),
+	...alignSelf(props),
+	...order(props),
+	...(isFunc(props.styles) ? props.styles(props) : props.styles),
+});
 
 function Flex(props) {
 	const { theme } = useContext(ThemeContext);
-	const styleProps = { ...props, ...{ theme } };
-	const styles = {
-		...flexDisplay(styleProps),
-		...alignItems(styleProps),
-		...alignContent(styleProps),
-		...justifyContent(styleProps),
-		...flexWrap(styleProps),
-		...flexDirection(styleProps),
-		...flex(styleProps),
-		...flexBasis(styleProps),
-		...justifySelf(styleProps),
-		...alignSelf(styleProps),
-		...order(styleProps),
-	};
+	const styles = getStyles({ ...props, ...{ theme } });
 	return (
-		<Box styles={styles} {...props}>
+		<Box styles={getStyles({ ...props, ...{ theme } })} {...props}>
 			{props.children}
 		</Box>
 	);
@@ -71,6 +69,10 @@ Flex.propTypes = {
 	...justifySelf.propTypes,
 	...alignSelf.propTypes,
 	...order.propTypes,
+};
+
+Flex.defaultProps = {
+	inline: false,
 };
 
 export default Flex;
