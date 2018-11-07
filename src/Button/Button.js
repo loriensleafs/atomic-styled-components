@@ -52,7 +52,13 @@ export const getMiniStyles = ({ fab, mini }) =>
 		},
 	};
 
-export const getSizeStyles = ({ size, theme: { fontSizes, fontUnit, space } }) => {
+export const getSizeStyles = ({
+	size,
+	theme: {
+		typography: { fontSizes, fontUnit },
+		space,
+	},
+}) => {
 	switch (size) {
 		case 'small':
 			return {
@@ -168,9 +174,13 @@ const getStyles = props =>
 				minWidth: '64px',
 				minHeight: '36px',
 				padding: `${props.theme.space[2]}px ${props.theme.space[3]}px`,
-				fontSize: `${props.theme.fontSizes[1]}${props.theme.fontUnit}`,
-				fontWeight: props.theme.fontWeights.medium,
-				lineHeight: `${props.theme.lineHeights[1]}${props.theme.fontUnit}`,
+				fontSize: `${props.theme.typography.fontSizes[1]}${
+					props.theme.typography.fontUnit
+				}`,
+				fontWeight: props.theme.typography.fontWeights.medium,
+				lineHeight: `${props.theme.typography.lineHeights[1]}${
+					props.theme.typography.fontUnit
+				}`,
 				borderRadius: `${props.theme.shape.borderRadius}`,
 				color: `${props.theme.palette.text.primary}`,
 				textTransform: 'uppercase',

@@ -17,7 +17,7 @@ export default (overrides = {}) => {
 	} = overrides;
 	const palette = createPalette(paletteOverrides);
 	const breakpoints = createBreakpoints(breakpointsOverrides);
-
+	const typography = createTypography(palette, typographyOverrides);
 	return merge(
 		{
 			breakpoints,
@@ -28,8 +28,8 @@ export default (overrides = {}) => {
 			palette,
 			shape,
 			space,
+			typography,
 		},
-		createTypography(palette, typographyOverrides),
 		passThru,
 	);
 };

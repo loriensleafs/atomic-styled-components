@@ -1,10 +1,7 @@
 import merge from './../utils/pureRecursiveMerge';
 import { isFunc } from './../utils/helpers';
 
-export const makePxToRem = (coef = 14, htmlFontSize = 16) => (size) =>
-	`${size / htmlFontSize * coef}rem`;
-
-export const makeCreateVariant = (pxToRem) => (
+export const makeCreateVariant = pxToRem => (
 	color,
 	fontFamily,
 	fontWeight,
@@ -21,13 +18,15 @@ export const makeCreateVariant = (pxToRem) => (
 });
 
 export default (palette, typography = {}) => {
-	const { text: { primary, secondary } } = palette;
+	const {
+		text: { primary, secondary },
+	} = palette;
 	const {
 		htmlFontSize = 16,
 		fontUnit = 'rem',
 		fontFamily = '"Roboto", "Helvetica", "Arial", sans-serif',
-		fontSizes = [ 0.75, 0.875, 1, 1.125, 1.5, 1.75, 2.125, 2.8125, 3.5, 5 ],
-		lineHeights = [ 1.125, 1.25, 1.5, 1.75, 2, 2.125, 3, 4.5, 5.5, 6.5 ],
+		fontSizes = [0.625, 0.75, 0.875, 1, 1.25, 1.5, 2.125, 3, 3.75, 6],
+		lineHeights = [1.125, 1.25, 1.5, 1.75, 2, 2.125, 3, 4.5, 5.5, 6.5],
 		fontWeights = {
 			light: 300,
 			regular: 400,
@@ -40,7 +39,7 @@ export default (palette, typography = {}) => {
 		},
 		...passThru
 	} = isFunc(typography) ? typography(palette) : typography;
-	const pxToRem = makePxToRem(14, htmlFontSize);
+	const pxToRem = (size = 14) => `${size / htmlFontSize}rem`;
 	const createVariant = makeCreateVariant(pxToRem);
 
 	return merge(
@@ -52,7 +51,7 @@ export default (palette, typography = {}) => {
 			lineHeights,
 			fontWeights,
 			letterSpacings,
-			typography: {
+			variants: {
 				pxToRem,
 				h1: createVariant(primary, fontFamily, fontWeights.light, 96, 1),
 				h2: createVariant(primary, fontFamily, fontWeights.light, 60, 1),

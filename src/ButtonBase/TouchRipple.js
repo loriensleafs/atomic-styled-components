@@ -14,6 +14,7 @@ export const DELAY_RIPPLE = 80;
 
 const styles = {
 	root: {
+		contain: 'strict',
 		zIndex: 0,
 		position: 'absolute',
 		top: 0,

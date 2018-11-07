@@ -59,8 +59,8 @@ class RadioDemo extends Component {
 							color="default"
 							name="radio-button-demo"
 							aria-label="E"
-							icon={<RadioButtonUncheckedIcon fontSize="small" />}
-							checkedIcon={<RadioButtonCheckedIcon fontSize="small" />}
+							icon={<RadioButtonUncheckedIcon fontSize="20px" />}
+							checkedIcon={<RadioButtonCheckedIcon fontSize="20px" />}
 						/>
 					</Flex>
 				</Box>

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../styles/className';
-import { space, fontSize } from 'styled-system';
+import { space, fontSize, style } from 'styled-system';
 import {
 	bgColor,
 	textColor,
@@ -30,6 +30,7 @@ function Box(props) {
 		...minWidth(styleProps),
 		...space(styleProps),
 		...width(styleProps),
+		...(props.radius ? { borderRadius: theme.shape.borderRadius } : null),
 		...(isFunc(styles) ? styles(props) : styles),
 	});
 
@@ -49,6 +50,7 @@ Box.propTypes = {
 	...minWidth.propTypes,
 	...space.propTypes,
 	...width.propTypes,
+	radius: PropTypes.bool,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 

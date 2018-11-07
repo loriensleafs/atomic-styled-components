@@ -3,55 +3,73 @@ import Box from './../Box';
 import Card from './../Card';
 import Divider from './../Divider';
 import Flex from './../Flex';
-import Text from './../Text';
+import Typography from './../Typography';
 
 const GridDemo = () => (
 	<Card my={2}>
 		<Flex flexWrap="wrap" direction={['col', 'row']} mx={2} p={4}>
 			<Box mx={2} my={1} w={1 / 2}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/2
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/2
+					</Typography>
+				</Box>
 			</Box>
 			<Box mx={2} my={1} w={1 / 2}>
-				<Text color="primary.contrastText" bg="primary.main">
-					1/2
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/2
+					</Typography>
+				</Box>
 			</Box>
 			<Box px={2} py={1} w={1 / 3}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/3
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/3
+					</Typography>
+				</Box>
 			</Box>
 			<Box px={2} py={1} w={1 / 3}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/3
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/3
+					</Typography>
+				</Box>
 			</Box>
 			<Box px={2} py={1} w={1 / 3}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/3
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/3
+					</Typography>
+				</Box>
 			</Box>
 			<Box px={2} py={1} w={1 / 4}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/4
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/4
+					</Typography>
+				</Box>
 			</Box>
 			<Box px={2} py={1} w={1 / 4}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/4
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/4
+					</Typography>
+				</Box>
 			</Box>
 			<Box px={2} py={1} w={1 / 4}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/4
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/4
+					</Typography>
+				</Box>
 			</Box>
 			<Box px={2} py={1} w={1 / 4}>
-				<Text p={1} color="primary.contrastText" bg="primary.main">
-					1/4
-				</Text>
+				<Box bg="primary.main" radius>
+					<Typography my={1} p={1} color="primary.contrastText">
+						1/4
+					</Typography>
+				</Box>
 			</Box>
 		</Flex>
 	</Card>
