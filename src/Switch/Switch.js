@@ -144,9 +144,9 @@ function Switch(props) {
 				theme={theme}
 				pose={props.disabled ? 'disabled' : checked ? 'checked' : 'unchecked'}>
 				<SelectionControl
-					onChange={event => {
+					onChange={checked => {
 						if (isNil(props.checked)) setChecked(!isChecked);
-						if (props.onChange) props.onChange(event);
+						if (props.onChange) props.onChange(checked);
 					}}
 					type="checkbox"
 					icon={

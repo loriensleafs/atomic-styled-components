@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
@@ -36,103 +36,93 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
-class SelectionControl extends Component {
-	constructor(props) {
-		super();
-		this.isControlled = props.checked != null;
-		this.state = {};
-		if (!this.isControlled) {
-			// Not a controlled component, use internal state
-			this.state.checked = props.defaultChecked !== undefined ? props.defaultChecked : false;
-		}
-	}
+export const { context: ChangeContext, provider: ChangeProvider } = createContext(null);
 
-	handleFocus = event => {
-		if (this.props.onFocus) this.props.onFocus(event);
-	};
-
-	handleBlur = event => {
-		if (this.props.onBlur) this.props.onBlur(event);
-	};
-
-	handleInputChange = event => {
-		const checked = event.target.checked;
-		if (!this.isControlled) this.setState({ checked });
-		if (this.props.onChange) this.props.onChange(event, checked);
-	};
-
-	render() {
-		const { theme } = this.context;
-		const {
-			autoFocus,
-			checked: checkedProp,
-			checkedIcon,
-			className,
-			color,
-			disabled: disabledProp,
-			icon,
-			id,
-			indeterminate,
-			indeterminateIcon,
-			inputProps,
-			inputRef,
-			name,
-			onBlur,
-			onChange,
-			onFocus,
-			readOnly,
-			required,
-			styles,
-			tabIndex,
-			type,
-			value,
-			...passThru
-		} = this.props;
-		const { iconButtonStyles, inputStyles } = getStyles({
-			...this.state,
-			...this.props,
-			...{ theme },
-		});
-
-		let disabled = disabledProp;
-
-		const checked = this.isControlled ? checkedProp : this.state.checked;
-		const hasLabelFor = type === 'checkbox' || type === 'radio';
-
-		return (
-			<IconButton
-				color={checked ? color : null}
-				component="span"
-				styles={iconButtonStyles}
-				disabled={disabled}
-				tabIndex={null}
-				role={undefined}
-				onFocus={this.handleFocus}
-				onBlur={this.onBlur}
-				{...passThru}>
-				{checked ? (checkedIcon ? checkedIcon : icon) : icon}
-				<input
-					autoFocus={autoFocus}
-					checked={checked}
-					className={cn(inputStyles)}
-					disabled={disabled}
-					id={hasLabelFor && id}
-					name={name}
-					onChange={this.handleInputChange}
-					readOnly={readOnly}
-					ref={inputRef}
-					required={required}
-					tabIndex={tabIndex}
-					type={type}
-					value={value}
-					{...inputProps}
-				/>
-			</IconButton>
-		);
+export function selectionReducer(state, action) {
+	switch (action.type) {
+		case 'change':
+			return { ...state, ...{ checked: action.checked } };
+		case 'focus':
+			return { ...state, ...{ focused: true } };
+		case 'blur':
+			return { ...state, ...{ focused: false } };
+		default:
+			return state;
 	}
 }
 
-SelectionControl.contextType = ThemeContext;
+function SelectionControl(props) {
+	const { theme } = useContext(ThemeContext);
+	const {
+		autoFocus,
+		checked: checkedProp,
+		checkedIcon,
+		className,
+		color,
+		disabled,
+		icon,
+		id,
+		indeterminate,
+		indeterminateIcon,
+		inputProps,
+		inputRef,
+		name,
+		onBlur,
+		onChange,
+		onFocus,
+		readOnly,
+		required,
+		styles,
+		tabIndex,
+		type,
+		value,
+		...passThru
+	} = props;
+	const [{ checked, focused }, selectionDispatch] = useReducer(
+		selectionReducer,
+		{ checked: false, focused: false },
+		{ type: 'change', checked: checkedProp != null ? checkedProp : false },
+	);
+	const hasLabelFor = type === 'checkbox' || type === 'radio';
+	const { iconButtonStyles, inputStyles } = getStyles({
+		...props,
+		...{ checked },
+		...{ theme },
+	});
+	useEffect(() => onChange && onChange(checked), [checked]);
+	useEffect(() => (focused && onFocus ? onFocus() : !focused && onBlur && onBlur()), [focused]);
+
+	return (
+		<IconButton
+			color={checked ? color : null}
+			component="span"
+			styles={iconButtonStyles}
+			disabled={disabled}
+			tabIndex={null}
+			role={undefined}
+			onFocus={() => selectionDispatch({ type: 'focus' })}
+			onBlur={() => selectionDispatch({ type: 'blur' })}
+			{...passThru}>
+			{checked ? (checkedIcon ? checkedIcon : icon) : icon}
+			<input
+				autoFocus={autoFocus}
+				checked={checked}
+				className={cn(inputStyles)}
+				disabled={disabled}
+				id={hasLabelFor && id}
+				name={name}
+				onChange={e => selectionDispatch({ type: 'change', checked: e.target.checked })}
+				readOnly={readOnly}
+				ref={inputRef}
+				required={required}
+				tabIndex={tabIndex}
+				type={type}
+				value={value}
+				{...inputProps}
+			/>
+		</IconButton>
+	);
+}
 
 SelectionControl.propTypes = {
 	/**

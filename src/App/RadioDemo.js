@@ -11,8 +11,8 @@ class RadioDemo extends Component {
 		selectedValue: 'a',
 	};
 
-	handleChange = event => {
-		this.setState({ selectedValue: event.target.value });
+	handleChange = checked => {
+		this.setState({ selectedValue: checked });
 	};
 
 	render() {
