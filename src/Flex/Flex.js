@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import Box from '../Box';
 import {
@@ -12,7 +13,7 @@ import {
 	order,
 	style,
 } from 'styled-system';
-import { isFunc, isNil } from './../utils/helpers';
+import { isFunc } from './../utils/helpers';
 
 export const flexWrap = style({
 	prop: 'flexWrap',
@@ -58,7 +59,7 @@ function Flex(props) {
 Flex.displayName = 'Flex';
 
 Flex.propTypes = {
-	...flexDisplay.propTypes,
+	inline: PropTypes.bool,
 	...alignItems.propTypes,
 	...alignContent.propTypes,
 	...justifyContent.propTypes,

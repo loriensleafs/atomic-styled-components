@@ -33,9 +33,54 @@ const getStyles = props => ({
 
 function Box(props) {
 	const { theme } = useContext(ThemeContext);
-	const Component = props.as;
+	const {
+		is,
+		styles,
+		m,
+		mt,
+		mr,
+		mb,
+		ml,
+		mx,
+		my,
+		p,
+		pt,
+		pr,
+		pb,
+		pl,
+		px,
+		py,
+		radius,
+		color,
+		bg,
+		w,
+		h,
+		minWidth,
+		minHeight,
+		maxWidth,
+		maxHeight,
+		inline,
+		flexWrap,
+		align,
+		alignItems,
+		justify,
+		flex,
+		direction,
+		flexDirection,
+		justifySelf,
+		alignSelf,
+		order,
+		alignContent,
+		justifyContent,
+		...passThru
+	} = props;
+	const Component = props.is;
 	const className = cn(props.className, getStyles({ ...props, ...{ theme } }));
-	return <Component className={className}>{props.children}</Component>;
+	return (
+		<Component className={className} {...passThru}>
+			{props.children}
+		</Component>
+	);
 }
 
 Box.displayName = 'Box';
@@ -59,7 +104,7 @@ Box.propTypes = {
 };
 
 Box.defaultProps = {
-	as: 'div',
+	is: 'div',
 	styles: {},
 };
 

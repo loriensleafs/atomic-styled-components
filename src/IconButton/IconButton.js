@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
@@ -13,19 +13,19 @@ export const getColorStyles = ({ color, disabled, theme: { palette } }) => {
 
 	if (disabled) {
 		next = merge(next, {
-			rootStyles: {
+			buttonStyles: {
 				color: palette.action.disabled,
 			},
 		});
 	} else if (color === 'inherit') {
 		next = merge(next, {
-			rootStyles: {
+			buttonStyles: {
 				color: 'inherit',
 			},
 		});
 	} else if (color === 'primary' || color === 'secondary') {
 		next = merge(next, {
-			rootStyles: {
+			buttonStyles: {
 				color: palette[color].main,
 				':hover': {
 					backgroundColor: fade(palette[color].main, palette.action.hoverOpacity),
@@ -40,7 +40,7 @@ export const getColorStyles = ({ color, disabled, theme: { palette } }) => {
 export const getStyles = props =>
 	merge(
 		{
-			rootStyles: {
+			buttonStyles: {
 				position: 'relative',
 				textAlign: 'center',
 				flex: '0 0 auto',
@@ -78,7 +78,7 @@ export const getStyles = props =>
 			},
 		},
 		getColorStyles(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
 function IconButton(props) {
@@ -106,11 +106,14 @@ function IconButton(props) {
 		...passThru
 	} = props;
 
-	const { rootStyles, labelStyles } = getStyles({ ...props, ...{ theme } });
+	const { buttonStyles, labelStyles } = useMemo(() => getStyles({ ...props, ...{ theme } }), [
+		props,
+		theme,
+	]);
 
 	return (
 		<ButtonBase
-			styles={rootStyles}
+			styles={{ buttonStyles }}
 			className={className}
 			centerRipple
 			focusRipple
@@ -146,7 +149,6 @@ IconButton.propTypes = {
 IconButton.defaultProps = {
 	color: 'default',
 	disabled: false,
-	styles: {},
 };
 
 export default IconButton;

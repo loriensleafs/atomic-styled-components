@@ -1,19 +1,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+/* eslint-disable no-restricted-globals */
 
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import merge from './../utils/pureRecursiveMerge';
-import ButtonBase from './../ButtonBase';
+import ButtonBase from './../ButtonBase/ButtonBase';
 import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
 export const getColorStyles = ({ color, theme: { palette } }) =>
 	(color === 'primary' || color === 'secondary') && {
-		rootStyles: {
+		buttonStyles: {
 			color: palette[color].main,
 			':hover': {
 				backgroundColor: fade(palette[color].main, palette.action.hoverOpacity),
@@ -23,7 +24,7 @@ export const getColorStyles = ({ color, theme: { palette } }) =>
 
 export const getFabStyles = ({ fab, theme: { elevation } }) =>
 	fab && {
-		rootStyles: {
+		buttonStyles: {
 			borderRadius: '50%',
 			padding: '0px',
 			minWidth: '0px',
@@ -38,7 +39,7 @@ export const getFabStyles = ({ fab, theme: { elevation } }) =>
 
 export const getFullWidthStyles = ({ fullWidth }) =>
 	fullWidth && {
-		rootStyles: {
+		buttonStyles: {
 			width: '100%',
 		},
 	};
@@ -46,7 +47,7 @@ export const getFullWidthStyles = ({ fullWidth }) =>
 export const getMiniStyles = ({ fab, mini }) =>
 	fab &&
 	mini && {
-		rootStyles: {
+		buttonStyles: {
 			width: '40px',
 			height: '40px',
 		},
@@ -62,7 +63,7 @@ export const getSizeStyles = ({
 	switch (size) {
 		case 'small':
 			return {
-				rootStyles: {
+				buttonStyles: {
 					padding: `${space[2] - 1}px ${space[2] + 1}px`,
 					minWidth: '64px',
 					minHeight: '32px',
@@ -71,7 +72,7 @@ export const getSizeStyles = ({
 			};
 		case 'large':
 			return {
-				rootStyles: {
+				buttonStyles: {
 					padding: `${space[2]}px ${space[3] + space[2]}px`,
 					minWidth: '112px',
 					minHeight: '40px',
@@ -88,7 +89,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 
 	if (variant === 'contained') {
 		next = merge(next, {
-			rootStyles: {
+			buttonStyles: {
 				color: palette.text.primary,
 				backgroundColor: palette.grey.light,
 				boxShadow: elevation[2],
@@ -108,7 +109,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 
 		if (color === 'primary' || color === 'secondary') {
 			next = merge(next, {
-				rootStyles: {
+				buttonStyles: {
 					color: palette[color].contrastText,
 					backgroundColor: palette[color].main,
 					':hover': {
@@ -119,7 +120,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 		}
 	} else if (variant === 'outlined') {
 		next = merge(next, {
-			rootStyles: {
+			buttonStyles: {
 				':disabled': {
 					color: palette.action.disabled,
 					backgroundColor: 'transparent',
@@ -129,7 +130,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 		});
 		if (color === 'primary' || color === 'secondary') {
 			next = merge(next, {
-				rootStyles: {
+				buttonStyles: {
 					border: `1px solid ${fade(palette[color].main, 0.5)}`,
 					':hover': {
 						border: `1px solid ${palette[color].main}`,
@@ -138,7 +139,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 			});
 		} else {
 			next = merge(next, {
-				rootStyles: {
+				buttonStyles: {
 					border: `1px solid ${
 						palette.type === 'light' ? palette.grey.main : palette.divider.dark.light
 					}`,
@@ -154,7 +155,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 		}
 	} else if (variant === 'extendedFab') {
 		next = merge(next, {
-			rootStyles: {
+			buttonStyles: {
 				borderRadius: `${48 / 2}px`,
 				padding: `0 ${space[3]}`,
 				width: 'auto',
@@ -169,7 +170,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 const getStyles = props =>
 	merge(
 		{
-			rootStyles: {
+			buttonStyles: {
 				boxSizing: 'border-box',
 				minWidth: '64px',
 				minHeight: '36px',
@@ -215,7 +216,7 @@ const getStyles = props =>
 		getFullWidthStyles(props),
 		getVariantStyles(props),
 		getSizeStyles(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
 function Button(props) {
@@ -249,11 +250,14 @@ function Button(props) {
 		variant,
 		...passThru
 	} = props;
-	const { rootStyles, labelStyles } = getStyles({ ...props, ...{ theme } });
+	const { buttonStyles, labelStyles } = useMemo(() => getStyles({ ...props, ...{ theme } }), [
+		props,
+		theme,
+	]);
 
 	return (
 		<ButtonBase
-			styles={rootStyles}
+			styles={{ buttonStyles }}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
@@ -289,7 +293,6 @@ Button.defaultProps = {
 	fullWidth: false,
 	mini: false,
 	size: 'medium',
-	styles: {},
 	type: 'button',
 	variant: 'text',
 };

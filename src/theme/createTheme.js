@@ -1,33 +1,35 @@
 import merge from './../utils/pureRecursiveMerge';
-import createBreakpoints from './createBreakpoints';
+import createMotion from './createMotion';
 import createPalette from './createPalette';
+import createResponsive from './createResponsive';
 import createTypography from './createTypography';
 import elevation from './elevation';
 import shape from './shape';
 import space from './space';
-import { duration, easing } from './motion';
 
 export default (overrides = {}) => {
 	const {
-		breakpoints: breakpointsOverrides = {},
+		breakpoints: breakpointOverrides = [],
+		duration: durationOverrides = {},
+		easing: easingOverrides = {},
 		elevation: elevationOverrides,
 		palette: paletteOverrides = {},
 		typography: typographyOverrides = {},
 		...passThru
 	} = overrides;
+	const motion = createMotion(durationOverrides, easingOverrides);
 	const palette = createPalette(paletteOverrides);
-	const breakpoints = createBreakpoints(breakpointsOverrides);
+	const responsive = createResponsive(breakpointOverrides);
 	const typography = createTypography(palette, typographyOverrides);
 	return merge(
 		{
-			breakpoints,
-			duration,
-			easing,
 			elevation: elevationOverrides || elevation,
 			maxWidth: '1200px',
+			...motion,
 			palette,
 			shape,
 			space,
+			...responsive,
 			typography,
 		},
 		passThru,

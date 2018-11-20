@@ -48,6 +48,9 @@ const tagMap = {
 };
 
 export const getStyles = props => ({
+	...{
+		margin: 0,
+	},
 	...typographyVariants(props),
 	...fontFamily(props),
 	...fontSize(props),
