@@ -11,8 +11,8 @@ class SwitchDemo extends Component {
 		checkedB: true,
 	};
 
-	handleChange = name => checked => {
-		this.setState({ [name]: checked });
+	handleChange = name => (event, checked) => {
+		this.setState({ [name]: event.target.checked });
 	};
 
 	render() {

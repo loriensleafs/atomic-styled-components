@@ -11,8 +11,8 @@ import cn from './../theme/className';
 import merge from './../utils/pureRecursiveMerge';
 import { isFunc } from './../utils/helpers';
 
-export function getStyles(props) {
-	return merge(
+export const getStyles = props =>
+	merge(
 		{
 			buttonStyles: {
 				position: 'relative',
@@ -52,7 +52,6 @@ export function getStyles(props) {
 		},
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
-}
 
 function ButtonBase(props) {
 	const {

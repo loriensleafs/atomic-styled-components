@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { animated, Transition } from 'react-spring';
 import useDidUpdate from './../hooks/useDidUpdate';
 import cn from './../theme/className';
 import merge from './../utils/pureRecursiveMerge';
 import { isFunc } from './../utils/helpers';
 
-function getStyles(props) {
-	return merge(
+export const getStyles = props =>
+	merge(
 		{
 			rippleStyles: {
 				contain: 'strict',
@@ -33,9 +34,8 @@ function getStyles(props) {
 		},
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
-}
 
-export default function Ripples(props) {
+function Ripples(props) {
 	const [ripples, setRipples] = useState(props.ripples);
 	const { rippleStyles, rippleSurfaceStyles } = useMemo(() => getStyles(props), [props.styles]);
 	const rippleClassName = useMemo(() => cn(rippleStyles), [props.styles]);
@@ -76,3 +76,9 @@ export default function Ripples(props) {
 		</div>
 	);
 }
+
+Ripples.propTypes = {
+	ripples: PropTypes.object,
+};
+
+export default Ripples;

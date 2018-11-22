@@ -1,23 +1,20 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useState, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
+import useDidUpdate from './../hooks/useDidUpdate';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
 import IconButton from './../IconButton';
 import cn from './../theme/className';
-import { isFunc } from './../utils/helpers';
+import { isFunc, isNil } from './../utils/helpers';
 
 const getStyles = props =>
 	merge(
 		{
 			iconButtonStyles: {
-				rootStyles: {
+				buttonStyles: {
 					display: 'inline-flex',
 					alignItems: 'center',
 					transition: 'none',
-					':hover': {
-						// Disable the hover effect for the IconButton
-						backgroundColor: 'transparent',
-					},
 				},
 			},
 			inputStyles: {
@@ -33,37 +30,18 @@ const getStyles = props =>
 				opacity: 0,
 			},
 		},
-		isFunc(props.styles) ? props.styles(props) : props.styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
-export const { context: ChangeContext, provider: ChangeProvider } = createContext(null);
-
-export function selectionReducer(state, action) {
-	switch (action.type) {
-		case 'change':
-			return { ...state, ...{ checked: action.checked } };
-		case 'focus':
-			return { ...state, ...{ focused: true } };
-		case 'blur':
-			return { ...state, ...{ focused: false } };
-		default:
-			return state;
-	}
-}
-
 function SelectionControl(props) {
-	const { theme } = useContext(ThemeContext);
 	const {
 		autoFocus,
 		checked: checkedProp,
 		checkedIcon,
 		className,
-		color,
 		disabled,
 		icon,
 		id,
-		indeterminate,
-		indeterminateIcon,
 		inputProps,
 		inputRef,
 		name,
@@ -72,46 +50,55 @@ function SelectionControl(props) {
 		onFocus,
 		readOnly,
 		required,
-		styles,
 		tabIndex,
 		type,
 		value,
 		...passThru
 	} = props;
-	const [{ checked, focused }, selectionDispatch] = useReducer(
-		selectionReducer,
-		{ checked: false, focused: false },
-		{ type: 'change', checked: checkedProp != null ? checkedProp : false },
+	const { theme } = useContext(ThemeContext);
+	const [checked, setChecked] = useState(checkedProp || false);
+	const { iconButtonStyles, inputStyles } = useMemo(
+		() =>
+			getStyles({
+				...props,
+				...{ checked },
+				...{ theme },
+			}),
+		[props, checked, theme],
 	);
+	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
-	const { iconButtonStyles, inputStyles } = getStyles({
-		...props,
-		...{ checked },
-		...{ theme },
-	});
-	useEffect(() => onChange && onChange(checked), [checked]);
-	useEffect(() => (focused && onFocus ? onFocus() : !focused && onBlur && onBlur()), [focused]);
+
+	const handleChange = useCallback(event => {
+		if (isNil(props.checked)) setChecked(event.target.checked);
+		if (onChange) onChange(event, event.target.checked);
+	}, []);
+
+	const handleFocus = useCallback(event => onFocus && onFocus(event), []);
+
+	const handleBlur = useCallback(event => onBlur && onBlur(event), []);
+
+	useDidUpdate(() => !isNil(props.checked) && setChecked(() => props.checked), [props.checked]);
 
 	return (
 		<IconButton
-			color={checked ? color : null}
 			component="span"
 			styles={iconButtonStyles}
 			disabled={disabled}
 			tabIndex={null}
 			role={undefined}
-			onFocus={() => selectionDispatch({ type: 'focus' })}
-			onBlur={() => selectionDispatch({ type: 'blur' })}
+			onFocus={handleFocus}
+			onBlur={handleBlur}
 			{...passThru}>
 			{checked ? (checkedIcon ? checkedIcon : icon) : icon}
 			<input
 				autoFocus={autoFocus}
 				checked={checked}
-				className={cn(inputStyles)}
+				className={inputClassName}
 				disabled={disabled}
 				id={hasLabelFor && id}
 				name={name}
-				onChange={e => selectionDispatch({ type: 'change', checked: e.target.checked })}
+				onChange={handleChange}
 				readOnly={readOnly}
 				ref={inputRef}
 				required={required}
@@ -132,7 +119,11 @@ SelectionControl.propTypes = {
 	/**
 	 * If `true`, the component is checked.
 	 */
-	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+	checked: PropTypes.bool,
+	/**
+	 * The icon to display when the component is checked.
+	 */
+	checkedIcon: PropTypes.node,
 	className: PropTypes.string,
 	defaultChecked: PropTypes.bool,
 	/**
@@ -151,6 +142,10 @@ SelectionControl.propTypes = {
 	 * The id of the `input` element.
 	 */
 	id: PropTypes.string,
+	/**
+	 * Attributes applied to the `input` element.
+	 */
+	inputProps: PropTypes.object,
 	/**
 	 * If `true`, the component appears indeterminate.
 	 */
