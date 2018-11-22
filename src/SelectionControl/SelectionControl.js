@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useDidUpdate from './../hooks/useDidUpdate';
 import ThemeContext from './../theme/ThemeContext';
@@ -50,6 +50,7 @@ function SelectionControl(props) {
 		onFocus,
 		readOnly,
 		required,
+		styles,
 		tabIndex,
 		type,
 		value,

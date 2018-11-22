@@ -11,7 +11,7 @@ class CheckboxDemo extends Component {
 		checkedF: true,
 	};
 
-	handleChange = name => checked => {
+	handleChange = name => (event, checked) => {
 		this.setState({ [name]: checked });
 	};
 

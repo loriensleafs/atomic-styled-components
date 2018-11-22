@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useDidUpdate from './../hooks/useDidUpdate';
-import usePrevious from './../hooks/usePrevious';
 import ThemeContext from './../theme/ThemeContext';
 import SelectionControl from './../SelectionControl';
 import cn from './../theme/className';
@@ -48,6 +47,14 @@ export const getCheckedStyles = props => {
 					: props.theme.palette.grey.main;
 
 		return {
+			switchStyles: {
+				color:
+					props.color === 'primary' || props.color === 'secondary'
+						? props.theme.palette[props.color].main
+						: props.theme.palette.type === 'light'
+							? props.theme.palette.grey.light
+							: props.theme.palette.grey.dark,
+			},
 			barStyles: {
 				backgroundColor:
 					props.color === 'primary' || props.color === 'secondary'
@@ -59,7 +66,6 @@ export const getCheckedStyles = props => {
 			},
 			iconButtonStyles: {
 				buttonStyles: {
-					color: checkedColor,
 					':hover': {
 						backgroundColor: fade(
 							props.color === 'primary' || props.color === 'secondary'
@@ -127,13 +133,13 @@ const getStyles = props =>
 			iconButtonStyles: {
 				buttonStyles: {
 					zIndex: 1,
+					color: 'currentColor',
 					padding: '0px',
 					height: '48px',
 					width: '48px',
-					color:
-						props.theme.palette.type === 'light'
-							? props.theme.palette.common.black
-							: props.theme.palette.common.white,
+					transition: `background-color ${
+						props.theme.duration.shortest
+					}ms cubic-bezier(${props.theme.easing.in.join()})`,
 					':hover': {
 						backgroundColor: fade(
 							props.theme.palette.type === 'light'
@@ -151,7 +157,7 @@ const getStyles = props =>
 	);
 
 function Switch(props) {
-	const { className, icon, color, styles, ...passThru } = props;
+	const { className, color, icon, onChange, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
 	const {
@@ -167,9 +173,10 @@ function Switch(props) {
 		() =>
 			getStyles({
 				...props,
-				...{ checked, theme },
+				checked,
+				theme,
 			}),
-		[checked, theme],
+		[checked, props, theme],
 	);
 	const switchClassName = useMemo(() => cn(switchStyles), [checked, theme]);
 	const barClassName = useMemo(() => cn(barStyles), [checked, theme]);
@@ -185,10 +192,14 @@ function Switch(props) {
 		config: { tension: 1200, friction: 40 },
 	});
 
-	const handleChange = useCallback(
-		event => isNil(props.checked) && setChecked(event.target.checked),
-		[],
-	);
+	const handleChange = useCallback(event => {
+		if (isNil(props.checked)) {
+			setChecked(event.target.checked);
+		}
+		if (onChange) {
+			onChange(event, event.target.checked);
+		}
+	}, []);
 
 	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [props.checked]);
 
@@ -200,7 +211,7 @@ function Switch(props) {
 					onChange={handleChange}
 					type="checkbox"
 					icon={<animated.div className={iconClassName} style={iconAnim} />}
-					styles={iconButtonStyles}
+					styles={{ iconButtonStyles }}
 					{...passThru}
 				/>
 			</animated.div>

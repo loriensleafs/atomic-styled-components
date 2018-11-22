@@ -1,20 +1,109 @@
-import React from 'react';
+import React, { useContext, useState, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import SelectionControl from './../SelectionControl';
 import CheckBoxIcon from './../svgIcons/CheckBox';
 import CheckboxOutlineBlankIcon from './../svgIcons/CheckBoxOutlineBlank';
 import IndeterminateCheckBoxIcon from './../svgIcons/IndeterminateCheckBox';
+import useDidUpdate from './../hooks/useDidUpdate';
+import merge from 'deep-extend';
+import ThemeContext from '../theme/ThemeContext';
+import { isFunc, isNil } from './../utils/helpers';
+import { fade } from './../utils/colorHelpers';
 
-const Checkbox = props => (
-	<SelectionControl
-		type="checkbox"
-		className={props.className}
-		checkedIcon={props.indeterminate ? props.indeterminateIcon : props.checkedIcon}
-		inputProps={{ 'data-indeterminate': props.indeterminate, ...props.inputProps }}
-		icon={props.indeterminate ? props.indeterminateIcon : props.icon}
-		{...props}
-	/>
-);
+const getDisabledStyles = props =>
+	props.disabled && {
+		iconButtonStyles: {
+			buttonStyles: {
+				color: props.theme.palette.action.disabled,
+				pointerEvents: 'none',
+			},
+		},
+	};
+
+const getCheckedStyles = props =>
+	props.checked && {
+		iconButtonStyles: {
+			buttonStyles: {
+				color:
+					props.color === 'primary' || props.color === 'secondary'
+						? props.theme.palette[props.color].main
+						: props.theme.palette.text.secondary,
+				':hover': {
+					backgroundColor: fade(
+						props.color === 'primary' || props.color === 'secondary'
+							? props.theme.palette[props.color].main
+							: props.theme.palette.type === 'light'
+								? props.theme.palette.common.black
+								: props.theme.palette.common.white,
+						props.theme.palette.action.hoverOpacity,
+					),
+				},
+			},
+		},
+	};
+
+const getStyles = props =>
+	merge(
+		{
+			iconButtonStyles: {
+				buttonStyles: {
+					color: props.theme.palette.text.secondary,
+					transition: `background-color ${
+						props.theme.duration.shortest
+					}ms cubic-bezier(${props.theme.easing.in.join()})`,
+				},
+			},
+		},
+		getCheckedStyles(props),
+		getDisabledStyles(props),
+		isFunc(props.styles) ? props.styles(props) : props.styles || {},
+	);
+
+function Checkbox(props) {
+	const {
+		checkedIcon,
+		className,
+		color,
+		icon,
+		indeterminate,
+		indeterminateIcon,
+		inputProps,
+		onChange,
+		styles,
+		...passThru
+	} = props;
+	const { theme } = useContext(ThemeContext);
+	const [checked, setChecked] = useState(props.checked || false);
+	const { iconButtonStyles } = useMemo(() => getStyles({ ...props, ...{ checked, theme } }), [
+		checked,
+		props,
+		theme,
+	]);
+
+	const handleChange = useCallback(event => {
+		if (isNil(props.checked)) {
+			setChecked(event.target.checked);
+		}
+		if (onChange) {
+			onChange(event, event.target.checked);
+		}
+	}, []);
+
+	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [props.checked]);
+
+	return (
+		<SelectionControl
+			type="checkbox"
+			onChange={handleChange}
+			className={props.className}
+			checkedIcon={props.indeterminate ? props.indeterminateIcon : props.checkedIcon}
+			inputProps={{ 'data-indeterminate': props.indeterminate, ...props.inputProps }}
+			icon={props.indeterminate ? props.indeterminateIcon : props.icon}
+			styles={{ iconButtonStyles }}
+			{...passThru}
+		/>
+	);
+}
 
 Checkbox.propTypes = {
 	/**
