@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import merge from './../utils/pureRecursiveMerge';
 import { isFunc, isNil } from './../utils/helpers';
 
@@ -58,40 +58,12 @@ function useRipples() {
 		if (cb) cb(event);
 		if (event.defaultPrevented) return;
 
-		setRipples(() => ripples.slice(1));
+		if (event.type !== 'mouseleave') {
+			setRipples(() => ripples.slice(1));
+		}
 	};
 
 	return [ripples, rippleStartHandler, rippleEndHandler];
-}
-
-function getStyles(props) {
-	return merge(
-		{
-			rippleStyles: {
-				contain: 'strict',
-				zIndex: 0,
-				position: 'absolute',
-				top: 0,
-				left: 0,
-				width: '100%',
-				height: '100%',
-				display: 'block',
-				overflow: 'hidden',
-				borderRadius: 'inherit',
-				pointerEvents: 'none',
-				backfaceVisibility: 'hidden',
-				perspective: 1000,
-				willChange: 'transform',
-			},
-			rippleSurfaceStyles: {
-				position: 'absolute',
-				display: 'block',
-				borderRadius: '50%',
-				backgroundColor: 'currentColor',
-			},
-		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
 }
 
 export default useRipples;

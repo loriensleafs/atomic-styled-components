@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-globals */
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useRef, useState } from 'react';
 import keycode from 'keycode';
 import useDidMount from './../hooks/useDidMount';
 import ownerDocument from './../utils/ownerDocument';
