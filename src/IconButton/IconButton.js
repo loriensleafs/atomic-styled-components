@@ -82,7 +82,6 @@ export const getStyles = props =>
 	);
 
 function IconButton(props) {
-	const { theme } = useContext(ThemeContext);
 	const {
 		children,
 		className,
@@ -105,6 +104,7 @@ function IconButton(props) {
 		styles,
 		...passThru
 	} = props;
+	const { theme } = useContext(ThemeContext);
 
 	const { buttonStyles, labelStyles } = useMemo(() => getStyles({ ...props, ...{ theme } }), [
 		props,

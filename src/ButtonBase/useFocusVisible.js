@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import keycode from 'keycode';
 import useDidMount from './../hooks/useDidMount';
-import useDidUpdate from './../hooks/useDidUpdate';
 import ownerDocument from './../utils/ownerDocument';
 
 const MAX_CHECK_TIMES = 5;
@@ -27,12 +26,11 @@ function findActiveElement(doc) {
 function useFocusVisible() {
 	const [focusVisible, setFocusVisible] = useState(false);
 	const focusKeyPressed = useRef(false);
-	const checkFocusTimer = useRef();
-	const keyUpTimer = useRef();
+	const checkFocusTimer = useRef(-1);
+	const keyUpTimer = useRef(-1);
 
 	function handleKeyUp(event) {
 		if (isFocusKey(event)) {
-			console.log('isFocusKeyUp');
 			focusKeyPressed.current = true;
 			clearTimeout(keyUpTimer.current);
 			keyUpTimer.current = setTimeout(() => {
@@ -47,20 +45,17 @@ function useFocusVisible() {
 			const activeElement = findActiveElement(doc);
 
 			if (focusKeyPressed.current && (activeElement === ref || ref.contains(activeElement))) {
-				console.log('checkFocusVisibility => key pressed');
 				if (cb) cb(event);
-				setFocusVisible(() => true);
 			} else if (attempts < MAX_CHECK_TIMES) {
-				console.log('checkFocusVisibility attempt => ' + attempts);
 				checkFocusVisibility(ref, cb, attempts + 1);
 			}
 		}, FOCUS_VISIBLE_CHECK_TIME);
 	}
 
-	const focusVisibilityHandler = (disabled, cb) => event => {
+	const focusVisibilityHandler = (ref, disabled, cb) => event => {
 		if (!disabled) {
 			event.persist();
-			checkFocusVisibility(event.currentTarget, cb, 1);
+			checkFocusVisibility(ref ? ref : event.currentTarget, cb, 0);
 		}
 	};
 
@@ -69,7 +64,6 @@ function useFocusVisible() {
 		return () => {
 			window.removeEventListener('keyup', handleKeyUp);
 			clearTimeout(keyUpTimer.current);
-			console.log('cleared checkKeyUp timeout');
 		};
 	});
 

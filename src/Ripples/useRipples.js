@@ -1,25 +1,13 @@
-import React, { forwardRef, useState, useContext, useRef, useCallback, useMemo } from 'react';
-import keycode from 'keycode';
-import { useSpring, animated, Transition, config } from 'react-spring';
-import ThemeContext from './../theme/ThemeContext';
-import useDidMount from './../hooks/useDidMount';
-import useDidUpdate from './../hooks/useDidUpdate';
-import useWillUnmount from './../hooks/useWillUnmount';
-import usePrevious from './../hooks/usePrevious';
-import cn from './../theme/className';
+import React, { useState } from 'react';
 import merge from './../utils/pureRecursiveMerge';
 import { isFunc, isNil } from './../utils/helpers';
 
-function getRippleRect(
-	pulsate = false,
-	center = false,
-	{ clientX, clientY, touches, currentTarget: ref },
-) {
+function getRippleRect(ref, pulsate = false, center = false, { clientX, clientY, touches }) {
 	const centered = center || (clientX === 0 && clientY === 0) || (!clientX && !touches);
 	const touch = isNil(touches);
 	const rect = ref ? ref.getBoundingClientRect() : { width: 0, height: 0, left: 0, top: 0 };
-	const x = clientX ? clientX : touches[0].x;
-	const y = clientX ? clientY : touches[0].y;
+	const x = clientX ? clientX : touches ? touches[0].x : null;
+	const y = clientX ? clientY : touches ? touches[0].y : null;
 	let rippleX;
 	let rippleY;
 	let rippleSize;
@@ -42,6 +30,8 @@ function getRippleRect(
 	}
 
 	return {
+		pulsate,
+		pulsateIn: pulsate,
 		height: rippleSize + 'px',
 		width: rippleSize + 'px',
 		top: -(rippleSize / 2) + rippleY + 'px',
@@ -49,18 +39,15 @@ function getRippleRect(
 	};
 }
 
-export function useRipples() {
+function useRipples() {
 	const [ripples, setRipples] = useState([]);
 
-	const rippleStartHandler = (pulsate, center, cb) => event => {
-		console.log('startRippleHandler');
-
+	const rippleStartHandler = (ref, pulsate, center, cb) => (event = {}) => {
 		if (cb) cb(event);
-
 		if (event.defaultPrevented) return;
 
 		const ripple = {
-			...getRippleRect(pulsate, center, event),
+			...getRippleRect(ref ? ref : event.currentTarget, pulsate, center, event),
 			...{ key: ripples.length === 0 ? 1 : ripples.length },
 		};
 
@@ -68,9 +55,7 @@ export function useRipples() {
 	};
 
 	const rippleEndHandler = cb => event => {
-		console.log('handleRippleEnd');
 		if (cb) cb(event);
-
 		if (event.defaultPrevented) return;
 
 		setRipples(() => ripples.slice(1));
@@ -109,26 +94,4 @@ function getStyles(props) {
 	);
 }
 
-export default function Ripples(props) {
-	const { rippleStyles, rippleSurfaceStyles } = useMemo(() => getStyles(props), [props.styles]);
-	const rippleClassName = useMemo(() => cn(rippleStyles), [props.styles]);
-	const rippleSurfaceClassName = useMemo(() => cn(rippleSurfaceStyles), [props.styles]);
-
-	return (
-		<div className={rippleClassName}>
-			<Transition
-				native
-				items={props.ripples}
-				from={({ key, ...style }) => ({
-					...style,
-					...{ opacity: 0, transform: 'scale(0)' },
-				})}
-				enter={{ opacity: 0.3, transform: 'scale(1)' }}
-				leave={{ opacity: 0, transform: 'scale(1)' }}>
-				{item => props => {
-					return <animated.div style={props} className={rippleSurfaceClassName} />;
-				}}
-			</Transition>
-		</div>
-	);
-}
+export default useRipples;

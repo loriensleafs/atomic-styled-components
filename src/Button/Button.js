@@ -220,7 +220,6 @@ const getStyles = props =>
 	);
 
 function Button(props) {
-	const { theme } = useContext(ThemeContext);
 	const {
 		children,
 		color,
@@ -250,6 +249,7 @@ function Button(props) {
 		variant,
 		...passThru
 	} = props;
+	const { theme } = useContext(ThemeContext);
 	const { buttonStyles, labelStyles } = useMemo(() => getStyles({ ...props, ...{ theme } }), [
 		props,
 		theme,

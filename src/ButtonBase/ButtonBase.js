@@ -1,15 +1,15 @@
-import React, { useCallback, useMemo, useRef, useState, useContext } from 'react';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
+import ThemeContext from '../theme/ThemeContext';
 import useDidMount from './../hooks/useDidMount';
 import useDidUpdate from './../hooks/useDidUpdate';
 import usePrevious from './../hooks/usePrevious';
 import useFocusVisible from './useFocusVisible';
-import Ripples, { useRipples } from './Ripples';
+import Ripples, { useRipples } from './../Ripples';
 import cn from './../theme/className';
 import merge from './../utils/pureRecursiveMerge';
 import { isFunc } from './../utils/helpers';
-import ThemeContext from '../theme/ThemeContext';
 
 export function getStyles(props) {
 	return merge(
@@ -84,24 +84,27 @@ function ButtonBase(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const buttonRef = useRef(null);
-	const keyDown = useRef(false);
+	const [keyDown, setKeyDown] = useState(false);
 	const {
 		focusVisible,
 		focusVisibilityHandler,
 		checkFocusTimer,
 		setFocusVisible,
 	} = useFocusVisible();
-	const prevFocusVisible = usePrevious(focusVisible);
+	const prevFocusVisible = usePrevious(focusVisible || false);
 	const [ripples, rippleStartHandler, rippleEndHandler] = useRipples();
-	const Component = component === 'button' && props.href ? 'a' : component || 'button';
+	const isButton = component === 'button';
+	const Component = isButton && props.href ? 'a' : component || 'button';
 	const buttonProps = useMemo(
 		() =>
-			Component === 'button'
+			isButton
 				? {
 						disabled,
 						type: type || 'button',
 				  }
-				: { role: 'button' },
+				: {
+						role: 'button',
+				  },
 		[Component, disabled, type],
 	);
 	const className = useMemo(
@@ -110,11 +113,9 @@ function ButtonBase(props) {
 	);
 
 	const handleMouseDown = useCallback(
-		rippleStartHandler(false, centerRipple, () => {
+		rippleStartHandler(buttonRef.current, false, centerRipple, () => {
 			clearTimeout(checkFocusTimer.current);
-			if (focusVisible) {
-				setFocusVisible(() => false);
-			}
+			if (focusVisible) setFocusVisible(() => false);
 		}),
 		[],
 	);
@@ -122,53 +123,76 @@ function ButtonBase(props) {
 	const handleMouseUp = useCallback(rippleEndHandler(), []);
 
 	const handleMouseLeave = useCallback(
-		rippleEndHandler(event => {
-			if (focusVisible) {
-				event.preventDefault();
-			}
-		}),
+		rippleEndHandler(event => focusVisible && event.preventDefault()),
 		[],
 	);
 
-	const handleTouchStart = useCallback(rippleStartHandler(false, centerRipple), []);
+	const handleTouchStart = useCallback(
+		rippleStartHandler(buttonRef.current, false, centerRipple),
+		[],
+	);
 
 	const handleTouchEnd = useCallback(rippleEndHandler(), []);
 
 	const handleTouchMove = useCallback(rippleEndHandler(), []);
 
-	const handleBlur = useCallback(event => {
-		clearTimeout(checkFocusTimer.current);
-		if (focusVisible) {
+	const handleBlur = useCallback(
+		rippleEndHandler(event => {
+			clearTimeout(checkFocusTimer.current);
 			setFocusVisible(() => false);
-		}
-	}, []);
-
-	const handleFocus = useCallback(
-		focusVisibilityHandler(disabled, event => {
-			keyDown.current = false;
-
-			if (onFocus) {
-				onFocus(event);
-			}
 		}),
 		[],
 	);
 
+	const handleFocus = useCallback(event => {
+		focusVisibilityHandler(
+			buttonRef.current,
+			disabled,
+			event => {
+				setFocusVisible(() => true);
+				setKeyDown(() => false);
+				if (onFocusVisible) onFocusVisible(event);
+			},
+			false,
+		)(event);
+
+		if (onFocus) {
+			onFocus(event);
+		}
+	}, []);
+
 	const handleKeyDown = useCallback(event => {
-		if (!keyDown.current && focusVisible && keycode(event) === 'space') {
-			keyDown.current = true;
+		const key = keycode(event);
+
+		if (focusRipple && !keyDown && focusVisible && key === 'space') {
 			event.persist();
+			setKeyDown(() => true);
+			rippleEndHandler(() => rippleStartHandler(buttonRef.current)())();
 
 			if (onKeyDown) {
 				onKeyDown(event);
+			}
+
+			if (
+				event.target === event.currentTarget &&
+				component &&
+				component !== 'button' &&
+				(key === 'space' || key === 'enter') &&
+				!(buttonRef.current.tagName === 'A' && buttonRef.current.href)
+			) {
+				event.preventDefault();
+				if (props.onClick) {
+					props.onClick(event);
+				}
 			}
 		}
 	}, []);
 
 	const handleKeyUp = useCallback(event => {
-		if (keycode(event) === 'space' && focusVisible) {
-			keyDown.current = false;
+		if (focusRipple && keycode(event) === 'space' && focusVisible) {
 			event.persist();
+			setKeyDown(() => false);
+			rippleEndHandler(() => rippleStartHandler(buttonRef.current, true, true)())();
 
 			if (onKeyUp) {
 				onKeyUp(event);
@@ -192,10 +216,10 @@ function ButtonBase(props) {
 	useDidUpdate(
 		() => {
 			if (focusRipple && !disableRipple && !prevFocusVisible && focusVisible) {
-				console.log('pulsate');
+				rippleStartHandler(buttonRef.current, true, true)();
 			}
 		},
-		[focusRipple, disableRipple, prevFocusVisible, focusVisible],
+		[disabled, prevFocusVisible, focusVisible, keyDown],
 	);
 
 	return (
