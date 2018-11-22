@@ -3,6 +3,8 @@ import Box from './../Box';
 import Card from './../Card';
 import Flex from './../Flex';
 import Checkbox from './../Checkbox';
+import CheckBoxIcon from './../svgIcons/CheckBox';
+import CheckboxOutlineBlankIcon from './../svgIcons/CheckBoxOutlineBlank';
 
 class CheckboxDemo extends Component {
 	state = {
@@ -40,7 +42,13 @@ class CheckboxDemo extends Component {
 							value="checkedF"
 							indeterminate
 						/>
-						<Checkbox defaultChecked color="default" value="checkedG" />
+						<Checkbox
+							defaultChecked
+							color="default"
+							value="checkedG"
+							icon={<CheckboxOutlineBlankIcon fontSize="20px" />}
+							checkedIcon={<CheckBoxIcon fontSize="20px" />}
+						/>
 					</Flex>
 				</Box>
 			</Card>

@@ -31,7 +31,7 @@ export const getStyles = props =>
 		getColorStyles(props),
 		space(props),
 		fontSize(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
 function SvgIcon(props) {
@@ -65,7 +65,7 @@ function SvgIcon(props) {
 
 	return (
 		<Component
-			className={cn(getStyles({ ...props, ...{ theme } }), className)}
+			className={cn(className, getStyles({ ...props, theme }))}
 			focusable="false"
 			viewBox={viewBox}
 			color={nativeColor}
@@ -123,7 +123,6 @@ SvgIcon.defaultProps = {
 	color: 'inherit',
 	component: 'svg',
 	fontSize: '24px',
-	styles: {},
 	viewBox: '0 0 24 24',
 };
 

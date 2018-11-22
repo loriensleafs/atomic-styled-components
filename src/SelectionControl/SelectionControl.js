@@ -62,8 +62,8 @@ function SelectionControl(props) {
 		() =>
 			getStyles({
 				...props,
-				...{ checked },
-				...{ theme },
+				checked,
+				theme,
 			}),
 		[props, checked, theme],
 	);

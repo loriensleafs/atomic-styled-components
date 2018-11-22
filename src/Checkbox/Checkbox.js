@@ -74,7 +74,7 @@ function Checkbox(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
-	const { iconButtonStyles } = useMemo(() => getStyles({ ...props, ...{ checked, theme } }), [
+	const { iconButtonStyles } = useMemo(() => getStyles({ ...props, checked, theme }), [
 		checked,
 		props,
 		theme,
@@ -93,13 +93,13 @@ function Checkbox(props) {
 
 	return (
 		<SelectionControl
-			type="checkbox"
+			className={className}
+			checkedIcon={indeterminate ? indeterminateIcon : checkedIcon}
+			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
+			icon={indeterminate ? indeterminateIcon : icon}
 			onChange={handleChange}
-			className={props.className}
-			checkedIcon={props.indeterminate ? props.indeterminateIcon : props.checkedIcon}
-			inputProps={{ 'data-indeterminate': props.indeterminate, ...props.inputProps }}
-			icon={props.indeterminate ? props.indeterminateIcon : props.icon}
 			styles={{ iconButtonStyles }}
+			type="checkbox"
 			{...passThru}
 		/>
 	);
