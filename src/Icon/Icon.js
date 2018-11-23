@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
@@ -38,14 +38,13 @@ export const getStyles = props =>
 		},
 		getColorStyles(props),
 		space(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles,
+		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
 function Icon(props) {
-	const { theme } = useContext(ThemeContext);
 	const {
 		children,
-		className,
+		classNameProp,
 		color,
 		fontSize,
 		m,
@@ -65,12 +64,14 @@ function Icon(props) {
 		styles,
 		...passThru
 	} = props;
+	const { theme } = useContext(ThemeContext);
+	const className = useMemo(() => cn(getStyles({ ...props, theme }), classNameProp), [
+		props,
+		theme,
+	]);
 
 	return (
-		<span
-			className={cn(getStyles({ ...props, ...{ theme } }), className)}
-			aria-hidden="true"
-			{...passThru}>
+		<span className={className} aria-hidden="true" {...passThru}>
 			{children}
 		</span>
 	);

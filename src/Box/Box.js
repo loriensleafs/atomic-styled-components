@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
@@ -28,11 +28,10 @@ const getStyles = props => ({
 	...minWidth(props),
 	...space(props),
 	...width(props),
-	...(isFunc(props.styles) ? props.styles(props) : props.styles),
+	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
 function Box(props) {
-	const { theme } = useContext(ThemeContext);
 	const {
 		is,
 		styles,
@@ -74,8 +73,12 @@ function Box(props) {
 		justifyContent,
 		...passThru
 	} = props;
+	const { theme } = useContext(ThemeContext);
 	const Component = props.is;
-	const className = cn(props.className, getStyles({ ...props, ...{ theme } }));
+	const className = useMemo(() => cn(props.className, getStyles({ ...props, theme })), [
+		props,
+		theme,
+	]);
 	return (
 		<Component className={className} {...passThru}>
 			{props.children}

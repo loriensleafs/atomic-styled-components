@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import Box from '../Box';
@@ -48,9 +48,9 @@ export const getStyles = props => ({
 
 function Flex(props) {
 	const { theme } = useContext(ThemeContext);
-	const styles = getStyles({ ...props, ...{ theme } });
+	const styles = useMemo(() => getStyles({ ...props, theme }), [props, theme]);
 	return (
-		<Box styles={getStyles({ ...props, ...{ theme } })} {...props}>
+		<Box styles={styles} {...props}>
 			{props.children}
 		</Box>
 	);

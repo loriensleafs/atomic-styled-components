@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import merge from './../utils/pureRecursiveMerge';
 import ThemeContext from './../theme/ThemeContext';
@@ -35,10 +35,9 @@ export const getStyles = props =>
 	);
 
 function SvgIcon(props) {
-	const { theme } = useContext(ThemeContext);
 	const {
 		children,
-		className,
+		classNameProp,
 		color,
 		component: Component,
 		fontSize,
@@ -62,10 +61,15 @@ function SvgIcon(props) {
 		styles,
 		...passThru
 	} = props;
+	const { theme } = useContext(ThemeContext);
+	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+		props,
+		theme,
+	]);
 
 	return (
 		<Component
-			className={cn(className, getStyles({ ...props, theme }))}
+			className={className}
 			focusable="false"
 			viewBox={viewBox}
 			color={nativeColor}
