@@ -3,20 +3,22 @@ import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import Box from '../Box';
 import {
-	alignItems,
 	alignContent,
-	justifyContent,
+	alignItems,
+	alignSelf,
 	flex,
 	flexBasis,
+	justifyContent,
 	justifySelf,
-	alignSelf,
 	order,
 	style,
 } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 
-export const flexWrap = style({
-	prop: 'flexWrap',
+export const flexDisplay = style({
+	prop: 'inline',
+	cssProperty: 'display',
+	transformValue: n => (!n ? 'flex' : 'inline-flex'),
 });
 
 export const flexDirection = style({
@@ -25,25 +27,23 @@ export const flexDirection = style({
 	transformValue: n => (n === 'col' ? 'column' : 'row'),
 });
 
-export const flexDisplay = style({
-	prop: 'inline',
-	cssProperty: 'display',
-	transformValue: n => (!n ? 'flex' : 'inline-flex'),
+export const flexWrap = style({
+	prop: 'flexWrap',
 });
 
 export const getStyles = props => ({
-	...flexDisplay(props),
-	...alignItems(props),
 	...alignContent(props),
-	...justifyContent(props),
-	...flexWrap(props),
-	...flexDirection(props),
+	...alignItems(props),
+	...alignSelf(props),
 	...flex(props),
 	...flexBasis(props),
+	...flexDisplay(props),
+	...flexDirection(props),
+	...flexWrap(props),
+	...justifyContent(props),
 	...justifySelf(props),
-	...alignSelf(props),
 	...order(props),
-	...(isFunc(props.styles) ? props.styles(props) : props.styles),
+	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
 function Flex(props) {
@@ -60,16 +60,19 @@ Flex.displayName = 'Flex';
 
 Flex.propTypes = {
 	inline: PropTypes.bool,
-	...alignItems.propTypes,
 	...alignContent.propTypes,
-	...justifyContent.propTypes,
-	...flexWrap.propTypes,
-	...flexDirection.propTypes,
+	...alignItems.propTypes,
+	...alignSelf.propTypes,
 	...flex.propTypes,
 	...flexBasis.propTypes,
+	...flexDirection.propTypes,
+	...flexWrap.propTypes,
+	...justifyContent.propTypes,
 	...justifySelf.propTypes,
-	...alignSelf.propTypes,
 	...order.propTypes,
+	...{
+		styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	},
 };
 
 Flex.defaultProps = {

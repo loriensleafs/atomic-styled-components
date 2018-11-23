@@ -2,16 +2,16 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
-import { space, fontSize } from 'styled-system';
+import { fontSize, space } from 'styled-system';
 import {
 	bgColor,
 	borderRadius,
-	textColor,
 	height,
 	maxHeight,
 	maxWidth,
 	minHeight,
 	minWidth,
+	textColor,
 	width,
 } from './../styles';
 import { isFunc } from './../utils/helpers';
@@ -19,7 +19,6 @@ import { isFunc } from './../utils/helpers';
 const getStyles = props => ({
 	...bgColor(props),
 	...borderRadius(props),
-	...textColor(props),
 	...fontSize(props),
 	...height(props),
 	...maxHeight(props),
@@ -27,50 +26,51 @@ const getStyles = props => ({
 	...minHeight(props),
 	...minWidth(props),
 	...space(props),
+	...textColor(props),
 	...width(props),
 	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
 function Box(props) {
 	const {
+		maxHeight,
+		maxWidth,
+		minHeight,
+		minWidth,
+		inline,
+		align,
+		alignContent,
+		alignItems,
+		alignSelf,
+		bg,
+		color,
+		direction,
+		flex,
+		flexDirection,
+		flexWrap,
+		h,
 		is,
-		styles,
+		justify,
+		justifyContent,
+		justifySelf,
 		m,
-		mt,
-		mr,
 		mb,
 		ml,
+		mr,
+		mt,
 		mx,
 		my,
+		order,
 		p,
-		pt,
-		pr,
 		pb,
 		pl,
+		pr,
+		pt,
 		px,
 		py,
 		radius,
-		color,
-		bg,
+		styles,
 		w,
-		h,
-		minWidth,
-		minHeight,
-		maxWidth,
-		maxHeight,
-		inline,
-		flexWrap,
-		align,
-		alignItems,
-		justify,
-		flex,
-		direction,
-		flexDirection,
-		justifySelf,
-		alignSelf,
-		order,
-		alignContent,
-		justifyContent,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
@@ -91,7 +91,6 @@ Box.displayName = 'Box';
 Box.propTypes = {
 	...bgColor.propTypes,
 	...borderRadius.propTypes,
-	...textColor.propTypes,
 	...fontSize.propTypes,
 	...height.propTypes,
 	...maxHeight.propTypes,
@@ -99,16 +98,16 @@ Box.propTypes = {
 	...minHeight.propTypes,
 	...minWidth.propTypes,
 	...space.propTypes,
+	...textColor.propTypes,
 	...width.propTypes,
 	...{
-		as: PropTypes.node,
+		is: PropTypes.node,
 		styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	},
 };
 
 Box.defaultProps = {
 	is: 'div',
-	styles: {},
 };
 
 export default Box;
