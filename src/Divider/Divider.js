@@ -8,27 +8,23 @@ import { isFunc } from './../utils/helpers';
 
 const getAbsoluteStyles = props =>
 	props.absolute && {
-		dividerStyles: {
-			position: 'absolute',
-			bottom: 0,
-			left: 0,
-			width: '100%',
-		},
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		width: '100%',
 	};
 
 const getStyles = props =>
 	merge(
 		{
-			dividerStyles: {
-				width: '100%',
-				height: '1px',
-				margin: props.inset ? '72px' : 0,
-				border: 'none',
-				flexShrink: 0,
-				backgroundColor: props.light
-					? fade(props.theme.palette.divider, 0.08)
-					: props.theme.palette.divider,
-			},
+			width: '100%',
+			height: '1px',
+			margin: props.inset ? '72px' : 0,
+			border: 'none',
+			flexShrink: 0,
+			backgroundColor: props.light
+				? fade(props.theme.palette.divider, 0.08)
+				: props.theme.palette.divider,
 		},
 		getAbsoluteStyles(props),
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
@@ -37,10 +33,10 @@ const getStyles = props =>
 function Divider(props) {
 	const { children, className: classNameProp, is: C } = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(
-		() => cn(classNameProp, getStyles({ ...props, theme }).dividerStyles),
-		[props, theme],
-	);
+	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+		props,
+		theme,
+	]);
 
 	return <C className={className}>{children}</C>;
 }
@@ -62,9 +58,9 @@ Divider.propTypes = {
 };
 
 Divider.defaultProps = {
-	is: 'hr',
 	absolute: false,
 	inset: false,
+	is: 'hr',
 	light: false,
 };
 
