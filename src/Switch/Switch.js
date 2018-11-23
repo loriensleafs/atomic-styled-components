@@ -23,13 +23,13 @@ export const getDisabledStyles = props =>
 				pointerEvents: 'none',
 			},
 		},
-		iconStyles: {
+		iconCheckedStyles: {
 			color:
 				props.theme.palette.type === 'light'
-					? props.theme.palette.common.black
-					: props.theme.palette.common.white,
+					? props.theme.palette.grey.main
+					: props.theme.palette.grey.dark,
 		},
-		iconCheckedStyles: {
+		iconUncheckedStyles: {
 			color:
 				props.theme.palette.type === 'light'
 					? props.theme.palette.grey.main
@@ -39,47 +39,35 @@ export const getDisabledStyles = props =>
 
 export const getCheckedStyles = props => {
 	if (props.checked) {
-		const checkedColor =
+		const backgroundColor =
 			props.color === 'primary' || props.color === 'secondary'
 				? props.theme.palette[props.color].main
 				: props.theme.palette.type === 'light'
-					? props.theme.palette.common.white
-					: props.theme.palette.grey.main;
+					? props.theme.palette.common.black
+					: props.theme.palette.common.white;
 
 		return {
-			rootStyles: {
-				color:
-					props.color === 'primary' || props.color === 'secondary'
-						? props.theme.palette[props.color].main
-						: props.theme.palette.type === 'light'
-							? props.theme.palette.grey.light
-							: props.theme.palette.grey.dark,
-			},
 			barStyles: {
-				backgroundColor:
-					props.color === 'primary' || props.color === 'secondary'
-						? props.theme.palette[props.color].main
-						: props.theme.palette.type === 'light'
-							? props.theme.palette.common.black
-							: props.theme.palette.common.white,
+				backgroundColor,
 				opacity: 0.5,
 			},
 			buttonStyles: {
 				rootStyles: {
 					':hover': {
 						backgroundColor: fade(
-							props.color === 'primary' || props.color === 'secondary'
-								? props.theme.palette[props.color].main
-								: props.theme.palette.type === 'light'
-									? props.theme.palette.common.black
-									: props.theme.palette.common.white,
+							backgroundColor,
 							props.theme.palette.action.hoverOpacity,
 						),
 					},
 				},
 			},
 			iconCheckedStyles: {
-				color: checkedColor,
+				color:
+					props.color === 'primary' || props.color === 'secondary'
+						? props.theme.palette[props.color].main
+						: props.theme.palette.type === 'light'
+							? props.theme.palette.common.white
+							: props.theme.palette.grey.main,
 				boxShadow: props.theme.elevation[2],
 			},
 			selectCheckedStyles: {
