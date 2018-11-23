@@ -7,9 +7,9 @@ import { space, fontSize } from 'styled-system';
 import { getColorStyles } from './../Icon/Icon';
 import { isFunc } from './../utils/helpers';
 
-export const getFontSizeStyles = ({ fontSize }) =>
-	fontSize &&
-	fontSize === 'inherit' && {
+export const getFontSizeStyles = props =>
+	props.fontSize &&
+	props.fontSize === 'inherit' && {
 		fontSize: 'inherit',
 	};
 
