@@ -8,27 +8,30 @@ import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
-export const getColorStyles = ({ color, disabled, theme: { palette } }) => {
+export const getColorStyles = props => {
 	let next = {};
 
-	if (disabled) {
+	if (props.disabled) {
 		next = merge(next, {
-			buttonStyles: {
-				color: palette.action.disabled,
+			rootStyles: {
+				color: props.theme.palette.action.disabled,
 			},
 		});
-	} else if (color === 'inherit') {
+	} else if (props.color === 'inherit') {
 		next = merge(next, {
-			buttonStyles: {
+			rootStyles: {
 				color: 'inherit',
 			},
 		});
-	} else if (color === 'primary' || color === 'secondary') {
+	} else if (props.color === 'primary' || props.color === 'secondary') {
 		next = merge(next, {
-			buttonStyles: {
-				color: palette[color].main,
+			rootStyles: {
+				color: props.theme.palette[props.color].main,
 				':hover': {
-					backgroundColor: fade(palette[color].main, palette.action.hoverOpacity),
+					backgroundColor: fade(
+						props.theme.palette[props.color].main,
+						props.theme.palette.action.hoverOpacity,
+					),
 				},
 			},
 		});
@@ -40,7 +43,7 @@ export const getColorStyles = ({ color, disabled, theme: { palette } }) => {
 export const getStyles = props =>
 	merge(
 		{
-			buttonStyles: {
+			rootStyles: {
 				position: 'relative',
 				textAlign: 'center',
 				flex: '0 0 auto',
@@ -106,20 +109,21 @@ function IconButton(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 
-	const { buttonStyles, labelStyles } = useMemo(() => getStyles({ ...props, ...{ theme } }), [
+	const { rootStyles, labelStyles } = useMemo(() => getStyles({ ...props, theme }), [
 		props,
 		theme,
 	]);
+	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (
 		<ButtonBase
-			styles={{ buttonStyles }}
+			styles={{ rootStyles }}
 			className={className}
 			centerRipple
 			focusRipple
 			disabled={disabled}
 			{...passThru}>
-			<span className={cn(labelStyles)}>{children}</span>
+			<span className={labelClassName}>{children}</span>
 		</ButtonBase>
 	);
 }

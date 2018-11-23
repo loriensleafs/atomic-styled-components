@@ -37,9 +37,9 @@ export const getStyles = props =>
 
 function Ripples(props) {
 	const [ripples, setRipples] = useState(props.ripples);
-	const { rippleStyles, rippleSurfaceStyles } = useMemo(() => getStyles(props), [props.styles]);
-	const rippleClassName = useMemo(() => cn(rippleStyles), [props.styles]);
-	const rippleSurfaceClassName = useMemo(() => cn(rippleSurfaceStyles), [props.styles]);
+	const { rippleStyles, rippleSurfaceStyles } = useMemo(() => getStyles(props), [props]);
+	const rippleClassName = useMemo(() => cn(rippleStyles), [rippleStyles]);
+	const rippleSurfaceClassName = useMemo(() => cn(rippleSurfaceStyles), [rippleSurfaceStyles]);
 
 	function handleRest(item) {
 		if (item && item.pulsate) {
@@ -78,7 +78,7 @@ function Ripples(props) {
 }
 
 Ripples.propTypes = {
-	ripples: PropTypes.object,
+	ripples: PropTypes.array,
 };
 
 export default Ripples;

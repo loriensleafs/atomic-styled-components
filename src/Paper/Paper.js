@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
@@ -10,39 +10,42 @@ const getStyles = props => ({
 		boxShadow: props.theme.elevation[props.elevation - 1],
 		borderRadius: props.square ? '0px' : props.theme.shape.borderRadius.round,
 	},
-	...(isFunc(props.styles) ? props.styles(props) : props.styles),
+	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
 function Paper(props) {
-	const { theme } = useContext(ThemeContext);
-	const className = cn(props.className, getStyles({ ...props, ...{ theme } }));
-	const Component = props.is;
 	const {
-		styles,
+		bg,
 		children,
 		className: classNameProp,
+		color,
+		elevation,
+		is,
 		m,
-		mt,
-		mr,
 		mb,
 		ml,
+		mr,
+		mt,
 		mx,
 		my,
 		p,
-		pt,
-		pr,
 		pb,
 		pl,
-		px,
+		pr,
+		pt,
 		py,
+		px,
 		radius,
-		color,
-		bg,
-		elevation,
 		square,
-		is,
+		styles,
 		...passThru
 	} = props;
+	const { theme } = useContext(ThemeContext);
+	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+		props,
+		theme,
+	]);
+	const Component = is;
 	return (
 		<Component className={className} {...passThru}>
 			{props.children}
@@ -53,24 +56,23 @@ function Paper(props) {
 Paper.displayName = 'Paper';
 
 Paper.propTypes = {
-	is: PropTypes.node,
 	/**
 	 * Shadow depth, corresponds to `dp` in the spec.
 	 * It's accepting values between 0 and 24 inclusive.
 	 */
 	elevation: PropTypes.number,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	is: PropTypes.node,
 	/**
 	 * If `true`, rounded corners are disabled.
 	 */
 	square: PropTypes.bool,
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 Paper.defaultProps = {
-	is: 'div',
 	elevation: 2,
+	is: 'div',
 	square: false,
-	styles: {},
 };
 
 export default Paper;

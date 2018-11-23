@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import SelectionControl from './../SelectionControl';
 import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
@@ -11,8 +11,8 @@ import { fade } from './../utils/colorHelpers';
 
 const getDisabledStyles = props =>
 	props.disabled && {
-		iconButtonStyles: {
-			buttonStyles: {
+		buttonStyles: {
+			rootStyles: {
 				color: props.theme.palette.action.disabled,
 				pointerEvents: 'none',
 			},
@@ -21,8 +21,8 @@ const getDisabledStyles = props =>
 
 const getCheckedStyles = props =>
 	props.checked && {
-		iconButtonStyles: {
-			buttonStyles: {
+		buttonStyles: {
+			rootStyles: {
 				color:
 					props.color === 'primary' || props.color === 'secondary'
 						? props.theme.palette[props.color].main
@@ -44,8 +44,8 @@ const getCheckedStyles = props =>
 const getStyles = props =>
 	merge(
 		{
-			iconButtonStyles: {
-				buttonStyles: {
+			buttonStyles: {
+				rootStyles: {
 					color: props.theme.palette.text.secondary,
 					transition: `background-color ${
 						props.theme.duration.shortest
@@ -71,7 +71,7 @@ function Radio(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
-	const { iconButtonStyles } = useMemo(() => getStyles({ ...props, ...{ checked, theme } }), [
+	const { buttonStyles } = useMemo(() => getStyles({ ...props, checked, theme }), [
 		checked,
 		props,
 		theme,
@@ -94,7 +94,7 @@ function Radio(props) {
 			icon={<RadioButtonUncheckedIcon />}
 			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			onChange={handleChange}
-			styles={{ iconButtonStyles }}
+			styles={{ buttonStyles }}
 			type="radio"
 			{...passThru}
 		/>

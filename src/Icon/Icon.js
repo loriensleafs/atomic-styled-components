@@ -6,22 +6,26 @@ import cn from './../theme/className';
 import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 
-export const getColorStyles = ({ color, disabled, theme: { palette } }) => {
-	if (disabled) {
+export const getColorStyles = props => {
+	if (props.disabled) {
 		return {
-			color: palette.action.disabled,
+			color: props.theme.palette.action.disabled,
 		};
-	} else if (color === 'inherit') {
+	} else if (props.color === 'inherit') {
 		return {
 			color: 'inherit',
 		};
-	} else if (color === 'primary' || color === 'secondary' || color === 'error') {
+	} else if (
+		props.color === 'primary' ||
+		props.color === 'secondary' ||
+		props.color === 'error'
+	) {
 		return {
-			color: palette[color].main,
+			color: props.theme.palette[props.color].main,
 		};
-	} else if (color === 'active') {
+	} else if (props.color === 'active') {
 		return {
-			color: palette.action.active,
+			color: props.theme.palette.action.active,
 		};
 	}
 };
@@ -44,28 +48,28 @@ export const getStyles = props =>
 function Icon(props) {
 	const {
 		children,
-		classNameProp,
+		className: classNameProp,
 		color,
 		fontSize,
 		m,
+		mb,
 		ml,
 		mr,
 		mt,
-		mb,
 		mx,
 		my,
 		p,
+		pb,
 		pl,
 		pr,
 		pt,
-		pb,
-		px,
 		py,
+		px,
 		styles,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(getStyles({ ...props, theme }), classNameProp), [
+	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
 		props,
 		theme,
 	]);
@@ -101,7 +105,6 @@ Icon.propTypes = {
 Icon.defaultProps = {
 	color: 'inherit',
 	fontSize: 'default',
-	styles: {},
 };
 
 Icon.displayName = 'Icon';

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import SelectionControl from './../SelectionControl';
 import CheckBoxIcon from './../svgIcons/CheckBox';
@@ -12,8 +12,8 @@ import { fade } from './../utils/colorHelpers';
 
 const getDisabledStyles = props =>
 	props.disabled && {
-		iconButtonStyles: {
-			buttonStyles: {
+		buttonStyles: {
+			rootStyles: {
 				color: props.theme.palette.action.disabled,
 				pointerEvents: 'none',
 			},
@@ -22,8 +22,8 @@ const getDisabledStyles = props =>
 
 const getCheckedStyles = props =>
 	props.checked && {
-		iconButtonStyles: {
-			buttonStyles: {
+		buttonStyles: {
+			rootStyles: {
 				color:
 					props.color === 'primary' || props.color === 'secondary'
 						? props.theme.palette[props.color].main
@@ -45,8 +45,8 @@ const getCheckedStyles = props =>
 const getStyles = props =>
 	merge(
 		{
-			iconButtonStyles: {
-				buttonStyles: {
+			buttonStyles: {
+				rootStyles: {
 					color: props.theme.palette.text.secondary,
 					transition: `background-color ${
 						props.theme.duration.shortest
@@ -74,7 +74,7 @@ function Checkbox(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
-	const { iconButtonStyles } = useMemo(() => getStyles({ ...props, checked, theme }), [
+	const { buttonStyles } = useMemo(() => getStyles({ ...props, checked, theme }), [
 		checked,
 		props,
 		theme,
@@ -98,7 +98,7 @@ function Checkbox(props) {
 			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			icon={indeterminate ? indeterminateIcon : icon}
 			onChange={handleChange}
-			styles={{ iconButtonStyles }}
+			styles={{ buttonStyles }}
 			type="checkbox"
 			{...passThru}
 		/>

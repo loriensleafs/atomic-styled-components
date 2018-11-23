@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
@@ -11,11 +11,6 @@ export const fontFamily = style({
 	key: 'typography.fontFamily',
 });
 
-export const fontWeight = style({
-	prop: 'weight',
-	key: 'typography.fontWeights',
-});
-
 export const fontSize = style({
 	prop: 'size',
 	key: 'typography.fontSizes',
@@ -23,16 +18,21 @@ export const fontSize = style({
 	scale: [0.625, 0.75, 0.875, 1, 1.25, 1.5, 2.125, 3, 3.75, 6],
 });
 
+export const fontWeight = style({
+	prop: 'weight',
+	key: 'typography.fontWeights',
+});
+
 export const lineHeight = style({
 	prop: 'lineHeight',
 	key: 'typography.lineHeights',
 });
 
-export const typographyVariants = variant({
+export const variants = variant({
 	key: 'typography.variants',
 });
 
-const tagMap = {
+const TAG_MAP = {
 	h1: 'h1',
 	h2: 'h2',
 	h3: 'h3',
@@ -51,7 +51,7 @@ export const getStyles = props => ({
 	...{
 		margin: 0,
 	},
-	...typographyVariants(props),
+	...variants(props),
 	...fontFamily(props),
 	...fontSize(props),
 	...fontWeight(props),
@@ -59,13 +59,17 @@ export const getStyles = props => ({
 	...textAlign(props),
 	...textColor(props),
 	...space(props),
-	...(isFunc(props.styles) ? props.styles(props) : props.styles),
+	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
 function Typography(props) {
+	const { className: classNameProp, paragraph, variant } = props;
 	const { theme } = useContext(ThemeContext);
-	const className = cn(props.className, getStyles({ ...props, ...{ theme } }));
-	const Component = props.paragraph ? 'p' : tagMap[props.variant] || 'span';
+	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+		props,
+		theme,
+	]);
+	const Component = paragraph ? 'p' : TAG_MAP[variant] || 'span';
 
 	return <Component className={className}>{props.children}</Component>;
 }
@@ -78,7 +82,7 @@ Typography.propTypes = {
 	...space.propTypes,
 	...textAlign.propTypes,
 	...textColor.propTypes,
-	...typographyVariants.propTypes,
+	...variants.propTypes,
 	...{
 		paragraph: PropTypes.bool,
 	},

@@ -12,71 +12,73 @@ import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
-export const getColorStyles = ({ color, theme: { palette } }) =>
-	(color === 'primary' || color === 'secondary') && {
-		buttonStyles: {
-			color: palette[color].main,
+export const getColorStyles = props =>
+	(props.color === 'primary' || props.color === 'secondary') && {
+		rootStyles: {
+			color: props.theme.palette[props.color].main,
 			':hover': {
-				backgroundColor: fade(palette[color].main, palette.action.hoverOpacity),
+				backgroundColor: fade(
+					props.theme.palette[props.color].main,
+					props.theme.palette.action.hoverOpacity,
+				),
 			},
 		},
 	};
 
-export const getFabStyles = ({ fab, theme: { elevation } }) =>
-	fab && {
-		buttonStyles: {
+export const getFabStyles = props =>
+	props.fab && {
+		rootStyles: {
 			borderRadius: '50%',
 			padding: '0px',
 			minWidth: '0px',
 			width: '56px',
 			height: '56px',
-			boxShadow: elevation[6],
+			boxShadow: props.theme.elevation[6],
 			':active': {
-				boxShadow: elevation[12],
+				boxShadow: props.theme.elevation[12],
 			},
 		},
 	};
 
-export const getFullWidthStyles = ({ fullWidth }) =>
-	fullWidth && {
-		buttonStyles: {
+export const getFullWidthStyles = props =>
+	props.fullWidth && {
+		rootStyles: {
 			width: '100%',
 		},
 	};
 
-export const getMiniStyles = ({ fab, mini }) =>
-	fab &&
-	mini && {
-		buttonStyles: {
+export const getMiniStyles = props =>
+	props.fab &&
+	props.mini && {
+		rootStyles: {
 			width: '40px',
 			height: '40px',
 		},
 	};
 
-export const getSizeStyles = ({
-	size,
-	theme: {
-		typography: { fontSizes, fontUnit },
-		space,
-	},
-}) => {
-	switch (size) {
+export const getSizeStyles = props => {
+	switch (props.size) {
 		case 'small':
 			return {
-				buttonStyles: {
-					padding: `${space[2] - 1}px ${space[2] + 1}px`,
+				rootStyles: {
+					padding: `${props.theme.space[2] - 1}px ${props.theme.space[2] + 1}px`,
 					minWidth: '64px',
 					minHeight: '32px',
-					fontSize: `${fontSizes[2] - 0.07}${fontUnit}`,
+					fontSize: `${props.theme.typography.fontSizes[2] - 0.07}${
+						props.theme.typography.fontUnit
+					}`,
 				},
 			};
 		case 'large':
 			return {
-				buttonStyles: {
-					padding: `${space[2]}px ${space[3] + space[2]}px`,
+				rootStyles: {
+					padding: `${props.theme.space[2]}px ${props.theme.space[3] +
+						props.theme.space[2]}px`,
 					minWidth: '112px',
 					minHeight: '40px',
-					fontSize: `${fontSizes[2] + 0.0625}${fontUnit}`,
+					fontSize: `${props.theme.typography.fontSizes[2] + 0.0625}${
+						props.theme.typography.fontUnit
+					}`,
 				},
 			};
 		default:
@@ -84,80 +86,82 @@ export const getSizeStyles = ({
 	}
 };
 
-export const getVariantStyles = ({ color, variant, theme: { elevation, palette, space } }) => {
+export const getVariantStyles = props => {
 	let next = {};
 
-	if (variant === 'contained') {
+	if (props.variant === 'contained') {
 		next = merge(next, {
-			buttonStyles: {
-				color: palette.text.primary,
-				backgroundColor: palette.grey.light,
-				boxShadow: elevation[2],
+			rootStyles: {
+				color: props.theme.palette.text.primary,
+				backgroundColor: props.theme.palette.grey.light,
+				boxShadow: props.theme.elevation[2],
 				':active': {
-					boxShadow: elevation[8],
+					boxShadow: props.theme.elevation[8],
 				},
 				':disabled': {
-					color: palette.action.disabled,
+					color: props.theme.palette.action.disabled,
 					boxShadow: 'none',
-					backgroundColor: palette.action.disabledBg,
+					backgroundColor: props.theme.palette.action.disabledBg,
 				},
 				':hover': {
-					backgroundColor: palette.grey.light,
+					backgroundColor: props.theme.palette.grey.light,
 				},
 			},
 		});
 
-		if (color === 'primary' || color === 'secondary') {
+		if (props.color === 'primary' || props.color === 'secondary') {
 			next = merge(next, {
-				buttonStyles: {
-					color: palette[color].contrastText,
-					backgroundColor: palette[color].main,
+				rootStyles: {
+					color: props.theme.palette[props.color].contrastText,
+					backgroundColor: props.theme.palette[props.color].main,
 					':hover': {
-						backgroundColor: palette[color].dark,
+						backgroundColor: props.theme.palette[props.color].dark,
 					},
 				},
 			});
 		}
-	} else if (variant === 'outlined') {
+	} else if (props.variant === 'outlined') {
 		next = merge(next, {
-			buttonStyles: {
+			rootStyles: {
 				':disabled': {
-					color: palette.action.disabled,
+					color: props.theme.palette.action.disabled,
 					backgroundColor: 'transparent',
-					border: `1px solid ${palette.action.disabled}`,
+					border: `1px solid ${props.theme.palette.action.disabled}`,
 				},
 			},
 		});
-		if (color === 'primary' || color === 'secondary') {
+		if (props.color === 'primary' || props.color === 'secondary') {
 			next = merge(next, {
-				buttonStyles: {
-					border: `1px solid ${fade(palette[color].main, 0.5)}`,
+				rootStyles: {
+					border: `1px solid ${fade(props.theme.palette[props.color].main, 0.5)}`,
 					':hover': {
-						border: `1px solid ${palette[color].main}`,
+						border: `1px solid ${props.theme.palette[props.color].main}`,
 					},
 				},
 			});
 		} else {
 			next = merge(next, {
-				buttonStyles: {
+				rootStyles: {
 					border: `1px solid ${
-						palette.type === 'light' ? palette.grey.main : palette.divider.dark.light
+						props.theme.palette.type === 'light'
+							? props.theme.palette.grey.main
+							: props.theme.palette.divider.dark.light
 					}`,
 					':hover': {
 						border: `1px solid ${
-							palette.type === 'light'
-								? palette.grey.dark
-								: palette.divider.dark.primary
+							props.theme.palette.type === 'light'
+								? props.theme.palette.grey.dark
+								: props.theme.palette.divider.dark.primary
 						}`,
 					},
 				},
 			});
 		}
-	} else if (variant === 'extendedFab') {
+	} else if (props.variant === 'extendedFab') {
 		next = merge(next, {
-			buttonStyles: {
+			rootStyles: {
 				borderRadius: `${48 / 2}px`,
-				padding: `0 ${space[3]}`,
+				padding: `0 ${props.theme.space[3]}`,
 				width: 'auto',
 				minWidth: '48px',
 				height: '48px',
@@ -170,7 +174,7 @@ export const getVariantStyles = ({ color, variant, theme: { elevation, palette, 
 const getStyles = props =>
 	merge(
 		{
-			buttonStyles: {
+			rootStyles: {
 				boxSizing: 'border-box',
 				minWidth: '64px',
 				minHeight: '36px',
@@ -250,19 +254,20 @@ function Button(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { buttonStyles, labelStyles } = useMemo(() => getStyles({ ...props, ...{ theme } }), [
+	const { rootStyles, labelStyles } = useMemo(() => getStyles({ ...props, theme }), [
 		props,
 		theme,
 	]);
+	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (
 		<ButtonBase
-			styles={{ buttonStyles }}
+			styles={{ rootStyles }}
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
 			{...passThru}>
-			<span className={cn(labelStyles)}>{children}</span>
+			<span className={labelClassName}>{children}</span>
 		</ButtonBase>
 	);
 }

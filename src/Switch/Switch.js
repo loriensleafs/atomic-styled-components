@@ -18,16 +18,16 @@ export const getDisabledStyles = props =>
 					: props.theme.palette.common.white,
 			opacity: props.theme.palette.type === 'light' ? 0.12 : 0.1,
 		},
+		buttonStyles: {
+			rootStyles: {
+				pointerEvents: 'none',
+			},
+		},
 		iconStyles: {
 			color:
 				props.theme.palette.type === 'light'
 					? props.theme.palette.common.black
 					: props.theme.palette.common.white,
-		},
-		iconButtonStyles: {
-			buttonStyles: {
-				pointerEvents: 'none',
-			},
 		},
 		iconCheckedStyles: {
 			color:
@@ -47,7 +47,7 @@ export const getCheckedStyles = props => {
 					: props.theme.palette.grey.main;
 
 		return {
-			switchStyles: {
+			rootStyles: {
 				color:
 					props.color === 'primary' || props.color === 'secondary'
 						? props.theme.palette[props.color].main
@@ -64,8 +64,8 @@ export const getCheckedStyles = props => {
 							: props.theme.palette.common.white,
 				opacity: 0.5,
 			},
-			iconButtonStyles: {
-				buttonStyles: {
+			buttonStyles: {
+				rootStyles: {
 					':hover': {
 						backgroundColor: fade(
 							props.color === 'primary' || props.color === 'secondary'
@@ -82,7 +82,7 @@ export const getCheckedStyles = props => {
 				color: checkedColor,
 				boxShadow: props.theme.elevation[2],
 			},
-			controlCheckedStyles: {
+			selectCheckedStyles: {
 				transform: 'translate3d(14px, 0px, 0px)',
 			},
 		};
@@ -90,10 +90,15 @@ export const getCheckedStyles = props => {
 	return null;
 };
 
-const getStyles = props =>
-	merge(
+const getStyles = props => {
+	const backgroundColor =
+		props.theme.palette.type === 'light'
+			? props.theme.palette.common.black
+			: props.theme.palette.common.white;
+
+	return merge(
 		{
-			switchStyles: {
+			rootStyles: {
 				position: 'relative',
 				display: 'inline-flex',
 				width: '62px',
@@ -110,12 +115,27 @@ const getStyles = props =>
 				marginTop: '-7px',
 				marginLeft: '-17px',
 				display: 'block',
-				backgroundColor:
-					props.theme.palette.type === 'light'
-						? props.theme.palette.common.black
-						: props.theme.palette.common.white,
+				backgroundColor,
 				borderRadius: `${14 / 2}px`,
 				opacity: props.theme.palette.type === 'light' ? 0.38 : 0.3,
+			},
+			buttonStyles: {
+				rootStyles: {
+					zIndex: 1,
+					color: 'currentColor',
+					padding: '0px',
+					height: '48px',
+					width: '48px',
+					transition: `background-color ${
+						props.theme.duration.shortest
+					}ms cubic-bezier(${props.theme.easing.in.join()})`,
+					':hover': {
+						backgroundColor: fade(
+							backgroundColor,
+							props.theme.palette.action.hoverOpacity,
+						),
+					},
+				},
 			},
 			iconStyles: {
 				width: '20px',
@@ -127,48 +147,29 @@ const getStyles = props =>
 				color: props.theme.palette.common.white,
 				boxShadow: props.theme.elevation[1],
 			},
-			controlUncheckedStyles: {
+			selectUncheckedStyles: {
 				transform: 'translate3d(0px, 0px, 0px)',
-			},
-			iconButtonStyles: {
-				buttonStyles: {
-					zIndex: 1,
-					color: 'currentColor',
-					padding: '0px',
-					height: '48px',
-					width: '48px',
-					transition: `background-color ${
-						props.theme.duration.shortest
-					}ms cubic-bezier(${props.theme.easing.in.join()})`,
-					':hover': {
-						backgroundColor: fade(
-							props.theme.palette.type === 'light'
-								? props.theme.palette.common.black
-								: props.theme.palette.common.white,
-							props.theme.palette.action.hoverOpacity,
-						),
-					},
-				},
 			},
 		},
 		getCheckedStyles(props),
 		getDisabledStyles(props),
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
+};
 
 function Switch(props) {
-	const { className, color, icon, onChange, styles, ...passThru } = props;
+	const { className: classNameProp, color, icon, onChange, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
 	const {
-		iconUncheckedStyles,
-		iconCheckedStyles,
-		controlUncheckedStyles,
-		controlCheckedStyles,
-		switchStyles,
 		barStyles,
+		buttonStyles,
 		iconStyles,
-		iconButtonStyles,
+		iconCheckedStyles,
+		iconUncheckedStyles,
+		rootStyles,
+		selectCheckedStyles,
+		selectUncheckedStyles,
 	} = useMemo(
 		() =>
 			getStyles({
@@ -178,15 +179,15 @@ function Switch(props) {
 			}),
 		[checked, props, theme],
 	);
-	const switchClassName = useMemo(() => cn(switchStyles), [checked, theme]);
-	const barClassName = useMemo(() => cn(barStyles), [checked, theme]);
-	const iconClassName = useMemo(() => cn(iconStyles), [checked, theme]);
-	const [controlAnim] = useSpring({
-		...(checked ? controlCheckedStyles : controlUncheckedStyles),
-		from: checked ? controlUncheckedStyles : controlCheckedStyles,
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const barClassName = useMemo(() => cn(barStyles), [barStyles]);
+	const iconClassName = useMemo(() => cn(iconStyles), [iconStyles]);
+	const [selectTransition] = useSpring({
+		...(checked ? selectCheckedStyles : selectUncheckedStyles),
+		from: checked ? selectUncheckedStyles : selectCheckedStyles,
 		config: { tension: 1200, friction: 40 },
 	});
-	const [iconAnim] = useSpring({
+	const [iconTransition] = useSpring({
 		...(checked ? iconCheckedStyles : iconUncheckedStyles),
 		from: checked ? iconUncheckedStyles : iconCheckedStyles,
 		config: { tension: 1200, friction: 40 },
@@ -204,14 +205,14 @@ function Switch(props) {
 	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [props.checked]);
 
 	return (
-		<span className={switchClassName}>
+		<span className={className}>
 			<span className={barClassName} />
-			<animated.div style={controlAnim}>
+			<animated.div style={selectTransition}>
 				<SelectionControl
 					onChange={handleChange}
 					type="checkbox"
-					icon={<animated.div className={iconClassName} style={iconAnim} />}
-					styles={{ iconButtonStyles }}
+					icon={<animated.div className={iconClassName} style={iconTransition} />}
+					styles={{ buttonStyles }}
 					{...passThru}
 				/>
 			</animated.div>

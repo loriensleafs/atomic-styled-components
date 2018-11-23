@@ -10,8 +10,8 @@ import { isFunc, isNil } from './../utils/helpers';
 const getStyles = props =>
 	merge(
 		{
-			iconButtonStyles: {
-				buttonStyles: {
+			buttonStyles: {
+				rootStyles: {
 					display: 'inline-flex',
 					alignItems: 'center',
 					transition: 'none',
@@ -58,7 +58,7 @@ function SelectionControl(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(checkedProp || false);
-	const { iconButtonStyles, inputStyles } = useMemo(
+	const { buttonStyles, inputStyles } = useMemo(
 		() =>
 			getStyles({
 				...props,
@@ -71,20 +71,24 @@ function SelectionControl(props) {
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
 
 	const handleChange = useCallback(event => {
-		if (isNil(props.checked)) setChecked(event.target.checked);
-		if (onChange) onChange(event, event.target.checked);
+		if (isNil(checkedProp)) {
+			setChecked(event.target.checked);
+		}
+		if (onChange) {
+			onChange(event, event.target.checked);
+		}
 	}, []);
 
 	const handleFocus = useCallback(event => onFocus && onFocus(event), []);
 
 	const handleBlur = useCallback(event => onBlur && onBlur(event), []);
 
-	useDidUpdate(() => !isNil(props.checked) && setChecked(() => props.checked), [props.checked]);
+	useDidUpdate(() => !isNil(checkedProp) && setChecked(() => checkedProp), [checkedProp]);
 
 	return (
 		<IconButton
 			component="span"
-			styles={iconButtonStyles}
+			styles={buttonStyles}
 			disabled={disabled}
 			tabIndex={null}
 			role={undefined}

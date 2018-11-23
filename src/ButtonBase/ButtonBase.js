@@ -14,7 +14,7 @@ import { isFunc } from './../utils/helpers';
 export const getStyles = props =>
 	merge(
 		{
-			buttonStyles: {
+			rootStyles: {
 				position: 'relative',
 				display: 'inline-flex',
 				alignItems: 'center',
@@ -106,10 +106,10 @@ function ButtonBase(props) {
 				  },
 		[Component, disabled, type],
 	);
-	const className = useMemo(
-		() => cn(classNameProp, getStyles({ ...props, ...{ theme } }).buttonStyles),
-		[props, theme],
-	);
+	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme }).rootStyles), [
+		props,
+		theme,
+	]);
 
 	const handleMouseDown = useCallback(
 		rippleStartHandler(buttonRef.current, false, centerRipple, () => {
