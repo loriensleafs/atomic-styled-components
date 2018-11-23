@@ -42,7 +42,7 @@ function Ripples(props) {
 	const rippleSurfaceClassName = useMemo(() => cn(rippleSurfaceStyles), [props.styles]);
 
 	function handleRest(item) {
-		if (item.pulsate) {
+		if (item && item.pulsate) {
 			setRipples(() =>
 				ripples.map(
 					ripple =>

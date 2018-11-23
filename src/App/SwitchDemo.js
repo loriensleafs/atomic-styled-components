@@ -1,45 +1,31 @@
-import React, { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import Box from './../Box';
 import Card from './../Card';
-import Divider from './../Divider';
 import Flex from './../Flex';
 import Switch from './../Switch';
 
-class SwitchDemo extends Component {
-	state = {
-		checkedA: true,
-		checkedB: true,
-	};
+function SwitchDemo(props) {
+	const [checked, setChecked] = useState({ A: true, B: true });
 
-	handleChange = name => (event, checked) => {
-		this.setState({ [name]: event.target.checked });
-	};
+	const handleChange = useCallback(
+		event => setChecked({ ...checked, ...{ [event.target.value]: event.target.checked } }),
+		[],
+	);
 
-	render() {
-		return (
-			<Card my={2}>
-				<Box w={1} py={4} px={2}>
-					<Flex justifyContent="center" alignItems="center">
-						<Switch
-							checked={this.state.checkedA}
-							onChange={this.handleChange('checkedA')}
-							value="checkedA"
-						/>
-						<Switch
-							checked={this.state.checkedB}
-							onChange={this.handleChange('checkedB')}
-							value="checkedB"
-							color="primary"
-						/>
-						<Switch value="checkedC" />
-						<Switch disabled value="checkedD" />
-						<Switch disabled checked value="checkedE" />
-						<Switch defaultChecked value="checkedF" color="default" />
-					</Flex>
-				</Box>
-			</Card>
-		);
-	}
+	return (
+		<Card my={2}>
+			<Box w={1} py={4} px={2}>
+				<Flex justifyContent="center" alignItems="center">
+					<Switch checked={checked.A} onChange={handleChange} value="A" />
+					<Switch checked={checked.B} onChange={handleChange} value="B" color="primary" />
+					<Switch value="checkedC" />
+					<Switch disabled value="checkedD" />
+					<Switch disabled checked value="E" />
+					<Switch defaultChecked value="F" color="default" />
+				</Flex>
+			</Box>
+		</Card>
+	);
 }
 
 export default SwitchDemo;
