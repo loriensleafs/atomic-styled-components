@@ -53,6 +53,7 @@ export const getCheckedStyles = props => {
 			},
 			buttonStyles: {
 				rootStyles: {
+					color: backgroundColor,
 					':hover': {
 						backgroundColor: fade(
 							backgroundColor,
@@ -60,18 +61,6 @@ export const getCheckedStyles = props => {
 						),
 					},
 				},
-			},
-			iconCheckedStyles: {
-				color:
-					props.color === 'primary' || props.color === 'secondary'
-						? props.theme.palette[props.color].main
-						: props.theme.palette.type === 'light'
-							? props.theme.palette.common.white
-							: props.theme.palette.grey.main,
-				boxShadow: props.theme.elevation[2],
-			},
-			selectCheckedStyles: {
-				transform: 'translate3d(14px, 0px, 0px)',
 			},
 		};
 	}
@@ -135,8 +124,20 @@ const getStyles = props => {
 				color: props.theme.palette.common.white,
 				boxShadow: props.theme.elevation[1],
 			},
-			selectUncheckedStyles: {
+			iconCheckedStyles: {
+				color:
+					props.color === 'primary' || props.color === 'secondary'
+						? props.theme.palette[props.color].main
+						: props.theme.palette.type === 'light'
+							? props.theme.palette.common.white
+							: props.theme.palette.grey.main,
+				boxShadow: props.theme.elevation[2],
+			},
+			selectControlUncheckedStyles: {
 				transform: 'translate3d(0px, 0px, 0px)',
+			},
+			selectControlCheckedStyles: {
+				transform: 'translate3d(14px, 0px, 0px)',
 			},
 		},
 		getCheckedStyles(props),
@@ -153,11 +154,12 @@ function Switch(props) {
 		barStyles,
 		buttonStyles,
 		iconStyles,
-		iconCheckedStyles,
 		iconUncheckedStyles,
+		iconCheckedStyles,
 		rootStyles,
-		selectCheckedStyles,
-		selectUncheckedStyles,
+		selectControlStyles,
+		selectControlUncheckedStyles,
+		selectControlCheckedStyles,
 	} = useMemo(
 		() =>
 			getStyles({
@@ -165,19 +167,20 @@ function Switch(props) {
 				checked,
 				theme,
 			}),
-		[checked, props, theme],
+		[checked, props.disabled, props.styles, theme],
 	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const barClassName = useMemo(() => cn(barStyles), [barStyles]);
 	const iconClassName = useMemo(() => cn(iconStyles), [iconStyles]);
-	const [selectTransition] = useSpring({
-		...(checked ? selectCheckedStyles : selectUncheckedStyles),
-		from: checked ? selectUncheckedStyles : selectCheckedStyles,
-		config: { tension: 1200, friction: 40 },
-	});
+	const selectControlClassName = useMemo(() => cn(selectControlStyles), [selectControlStyles]);
 	const [iconTransition] = useSpring({
 		...(checked ? iconCheckedStyles : iconUncheckedStyles),
 		from: checked ? iconUncheckedStyles : iconCheckedStyles,
+		config: { tension: 1200, friction: 40 },
+	});
+	const [selectControlTransition] = useSpring({
+		...(checked ? selectControlCheckedStyles : selectControlUncheckedStyles),
+		from: checked ? selectControlUncheckedStyles : selectControlCheckedStyles,
 		config: { tension: 1200, friction: 40 },
 	});
 
@@ -195,7 +198,7 @@ function Switch(props) {
 	return (
 		<span className={className}>
 			<span className={barClassName} />
-			<animated.div style={selectTransition}>
+			<animated.div className={selectControlClassName} style={selectControlTransition}>
 				<SelectionControl
 					onChange={handleChange}
 					type="checkbox"

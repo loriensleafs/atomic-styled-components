@@ -1,10 +1,11 @@
-import React, { useContext, useState, useCallback, useMemo } from 'react';
+import React, { Fragment, useCallback, useContext, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import useDidUpdate from './../hooks/useDidUpdate';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
 import IconButton from './../IconButton';
 import cn from './../theme/className';
+import { animated, useSpring } from 'react-spring';
 import { isFunc, isNil } from './../utils/helpers';
 
 const getStyles = props =>
@@ -68,6 +69,7 @@ function SelectionControl(props) {
 		[props, checked, theme],
 	);
 	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
+
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
 
 	const handleChange = useCallback(event => {

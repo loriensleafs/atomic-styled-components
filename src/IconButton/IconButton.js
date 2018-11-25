@@ -7,6 +7,7 @@ import ButtonBase from './../ButtonBase';
 import { space } from 'styled-system';
 import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
+import { relative } from 'path';
 
 export const getColorStyles = props => {
 	let next = {};
@@ -74,6 +75,7 @@ export const getStyles = props =>
 				...space(props),
 			},
 			labelStyles: {
+				position: 'relative',
 				width: '100%',
 				display: 'flex',
 				alignItems: 'inherit',

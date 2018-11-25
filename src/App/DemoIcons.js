@@ -35,6 +35,27 @@ export const KeyboardVoiceIcon = props => (
 	</SvgIcon>
 );
 
+export const PlayArrowIcon = props => (
+	<SvgIcon {...props}>
+		<path d="M8 5v14l11-7z" />
+		<path fill="none" d="M0 0h24v24H0z" />
+	</SvgIcon>
+);
+
+export const SkipPreviousIcon = props => (
+	<SvgIcon {...props}>
+		<path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+		<path fill="none" d="M0 0h24v24H0z" />
+	</SvgIcon>
+);
+
+export const SkipNextIcon = props => (
+	<SvgIcon {...props}>
+		<path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+		<path fill="none" d="M0 0h24v24H0z" />
+	</SvgIcon>
+);
+
 export const SendIcon = props => (
 	<SvgIcon {...props}>
 		<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
