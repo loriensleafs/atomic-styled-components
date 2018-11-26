@@ -1,23 +1,25 @@
 import { useState } from 'react';
-import merge from './../utils/pureRecursiveMerge';
-import { isFunc, isNil } from './../utils/helpers';
+import { isNil } from './../utils/helpers';
 
-function getRippleRect(ref, pulsate = false, center = false, { clientX, clientY, touches }) {
-	const centered = center || (clientX === 0 && clientY === 0) || (!clientX && !touches);
-	const touch = isNil(touches);
+function getRippleRect(ref, pulsate = false, center, event) {
+	const centered = center || pulsate;
 	const rect = ref ? ref.getBoundingClientRect() : { width: 0, height: 0, left: 0, top: 0 };
-	const x = clientX ? clientX : touches ? touches[0].x : null;
-	const y = clientX ? clientY : touches ? touches[0].y : null;
 	let rippleX;
 	let rippleY;
 	let rippleSize;
 
-	if (centered || (x === 0 && y === 0) || (!x && !touch)) {
+	if (
+		centered ||
+		(event.clientX === 0 && event.clientY === 0) ||
+		(!event.clientX && !event.touches)
+	) {
 		rippleX = Math.round(rect.width / 2);
 		rippleY = Math.round(rect.height / 2);
 	} else {
-		rippleX = Math.round(x - rect.left);
-		rippleY = Math.round(y - rect.top);
+		const clientX = event.clientX ? event.clientX : event.touches[0].clientX;
+		const clientY = event.clientY ? event.clientY : event.touches[0].clientY;
+		rippleX = Math.round(clientX - rect.left);
+		rippleY = Math.round(clientY - rect.top);
 	}
 
 	if (centered) {
