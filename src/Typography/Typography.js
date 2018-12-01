@@ -2,31 +2,9 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
-import { space, style, textAlign, variant } from 'styled-system';
-import { textColor } from './../styles';
+import { space, textAlign, variant } from 'styled-system';
+import { textColor, fontFamily, fontSize, fontWeight, lineHeight } from './../styles';
 import { isFunc, px } from './../utils/helpers';
-
-export const fontFamily = style({
-	prop: 'font',
-	key: 'typography.fontFamily',
-});
-
-export const fontSize = style({
-	prop: 'size',
-	key: 'typography.fontSizes',
-	transformValue: px,
-	scale: [0.625, 0.75, 0.875, 1, 1.25, 1.5, 2.125, 3, 3.75, 6],
-});
-
-export const fontWeight = style({
-	prop: 'weight',
-	key: 'typography.fontWeights',
-});
-
-export const lineHeight = style({
-	prop: 'lineHeight',
-	key: 'typography.lineHeights',
-});
 
 export const variants = variant({
 	key: 'typography.variants',
@@ -65,7 +43,7 @@ export const getStyles = props => ({
 const useStyles = props => useMemo(() => getStyles(props), [props]);
 
 function Typography(props) {
-	const { className: classNameProp, paragraph, variant } = props;
+	const { className: classNameProp, font, lineHeight, paragraph, size, variant, weight } = props;
 	const { theme } = useContext(ThemeContext);
 	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
 		props,
