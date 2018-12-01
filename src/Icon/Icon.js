@@ -1,10 +1,9 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
-import merge from './../utils/pureRecursiveMerge';
 import cn from './../theme/className';
+import useStyles from './../hooks/useStyles';
 import { space } from 'styled-system';
-import { isFunc } from './../utils/helpers';
 
 export const getColorStyles = props => {
 	if (props.disabled) {
@@ -30,26 +29,21 @@ export const getColorStyles = props => {
 	}
 };
 
-export const getStyles = props =>
-	merge(
-		{
-			userSelect: 'none',
-			fontSize: '24px',
-			width: '1em',
-			height: '1em',
-			overflow: 'hidden',
-			flexShrink: 0,
-		},
-		getColorStyles(props),
-		space(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
+export const getBaseStyles = props => ({
+	userSelect: 'none',
+	fontSize: '24px',
+	width: '1em',
+	height: '1em',
+	overflow: 'hidden',
+	flexShrink: 0,
+});
 
 function Icon(props) {
 	const {
 		children,
 		className: classNameProp,
 		color,
+		disabled,
 		fontSize,
 		m,
 		mb,
@@ -65,17 +59,59 @@ function Icon(props) {
 		pt,
 		py,
 		px,
-		styles,
+		styles: stylesProp,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
-		props,
-		theme,
-	]);
+	const styles = useStyles(
+		{
+			color,
+			disabled,
+			fontSize,
+			m,
+			mb,
+			ml,
+			mr,
+			mt,
+			mx,
+			my,
+			p,
+			pb,
+			pl,
+			pr,
+			pt,
+			py,
+			px,
+			stylesProp,
+			theme,
+		},
+		[
+			color,
+			disabled,
+			fontSize,
+			m,
+			mb,
+			ml,
+			mr,
+			mt,
+			mx,
+			my,
+			p,
+			pb,
+			pl,
+			pr,
+			pt,
+			py,
+			px,
+			stylesProp,
+			theme,
+		],
+		[getBaseStyles, getColorStyles, space],
+	);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 
 	return (
-		<span className={className} aria-hidden="true" {...passThru}>
+		<span className={className} aria-hidden="true" disabled={disabled} {...passThru}>
 			{children}
 		</span>
 	);

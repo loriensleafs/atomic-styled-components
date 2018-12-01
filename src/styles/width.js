@@ -7,18 +7,7 @@ export const width = style({
 	cssProperty: 'width',
 	transformValue: getDimension,
 });
+
 width.propTypes = {
-	w: PropTypes.oneOfType([ PropTypes.number, PropTypes.array, PropTypes.string ]),
+	w: PropTypes.oneOfType([PropTypes.number, PropTypes.array, PropTypes.string]),
 };
-
-export const minWidth = style({
-	prop: 'minWidth',
-	cssProperty: 'minWidth',
-	transformValue: getDimension,
-});
-
-export const maxWidth = style({
-	prop: 'maxWidth',
-	cssProperty: 'maxWidth',
-	transformValue: getDimension,
-});

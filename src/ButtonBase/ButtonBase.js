@@ -5,58 +5,48 @@ import ThemeContext from '../theme/ThemeContext';
 import useDidMount from './../hooks/useDidMount';
 import useDidUpdate from './../hooks/useDidUpdate';
 import usePrevious from './../hooks/usePrevious';
+import useStyles from './../hooks/useStyles';
 import useFocusVisible from './useFocusVisible';
 import Ripples, { useRipples } from './../Ripples';
 import cn from './../theme/className';
-import merge from './../utils/pureRecursiveMerge';
-import { isFunc } from './../utils/helpers';
-import { style } from 'styled-system';
 
-export const getStyles = props =>
-	merge(
-		{
-			rootStyles: {
-				position: 'relative',
-				display: 'inline-flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				// Removes the grey highlight.
-				WebkitTapHighlightColor: 'transparent',
-				// Reset default value
-				backgroundColor: 'transparent',
-				// Disable the focus ring for mouse, touch and keyboard users.
-				outline: 'none',
-				border: 0,
-				// Remove the margin in Safari.
-				marginTop: 0,
-				marginRight: 0,
-				marginBottom: 0,
-				marginLeft: 0,
-				// Remove the padding in Firefox.
-				padding: 0,
-				borderRadius: 0,
-				cursor: 'pointer',
-				userSelect: 'none',
-				verticalAlign: 'middle',
-				// Reset
-				'-moz-appearance': 'none',
-				'-webkit-appearance': 'none',
-				textDecoration: 'none',
-				// So we take precedent over the style of a native <a /> element.
-				color: 'inherit',
-				':disabled': {
-					// Disable the link interactions.
-					pointerEvents: 'none',
-					cursor: 'default',
-				},
-			},
+export const getBaseStyles = props => ({
+	rootStyles: {
+		position: 'relative',
+		display: 'inline-flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		// Removes the grey highlight.
+		WebkitTapHighlightColor: 'transparent',
+		// Reset default value
+		backgroundColor: 'transparent',
+		// Disable the focus ring for mouse, touch and keyboard users.
+		outline: 'none',
+		border: 0,
+		// Remove the margin in Safari.
+		marginTop: 0,
+		marginRight: 0,
+		marginBottom: 0,
+		marginLeft: 0,
+		// Remove the padding in Firefox.
+		padding: 0,
+		borderRadius: 0,
+		cursor: 'pointer',
+		userSelect: 'none',
+		verticalAlign: 'middle',
+		// Reset
+		'-moz-appearance': 'none',
+		'-webkit-appearance': 'none',
+		textDecoration: 'none',
+		// So we take precedent over the style of a native <a /> element.
+		color: 'inherit',
+		':disabled': {
+			// Disable the link interactions.
+			pointerEvents: 'none',
+			cursor: 'default',
 		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-function useStyles(props) {
-	return useMemo(() => getStyles(props), [props]);
-}
+	},
+});
 
 function ButtonBase(props) {
 	const {
@@ -111,10 +101,8 @@ function ButtonBase(props) {
 				  },
 		[Component, disabled, type],
 	);
-	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme }).rootStyles), [
-		props,
-		theme,
-	]);
+	const { rootStyles } = useStyles({ styles, theme }, [styles, theme], [getBaseStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [rootStyles]);
 
 	const handleMouseDown = useCallback(
 		rippleStartHandler(buttonRef.current, false, centerRipple, () => {

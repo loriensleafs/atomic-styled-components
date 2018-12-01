@@ -2,35 +2,26 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Fade from './../Fade';
 import cn from './../theme/className';
-import merge from './../utils/pureRecursiveMerge';
-import { isFunc } from './../utils/helpers';
+import useStyles from './../hooks/useStyles';
 
-const getStyles = props =>
-	merge(
-		{
-			zIndex: -1,
-			position: 'fixed',
-			right: 0,
-			bottom: 0,
-			top: 0,
-			left: 0,
-			backgroundColor: props.invisible ? 'transparent' : 'rgba(0,0,0,0.5)',
-			// Removes the grey highlight.
-			WebkitTapHighlightColor: 'transparent',
-			// Disable scroll capabilities
-			touchAction: 'none',
-		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props.invisible, props.styles]);
+const getBaseStyles = props => ({
+	zIndex: -1,
+	position: 'fixed',
+	right: 0,
+	bottom: 0,
+	top: 0,
+	left: 0,
+	backgroundColor: props.invisible ? 'transparent' : 'rgba(0,0,0,0.5)',
+	// Removes the grey highlight.
+	WebkitTapHighlightColor: 'transparent',
+	// Disable scroll capabilities
+	touchAction: 'none',
+});
 
 const Backdrop = React.memo(function Backdrop(props) {
-	const { className: classNameProp, invisible, open } = props;
-	const className = useMemo(() => cn(classNameProp, useStyles(props)), [
-		classNameProp,
-		invisible,
-	]);
+	const { className: classNameProp, invisible, open, styles: stylesProp, ...passThru } = props;
+	const styles = useStyles(props, [props], [getBaseStyles]);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, invisible, styles]);
 
 	return (
 		<Fade in={open}>

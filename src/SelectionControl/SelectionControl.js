@@ -1,40 +1,34 @@
 import React, { Fragment, useCallback, useContext, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import useDidUpdate from './../hooks/useDidUpdate';
+import useStyles from './../hooks/useStyles';
 import ThemeContext from './../theme/ThemeContext';
-import merge from './../utils/pureRecursiveMerge';
 import IconButton from './../IconButton';
 import cn from './../theme/className';
 import { animated, useSpring } from 'react-spring';
-import { isFunc, isNil } from './../utils/helpers';
+import { isNil } from './../utils/helpers';
 
-const getStyles = props =>
-	merge(
-		{
-			buttonStyles: {
-				rootStyles: {
-					display: 'inline-flex',
-					alignItems: 'center',
-					transition: 'none',
-				},
-			},
-			inputStyles: {
-				zIndex: 2,
-				position: 'absolute',
-				top: '0px',
-				left: '0px',
-				width: '100%',
-				height: '100%',
-				margin: '0px',
-				padding: '0px',
-				cursor: 'inherit',
-				opacity: 0,
-			},
+const getBaseStyles = props => ({
+	buttonStyles: {
+		rootStyles: {
+			display: 'inline-flex',
+			alignItems: 'center',
+			transition: 'none',
 		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+	},
+	inputStyles: {
+		zIndex: 2,
+		position: 'absolute',
+		top: '0px',
+		left: '0px',
+		width: '100%',
+		height: '100%',
+		margin: '0px',
+		padding: '0px',
+		cursor: 'inherit',
+		opacity: 0,
+	},
+});
 
 function SelectionControl(props) {
 	const {
@@ -61,11 +55,15 @@ function SelectionControl(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(checkedProp || false);
-	const { buttonStyles, inputStyles } = useStyles({
-		...props,
-		checked,
-		theme,
-	});
+	const { buttonStyles, inputStyles } = useStyles(
+		{
+			...props,
+			checked,
+			theme,
+		},
+		[props, checked, theme],
+		[getBaseStyles],
+	);
 	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
 
 	const hasLabelFor = type === 'checkbox' || type === 'radio';

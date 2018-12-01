@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import merge from './../utils/pureRecursiveMerge';
+import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { height, maxHeight, maxWidth, minHeight, minWidth, width } from './../styles';
-import { isFunc } from './../utils/helpers';
+import { maxHeight, maxWidth, minHeight, minWidth } from 'styled-system';
+import { height, width } from './../styles';
 
 const MEDIA_COMPONENTS = ['video', 'audio', 'picture', 'iframe', 'img'];
 
@@ -12,38 +12,36 @@ const getMediaStyles = props =>
 		width: '100%',
 	};
 
-const getStyles = props =>
-	merge(
-		{
-			display: 'block',
-			backgroundSize: 'cover',
-			backgroundRepeat: 'no-repeat',
-			backgroundPosition: 'center',
-		},
-		getMediaStyles(props),
-		height(props),
-		maxHeight(props),
-		maxWidth(props),
-		minHeight(props),
-		minWidth(props),
-		width(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+const getBaseStyles = props => ({
+	display: 'block',
+	backgroundSize: 'cover',
+	backgroundRepeat: 'no-repeat',
+	backgroundPosition: 'center',
+});
 
 function CardMedia(props) {
 	const {
 		className: classNameProp,
 		component: Component,
+		h,
 		image,
+		maxHeight,
+		maxWidth,
+		minHeight,
+		minWidth,
 		src,
 		style,
-		styles,
+		styles: stylesProp,
+		w,
 		...passThru
 	} = props;
 	const isMedia = MEDIA_COMPONENTS.indexOf(Component) !== -1;
-	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, isMedia })), [props]);
+	const styles = useStyles(
+		{ stylesProp, h, isMedia, maxHeight, maxWidth, minHeight, minWidth, w },
+		[isMedia, h, maxHeight, maxWidth, minHeight, minWidth, stylesProp, w],
+		[getBaseStyles, getMediaStyles, height, maxHeight, maxWidth, minHeight, minWidth, width],
+	);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 	const composedStyle =
 		!isMedia && image ? { backgroundImage: `url("${image}")`, ...style } : style;
 

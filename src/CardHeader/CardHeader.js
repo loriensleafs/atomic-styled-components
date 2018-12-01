@@ -2,46 +2,39 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import Typography from './../Typography';
-import merge from './../utils/pureRecursiveMerge';
+import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { isFunc } from './../utils/helpers';
 import { space } from 'styled-system';
 
-const getStyles = props =>
-	merge(
-		{
-			rootStyles: {
-				display: 'flex',
-				alignItems: 'center',
-				...space({
-					py: 3,
-					px: [3, 4],
-				}),
-			},
-			avatarStyles: {
-				flex: '0 0 auto',
-				...space({
-					mr: 3,
-				}),
-			},
-			actionStyles: {
-				flex: '0 0 auto',
-				alignSelf: 'flex-start',
-				...space({
-					mt: -2,
-					mr: [-3, -4],
-				}),
-			},
-			contentStyles: {
-				flex: '1 1 auto',
-			},
-			titleStyles: {},
-			subheaderStyles: {},
-		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+const getBaseStyles = props => ({
+	rootStyles: {
+		display: 'flex',
+		alignItems: 'center',
+		...space({
+			py: 3,
+			px: [3, 4],
+		}),
+	},
+	avatarStyles: {
+		flex: '0 0 auto',
+		...space({
+			mr: 3,
+		}),
+	},
+	actionStyles: {
+		flex: '0 0 auto',
+		alignSelf: 'flex-start',
+		...space({
+			mt: -2,
+			mr: [-3, -4],
+		}),
+	},
+	contentStyles: {
+		flex: '1 1 auto',
+	},
+	titleStyles: {},
+	subheaderStyles: {},
+});
 
 const CardTitle = (avatar, className, disableTypography, title, ...passThru) =>
 	(title &&
@@ -94,7 +87,7 @@ function CardHeader(props) {
 		contentStyles,
 		titleStyles,
 		subheaderStyles,
-	} = useStyles({ ...props, theme });
+	} = useStyles({ ...props, theme }, [props, theme], [getBaseStyles]);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const avatarClassName = useMemo(() => cn(avatarStyles), [avatarStyles]);
 	const actionClassName = useMemo(() => cn(actionStyles), [actionStyles]);

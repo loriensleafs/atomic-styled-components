@@ -64,12 +64,19 @@ const SlideTest = props => {
 
 const App = React.memo(function App(props = {}) {
 	const { theme } = useContext(ThemeContext);
+	const [open, setOpen] = useState(false);
 	window.theme = theme;
 	console.log(theme);
 
 	return (
 		<ErrorBoundry>
 			<GlobalStyle styles={getGlobalStyles} />
+			<Dialog open={open} onClose={() => setOpen(!open)} fullScreen>
+				<Typography textAlign="center">Hello</Typography>
+			</Dialog>
+			<Button color="primary" variant="contained" onClick={() => setOpen(!open)}>
+				Toggle Modal
+			</Button>
 			<Box w={1} h={1}>
 				<Container pt={3}>
 					<CardDemo />

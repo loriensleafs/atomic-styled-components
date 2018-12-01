@@ -1,11 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import merge from './../utils/pureRecursiveMerge';
+import useStyles from './../hooks/useStyles';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import { space, fontSize } from 'styled-system';
 import { getColorStyles } from './../Icon/Icon';
-import { isFunc } from './../utils/helpers';
 
 export const getFontSizeStyles = props =>
 	props.fontSize &&
@@ -13,28 +12,18 @@ export const getFontSizeStyles = props =>
 		fontSize: 'inherit',
 	};
 
-export const getStyles = props =>
-	merge(
-		{
-			width: '1em',
-			height: '1em',
-			userSelect: 'none',
-			fontSize: '24px',
-			display: 'inline-block',
-			flexShrink: 0,
-			fill: 'currentColor',
-			transition: `fill ${
-				props.theme.duration.shorter
-			}ms cubic-bezier(${props.theme.easing.in.join()})`,
-		},
-		getFontSizeStyles(props),
-		getColorStyles(props),
-		space(props),
-		fontSize(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+export const getBaseStyles = props => ({
+	width: '1em',
+	height: '1em',
+	userSelect: 'none',
+	fontSize: '24px',
+	display: 'inline-block',
+	flexShrink: 0,
+	fill: 'currentColor',
+	transition: `fill ${
+		props.theme.duration.shorter
+	}ms cubic-bezier(${props.theme.easing.in.join()})`,
+});
 
 function SvgIcon(props) {
 	const {
@@ -60,14 +49,16 @@ function SvgIcon(props) {
 		py,
 		titleAccess,
 		viewBox,
-		styles,
+		styles: stylesProp,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
-		props,
-		theme,
-	]);
+	const styles = useStyles(
+		{ ...props, theme },
+		[props, theme],
+		[getBaseStyles, getFontSizeStyles, getColorStyles, space, fontSize],
+	);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 
 	return (
 		<Component

@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { isFunc } from './../utils/helpers';
 import Modal from './../Modal';
 import Fade from './../Fade';
-import { duration } from './../theme/createMotion';
 import Paper from './../Paper';
+import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import merge from './../utils/pureRecursiveMerge';
+import { duration } from './../theme/createMotion';
 
 export const getScrollStyles = props => {
 	if (props.scroll === 'paper') {
@@ -91,30 +90,20 @@ export const getMaxWidthStyles = props => {
 	}
 };
 
-export const getStyles = props =>
-	merge(
-		{
-			rootStyles: {},
-			containerStyles: {
-				height: '100%',
-				outline: 'none',
-			},
-			paperStyles: {
-				position: 'relative',
-				display: 'flex',
-				flexDirection: 'column',
-				margin: '48px',
-				overflowY: 'auto',
-			},
-		},
-		getScrollStyles(props),
-		getMaxWidthStyles(props),
-		getFullWidthStyles(props),
-		getFullScreenStyles(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles,
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+export const getBaseStyles = props => ({
+	rootStyles: {},
+	containerStyles: {
+		height: '100%',
+		outline: 'none',
+	},
+	paperStyles: {
+		position: 'relative',
+		display: 'flex',
+		flexDirection: 'column',
+		margin: '48px',
+		overflowY: 'auto',
+	},
+});
 
 const Dialog = React.memo(function Dialog(props) {
 	const {
@@ -145,7 +134,17 @@ const Dialog = React.memo(function Dialog(props) {
 		TransitionProps,
 		...passThru
 	} = props;
-	const { rootStyles, paperStyles, containerStyles } = useStyles(props);
+	const { rootStyles, paperStyles, containerStyles } = useStyles(
+		props,
+		[props],
+		[
+			getBaseStyles,
+			getScrollStyles,
+			getMaxWidthStyles,
+			getFullWidthStyles,
+			getFullScreenStyles,
+		],
+	);
 
 	function handleBackdropClick(event) {
 		if (event.target !== event.currentTarget) return;

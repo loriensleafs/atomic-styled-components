@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import Box from '../Box';
+import useStyles from './../hooks/useStyles';
 import {
 	alignContent,
 	alignItems,
@@ -13,7 +14,6 @@ import {
 	order,
 	style,
 } from 'styled-system';
-import { isFunc } from './../utils/helpers';
 
 export const flexDisplay = style({
 	prop: 'inline',
@@ -31,26 +31,25 @@ export const flexWrap = style({
 	prop: 'flexWrap',
 });
 
-export const getStyles = props => ({
-	...alignContent(props),
-	...alignItems(props),
-	...alignSelf(props),
-	...flex(props),
-	...flexBasis(props),
-	...flexDisplay(props),
-	...flexDirection(props),
-	...flexWrap(props),
-	...justifyContent(props),
-	...justifySelf(props),
-	...order(props),
-	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
-});
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
-
 function Flex(props) {
 	const { theme } = useContext(ThemeContext);
-	const styles = useStyles({ ...props, theme });
+	const styles = useStyles(
+		{ ...props, theme },
+		[props, theme],
+		[
+			alignContent,
+			alignItems,
+			alignSelf,
+			flex,
+			flexBasis,
+			flexDisplay,
+			flexDirection,
+			flexWrap,
+			justifyContent,
+			justifySelf,
+			order,
+		],
+	);
 
 	return (
 		<Box styles={styles} {...props}>

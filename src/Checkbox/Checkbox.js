@@ -5,9 +5,9 @@ import CheckBoxIcon from './../svgIcons/CheckBox';
 import CheckboxOutlineBlankIcon from './../svgIcons/CheckBoxOutlineBlank';
 import IndeterminateCheckBoxIcon from './../svgIcons/IndeterminateCheckBox';
 import useDidUpdate from './../hooks/useDidUpdate';
-import merge from 'deep-extend';
+import useStyles from './../hooks/useStyles';
 import ThemeContext from '../theme/ThemeContext';
-import { isFunc, isNil } from './../utils/helpers';
+import { isNil } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
 const getDisabledStyles = props =>
@@ -42,25 +42,16 @@ const getCheckedStyles = props =>
 		},
 	};
 
-const getStyles = props =>
-	merge(
-		{
-			buttonStyles: {
-				rootStyles: {
-					color: props.theme.palette.text.secondary,
-					transition: `background-color ${
-						props.theme.duration.shortest
-					}ms cubic-bezier(${props.theme.easing.in.join()})`,
-				},
-			},
+const getBaseStyles = props => ({
+	buttonStyles: {
+		rootStyles: {
+			color: props.theme.palette.text.secondary,
+			transition: `background-color ${
+				props.theme.duration.shortest
+			}ms cubic-bezier(${props.theme.easing.in.join()})`,
 		},
-		getCheckedStyles(props),
-		getDisabledStyles(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props =>
-	useMemo(() => getStyles(props), [props.disabled, props.checked, props.color, props.theme]);
+	},
+});
 
 function Checkbox(props) {
 	const {
@@ -77,7 +68,11 @@ function Checkbox(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
-	const { buttonStyles } = useStyles({ ...props, checked, theme });
+	const { buttonStyles } = useStyles(
+		{ ...props, checked, theme },
+		[props.disabled, checked, color, styles, theme],
+		[getBaseStyles, getCheckedStyles, getDisabledStyles],
+	);
 
 	const handleChange = useCallback(event => {
 		if (isNil(props.checked)) {

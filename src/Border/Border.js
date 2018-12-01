@@ -2,23 +2,17 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
+import useStyles from './../hooks/useStyles';
 import { borderColor, borderRadius, borders } from 'styled-system';
-
-const getStyles = props => ({
-	...borderColor(props),
-	...borderRadius(props),
-	...borders(props),
-	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
-});
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
 
 const Border = props => {
 	const theme = useContext(ThemeContext);
-	const className = useMemo(() => cn(props.className, useStyles({ ...props, theme })), [
-		props,
-		theme,
-	]);
+	const styles = useStyles(
+		{ ...props, theme },
+		[props, theme],
+		[borderColor, borderRadius, borders],
+	);
+	const className = useMemo(() => cn(props.className, styles), [props.className, styles]);
 	return <div className={className} />;
 };
 

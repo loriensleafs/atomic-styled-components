@@ -1,13 +1,12 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
-import merge from './../utils/pureRecursiveMerge';
 import cn from './../theme/className';
+import useStyles from './../hooks/useStyles';
 import ButtonBase from './../ButtonBase';
+import merge from './../utils/pureRecursiveMerge';
 import { space } from 'styled-system';
-import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
-import { relative } from 'path';
 
 export const getColorStyles = props => {
 	let next = {};
@@ -41,52 +40,45 @@ export const getColorStyles = props => {
 	return next;
 };
 
-export const getStyles = props =>
-	merge(
-		{
-			rootStyles: {
-				position: 'relative',
-				textAlign: 'center',
-				flex: '0 0 auto',
-				fontSize: '24px',
-				width: '48px',
-				height: '48px',
-				padding: 0,
-				borderRadius: '50%',
-				color: props.theme.palette.action.active,
-				transition: `background-color ${
-					props.theme.duration.shortest
-				}ms cubic-bezier(${props.theme.easing.in.join()})`,
-				':hover': {
-					backgroundColor: fade(
-						props.theme.palette.action.active,
-						props.theme.palette.action.hoverOpacity,
-					),
-					'@media (hover: none)': {
-						backgroundColor: 'transparent',
-					},
-					':disabled': {
-						backgroundColor: 'transparent',
-					},
-				},
-				':disabled': {
-					color: props.theme.palette.action.disabled,
-				},
-				...space(props),
+export const getBaseStyles = props => ({
+	rootStyles: {
+		position: 'relative',
+		textAlign: 'center',
+		flex: '0 0 auto',
+		fontSize: '24px',
+		width: '48px',
+		height: '48px',
+		padding: 0,
+		borderRadius: '50%',
+		color: props.theme.palette.action.active,
+		transition: `background-color ${
+			props.theme.duration.shortest
+		}ms cubic-bezier(${props.theme.easing.in.join()})`,
+		':hover': {
+			backgroundColor: fade(
+				props.theme.palette.action.active,
+				props.theme.palette.action.hoverOpacity,
+			),
+			'@media (hover: none)': {
+				backgroundColor: 'transparent',
 			},
-			labelStyles: {
-				position: 'relative',
-				width: '100%',
-				display: 'flex',
-				alignItems: 'inherit',
-				justifyContent: 'inherit',
+			':disabled': {
+				backgroundColor: 'transparent',
 			},
 		},
-		getColorStyles(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+		':disabled': {
+			color: props.theme.palette.action.disabled,
+		},
+		...space(props),
+	},
+	labelStyles: {
+		position: 'relative',
+		width: '100%',
+		display: 'flex',
+		alignItems: 'inherit',
+		justifyContent: 'inherit',
+	},
+});
 
 function IconButton(props) {
 	const {
@@ -113,7 +105,11 @@ function IconButton(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 
-	const { rootStyles, labelStyles } = useStyles({ ...props, theme });
+	const { rootStyles, labelStyles } = useStyles(
+		{ ...props, theme },
+		[props, theme],
+		[getBaseStyles, getColorStyles],
+	);
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (

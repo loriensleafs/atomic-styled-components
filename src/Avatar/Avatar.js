@@ -1,8 +1,9 @@
 import React, { cloneElement, isValidElement, useContext, useMemo } from 'react';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
+import useStyles from './../hooks/useStyles';
 import { space } from 'styled-system';
-import { textColor, fontFamily, fontSize, fontWeight, lineHeight } from './../styles';
+import { fontFamily, fontSize, fontWeight, lineHeight } from './../styles';
 
 export const getColorStyles = props =>
 	props.color === 'default'
@@ -17,38 +18,31 @@ export const getColorStyles = props =>
 		  }
 		: {};
 
-export const getStyles = props =>
-	merge(
-		{
-			rootStyles: {
-				position: 'relative',
-				display: 'flex',
-				alignItems: 'center',
-				justifyItems: 'center',
-				flexShrink: 0,
-				width: 40,
-				height: 40,
-				borderRadius: '50%',
-				overflow: 'hidden',
-				userSelect: 'none',
-				...fontFamily(props),
-				...fontSize(props),
-				...fontWeight(props),
-				...lineHeight(props),
-				...space(props),
-			},
-			imageStyles: {
-				width: '100%',
-				height: '100%',
-				textAlign: 'center',
-				objectFit: 'cover',
-			},
-		},
-		getColorStyles(props),
-		props.style,
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+export const getBaseStyles = props => ({
+	rootStyles: {
+		position: 'relative',
+		display: 'flex',
+		alignItems: 'center',
+		justifyItems: 'center',
+		flexShrink: 0,
+		width: 40,
+		height: 40,
+		borderRadius: '50%',
+		overflow: 'hidden',
+		userSelect: 'none',
+		...fontFamily(props),
+		...fontSize(props),
+		...fontWeight(props),
+		...lineHeight(props),
+		...space(props),
+	},
+	imageStyles: {
+		width: '100%',
+		height: '100%',
+		textAlign: 'center',
+		objectFit: 'cover',
+	},
+});
 
 function AvatarImage(props) {
 	const { alt, src, srcSet, sizes, className, ...passThru } = props;
@@ -66,7 +60,6 @@ function AvatarImage(props) {
 }
 
 function Avatar(props) {
-	const { theme } = useContext(ThemeContext);
 	const {
 		alt,
 		children,
@@ -98,8 +91,13 @@ function Avatar(props) {
 		weight,
 		...passThru
 	} = props;
+	const { theme } = useContext(ThemeContext);
 
-	const { rootStyles, imageStyles } = useStyles({ ...props, ...{ theme } });
+	const { rootStyles, imageStyles } = useStyles(
+		{ ...props, theme },
+		[props, theme],
+		[getBaseStyles, getColorStyles],
+	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [rootStyles]);
 	const imageClassName = useMemo(() => cn(imageStyles), [imageStyles]);
 

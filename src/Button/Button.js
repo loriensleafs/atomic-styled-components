@@ -6,10 +6,10 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
+import useStyles from './../hooks/useStyles';
 import merge from './../utils/pureRecursiveMerge';
 import ButtonBase from './../ButtonBase/ButtonBase';
 import { space } from 'styled-system';
-import { isFunc } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
 export const getColorStyles = props =>
@@ -171,59 +171,43 @@ export const getVariantStyles = props => {
 	return next;
 };
 
-const getStyles = props =>
-	merge(
-		{
-			rootStyles: {
-				boxSizing: 'border-box',
-				minWidth: '64px',
-				minHeight: '36px',
-				padding: `${props.theme.space[2]}px ${props.theme.space[3]}px`,
-				fontSize: `${props.theme.typography.fontSizes[2]}${
-					props.theme.typography.fontUnit
-				}`,
-				fontWeight: props.theme.typography.fontWeights.medium,
-				lineHeight: `${props.theme.typography.lineHeights[1]}${
-					props.theme.typography.fontUnit
-				}`,
-				borderRadius: `${props.theme.shape.borderRadius.round}`,
-				color: `${props.theme.palette.text.primary}`,
-				textTransform: 'uppercase',
-				transition: `background-color ${
-					props.theme.duration.short
-				}ms cubic-bezier(${props.theme.easing.inOut.join()}), color ${
-					props.theme.duration.short
-				}ms cubic-bezier(${props.theme.easing.inOut.join()}), box-shadow ${
-					props.theme.duration.shortest
-				}ms cubic-bezier(${props.theme.easing.in.join()}), border ${
-					props.theme.duration.short
-				}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
-				':hover': {
-					textDecoration: 'none',
-					backgroundColor: props.theme.palette.grey.light,
-				},
-				':disabled': {
-					color: props.theme.palette.action.disabled,
-					backgroundColor: props.theme.palette.action.disabledBg,
-				},
-				...space(props),
-			},
-			labelStyles: {
-				display: 'inherit',
-				alignItems: 'inherit',
-				justifyContent: 'inherit',
-			},
+const getBaseStyles = props => ({
+	rootStyles: {
+		boxSizing: 'border-box',
+		minWidth: '64px',
+		minHeight: '36px',
+		padding: `${props.theme.space[2]}px ${props.theme.space[3]}px`,
+		fontSize: `${props.theme.typography.fontSizes[2]}${props.theme.typography.fontUnit}`,
+		fontWeight: props.theme.typography.fontWeights.medium,
+		lineHeight: `${props.theme.typography.lineHeights[1]}${props.theme.typography.fontUnit}`,
+		borderRadius: `${props.theme.shape.borderRadius.round}`,
+		color: `${props.theme.palette.text.primary}`,
+		textTransform: 'uppercase',
+		transition: `background-color ${
+			props.theme.duration.short
+		}ms cubic-bezier(${props.theme.easing.inOut.join()}), color ${
+			props.theme.duration.short
+		}ms cubic-bezier(${props.theme.easing.inOut.join()}), box-shadow ${
+			props.theme.duration.shortest
+		}ms cubic-bezier(${props.theme.easing.in.join()}), border ${
+			props.theme.duration.short
+		}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
+		':hover': {
+			textDecoration: 'none',
+			backgroundColor: props.theme.palette.grey.light,
 		},
-		getColorStyles(props),
-		getFabStyles(props),
-		getMiniStyles(props),
-		getFullWidthStyles(props),
-		getVariantStyles(props),
-		getSizeStyles(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+		':disabled': {
+			color: props.theme.palette.action.disabled,
+			backgroundColor: props.theme.palette.action.disabledBg,
+		},
+		...space(props),
+	},
+	labelStyles: {
+		display: 'inherit',
+		alignItems: 'inherit',
+		justifyContent: 'inherit',
+	},
+});
 
 function Button(props) {
 	const {
@@ -233,6 +217,7 @@ function Button(props) {
 		disabled,
 		disableFocusRipple,
 		disableRipple,
+		fab,
 		fullWidth,
 		mini,
 		m,
@@ -256,7 +241,73 @@ function Button(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles, labelStyles } = useStyles({ ...props, theme });
+	const { rootStyles, labelStyles } = useStyles(
+		{
+			color,
+			disabled,
+			disableFocusRipple,
+			disableRipple,
+			fab,
+			fullWidth,
+			mini,
+			m,
+			ml,
+			mr,
+			mt,
+			mb,
+			mx,
+			my,
+			p,
+			pl,
+			pr,
+			pt,
+			pb,
+			px,
+			py,
+			size,
+			styles,
+			type,
+			variant,
+			theme,
+		},
+		[
+			color,
+			disabled,
+			disableFocusRipple,
+			disableRipple,
+			fab,
+			fullWidth,
+			mini,
+			m,
+			ml,
+			mr,
+			mt,
+			mb,
+			mx,
+			my,
+			p,
+			pl,
+			pr,
+			pt,
+			pb,
+			px,
+			py,
+			size,
+			styles,
+			type,
+			variant,
+			theme,
+		],
+		[
+			getBaseStyles,
+			getColorStyles,
+			getFabStyles,
+			getMiniStyles,
+			getFullWidthStyles,
+			getVariantStyles,
+			getSizeStyles,
+		],
+	);
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (

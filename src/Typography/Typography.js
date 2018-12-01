@@ -1,10 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import useStyles from './../hooks/useStyles';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import { space, textAlign, variant } from 'styled-system';
 import { textColor, fontFamily, fontSize, fontWeight, lineHeight } from './../styles';
-import { isFunc, px } from './../utils/helpers';
 
 export const variants = variant({
 	key: 'typography.variants',
@@ -25,30 +25,29 @@ const TAG_MAP = {
 	overline: 'span',
 };
 
-export const getStyles = props => ({
-	...{
-		margin: 0,
-	},
-	...variants(props),
-	...fontFamily(props),
-	...fontSize(props),
-	...fontWeight(props),
-	...lineHeight(props),
-	...textAlign(props),
-	...textColor(props),
-	...space(props),
-	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
+export const getBaseStyles = props => ({
+	margin: 0,
 });
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
 
 function Typography(props) {
 	const { className: classNameProp, font, lineHeight, paragraph, size, variant, weight } = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
-		props,
-		theme,
-	]);
+	const styles = useStyles(
+		{ ...props, theme },
+		[props, theme],
+		[
+			getBaseStyles,
+			variants,
+			fontFamily,
+			fontSize,
+			fontWeight,
+			lineHeight,
+			textAlign,
+			textColor,
+			space,
+		],
+	);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 	const Component = paragraph ? 'p' : TAG_MAP[variant] || 'span';
 
 	return <Component className={className}>{props.children}</Component>;

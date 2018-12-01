@@ -1,15 +1,9 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
-import merge from './../utils/pureRecursiveMerge';
+import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { isFunc } from './../utils/helpers';
 import { space } from 'styled-system';
-
-const getStyles = props =>
-	merge(space(props), isFunc(props.styles) ? props.styles(props) : props.styles || {});
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
 
 function CardContent(props) {
 	const {
@@ -29,26 +23,16 @@ function CardContent(props) {
 		pb,
 		px,
 		py,
+		styles: stylesProp,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
-		classNameProp,
-		m,
-		ml,
-		mr,
-		mt,
-		mb,
-		mx,
-		my,
-		p,
-		pl,
-		pr,
-		pt,
-		pb,
-		px,
-		py,
-	]);
+	const styles = useStyles(
+		{ m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, theme },
+		[m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, theme],
+		[space],
+	);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 
 	return <Component className={className} {...passThru} />;
 }

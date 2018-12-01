@@ -2,44 +2,37 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { animated, Transition } from 'react-spring';
 import useDidUpdate from './../hooks/useDidUpdate';
+import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import merge from './../utils/pureRecursiveMerge';
-import { isFunc } from './../utils/helpers';
 
-export const getStyles = props =>
-	merge(
-		{
-			rippleStyles: {
-				contain: 'strict',
-				zIndex: 0,
-				position: 'absolute',
-				top: 0,
-				left: 0,
-				width: '100%',
-				height: '100%',
-				display: 'block',
-				overflow: 'hidden',
-				borderRadius: 'inherit',
-				pointerEvents: 'none',
-				backfaceVisibility: 'hidden',
-				perspective: 1000,
-				willChange: 'transform',
-			},
-			rippleSurfaceStyles: {
-				position: 'absolute',
-				display: 'block',
-				borderRadius: '50%',
-				backgroundColor: 'currentColor',
-			},
-		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+export const getBaseStyles = props => ({
+	rippleStyles: {
+		contain: 'strict',
+		zIndex: 0,
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		width: '100%',
+		height: '100%',
+		display: 'block',
+		overflow: 'hidden',
+		borderRadius: 'inherit',
+		pointerEvents: 'none',
+		backfaceVisibility: 'hidden',
+		perspective: 1000,
+		willChange: 'transform',
+	},
+	rippleSurfaceStyles: {
+		position: 'absolute',
+		display: 'block',
+		borderRadius: '50%',
+		backgroundColor: 'currentColor',
+	},
+});
 
 function Ripples(props) {
 	const [ripples, setRipples] = useState(props.ripples);
-	const { rippleStyles, rippleSurfaceStyles } = useStyles(props);
+	const { rippleStyles, rippleSurfaceStyles } = useStyles(props, [props], [getBaseStyles]);
 	const rippleClassName = useMemo(() => cn(rippleStyles), [rippleStyles]);
 	const rippleSurfaceClassName = useMemo(() => cn(rippleSurfaceStyles), [rippleSurfaceStyles]);
 

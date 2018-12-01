@@ -1,10 +1,9 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
-import merge from './../utils/pureRecursiveMerge';
 import cn from './../theme/className';
+import useStyles from './../hooks/useStyles';
 import { fade } from './../utils/colorHelpers';
-import { isFunc } from './../utils/helpers';
 
 const getAbsoluteStyles = props =>
 	props.absolute && {
@@ -14,31 +13,35 @@ const getAbsoluteStyles = props =>
 		width: '100%',
 	};
 
-const getStyles = props =>
-	merge(
-		{
-			width: '100%',
-			height: '1px',
-			margin: props.inset ? '72px' : 0,
-			border: 'none',
-			flexShrink: 0,
-			backgroundColor: props.light
-				? fade(props.theme.palette.divider, 0.08)
-				: props.theme.palette.divider,
-		},
-		getAbsoluteStyles(props),
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+const getBaseStyles = props => ({
+	width: '100%',
+	height: '1px',
+	margin: props.inset ? '72px' : 0,
+	border: 'none',
+	flexShrink: 0,
+	backgroundColor: props.light
+		? fade(props.theme.palette.divider, 0.08)
+		: props.theme.palette.divider,
+});
 
 function Divider(props) {
-	const { children, className: classNameProp, is: C } = props;
+	const {
+		absolute,
+		children,
+		className: classNameProp,
+		inset,
+		is: C,
+		light,
+		styles: stylesProp,
+		...passThru
+	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
-		props,
-		theme,
-	]);
+	const styles = useStyles(
+		{ ...{ styles: stylesProp }, absolute, inset, light, theme },
+		[absolute, inset, light, stylesProp, theme],
+		[getBaseStyles, getAbsoluteStyles],
+	);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 
 	return <C className={className}>{children}</C>;
 }

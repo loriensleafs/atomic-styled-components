@@ -1,37 +1,37 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import merge from './../utils/pureRecursiveMerge';
+import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { space } from 'styled-system';
-import { isFunc } from './../utils/helpers';
 
-const getStyles = props =>
-	merge(
-		{
-			rootStyles: {
-				display: 'flex',
-				alignItems: 'center',
-				boxSizing: 'border-box',
-				...space({
-					py: 2,
-					px: [1, 2],
-				}),
-			},
-			actionStyles: {
-				margin: '0px 4px',
-			},
-		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
-
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+const getBaseStyles = props => ({
+	rootStyles: {
+		display: 'flex',
+		alignItems: 'center',
+		boxSizing: 'border-box',
+		...space({
+			py: 2,
+			px: [1, 2],
+		}),
+	},
+	actionStyles: {
+		margin: '0px 4px',
+	},
+});
 
 function CardActions(props) {
-	const { disableActionSpacing, children, className: classNameProp, ...passThru } = props;
-	const className = useMemo(() => cn(classNameProp, useStyles(props).rootStyles), [props.styles]);
+	const {
+		children,
+		className: classNameProp,
+		disableActionSpacing,
+		styles: stylesProp,
+		...passThru
+	} = props;
+	const styles = useStyles(props, [stylesProp], [getBaseStyles]);
+	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 
 	return (
-		<div className={cn(className, getStyles(props))} {...passThru}>
+		<div className={className} {...passThru}>
 			{children}
 		</div>
 	);
