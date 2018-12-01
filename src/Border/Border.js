@@ -5,15 +5,17 @@ import cn from './../theme/className';
 import { borderColor, borderRadius, borders } from 'styled-system';
 
 const getStyles = props => ({
-	...borderColor(styleProps),
-	...borderRadius(styleProps),
-	...borders(styleProps),
+	...borderColor(props),
+	...borderRadius(props),
+	...borders(props),
 	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 const Border = props => {
 	const theme = useContext(ThemeContext);
-	const className = useMemo(() => cn(props.className, getStyles({ ...props, theme })), [
+	const className = useMemo(() => cn(props.className, useStyles({ ...props, theme })), [
 		props,
 		theme,
 	]);

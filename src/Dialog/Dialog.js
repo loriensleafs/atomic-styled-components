@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isFunc } from './../utils/helpers';
 import Modal from './../Modal';
@@ -114,6 +114,8 @@ export const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 const Dialog = React.memo(function Dialog(props) {
 	const {
 		BackdropProps,
@@ -143,7 +145,7 @@ const Dialog = React.memo(function Dialog(props) {
 		TransitionProps,
 		...passThru
 	} = props;
-	const { rootStyles, paperStyles, containerStyles } = getStyles(props);
+	const { rootStyles, paperStyles, containerStyles } = useStyles(props);
 
 	function handleBackdropClick(event) {
 		if (event.target !== event.currentTarget) return;
@@ -159,23 +161,13 @@ const Dialog = React.memo(function Dialog(props) {
 			styles={rootStyles}
 			disableBackdropClick={disableBackdropClick}
 			disableEscapeKeyDown={disableEscapeKeyDown}
-			onBackdropClick={onBackdropClick}
+			onBackdropClick={handleBackdropClick}
 			onEscapeKeyDown={onEscapeKeyDown}
 			onClose={onClose}
 			open={open}
 			role="dialog"
 			{...passThru}>
-			<TransitionComponent
-				appear
-				in={open}
-				timeout={transitionDuration}
-				onEnter={onEnter}
-				onEntering={onEntering}
-				onEntered={onEntered}
-				onExit={onExit}
-				onExiting={onExiting}
-				onExited={onExited}
-				{...TransitionProps}>
+			<TransitionComponent className={cn(containerStyles)} in={open}>
 				<div className={cn(containerStyles)} role="document">
 					<Paper elevation={24} styles={paperStyles} {...PaperProps}>
 						{children}
@@ -300,7 +292,6 @@ Dialog.defaultProps = {
 	scroll: 'paper',
 	styles: {},
 	TransitionComponent: Fade,
-	transitionDuration: { enter: duration.entering, exit: duration.leaving },
 };
 
 export default Dialog;

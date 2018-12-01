@@ -13,6 +13,8 @@ const getStyles = props => ({
 	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Paper(props) {
 	const {
 		bg,
@@ -41,7 +43,7 @@ function Paper(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+	const className = useMemo(() => cn(useStyles({ ...props, theme }), classNameProp), [
 		props,
 		theme,
 	]);

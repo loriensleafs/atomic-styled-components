@@ -31,6 +31,8 @@ const getStyles = props => ({
 	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Box(props) {
 	const {
 		maxHeight,
@@ -75,7 +77,7 @@ function Box(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const Component = props.is;
-	const className = useMemo(() => cn(props.className, getStyles({ ...props, theme })), [
+	const className = useMemo(() => cn(props.className, useStyles({ ...props, theme })), [
 		props,
 		theme,
 	]);

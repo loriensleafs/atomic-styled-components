@@ -58,6 +58,8 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Radio(props) {
 	const {
 		className,
@@ -71,11 +73,7 @@ function Radio(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
-	const { buttonStyles } = useMemo(() => getStyles({ ...props, checked, theme }), [
-		checked,
-		props,
-		theme,
-	]);
+	const { buttonStyles } = useStyles({ ...props, checked, theme });
 
 	const handleChange = useCallback(event => {
 		if (isNil(props.checked)) {

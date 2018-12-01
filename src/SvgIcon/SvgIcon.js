@@ -34,6 +34,8 @@ export const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function SvgIcon(props) {
 	const {
 		children,
@@ -62,7 +64,7 @@ function SvgIcon(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
 		props,
 		theme,
 	]);

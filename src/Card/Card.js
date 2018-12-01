@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
@@ -33,20 +33,14 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles,
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Card(props) {
 	const { theme } = useContext(ThemeContext);
-	const { bg, raised, styles, ...passThru } = props;
+	const { bg, raised, styles: stylesProp, ...passThru } = props;
+	const styles = useStyles({ ...props, theme });
 
-	return (
-		<Paper
-			styles={getStyles({
-				...props,
-				...{ theme },
-			})}
-			elevation={raised ? 8 : 1}
-			{...passThru}
-		/>
-	);
+	return <Paper styles={styles} elevation={raised ? 8 : 1} {...passThru} />;
 }
 
 Card.displayName = 'Card';

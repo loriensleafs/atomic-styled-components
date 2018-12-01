@@ -34,6 +34,8 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function SelectionControl(props) {
 	const {
 		autoFocus,
@@ -59,15 +61,11 @@ function SelectionControl(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(checkedProp || false);
-	const { buttonStyles, inputStyles } = useMemo(
-		() =>
-			getStyles({
-				...props,
-				checked,
-				theme,
-			}),
-		[props, checked, theme],
-	);
+	const { buttonStyles, inputStyles } = useStyles({
+		...props,
+		checked,
+		theme,
+	});
 	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
 
 	const hasLabelFor = type === 'checkbox' || type === 'radio';

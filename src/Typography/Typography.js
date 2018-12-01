@@ -62,10 +62,12 @@ export const getStyles = props => ({
 	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Typography(props) {
 	const { className: classNameProp, paragraph, variant } = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
 		props,
 		theme,
 	]);

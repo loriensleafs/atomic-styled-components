@@ -35,9 +35,11 @@ export const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Ripples(props) {
 	const [ripples, setRipples] = useState(props.ripples);
-	const { rippleStyles, rippleSurfaceStyles } = useMemo(() => getStyles(props), [props]);
+	const { rippleStyles, rippleSurfaceStyles } = useStyles(props);
 	const rippleClassName = useMemo(() => cn(rippleStyles), [rippleStyles]);
 	const rippleSurfaceClassName = useMemo(() => cn(rippleSurfaceStyles), [rippleSurfaceStyles]);
 

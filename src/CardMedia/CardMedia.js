@@ -30,6 +30,8 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function CardMedia(props) {
 	const {
 		className: classNameProp,
@@ -41,7 +43,7 @@ function CardMedia(props) {
 		...passThru
 	} = props;
 	const isMedia = MEDIA_COMPONENTS.indexOf(Component) !== -1;
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, isMedia })), [props]);
+	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, isMedia })), [props]);
 	const composedStyle =
 		!isMedia && image ? { backgroundImage: `url("${image}")`, ...style } : style;
 

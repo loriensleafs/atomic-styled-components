@@ -146,6 +146,8 @@ const getStyles = props => {
 	);
 };
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Switch(props) {
 	const { className: classNameProp, color, icon, onChange, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
@@ -160,15 +162,11 @@ function Switch(props) {
 		selectControlStyles,
 		selectControlUncheckedStyles,
 		selectControlCheckedStyles,
-	} = useMemo(
-		() =>
-			getStyles({
-				...props,
-				checked,
-				theme,
-			}),
-		[checked, props.disabled, props.styles, theme],
-	);
+	} = useStyles({
+		...props,
+		checked,
+		theme,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const barClassName = useMemo(() => cn(barStyles), [barStyles]);
 	const iconClassName = useMemo(() => cn(iconStyles), [iconStyles]);

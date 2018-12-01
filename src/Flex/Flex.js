@@ -46,9 +46,12 @@ export const getStyles = props => ({
 	...(isFunc(props.styles) ? props.styles(props) : props.styles || {}),
 });
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Flex(props) {
 	const { theme } = useContext(ThemeContext);
-	const styles = useMemo(() => getStyles({ ...props, theme }), [props, theme]);
+	const styles = useStyles({ ...props, theme });
+
 	return (
 		<Box styles={styles} {...props}>
 			{props.children}

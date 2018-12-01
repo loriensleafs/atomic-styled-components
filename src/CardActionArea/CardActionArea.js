@@ -36,13 +36,12 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function CardActionArea(props) {
 	const { children, className: classNameProp, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles, focusHighlightStyles } = useMemo(() => getStyles({ ...props, theme }), [
-		props,
-		theme,
-	]);
+	const { rootStyles, focusHighlightStyles } = useStyles({ ...props, theme });
 	const focusHilightClassName = useMemo(() => cn(focusHighlightStyles), [focusHighlightStyles]);
 
 	return (

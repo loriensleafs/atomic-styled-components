@@ -9,6 +9,7 @@
 		"hoist-non-react-statics": "^3.0.1",
 		"isomorphic-fetch": "^2.2.1",
 		"keycode": "^2.2.0",
+		"nanoid": "^2.0.0",
 		"promise": "^8.0.1",
 		"prop-types": "^15.6.2",
 		"react": "^16.7.0-alpha.0",

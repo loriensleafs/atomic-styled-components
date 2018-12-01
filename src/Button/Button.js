@@ -223,6 +223,8 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Button(props) {
 	const {
 		children,
@@ -254,10 +256,7 @@ function Button(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles, labelStyles } = useMemo(() => getStyles({ ...props, theme }), [
-		props,
-		theme,
-	]);
+	const { rootStyles, labelStyles } = useStyles({ ...props, theme });
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (

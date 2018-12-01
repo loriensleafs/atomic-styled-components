@@ -30,10 +30,12 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function Divider(props) {
 	const { children, className: classNameProp, is: C } = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
 		props,
 		theme,
 	]);

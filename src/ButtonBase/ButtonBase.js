@@ -10,6 +10,7 @@ import Ripples, { useRipples } from './../Ripples';
 import cn from './../theme/className';
 import merge from './../utils/pureRecursiveMerge';
 import { isFunc } from './../utils/helpers';
+import { style } from 'styled-system';
 
 export const getStyles = props =>
 	merge(
@@ -52,6 +53,10 @@ export const getStyles = props =>
 		},
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
+
+function useStyles(props) {
+	return useMemo(() => getStyles(props), [props]);
+}
 
 function ButtonBase(props) {
 	const {
@@ -106,7 +111,7 @@ function ButtonBase(props) {
 				  },
 		[Component, disabled, type],
 	);
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme }).rootStyles), [
+	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme }).rootStyles), [
 		props,
 		theme,
 	]);

@@ -9,6 +9,8 @@ import { space } from 'styled-system';
 const getStyles = props =>
 	merge(space(props), isFunc(props.styles) ? props.styles(props) : props.styles || {});
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function CardContent(props) {
 	const {
 		className: classNameProp,
@@ -30,7 +32,7 @@ function CardContent(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const className = useMemo(() => cn(classNameProp, getStyles({ ...props, theme })), [
+	const className = useMemo(() => cn(classNameProp, useStyles({ ...props, theme })), [
 		classNameProp,
 		m,
 		ml,

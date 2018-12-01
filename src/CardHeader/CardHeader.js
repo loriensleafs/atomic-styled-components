@@ -41,6 +41,8 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 const CardTitle = (avatar, className, disableTypography, title, ...passThru) =>
 	(title &&
 		title.type !== Typography &&
@@ -92,7 +94,7 @@ function CardHeader(props) {
 		contentStyles,
 		titleStyles,
 		subheaderStyles,
-	} = useMemo(() => getStyles({ ...props, theme }), [props, theme]);
+	} = useStyles({ ...props, theme });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const avatarClassName = useMemo(() => cn(avatarStyles), [avatarStyles]);
 	const actionClassName = useMemo(() => cn(actionStyles), [actionStyles]);

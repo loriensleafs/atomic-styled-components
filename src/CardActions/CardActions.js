@@ -24,9 +24,11 @@ const getStyles = props =>
 		isFunc(props.styles) ? props.styles(props) : props.styles || {},
 	);
 
+const useStyles = props => useMemo(() => getStyles(props), [props]);
+
 function CardActions(props) {
 	const { disableActionSpacing, children, className: classNameProp, ...passThru } = props;
-	const className = useMemo(() => cn(classNameProp, getStyles(props).rootStyles), []);
+	const className = useMemo(() => cn(classNameProp, useStyles(props).rootStyles), [props.styles]);
 
 	return (
 		<div className={cn(className, getStyles(props))} {...passThru}>
