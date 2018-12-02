@@ -3,16 +3,20 @@ import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
-import { space } from 'styled-system';
+import { space } from './../styles';
 
 export const getColorStyles = props => {
 	if (props.disabled) {
 		return {
-			color: props.theme.palette.action.disabled,
+			rootStyles: {
+				color: props.theme.palette.action.disabled,
+			},
 		};
 	} else if (props.color === 'inherit') {
 		return {
-			color: 'inherit',
+			rootStyles: {
+				color: 'inherit',
+			},
 		};
 	} else if (
 		props.color === 'primary' ||
@@ -20,23 +24,29 @@ export const getColorStyles = props => {
 		props.color === 'error'
 	) {
 		return {
-			color: props.theme.palette[props.color].main,
+			rootStyles: {
+				color: props.theme.palette[props.color].main,
+			},
 		};
 	} else if (props.color === 'active') {
 		return {
-			color: props.theme.palette.action.active,
+			rootStyles: {
+				color: props.theme.palette.action.active,
+			},
 		};
 	}
 };
 
-export const getBaseStyles = props => ({
-	userSelect: 'none',
-	fontSize: '24px',
-	width: '1em',
-	height: '1em',
-	overflow: 'hidden',
-	flexShrink: 0,
-});
+export const getBaseStyles = {
+	rootStyles: {
+		userSelect: 'none',
+		fontSize: '24px',
+		width: '1em',
+		height: '1em',
+		overflow: 'hidden',
+		flexShrink: 0,
+	},
+};
 
 function Icon(props) {
 	const {
@@ -59,11 +69,11 @@ function Icon(props) {
 		pt,
 		py,
 		px,
-		styles: stylesProp,
+		styles,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const styles = useStyles(
+	const { rootStyles } = useStyles(
 		{
 			color,
 			disabled,
@@ -82,7 +92,7 @@ function Icon(props) {
 			pt,
 			py,
 			px,
-			stylesProp,
+			styles,
 			theme,
 		},
 		[
@@ -103,12 +113,12 @@ function Icon(props) {
 			pt,
 			py,
 			px,
-			stylesProp,
+			styles,
 			theme,
 		],
 		[getBaseStyles, getColorStyles, space],
 	);
-	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (
 		<span className={className} aria-hidden="true" disabled={disabled} {...passThru}>
@@ -116,6 +126,8 @@ function Icon(props) {
 		</span>
 	);
 }
+
+Icon.displayName = 'Icon';
 
 Icon.propTypes = {
 	/**
@@ -142,7 +154,5 @@ Icon.defaultProps = {
 	color: 'inherit',
 	fontSize: 'default',
 };
-
-Icon.displayName = 'Icon';
 
 export default Icon;

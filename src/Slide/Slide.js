@@ -1,18 +1,23 @@
-import React, { isValidElement, useContext, useEffect, useRef, useState } from 'react';
-import Transition from 'react-transition-group/Transition';
+import React, { isValidElement, useRef, useReducer, useEffect, useCallback, useState } from 'react';
+import { animated, useSpring } from 'react-spring';
 import EventListener from 'react-event-listener';
 import debounce from 'debounce';
-import getTransitionProps from './../utils/getTransitionProps';
+import useDidMount from './../hooks/useDidMount';
+import useDidUpdate from './../hooks/useDidUpdate';
+import usePrevious from './../hooks/usePrevious';
+import useWillUnmount from './../hooks/useWillUnmount';
 import ownerWindow from './../utils/ownerWindow';
-import { duration, easing, transition } from './../theme/createMotion';
-import { usePrevious, useDidMount, useWillUnmount, useDidUpdate } from './../hooks';
 
 const GUTTER = 24;
 
-function getTranslationValue(direction, node) {
-	const rect = node.getBoundingClientRect();
-	const computedStyle = ownerWindow(node).getComputedStyle(node);
-	const transform = computedStyle.getPropertyValue('transform');
+const SLIDE_TO = 'translateY(0)';
+
+function getRect(ref) {
+	const rect = ref.current.getBoundingClientRect();
+	const computedStyle = ownerWindow(ref.current).getComputedStyle(ref.current);
+	const transform =
+		computedStyle.getPropertyValue('-webkit-transform') ||
+		computedStyle.getPropertyValue('transform');
 	let offsetX = 0;
 	let offsetY = 0;
 
@@ -25,131 +30,74 @@ function getTranslationValue(direction, node) {
 		offsetY = parseInt(transformValues[5], 10);
 	}
 
-	switch (direction) {
+	return { offsetX, offsetY, rect };
+}
+
+function slideToReducer(state, action) {
+	const { offsetX, offsetY, rect } = getRect(action.ref);
+
+	switch (action.direction) {
 		case 'left':
-			return `translateX(100vw) translateX(-${rect.left - offsetX}px)`;
+			return `translateX(${window.innerWidth + -(rect.left - offsetX)}px)`;
 		case 'right':
 			return `translateX(-${rect.left + rect.width + GUTTER - offsetX}px)`;
 		case 'up':
-			return `translateY(100vh) translateY(-${rect.top - offsetY}px)`;
+			return `translateY(${window.innerHeight + -(rect.top - offsetY)}px)`;
 		default:
 			// Down
 			return `translateY(-${rect.top + rect.height + GUTTER - offsetY}px)`;
 	}
 }
 
-export function setTranslateValue(direction, node) {
-	const transform = getTranslationValue(direction, node);
-	if (transform) node.style.transform = transform;
-}
+function Slide(props) {
+	const { className, children, direction } = props;
+	const ref = useRef();
+	const [mounted, setMounted] = useState(false);
+	const [slideTo, updateSlideTo] = useReducer(slideToReducer, SLIDE_TO);
+	const prevSlideTo = useRef(slideTo || SLIDE_TO);
+	const prevDirection = usePrevious(direction);
+	const [slideTransition] = useSpring({
+		transform: mounted || props.in ? 'translateY(0px)' : slideTo,
+		from: {
+			transform: 'translateY(0px)',
+		},
+	});
 
-function updatePosition(direction, node) {
-	if (node) {
-		node.style.visibility = 'inherit';
-		setTranslateValue(direction, node);
-	}
-}
-
-const Slide = React.memo(function Slide(props) {
-	const prevDirection = usePrevious(props.direction);
-	const [mounted, setMounted] = useState(true);
-	const { current: transitionRef } = useRef(null);
-	const {
-		children,
-		direction,
-		in: inProp,
-		onEnter,
-		onEntering,
-		onExit,
-		onExited,
-		style,
-		timeout,
-		...passThru
-	} = props;
-	const handleResize = debounce(() => {
-		if ((!inProp || direction !== 'down' || direction !== 'right') && transitionRef) {
-			setTranslateValue(direction, transitionRef);
-		}
-	}, 166);
-
-	function handleEnter(node) {
-		setTranslateValue(direction, node);
-		node.scrollTop;
-		if (onEnter) onEnter(node);
-	}
-
-	function handleEntering(node) {
-		node.style.transition = transition('transform', {
-			...getTransitionProps(timeout, style, 'enter'),
-			easing: easing.out,
-		});
-		node.style.transform = 'translate(0,0)';
-		if (onEntering) onEntering(node);
-	}
-
-	function handleExit(node) {
-		node.style.transition = transition('transform', {
-			...getTransitionProps(timeout, style, 'exit'),
-			easing: easing.sharp,
-		});
-		setTranslateValue(direction, node);
-		if (onExit) onExit(node);
-	}
-
-	function handleExited(node) {
-		node.style.transition = '';
-		if (onExited) onExited(node);
-	}
+	const handleResize = useCallback(
+		debounce(() => {
+			if (props.in || direction === 'down' || direction === 'right') {
+				return;
+			}
+			updateSlideTo({ ref, direction, in: props.in });
+		}, 166),
+		[],
+	); // Corresponds to 10 frames at 60 Hz.
 
 	useDidMount(() => {
-		setMounted(true);
-		if (!inProp) updatePosition();
+		updateSlideTo({ ref, direction });
+		setMounted(() => false);
 	});
 
-	useDidUpdate(() => !inProp && updatePosition(), [inProp]);
-
-	useWillUnmount(() => {
-		handleResize.clear();
-		setMounted(false);
-	});
-
-	let transitionStyle = {};
-
-	if (!inProp && !mounted) transitionStyle.visibility = 'hidden';
-
-	transitionStyle = {
-		...transitionStyle,
-		...style,
-		...(isValidElement(children) ? children.props.style : {}),
-	};
+	useDidUpdate(
+		() => {
+			if (!props.in) updateSlideTo({ ref, direction });
+		},
+		[props.in, mounted],
+	);
 
 	return (
-		<EventListener target="window" onResize={handleResize}>
-			<Transition
-				timeout={timeout}
-				onEnter={handleEnter}
-				onEntering={handleEntering}
-				onExit={handleExit}
-				onExited={handleExited}
-				in={inProp}
-				appear
-				style={transitionStyle}
-				ref={transitionRef}
-				{...passThru}>
-				{children}
-			</Transition>
-		</EventListener>
+		<animated.div className={className} style={slideTransition} ref={ref}>
+			{children}
+		</animated.div>
 	);
-});
+}
+
+Slide.displayName = 'Slide';
 
 Slide.propTypes = {};
 
 Slide.defaultProps = {
 	direction: 'down',
-	timeout: {
-		enter: duration.entering,
-		exit: duration.leaving,
-	},
 };
 
 export default Slide;

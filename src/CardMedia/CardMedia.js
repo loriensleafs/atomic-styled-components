@@ -9,14 +9,24 @@ const MEDIA_COMPONENTS = ['video', 'audio', 'picture', 'iframe', 'img'];
 
 const getMediaStyles = props =>
 	props.isMedia && {
-		width: '100%',
+		rootStyles: {
+			width: '100%',
+		},
 	};
 
 const getBaseStyles = props => ({
-	display: 'block',
-	backgroundSize: 'cover',
-	backgroundRepeat: 'no-repeat',
-	backgroundPosition: 'center',
+	rootStyles: {
+		display: 'block',
+		backgroundSize: 'cover',
+		backgroundRepeat: 'no-repeat',
+		backgroundPosition: 'center',
+		...height(props),
+		...maxHeight(props),
+		...maxWidth(props),
+		...minHeight(props),
+		...minWidth(props),
+		...width(props),
+	},
 });
 
 function CardMedia(props) {
@@ -31,17 +41,17 @@ function CardMedia(props) {
 		minWidth,
 		src,
 		style,
-		styles: stylesProp,
+		styles,
 		w,
 		...passThru
 	} = props;
 	const isMedia = MEDIA_COMPONENTS.indexOf(Component) !== -1;
-	const styles = useStyles(
-		{ stylesProp, h, isMedia, maxHeight, maxWidth, minHeight, minWidth, w },
-		[isMedia, h, maxHeight, maxWidth, minHeight, minWidth, stylesProp, w],
-		[getBaseStyles, getMediaStyles, height, maxHeight, maxWidth, minHeight, minWidth, width],
+	const { rootStyles } = useStyles(
+		{ h, isMedia, maxHeight, maxWidth, minHeight, minWidth, styles, w },
+		[h, isMedia, maxHeight, maxWidth, minHeight, minWidth, styles, w],
+		[getBaseStyles, getMediaStyles],
 	);
-	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const composedStyle =
 		!isMedia && image ? { backgroundImage: `url("${image}")`, ...style } : style;
 
@@ -54,6 +64,8 @@ function CardMedia(props) {
 		/>
 	);
 }
+
+CardMedia.displayName = 'CardMedia';
 
 CardMedia.propTypes = {
 	/**

@@ -322,6 +322,8 @@ function Button(props) {
 	);
 }
 
+Button.displayName = 'Button';
+
 Button.propTypes = {
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,

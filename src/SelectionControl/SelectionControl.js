@@ -114,6 +114,8 @@ function SelectionControl(props) {
 	);
 }
 
+SelectionControl.displayName = 'SelectionControl';
+
 SelectionControl.propTypes = {
 	/**
 	 * If `true`, the input will be focused during the first mount.

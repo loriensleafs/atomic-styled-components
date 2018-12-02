@@ -72,6 +72,8 @@ function Ripples(props) {
 	);
 }
 
+Ripples.displayName = 'Ripples';
+
 Ripples.propTypes = {
 	ripples: PropTypes.array,
 };

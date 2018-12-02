@@ -242,6 +242,8 @@ function ButtonBase(props) {
 	);
 }
 
+ButtonBase.displayName = 'ButtonBase';
+
 ButtonBase.propTypes = {
 	/**
 	 * Callback fired when the component mounts.

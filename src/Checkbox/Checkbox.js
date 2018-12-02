@@ -99,6 +99,8 @@ function Checkbox(props) {
 	);
 }
 
+Checkbox.displayName = 'Checkbox';
+
 Checkbox.propTypes = {
 	/**
 	 * If `true`, the component is checked.

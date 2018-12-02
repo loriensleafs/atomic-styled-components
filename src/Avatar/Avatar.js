@@ -1,9 +1,9 @@
 import React, { cloneElement, isValidElement, useContext, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
-import { space } from 'styled-system';
-import { fontFamily, fontSize, fontWeight, lineHeight } from './../styles';
+import { fontFamily, fontSize, fontWeight, lineHeight, space } from './../styles';
 
 export const getColorStyles = props =>
 	props.color === 'default'
@@ -121,6 +121,8 @@ function Avatar(props) {
 		</Component>
 	);
 }
+
+Avatar.displayName = 'Avatar';
 
 Avatar.propTypes = {
 	/**

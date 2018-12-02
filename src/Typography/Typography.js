@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
-import { space, textAlign, variant } from 'styled-system';
-import { textColor, fontFamily, fontSize, fontWeight, lineHeight } from './../styles';
+import { textAlign, variant } from 'styled-system';
+import { textColor, fontFamily, fontSize, fontWeight, lineHeight, space } from './../styles';
 
 export const variants = variant({
 	key: 'typography.variants',
@@ -30,7 +30,16 @@ export const getBaseStyles = props => ({
 });
 
 function Typography(props) {
-	const { className: classNameProp, font, lineHeight, paragraph, size, variant, weight } = props;
+	const {
+		className: classNameProp,
+		font,
+		lineHeight,
+		paragraph,
+		size,
+		variant,
+		weight,
+		styles: stylesProp,
+	} = props;
 	const { theme } = useContext(ThemeContext);
 	const styles = useStyles(
 		{ ...props, theme },
@@ -52,6 +61,8 @@ function Typography(props) {
 
 	return <Component className={className}>{props.children}</Component>;
 }
+
+Typography.displayName = 'Typography';
 
 Typography.propTypes = {
 	...fontFamily.propTypes,

@@ -9,9 +9,8 @@ import {
 	maxWidth as maxWidthParser,
 	minHeight as minHeightParser,
 	minWidth as minWidthParser,
-	space,
 } from 'styled-system';
-import { bgColor, borderRadius, height, textColor, width } from './../styles';
+import { bgColor, borderRadius, height, textColor, space, width } from './../styles';
 
 function Box(props) {
 	const {

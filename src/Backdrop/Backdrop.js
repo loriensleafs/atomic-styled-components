@@ -30,6 +30,8 @@ const Backdrop = React.memo(function Backdrop(props) {
 	);
 });
 
+Backdrop.displayName = 'Backdrop';
+
 Backdrop.propTypes = {
 	/**
 	 * @ignore

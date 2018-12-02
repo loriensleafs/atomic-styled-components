@@ -125,6 +125,8 @@ function IconButton(props) {
 	);
 }
 
+IconButton.displayName = 'IconButton';
+
 IconButton.propTypes = {
 	/**
 	 * The icon element.

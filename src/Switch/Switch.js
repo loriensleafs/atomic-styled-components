@@ -203,6 +203,8 @@ function Switch(props) {
 	);
 }
 
+Switch.displayName = 'Switch';
+
 Switch.propTypes = {
 	/**
 	 * If `true`, the component is checked.

@@ -6,13 +6,15 @@ import cn from './../theme/className';
 import { space } from './../styles';
 
 const getBaseStyles = props => ({
-	...space({
-		py: 3,
-		px: [3, 3.5],
-	}),
-	':last-child': space({
-		pb: 3.5,
-	}),
+	rootStyles: {
+		...space({
+			py: 3,
+			px: [3, 3.5],
+		}),
+		':last-child': space({
+			pb: 3.5,
+		}),
+	},
 });
 
 function CardContent(props) {
@@ -33,19 +35,21 @@ function CardContent(props) {
 		pb,
 		px,
 		py,
-		styles: stylesProp,
+		styles,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const styles = useStyles(
-		{ m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, stylesProp, theme },
-		[m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, stylesProp, theme],
+	const { rootStyles } = useStyles(
+		{ m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, styles, theme },
+		[m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, styles, theme],
 		[getBaseStyles, space],
 	);
-	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return <Component className={className} {...passThru} />;
 }
+
+CardContent.displayName = 'CardContent';
 
 CardContent.propTypes = {
 	/**

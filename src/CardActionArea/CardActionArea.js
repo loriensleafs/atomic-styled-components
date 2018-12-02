@@ -37,12 +37,12 @@ const getBaseStyles = props => ({
 });
 
 function CardActionArea(props) {
-	const { children, className, styles: stylesProp, ...passThru } = props;
+	const { children, className, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
 	const [focusVisible, setFocusVisible] = useState(false);
 	const { rootStyles, focusHighlightStyles } = useStyles(
-		{ ...props, focusVisible, theme },
-		[props, focusVisible, theme],
+		{ ...props, focusVisible, styles, theme },
+		[props, focusVisible, styles, theme],
 		[getBaseStyles, getFocusVisibleStyles],
 	);
 	const focusHilightClassName = useMemo(() => cn(focusHighlightStyles), [focusHighlightStyles]);
@@ -63,6 +63,8 @@ function CardActionArea(props) {
 		</ButtonBase>
 	);
 }
+
+CardActionArea.displayName = 'CardActionArea';
 
 CardActionArea.propTypes = {
 	/**

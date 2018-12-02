@@ -31,6 +31,8 @@ function CardActions(props) {
 	);
 }
 
+CardActions.displayName = 'CardActions';
+
 CardActions.propTypes = {
 	/**
 	 * The content of the component.

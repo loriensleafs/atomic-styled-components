@@ -14,4 +14,6 @@ function GlobalStyle({ styles }) {
 	return <GlobalStyles />;
 }
 
+GlobalStyle.displayName = 'GlobalStyle';
+
 export default GlobalStyle;

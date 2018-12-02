@@ -199,6 +199,8 @@ function Modal(props) {
 	return createPortal(ModalComponent, portalRef.current);
 }
 
+Modal.displayName = 'Modal';
+
 Modal.propTypes = {
 	/**
 	 * A backdrop component. This property enables custom backdrop rendering.

@@ -177,6 +177,8 @@ const Dialog = React.memo(function Dialog(props) {
 	);
 });
 
+Dialog.displayName = 'Dialog';
+
 Dialog.propTypes = {
 	/**
 	 * @ignore

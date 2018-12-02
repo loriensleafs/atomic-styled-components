@@ -3,26 +3,31 @@ import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
-import { space, fontSize } from 'styled-system';
+import { fontSize } from 'styled-system';
+import { space } from './../styles';
 import { getColorStyles } from './../Icon/Icon';
 
 export const getFontSizeStyles = props =>
 	props.fontSize &&
 	props.fontSize === 'inherit' && {
-		fontSize: 'inherit',
+		rootStyles: {
+			fontSize: 'inherit',
+		},
 	};
 
 export const getBaseStyles = props => ({
-	width: '1em',
-	height: '1em',
-	userSelect: 'none',
-	fontSize: '24px',
-	display: 'inline-block',
-	flexShrink: 0,
-	fill: 'currentColor',
-	transition: `fill ${
-		props.theme.duration.shorter
-	}ms cubic-bezier(${props.theme.easing.in.join()})`,
+	rootStyles: {
+		width: '1em',
+		height: '1em',
+		userSelect: 'none',
+		fontSize: '24px',
+		display: 'inline-block',
+		flexShrink: 0,
+		fill: 'currentColor',
+		transition: `fill ${
+			props.theme.duration.shorter
+		}ms cubic-bezier(${props.theme.easing.in.join()})`,
+	},
 });
 
 function SvgIcon(props) {
@@ -49,16 +54,16 @@ function SvgIcon(props) {
 		py,
 		titleAccess,
 		viewBox,
-		styles: stylesProp,
+		styles,
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const styles = useStyles(
+	const { rootStyles } = useStyles(
 		{ ...props, theme },
 		[props, theme],
 		[getBaseStyles, getFontSizeStyles, getColorStyles, space, fontSize],
 	);
-	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (
 		<Component
@@ -73,6 +78,8 @@ function SvgIcon(props) {
 		</Component>
 	);
 }
+
+SvgIcon.displayName = 'SvgIcon';
 
 SvgIcon.propTypes = {
 	/**

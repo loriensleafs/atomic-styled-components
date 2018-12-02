@@ -95,6 +95,8 @@ function Radio(props) {
 	);
 }
 
+Radio.displayName = 'Radio';
+
 Radio.propTypes = {
 	/**
 	 * If `true`, the component is checked.

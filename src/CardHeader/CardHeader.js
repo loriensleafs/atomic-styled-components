@@ -119,6 +119,8 @@ function CardHeader(props) {
 	);
 }
 
+CardHeader.displayName = 'CardHeader';
+
 CardHeader.propTypes = {
 	/**
 	 * The action to display in the card header.
