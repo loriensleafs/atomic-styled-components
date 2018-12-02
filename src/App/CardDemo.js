@@ -24,7 +24,7 @@ function CardDemo(props) {
 	return (
 		<Fragment>
 			<Flex justifyContent="center" mb={4}>
-				<Card minWidth={275} pb={1} px={2}>
+				<Card minWidth={275}>
 					<CardContent>
 						<Typography color="text.secondary" mb={1}>
 							Word of the Day

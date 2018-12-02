@@ -3,7 +3,17 @@ import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { space } from 'styled-system';
+import { space } from './../styles';
+
+const getBaseStyles = props => ({
+	...space({
+		py: 3,
+		px: [3, 3.5],
+	}),
+	':last-child': space({
+		pb: 3.5,
+	}),
+});
 
 function CardContent(props) {
 	const {
@@ -28,9 +38,9 @@ function CardContent(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const styles = useStyles(
-		{ m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, theme },
-		[m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, theme],
-		[space],
+		{ m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, stylesProp, theme },
+		[m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, stylesProp, theme],
+		[getBaseStyles, space],
 	);
 	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 
@@ -53,8 +63,6 @@ CardContent.propTypes = {
 
 CardContent.defaultProps = {
 	component: 'div',
-	py: 3,
-	px: [2, 3],
 };
 
 export default CardContent;

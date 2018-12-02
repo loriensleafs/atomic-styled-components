@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { space } from 'styled-system';
+import { space } from './../styles';
 
 const getBaseStyles = props => ({
 	rootStyles: {
@@ -11,7 +11,7 @@ const getBaseStyles = props => ({
 		boxSizing: 'border-box',
 		...space({
 			py: 2,
-			px: [1, 2],
+			px: [1, 2.5],
 		}),
 	},
 	actionStyles: {
@@ -20,15 +20,9 @@ const getBaseStyles = props => ({
 });
 
 function CardActions(props) {
-	const {
-		children,
-		className: classNameProp,
-		disableActionSpacing,
-		styles: stylesProp,
-		...passThru
-	} = props;
-	const styles = useStyles(props, [stylesProp], [getBaseStyles]);
-	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
+	const { children, className: classNameProp, disableActionSpacing, styles, ...passThru } = props;
+	const { rootStyles } = useStyles(props, [styles], [getBaseStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (
 		<div className={className} {...passThru}>
