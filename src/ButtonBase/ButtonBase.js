@@ -101,7 +101,11 @@ function ButtonBase(props) {
 				  },
 		[Component, disabled, type],
 	);
-	const { rootStyles } = useStyles({ styles, theme }, [styles, theme], [getBaseStyles]);
+	const { rootStyles } = useStyles(
+		{ ...props, focusVisible, theme },
+		[props, focusVisible, theme],
+		[getBaseStyles],
+	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [rootStyles]);
 
 	const handleMouseDown = useCallback(
@@ -132,6 +136,7 @@ function ButtonBase(props) {
 		rippleEndHandler(event => {
 			clearTimeout(checkFocusTimer.current);
 			setFocusVisible(() => false);
+			if (onBlur) onBlur(event);
 		}),
 		[],
 	);
@@ -319,7 +324,7 @@ ButtonBase.defaultProps = {
 	component: 'button',
 	disableRipple: false,
 	disableTouchRipple: false,
-	focusRipple: true,
+	focusRipple: false,
 	tabIndex: '0',
 	type: 'button',
 };
