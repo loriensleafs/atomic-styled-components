@@ -10,6 +10,7 @@ import CardDemo from './CardDemo';
 import ButtonDemo from './ButtonDemo';
 import CheckboxDemo from './CheckboxDemo';
 import GridDemo from './GridDemo';
+import ListDemo from './ListDemo';
 import RadioDemo from './RadioDemo';
 import SwitchDemo from './SwitchDemo';
 import Card from './../Card';
@@ -80,6 +81,7 @@ const App = React.memo(function App(props = {}) {
 			<Box w={1} h={1}>
 				<Container pt={3}>
 					<CardDemo />
+					<ListDemo />
 					<SwitchDemo />
 					<CheckboxDemo />
 					<RadioDemo />
