@@ -1,9 +1,19 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import ButtonBase from './../ButtonBase';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
+
+const getFocusVisibleStyles = props =>
+	props.focusVisible && {
+		focusHighlightStyles: {
+			opacity: 0.12,
+			':hover': {
+				opacity: props.theme.palette.action.hoverOpacity,
+			},
+		},
+	};
 
 const getBaseStyles = props => ({
 	rootStyles: {
@@ -19,30 +29,35 @@ const getBaseStyles = props => ({
 		left: '0px',
 		opacity: 0,
 		backgroundColor: 'currentcolor',
+		pointerEvents: 'none',
 		transition: `opacity ${
 			props.theme.duration.shortest
 		}ms cubic-bezier(${props.theme.easing.in.join()})`,
-		':hover': {
-			opacity: props.theme.palette.action.hoverOpacity,
-		},
-		':focus': {
-			opacity: props.theme.palette.action.hoverOpacity,
-		},
 	},
 });
 
 function CardActionArea(props) {
 	const { children, className, styles: stylesProp, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
+	const [focusVisible, setFocusVisible] = useState(false);
 	const { rootStyles, focusHighlightStyles } = useStyles(
-		{ ...props, theme },
-		[props, theme],
-		[getBaseStyles],
+		{ ...props, focusVisible, theme },
+		[props, focusVisible, theme],
+		[getBaseStyles, getFocusVisibleStyles],
 	);
 	const focusHilightClassName = useMemo(() => cn(focusHighlightStyles), [focusHighlightStyles]);
 
+	const handleFocusVisible = useCallback(event => setFocusVisible(true), []);
+
+	const handleBlur = useCallback(event => setFocusVisible(false), []);
+
 	return (
-		<ButtonBase className={className} styles={{ rootStyles }} {...passThru}>
+		<ButtonBase
+			className={className}
+			styles={{ rootStyles }}
+			onFocusVisible={handleFocusVisible}
+			onBlur={handleBlur}
+			{...passThru}>
 			{children}
 			<span className={focusHilightClassName} />
 		</ButtonBase>
