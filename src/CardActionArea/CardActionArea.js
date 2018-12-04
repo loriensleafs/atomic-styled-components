@@ -40,11 +40,12 @@ function CardActionArea(props) {
 	const { children, className, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
 	const [focusVisible, setFocusVisible] = useState(false);
-	const { rootStyles, focusHighlightStyles } = useStyles(
-		{ ...props, focusVisible, styles, theme },
-		[props, focusVisible, styles, theme],
-		[getBaseStyles, getFocusVisibleStyles],
-	);
+	const { rootStyles, focusHighlightStyles } = useStyles([getBaseStyles, getFocusVisibleStyles], {
+		...props,
+		focusVisible,
+		styles,
+		theme,
+	});
 	const focusHilightClassName = useMemo(() => cn(focusHighlightStyles), [focusHighlightStyles]);
 
 	const handleFocusVisible = useCallback(event => setFocusVisible(true), []);

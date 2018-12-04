@@ -87,7 +87,7 @@ function CardHeader(props) {
 		contentStyles,
 		titleStyles,
 		subheaderStyles,
-	} = useStyles({ ...props, theme }, [props, theme], [getBaseStyles]);
+	} = useStyles([getBaseStyles], { ...props, theme });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const avatarClassName = useMemo(() => cn(avatarStyles), [avatarStyles]);
 	const actionClassName = useMemo(() => cn(actionStyles), [actionStyles]);

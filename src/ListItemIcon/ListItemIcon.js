@@ -20,7 +20,7 @@ const getBaseStyles = props => ({
 function ListItemIcon(props) {
 	const { children, className: classNameProp, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles({ styles, theme }, [styles, theme], [getBaseStyles]);
+	const { rootStyles } = useStyles([getBaseStyles], { styles, theme });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (

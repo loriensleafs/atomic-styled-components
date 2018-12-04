@@ -46,11 +46,16 @@ function CardMedia(props) {
 		...passThru
 	} = props;
 	const isMedia = MEDIA_COMPONENTS.indexOf(Component) !== -1;
-	const { rootStyles } = useStyles(
-		{ h, isMedia, maxHeight, maxWidth, minHeight, minWidth, styles, w },
-		[h, isMedia, maxHeight, maxWidth, minHeight, minWidth, styles, w],
-		[getBaseStyles, getMediaStyles],
-	);
+	const { rootStyles } = useStyles([getBaseStyles, getMediaStyles], {
+		h,
+		isMedia,
+		maxHeight,
+		maxWidth,
+		minHeight,
+		minWidth,
+		styles,
+		w,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const composedStyle =
 		!isMedia && image ? { backgroundImage: `url("${image}")`, ...style } : style;

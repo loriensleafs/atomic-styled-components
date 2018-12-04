@@ -34,7 +34,21 @@ function Typography(props) {
 		className: classNameProp,
 		font,
 		lineHeight,
+		m,
+		mb,
+		ml,
+		mr,
+		mt,
+		mx,
+		my,
+		p,
 		paragraph,
+		pb,
+		pl,
+		pr,
+		pt,
+		px,
+		py,
 		size,
 		variant,
 		weight,
@@ -42,8 +56,6 @@ function Typography(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const styles = useStyles(
-		{ ...props, theme },
-		[props, theme],
 		[
 			getBaseStyles,
 			variants,
@@ -55,6 +67,23 @@ function Typography(props) {
 			textColor,
 			space,
 		],
+		{
+			font,
+			lineHeight,
+			m,
+			mb,
+			ml,
+			mr,
+			mt,
+			mx,
+			my,
+			paragraph,
+			size,
+			stylesProp,
+			theme,
+			variant,
+			weight,
+		},
 	);
 	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
 	const Component = paragraph ? 'p' : TAG_MAP[variant] || 'span';

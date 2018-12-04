@@ -177,6 +177,7 @@ const getBaseStyles = props => ({
 		minWidth: '64px',
 		minHeight: '36px',
 		padding: `${props.theme.space[2]}px ${props.theme.space[3]}px`,
+		fontFamily: props.theme.typography.fontFamily,
 		fontSize: `${props.theme.typography.fontSizes[2]}${props.theme.typography.fontUnit}`,
 		fontWeight: props.theme.typography.fontWeights.medium,
 		lineHeight: `${props.theme.typography.lineHeights[1]}${props.theme.typography.fontUnit}`,
@@ -242,6 +243,15 @@ function Button(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const { rootStyles, labelStyles } = useStyles(
+		[
+			getBaseStyles,
+			getColorStyles,
+			getFabStyles,
+			getMiniStyles,
+			getFullWidthStyles,
+			getVariantStyles,
+			getSizeStyles,
+		],
 		{
 			color,
 			disabled,
@@ -270,43 +280,6 @@ function Button(props) {
 			variant,
 			theme,
 		},
-		[
-			color,
-			disabled,
-			disableFocusRipple,
-			disableRipple,
-			fab,
-			fullWidth,
-			mini,
-			m,
-			ml,
-			mr,
-			mt,
-			mb,
-			mx,
-			my,
-			p,
-			pl,
-			pr,
-			pt,
-			pb,
-			px,
-			py,
-			size,
-			styles,
-			type,
-			variant,
-			theme,
-		],
-		[
-			getBaseStyles,
-			getColorStyles,
-			getFabStyles,
-			getMiniStyles,
-			getFullWidthStyles,
-			getVariantStyles,
-			getSizeStyles,
-		],
 	);
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 

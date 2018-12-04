@@ -21,7 +21,7 @@ const getBaseStyles = props => ({
 
 function CardActions(props) {
 	const { children, className: classNameProp, disableActionSpacing, styles, ...passThru } = props;
-	const { rootStyles } = useStyles(props, [styles], [getBaseStyles]);
+	const { rootStyles } = useStyles([getBaseStyles], props);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (

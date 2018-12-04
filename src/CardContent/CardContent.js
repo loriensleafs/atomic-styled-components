@@ -39,11 +39,24 @@ function CardContent(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles(
-		{ m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, styles, theme },
-		[m, ml, mr, mt, mb, mx, my, p, pl, pr, pt, pb, px, py, styles, theme],
-		[getBaseStyles, space],
-	);
+	const { rootStyles } = useStyles([getBaseStyles, space], {
+		m,
+		ml,
+		mr,
+		mt,
+		mb,
+		mx,
+		my,
+		p,
+		pl,
+		pr,
+		pt,
+		pb,
+		px,
+		py,
+		styles,
+		theme,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return <Component className={className} {...passThru} />;

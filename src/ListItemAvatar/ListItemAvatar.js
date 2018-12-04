@@ -29,11 +29,12 @@ function ListItemAvatar(props) {
 	const { children, className: classNameProp, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
 	const { alignItems, dense } = useContext(ListContext);
-	const { rootStyles, iconStyles } = useStyles(
-		{ alignItems, dense, styles, theme },
-		[alignItems, dense, styles, theme],
-		[getBaseStyles],
-	);
+	const { rootStyles, iconStyles } = useStyles([getBaseStyles], {
+		alignItems,
+		dense,
+		styles,
+		theme,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const iconClassName = useMemo(() => cn(iconStyles), [iconStyles]);
 

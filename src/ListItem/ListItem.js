@@ -85,8 +85,8 @@ function ListItem(props) {
 	} = props;
 	const { alignItems, dense } = {
 		...{ dense: false },
-		...useContext(ListContext),
 		...{ alignItems: alignItemsProp, dense: denseProp },
+		...useContext(ListContext),
 	};
 	const { theme } = useContext(ThemeContext);
 	const [focusVisible, setFocusVisible] = useState(false);
@@ -101,6 +101,13 @@ function ListItem(props) {
 		children[children.length - 1].type.displayName === 'ListItemSecondaryAction';
 
 	const { containerStyles, dividerStyles, rootStyles } = useStyles(
+		[
+			getBaseStyles,
+			getSelectedStyles,
+			getFocusVisibleStyles,
+			getDisabledStyles,
+			getButtonStyles,
+		],
 		{
 			alignItems,
 			button,
@@ -114,26 +121,6 @@ function ListItem(props) {
 			styles,
 			theme,
 		},
-		[
-			alignItems,
-			button,
-			dense,
-			disabled,
-			disableGutters,
-			focusVisible,
-			hasAvatar,
-			hasSecondaryAction,
-			selected,
-			styles,
-			theme,
-		],
-		[
-			getBaseStyles,
-			getSelectedStyles,
-			getFocusVisibleStyles,
-			getDisabledStyles,
-			getButtonStyles,
-		],
 	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const containerClassName = useMemo(() => cn(containerStyles), [containerStyles]);
@@ -142,7 +129,7 @@ function ListItem(props) {
 	let Component = component || 'li';
 
 	if (button) {
-		componentProps.component = 'div';
+		componentProps.component = component || 'div';
 		componentProps.styles = { rootStyles };
 		componentProps.onFocusVisible = useCallback(() => setFocusVisible(() => true), []);
 		componentProps.onBlur = useCallback(() => setFocusVisible(() => false), []);

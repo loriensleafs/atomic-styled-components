@@ -35,11 +35,13 @@ function List(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles(
-		{ dense, disablePadding, styles, subheader, theme },
-		[dense, disablePadding, styles, subheader, theme],
-		[getBaseStyles, getPaddingStyles],
-	);
+	const { rootStyles } = useStyles([getBaseStyles, getPaddingStyles], {
+		dense,
+		disablePadding,
+		styles,
+		subheader,
+		theme,
+	});
 	const className = useMemo(() => cn(rootStyles), [rootStyles]);
 
 	return (
@@ -83,6 +85,12 @@ List.propTypes = {
 	 */
 	subheader: PropTypes.node,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+};
+
+List.defaultProps = {
+	component: 'ul',
+	dense: false,
+	disablePadding: false,
 };
 
 export default List;

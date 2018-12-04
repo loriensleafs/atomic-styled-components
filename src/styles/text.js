@@ -7,14 +7,14 @@ export const fontFamily = style({
 });
 
 export const fontSize = style({
-	prop: 'size',
+	prop: 'fontSize',
 	key: 'typography.fontSizes',
 	transformValue: px,
 	scale: [0.625, 0.75, 0.875, 1, 1.25, 1.5, 2.125, 3, 3.75, 6],
 });
 
 export const fontWeight = style({
-	prop: 'weight',
+	prop: 'fontWeight',
 	key: 'typography.fontWeights',
 });
 

@@ -7,11 +7,7 @@ import { borderColor, borderRadius, borders } from 'styled-system';
 
 const Border = props => {
 	const theme = useContext(ThemeContext);
-	const styles = useStyles(
-		{ ...props, theme },
-		[props, theme],
-		[borderColor, borderRadius, borders],
-	);
+	const styles = useStyles([borderColor, borderRadius, borders], { ...props, theme });
 	const className = useMemo(() => cn(props.className, styles), [props.className, styles]);
 	return <div className={className} />;
 };

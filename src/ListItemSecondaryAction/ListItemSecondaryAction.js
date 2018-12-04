@@ -16,7 +16,7 @@ const getBaseStyles = {
 function ListItemSecondaryAction(props) {
 	const { children, className: classNameProp, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles({ theme }, [theme], [getBaseStyles]);
+	const { rootStyles } = useStyles([getBaseStyles], { theme });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (

@@ -135,8 +135,6 @@ const Dialog = React.memo(function Dialog(props) {
 		...passThru
 	} = props;
 	const { rootStyles, paperStyles, containerStyles } = useStyles(
-		props,
-		[props],
 		[
 			getBaseStyles,
 			getScrollStyles,
@@ -144,6 +142,7 @@ const Dialog = React.memo(function Dialog(props) {
 			getFullWidthStyles,
 			getFullScreenStyles,
 		],
+		props,
 	);
 
 	function handleBackdropClick(event) {

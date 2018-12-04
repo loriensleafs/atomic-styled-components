@@ -40,11 +40,13 @@ function Divider(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles(
-		{ absolute, inset, light, styles, theme },
-		[absolute, inset, light, styles, theme],
-		[getBaseStyles, getAbsoluteStyles],
-	);
+	const { rootStyles } = useStyles([getBaseStyles, getAbsoluteStyles], {
+		absolute,
+		inset,
+		light,
+		styles,
+		theme,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return <C className={className}>{children}</C>;

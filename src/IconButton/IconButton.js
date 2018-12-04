@@ -105,11 +105,10 @@ function IconButton(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 
-	const { rootStyles, labelStyles } = useStyles(
-		{ ...props, theme },
-		[props, theme],
-		[getBaseStyles, getColorStyles],
-	);
+	const { rootStyles, labelStyles } = useStyles([getBaseStyles, getColorStyles], {
+		...props,
+		theme,
+	});
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (

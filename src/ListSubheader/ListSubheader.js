@@ -51,11 +51,14 @@ function ListSubheader(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles(
-		{ color, disableGutters, disableSticky, inset, styles, theme },
-		[color, disableGutters, disableSticky, inset, styles, theme],
-		[getBaseStyles, getColorStyles, getStickyStyles],
-	);
+	const { rootStyles } = useStyles([getBaseStyles, getColorStyles, getStickyStyles], {
+		color,
+		disableGutters,
+		disableSticky,
+		inset,
+		styles,
+		theme,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return <Component className={className} {...passThru} />;

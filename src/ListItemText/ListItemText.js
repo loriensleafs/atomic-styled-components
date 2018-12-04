@@ -50,9 +50,8 @@ function ListItemText(props) {
 	const { theme } = useContext(ThemeContext);
 	const { dense } = useContext(ListContext);
 	const { rootStyles, primaryTextStyles, secondaryTextStyles } = useStyles(
-		{ disableTypography, inset, primary, secondary, dense, styles, theme },
-		[disableTypography, inset, primary, secondary, dense, styles, theme],
 		[getBaseStyles, getDenseStyles],
+		{ disableTypography, inset, primary, secondary, dense, styles, theme },
 	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const primaryTextClassName = useMemo(() => cn(primaryTextStyles), [primaryTextStyles]);

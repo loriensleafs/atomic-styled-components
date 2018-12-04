@@ -34,8 +34,6 @@ export const flexWrap = style({
 function Flex(props) {
 	const { theme } = useContext(ThemeContext);
 	const styles = useStyles(
-		{ ...props, theme },
-		[props, theme],
 		[
 			alignContent,
 			alignItems,
@@ -49,6 +47,7 @@ function Flex(props) {
 			justifySelf,
 			order,
 		],
+		{ ...props, theme },
 	);
 
 	return (

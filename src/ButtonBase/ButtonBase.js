@@ -101,11 +101,7 @@ function ButtonBase(props) {
 				  },
 		[Component, disabled, type],
 	);
-	const { rootStyles } = useStyles(
-		{ ...props, focusVisible, theme },
-		[props, focusVisible, theme],
-		[getBaseStyles],
-	);
+	const { rootStyles } = useStyles([getBaseStyles], { ...props, focusVisible, theme });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [rootStyles]);
 
 	const handleMouseDown = useCallback(

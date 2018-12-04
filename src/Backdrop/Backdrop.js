@@ -20,7 +20,7 @@ const getBaseStyles = props => ({
 
 const Backdrop = React.memo(function Backdrop(props) {
 	const { className: classNameProp, invisible, open, styles: stylesProp, ...passThru } = props;
-	const styles = useStyles(props, [props], [getBaseStyles]);
+	const styles = useStyles([getBaseStyles], props);
 	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, invisible, styles]);
 
 	return (

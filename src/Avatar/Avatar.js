@@ -93,11 +93,10 @@ function Avatar(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 
-	const { rootStyles, imageStyles } = useStyles(
-		{ ...props, theme },
-		[props, theme],
-		[getBaseStyles, getColorStyles],
-	);
+	const { rootStyles, imageStyles } = useStyles([getBaseStyles, getColorStyles], {
+		...props,
+		theme,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [rootStyles]);
 	const imageClassName = useMemo(() => cn(imageStyles), [imageStyles]);
 

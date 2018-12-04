@@ -65,11 +65,11 @@ function Radio(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
-	const { buttonStyles } = useStyles(
-		{ ...props, checked, theme },
-		[props, checked, theme],
-		[getBaseStyles, getCheckedStyles, getDisabledStyles],
-	);
+	const { buttonStyles } = useStyles([getBaseStyles, getCheckedStyles, getDisabledStyles], {
+		...props,
+		checked,
+		theme,
+	});
 
 	const handleChange = useCallback(event => {
 		if (isNil(props.checked)) {

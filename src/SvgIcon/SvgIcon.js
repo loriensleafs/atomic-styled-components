@@ -27,6 +27,8 @@ export const getBaseStyles = props => ({
 		transition: `fill ${
 			props.theme.duration.shorter
 		}ms cubic-bezier(${props.theme.easing.in.join()})`,
+		...space(props),
+		...fontSize(props),
 	},
 });
 
@@ -58,11 +60,10 @@ function SvgIcon(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles(
-		{ ...props, theme },
-		[props, theme],
-		[getBaseStyles, getFontSizeStyles, getColorStyles, space, fontSize],
-	);
+	const { rootStyles } = useStyles([getBaseStyles, getFontSizeStyles, getColorStyles], {
+		...props,
+		theme,
+	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (

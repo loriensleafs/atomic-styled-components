@@ -55,15 +55,11 @@ function SelectionControl(props) {
 	} = props;
 	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(checkedProp || false);
-	const { buttonStyles, inputStyles } = useStyles(
-		{
-			...props,
-			checked,
-			theme,
-		},
-		[props, checked, theme],
-		[getBaseStyles],
-	);
+	const { buttonStyles, inputStyles } = useStyles([getBaseStyles], {
+		...props,
+		checked,
+		theme,
+	});
 	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
 
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
