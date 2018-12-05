@@ -38,7 +38,7 @@ const getBaseStyles = props => ({
 
 const CardTitle = (avatar, className, disableTypography, title, ...passThru) =>
 	(title &&
-		title.type !== Typography &&
+		(!title.type || (title.type && title.type !== Typography)) &&
 		!disableTypography && (
 			<Typography
 				variant={avatar ? 'body2' : 'headline'}
@@ -48,11 +48,12 @@ const CardTitle = (avatar, className, disableTypography, title, ...passThru) =>
 				{title}
 			</Typography>
 		)) ||
-	title;
+	title ||
+	null;
 
 const CardSubHeader = (avatar, className, disableTypography, subheader, ...passThru) =>
 	(subheader &&
-		subheader.type !== Typography &&
+		(!subheader.type || (subheader.type && subheader.type !== Typography)) &&
 		!disableTypography && (
 			<Typography
 				variant={avatar ? 'body2' : 'body1'}
@@ -63,7 +64,8 @@ const CardSubHeader = (avatar, className, disableTypography, subheader, ...passT
 				{subheader}
 			</Typography>
 		)) ||
-	subheader;
+	subheader ||
+	null;
 
 function CardHeader(props) {
 	const {

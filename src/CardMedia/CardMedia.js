@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { maxHeight, maxWidth, minHeight, minWidth } from 'styled-system';
-import { height, width } from './../styles';
+import { height, space, width } from './../styles';
 
 const MEDIA_COMPONENTS = ['video', 'audio', 'picture', 'iframe', 'img'];
 
@@ -25,6 +25,7 @@ const getBaseStyles = props => ({
 		...maxWidth(props),
 		...minHeight(props),
 		...minWidth(props),
+		...space(props),
 		...width(props),
 	},
 });
@@ -35,10 +36,24 @@ function CardMedia(props) {
 		component: Component,
 		h,
 		image,
+		m,
 		maxHeight,
 		maxWidth,
+		mb,
 		minHeight,
 		minWidth,
+		ml,
+		mr,
+		mt,
+		mx,
+		my,
+		p,
+		pb,
+		pl,
+		pr,
+		pt,
+		px,
+		py,
 		src,
 		style,
 		styles,
@@ -49,10 +64,25 @@ function CardMedia(props) {
 	const { rootStyles } = useStyles([getBaseStyles, getMediaStyles], {
 		h,
 		isMedia,
+		m,
 		maxHeight,
 		maxWidth,
+		mb,
 		minHeight,
 		minWidth,
+		ml,
+		mr,
+		mt,
+		mx,
+		my,
+		p,
+		pb,
+		pl,
+		pr,
+		pt,
+		px,
+		py,
+		src,
 		styles,
 		w,
 	});
@@ -104,6 +134,7 @@ CardMedia.propTypes = {
 	...maxWidth.propTypes,
 	...minHeight.propTypes,
 	...minWidth.propTypes,
+	...space.propTypes,
 	...width.propTypes,
 };
 
