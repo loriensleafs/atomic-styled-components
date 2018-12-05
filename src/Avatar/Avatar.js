@@ -3,7 +3,15 @@ import PropTypes from 'prop-types';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
-import { fontFamily, fontSize, fontWeight, lineHeight, space } from './../styles';
+import {
+	bgColor,
+	fontFamily,
+	fontSize,
+	fontWeight,
+	lineHeight,
+	textColor,
+	space,
+} from './../styles';
 
 export const getColorStyles = props =>
 	props.color === 'default'
@@ -23,17 +31,19 @@ export const getBaseStyles = props => ({
 		position: 'relative',
 		display: 'flex',
 		alignItems: 'center',
-		justifyItems: 'center',
+		justifyContent: 'center',
 		flexShrink: 0,
-		width: 40,
-		height: 40,
+		width: '40px',
+		height: '40px',
+		fontFamily: props.theme.typography.fontFamily,
 		borderRadius: '50%',
 		overflow: 'hidden',
 		userSelect: 'none',
-		...fontFamily(props),
+		...bgColor(props),
 		...fontSize(props),
 		...fontWeight(props),
 		...lineHeight(props),
+		...textColor(props),
 		...space(props),
 	},
 	imageStyles: {
@@ -62,8 +72,10 @@ function AvatarImage(props) {
 function Avatar(props) {
 	const {
 		alt,
+		bg,
 		children,
 		className: classNameProp,
+		color,
 		component: Component,
 		font,
 		imageProps,
@@ -97,7 +109,7 @@ function Avatar(props) {
 		...props,
 		theme,
 	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [rootStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const imageClassName = useMemo(() => cn(imageStyles), [imageStyles]);
 
 	return (
@@ -116,7 +128,6 @@ function Avatar(props) {
 			) : (
 				children
 			)}
-			}
 		</Component>
 	);
 }
@@ -164,9 +175,11 @@ Avatar.propTypes = {
 	 */
 	srcSet: PropTypes.string,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...bgColor.propTypes,
 	...fontFamily.propTypes,
 	...fontSize.propTypes,
 	...fontWeight.propTypes,
+	...textColor.propTypes,
 	...lineHeight.propTypes,
 	...space.propTypes,
 };
