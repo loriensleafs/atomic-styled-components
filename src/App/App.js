@@ -1,24 +1,25 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { lazy, Suspense, useContext, useState } from 'react';
 import GlobalStyle from './../GlobalStyle';
 import Box from './../Box';
 import Flex from './../Flex';
-import Paper from './../Paper';
-import Slide from './../Slide';
+import List from './../List';
+import ListItem from './../ListItem';
+import ListItemText from './../ListItemText';
 import ErrorBoundry from './../ErrorBoundry';
 import Container from './../Container';
-import CardDemo from './CardDemo';
-import ButtonDemo from './ButtonDemo';
-import CheckboxDemo from './CheckboxDemo';
-import GridDemo from './GridDemo';
-import ListDemo from './ListDemo';
-import RadioDemo from './RadioDemo';
-import SwitchDemo from './SwitchDemo';
-import Card from './../Card';
-import Dialog from './../Dialog';
-import Typography from './../Typography';
 import ThemeContext from './../theme/ThemeContext';
-import Button from './../Button';
-import cn from './../theme/className';
+import { Router, Switch, Route } from 'react-router';
+import { Link } from 'react-router-dom';
+import createBrowserHistory from 'history/createBrowserHistory';
+
+const ButtonDemo = lazy(() => import('./ButtonDemo'));
+const CardDemo = React.lazy(() => import('./CardDemo'));
+// const DividerDemo = React.lazy(() => import('./DividerDemo'));
+// const LayoutDemo = React.lazy(() => import('./DividerDemo'));
+// const ListDemo = React.lazy(() => import('./ListDemo'));
+// const PaperDemo = React.lazy(() => import('./PaperDemo'));
+const SelectionControlDemo = React.lazy(() => import('./SelectionControlDemo'));
+// const TypographyDemo = React.lazy(() => import('./TypographyDemo'));
 
 const getGlobalStyles = ({ theme }) => `
 	* {
@@ -34,63 +35,63 @@ const getGlobalStyles = ({ theme }) => `
 	}
 `;
 
-const SlideTest = props => {
-	const [open, setOpen] = useState(false);
-	return (
-		<Fragment>
-			<Button color="primary" variant="contained" onClick={() => setOpen(!open)}>
-				Toggle Modal
-			</Button>
-			<Slide
-				className={cn({ position: 'relative', zIndex: 11111111111 })}
-				direction="up"
-				in={open}>
-				<Paper
-					elevation={24}
-					className={cn({
-						zIndex: 10000,
-						position: 'fixed',
-						left: '50%',
-						top: '50%',
-						width: '500px',
-						height: '400px',
-						marginLeft: '-250px',
-					})}>
-					<Typography textAlign="center">Hello</Typography>
-				</Paper>
-			</Slide>
-		</Fragment>
-	);
-};
+const AppNavigation = () => (
+	<Box minWidth={360} maxWidth={360}>
+		<List component="nav" style={{ position: 'sticky', top: 0 }}>
+			<ListItem button disabled>
+				<ListItemText primary="Avatars" />
+			</ListItem>
+			<ListItem button component={Link} to="/buttons">
+				<ListItemText primary="Buttons" />
+			</ListItem>
+			<ListItem button component={Link} to="/cards">
+				<ListItemText primary="Cards" />
+			</ListItem>
+			<ListItem button disabled>
+				<ListItemText primary="Dividers" />
+			</ListItem>
+			<ListItem button disabled>
+				<ListItemText primary="Layout" />
+			</ListItem>
+			<ListItem button disabled>
+				<ListItemText primary="Lists" />
+			</ListItem>
+			<ListItem button disabled>
+				<ListItemText primary="Paper" />
+			</ListItem>
+			<ListItem button component={Link} to="/selectioncontrols">
+				<ListItemText primary="Selection Controls" />
+			</ListItem>
+			<ListItem button disabled>
+				<ListItemText primary="Typography" />
+			</ListItem>
+		</List>
+	</Box>
+);
 
-const App = React.memo(function App(props = {}) {
+function App() {
 	const { theme } = useContext(ThemeContext);
-	const [open, setOpen] = useState(false);
-	window.theme = theme;
 	console.log(theme);
 
 	return (
 		<ErrorBoundry>
 			<GlobalStyle styles={getGlobalStyles} />
-			<Dialog open={open} onClose={() => setOpen(!open)} fullScreen>
-				<Typography textAlign="center">Hello</Typography>
-			</Dialog>
-			<Button color="primary" variant="contained" onClick={() => setOpen(!open)}>
-				Toggle Modal
-			</Button>
-			<Box w={1} h={1}>
-				<Container pt={3}>
-					<CardDemo />
-					<ListDemo />
-					<SwitchDemo />
-					<CheckboxDemo />
-					<RadioDemo />
-					<ButtonDemo />
-					<GridDemo />
-				</Container>
-			</Box>
+			<Router history={createBrowserHistory()}>
+				<Flex w={1} h={1}>
+					<AppNavigation />
+					<Container w={1} pt={3}>
+						<Suspense fallback={<div>Loading Biatch...</div>}>
+							<Switch>
+								<Route path="/buttons" component={ButtonDemo} />
+								<Route path="/cards" component={CardDemo} />
+								<Route path="/selectioncontrols" component={SelectionControlDemo} />
+							</Switch>
+						</Suspense>
+					</Container>
+				</Flex>
+			</Router>
 		</ErrorBoundry>
 	);
-});
+}
 
 export default App;
