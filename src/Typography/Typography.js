@@ -6,10 +6,6 @@ import cn from './../theme/className';
 import { textAlign, variant } from 'styled-system';
 import { textColor, fontFamily, fontSize, fontWeight, lineHeight, space } from './../styles';
 
-export const variants = variant({
-	key: 'typography.variants',
-});
-
 const TAG_MAP = {
 	h1: 'h1',
 	h2: 'h2',
@@ -24,6 +20,10 @@ const TAG_MAP = {
 	caption: 'span',
 	overline: 'span',
 };
+
+export const variants = variant({
+	key: 'typography.variants',
+});
 
 export const getBaseStyles = props => ({
 	margin: 0,
