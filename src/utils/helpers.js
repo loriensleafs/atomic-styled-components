@@ -1,6 +1,8 @@
 export const capitalize = string =>
 	typeof string === 'string' ? string.charAt(0).toUpperCase() + string.slice(1) : string;
 
+export const clamp = (val, min, max) => Math.min(Math.max(min, val), max);
+
 export const num = n => typeof n === 'number' && !isNaN(n);
 
 export const px = n => (num(n) ? n + 'px' : n);
