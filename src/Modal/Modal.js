@@ -398,6 +398,7 @@ Modal.propTypes = {
 	 * If `true`, the modal is open.
 	 */
 	open: PropTypes.bool.isRequired,
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 Modal.defaultProps = {
