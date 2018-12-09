@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Fade from './../Fade';
 import cn from './../theme/className';
@@ -19,13 +19,22 @@ const getBaseStyles = props => ({
 });
 
 const Backdrop = React.memo(function Backdrop(props) {
-	const { className: classNameProp, invisible, open, styles: stylesProp, ...passThru } = props;
+	const {
+		className: classNameProp,
+		invisible,
+		onClick,
+		open,
+		styles: stylesProp,
+		...passThru
+	} = props;
 	const styles = useStyles([getBaseStyles], props);
 	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, invisible, styles]);
 
+	const handleClick = useCallback(event => onClick && onClick(event), []);
+
 	return (
 		<Fade in={open}>
-			<div className={className} aria-hidden="true" />
+			<div className={className} onClick={handleClick} aria-hidden="true" />
 		</Fade>
 	);
 });

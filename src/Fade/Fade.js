@@ -5,7 +5,7 @@ import { animated, useSpring } from 'react-spring';
 function Fade(props) {
 	const { children, in: inProp, onEnd, onStart, ...passThru } = props;
 	const handleStart = useCallback(() => onStart && onStart(), []);
-	const handleEnd = useCallback(() => onEnd && onEnd(), []);
+	const handleEnd = useCallback(() => onEnd && onEnd(inProp), []);
 	const [transition] = useSpring({
 		opacity: inProp ? 1 : 0,
 		from: {

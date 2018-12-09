@@ -1,43 +1,85 @@
-import React, { cloneElement, useCallback, useMemo, useRef } from 'react';
+import React, { cloneElement, useCallback, useMemo, useRef, useState } from 'react';
 import { createPortal, findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
+import isWindow from 'dom-helpers/query/isWindow';
+import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import css from 'dom-helpers/style';
 import nanoid from 'nanoid';
 import keycode from 'keycode';
 import useDidMount from './../hooks/useDidMount';
 import useDidUpdate from './../hooks/useDidUpdate';
 import usePrevious from './../hooks/usePrevious';
 import useWillUnmount from './../hooks/useWillUnmount';
-import useModals from './useModals';
+import useStyles from './../hooks/useStyles';
+import useModalManager from './useModalManager';
 import Backdrop from './../Backdrop';
 import cn from './../theme/className';
-import merge from './../utils/pureRecursiveMerge';
 import ownerDocument from './../utils/ownerDocument';
-import { isFunc, isNil } from './../utils/helpers';
+import ownerWindow from '../utils/ownerWindow';
+import { isFunc } from './../utils/helpers';
 
 function getContainer(container, defaultContainer) {
-	container = isFunc(container) ? container() : container;
-	return findDOMNode(container) || defaultContainer;
+	return isFunc(container)
+		? findDOMNode(container()) || defaultContainer
+		: findDOMNode(container) || defaultContainer;
 }
 
-const getOwnerDocument = el => ownerDocument(findDOMNode(el));
+function getHasTransition(props) {
+	if (props.children) {
+		const children = React.Children.toArray(props.children);
+		return children.some(
+			child =>
+				React.isValidElement(child) &&
+				(child.type.displayName === 'Slide' || child.type.displayName === 'Fade'),
+		);
+	}
+	return false;
+}
 
-const getHasTransition = props => props.children && props.children.props.hasOwnProperty('in');
+function isBody(node) {
+	return node && node.tagName.toLowerCase() === 'body';
+}
 
-const getStyles = props =>
-	merge(
-		{
-			position: 'fixed',
-			zIndex: 1000,
-			right: 0,
-			bottom: 0,
-			top: 0,
-			left: 0,
-			visibility: !props.open ? 'hidden' : 'visible',
-		},
-		isFunc(props.styles) ? props.styles(props) : props.styles || {},
-	);
+function hasVerticalScrollbar(node) {
+	const doc = ownerDocument(node);
+	const win = ownerWindow(doc);
 
-const useStyles = props => useMemo(() => getStyles(props), [props]);
+	if (!isWindow(doc) && isBody(node)) {
+		return node.scrollHeight > node.clientHeight;
+	}
+
+	// Take into account potential non zero margin on the body.
+	const style = win.getComputedStyle(doc.body);
+	const marginLeft = parseInt(style.getPropertyValue('margin-left'), 10);
+	const marginRight = parseInt(style.getPropertyValue('margin-right'), 10);
+
+	return marginLeft + doc.body.clientWidth + marginRight < win.innerWidth;
+}
+
+function getPaddingRight(node) {
+	return parseInt(css(node, 'paddingRight') || 0, 10);
+}
+
+function getContainerStyle(node) {
+	return {
+		overflow: 'hidden',
+		paddingRight: hasVerticalScrollbar(node)
+			? `${getPaddingRight(node) + scrollbarSize()}px`
+			: node.style.paddingRight,
+	};
+}
+
+const getBaseStyles = props => ({
+	rootStyles: {
+		zIndex: 1000,
+		position: 'fixed',
+		right: 0,
+		bottom: 0,
+		top: 0,
+		left: 0,
+		visibility: props.exited ? 'hidden' : 'visible',
+	},
+});
 
 function Modal(props) {
 	const {
@@ -45,7 +87,7 @@ function Modal(props) {
 		BackdropProps,
 		children,
 		className: classNameProp,
-		container,
+		container: containerProp,
 		disableAutoFocus,
 		disableBackdropClick,
 		disableEnforceFocus,
@@ -62,63 +104,51 @@ function Modal(props) {
 		styles,
 		...passThru
 	} = props;
+	const [exited, setExited] = useState(!open);
+	const exiting = useRef(false);
 	const prevOpen = usePrevious(open);
-	const dialogRef = useRef(null);
-	const modalRef = useRef(null);
+	const mounted = useRef(false);
+	const overflowing = useRef();
+	const lastFocus = useRef();
+	/**
+	 * The DOM element the modal container element is rendered into.
+	 * This DOM element is outside of the actual React app.
+	 * If container prop is passed this will be the portalRef, otherwise
+	 * the document's body node will be used.
+	 */
 	const portalRef = useRef(null);
-	const lastFocus = useRef(null);
-	const id = useRef(nanoid());
-	const [topModal, mounted, addModal, mountModal, removeModal] = useModals(props.container);
-	const className = useMemo(() => cn(useStyles(props)), [props]);
+	/**
+	 * The actual modal DOM element.
+	 * This element wraps the Backdrop and Dialog components & is what
+	 * the mounted/unmounted states are actually applied to.
+	 */
+	const modalRef = useRef(null);
+	/**
+	 * The DOM element inside of the modal DOM element.
+	 * This DOM element is what gets visually styled && transitioned in/out.
+	 */
+	const dialogRef = useRef(null);
+	// Persistant modal id for modal manager.
+	const { current: id } = useRef(nanoid());
+	const [topModal, add, remove] = useModalManager();
+	const { rootStyles } = useStyles([getBaseStyles], { exited, open, styles }, [
+		exited,
+		open,
+		styles,
+	]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+		exited,
+		open,
+	]);
+	const hasTransition = getHasTransition(props);
+	let containerStyle;
 
-	const autoFocus = useCallback(() => {
-		// Rendered empty child.
-		if (disableAutoFocus || isNil(dialogRef.current)) return;
-		const { activeElement } = ownerDocument(portalRef.current);
-
-		if (dialogRef.current && !dialogRef.current.contains(activeElement)) {
-			dialogRef.current.setAttribute('tabIndex', -1);
-		}
-
-		lastFocus.current = activeElement;
-
-		if (dialogRef.current) {
-			dialogRef.current.focus();
-		}
-	}, []);
-
-	const enforceFocus = useCallback(() => {
-		if (!topModal(id.current) || disableEnforceFocus || !mounted || !dialogRef.current) {
-			return;
-		}
-
-		const { activeElement } = ownerDocument(portalRef.current);
-
-		if (dialogRef.current && !dialogRef.current.contains(activeElement)) {
-			dialogRef.current.focus();
-		}
-	}, []);
-
-	const restoreLastFocus = useCallback(() => {
-		if (disableRestoreFocus || !lastFocus.current) return;
-		// IE 11 doesn't have focus method, so we need to check.
-		if (lastFocus.current.focus) lastFocus.current.focus();
-		lastFocus.current = null;
-	}, []);
-
-	const handleDocumentKeyDown = useCallback(event => {
-		if (keycode(event) !== 'esc' || !topModal(id.current) || event.defaultPrevented) {
-			return;
-		}
-		if (onEscapeKeyDown) onEscapeKeyDown(event);
-		if (!disableEscapeKeyDown && onClose) onClose(event, 'escapeKeyDown');
-	}, []);
-
-	const handleOpened = useCallback(() => {
-		autoFocus();
-		mountModal(id.current);
-		if (modalRef.current) {
-			modalRef.current.scrollTop = 0;
+	const handleExited = useCallback(() => {
+		if (!open && exiting.current) {
+			exiting.current = false;
+			setExited(() => true);
 		}
 	}, []);
 
@@ -128,59 +158,126 @@ function Modal(props) {
 		if (!disableBackdropClick && onClose) onClose(event, 'backdropClick');
 	}, []);
 
+	const handleDocumentKeyDown = useCallback(event => {
+		if (keycode(event) !== 'esc' || !topModal(id) || event.defaultPrevented) {
+			return;
+		}
+		if (onEscapeKeyDown) onEscapeKeyDown(event);
+		if (!disableEscapeKeyDown && onClose) onClose(event, 'escapeKeyDown');
+	}, []);
+
+	const handleFocus = useCallback(event => {
+		// Modal might already be mounted.
+		if (!topModal(id) || disableEnforceFocus || !mounted.current || !dialogRef.current) {
+			return;
+		}
+
+		const activeElement = ownerDocument(portalRef.current).activeElement;
+
+		if (!dialogRef.current.contains(activeElement)) {
+			dialogRef.current.focus();
+		}
+	}, []);
+
+	const autoFocus = useCallback(() => {
+		// We might render an empty child.
+		if (disableAutoFocus || !dialogRef.current) return;
+
+		const activeElement = ownerDocument(portalRef.current).activeElement;
+
+		if (!dialogRef.current.contains(activeElement)) {
+			if (!dialogRef.current.hasAttribute('tabIndex')) {
+				dialogRef.current.setAttribute('tabIndex', -1);
+			}
+
+			lastFocus.current = activeElement;
+			dialogRef.current.focus();
+		}
+	}, []);
+
+	const restoreLastFocus = useCallback(() => {
+		if (disableRestoreFocus || !lastFocus.current) return;
+		// Not all elements in IE 11 have focus method, silence the issue.
+		if (lastFocus.current.focus) lastFocus.current.focus();
+		lastFocus.current = null;
+	}, []);
+
 	const handleOpen = useCallback(() => {
 		const doc = ownerDocument(portalRef.current);
-		const container = getContainer(container, doc.body);
+		const container = getContainer(containerProp, doc.body);
 
-		addModal(id.current, modalRef.current, portalRef.current, container);
+		add(id, container);
 		doc.addEventListener('keydown', handleDocumentKeyDown);
-		doc.addEventListener('focus', enforceFocus, true);
+		doc.addEventListener('focus', handleFocus, true);
 
 		if (dialogRef.current) {
-			handleOpened();
+			autoFocus();
+
+			if (containerStyle == null) {
+				containerStyle = useMemo(() => getContainerStyle(), []);
+				Object.keys(containerStyle).forEach(property => {
+					container.style[property] = containerStyle.current[property];
+				});
+			}
+
+			if (modalRef.current) {
+				modalRef.current.scrollTop = 0;
+			}
 		}
 	}, []);
 
 	const handleClose = useCallback(() => {
-		removeModal(id.current, portalRef.current, modalRef.current);
-
 		const doc = ownerDocument(portalRef.current);
+		const container = getContainer(containerProp, doc.body);
+
+		remove(id, container);
 		doc.removeEventListener('keydown', handleDocumentKeyDown);
-		doc.removeEventListener('focus', enforceFocus, true);
+		doc.removeEventListener('focus', handleFocus);
 
 		restoreLastFocus();
 	}, []);
 
 	useDidMount(() => {
-		if (open) {
-			handleOpen();
-		} else {
-			// ariaHidden(modalRef.current, true);
-		}
+		mounted.current = true;
+		if (open) handleOpen();
 	});
 
 	useDidUpdate(
 		() => {
 			if (prevOpen && !open) {
+				if (!hasTransition) setExited(() => true);
+				if (hasTransition) exiting.current = true;
 				handleClose();
 			} else if (!prevOpen && open) {
+				setExited(() => false);
 				lastFocus.current = ownerDocument(portalRef.current).activeElement;
 				handleOpen();
 			}
 		},
-		[open],
+		[exited, open],
 	);
 
-	useWillUnmount(() => open && handleClose());
+	useWillUnmount(() => {
+		mounted.current = false;
+		if (open || (hasTransition && !exited)) {
+			handleClose();
+		}
+	});
 
-	if (!keepMounted && !open) {
-		return null;
+	if (!keepMounted && !open && (!hasTransition || exited)) return null;
+
+	const childProps = {};
+
+	if (hasTransition) {
+		childProps.onEnd = handleExited;
 	}
 
-	let childProps = {};
-
 	if (children.props.role === undefined) {
-		childProps.tabIndex = children.props.tabIndex || -1;
+		childProps.role = children.props.role || 'document';
+	}
+
+	if (children.props.tabIndex === undefined) {
+		childProps.tabIndex = children.props.tabIndex || '-1';
 	}
 
 	const ModalComponent = (
@@ -188,13 +285,16 @@ function Modal(props) {
 			{hideBackdrop ? null : (
 				<BackdropComponent open={open} onClick={handleBackdropClick} {...BackdropProps} />
 			)}
-			{cloneElement(children, { ...childProps, ...{ ref: dialogRef.current } })}
+			{cloneElement(children, {
+				...childProps,
+				...{ ref: dialogRef.current },
+			})}
 		</div>
 	);
 
 	if (disablePortal) return ModalComponent;
 
-	portalRef.current = findDOMNode(getContainer(container, getOwnerDocument().body));
+	portalRef.current = findDOMNode(getContainer(containerProp, ownerDocument().body));
 
 	return createPortal(ModalComponent, portalRef.current);
 }
