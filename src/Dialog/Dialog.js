@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Modal from './../Modal';
 import Fade from './../Fade';
@@ -10,7 +10,7 @@ import { duration } from './../theme/createMotion';
 export const getScrollStyles = props => {
 	if (props.scroll === 'paper') {
 		return {
-			rootStyles: {
+			containerStyles: {
 				display: 'flex',
 				justifyContent: 'center',
 				alignItems: 'center',
@@ -22,7 +22,7 @@ export const getScrollStyles = props => {
 		};
 	} else if (props.scroll === 'body') {
 		return {
-			rootStyles: {
+			containerStyles: {
 				overflowY: 'auto',
 				overflowX: 'hidden',
 			},
@@ -41,6 +41,10 @@ export const getFullWidthStyles = props =>
 
 export const getFullScreenStyles = props =>
 	props.fullScreen && {
+		containerStyles: {
+			height: '100%',
+			width: '100%',
+		},
 		paperStyles: {
 			width: '100%',
 			maxWidth: '100%',
@@ -48,10 +52,6 @@ export const getFullScreenStyles = props =>
 			maxHeight: '100%',
 			margin: '0px',
 			borderRadius: '0px',
-		},
-		containerStyles: {
-			height: '100%',
-			width: '100%',
 		},
 	};
 
@@ -105,11 +105,10 @@ export const getBaseStyles = props => ({
 	},
 });
 
-const Dialog = React.memo(function Dialog(props) {
+function Dialog(props) {
 	const {
 		BackdropProps,
 		children,
-		classes,
 		className,
 		disableBackdropClick,
 		disableEscapeKeyDown,
@@ -118,19 +117,14 @@ const Dialog = React.memo(function Dialog(props) {
 		maxWidth,
 		onBackdropClick,
 		onClose,
-		onEnter,
-		onEntered,
-		onEntering,
 		onEscapeKeyDown,
-		onExit,
-		onExited,
-		onExiting,
+		onEnd,
+		onStart,
 		open,
 		PaperProps,
 		scroll,
 		styles,
 		TransitionComponent,
-		transitionDuration,
 		TransitionProps,
 		...passThru
 	} = props;
@@ -144,19 +138,18 @@ const Dialog = React.memo(function Dialog(props) {
 		],
 		props,
 	);
+	const containerClassName = useMemo(() => cn(containerStyles), [containerStyles]);
 
-	function handleBackdropClick(event) {
+	const handleBackdropClick = useCallback(event => {
 		if (event.target !== event.currentTarget) return;
-		if (props.onBackdropClick) props.onBackdropClick(event);
-		if (!props.disableBackdropClick && props.onClose) {
-			props.onClose(event, 'backdropClick');
-		}
-	}
+		if (onBackdropClick) onBackdropClick(event);
+		if (!disableBackdropClick && onClose) onClose(event, 'backdropClick');
+	}, []);
 
 	return (
 		<Modal
+			BackdropProps={BackdropProps}
 			className={className}
-			styles={rootStyles}
 			disableBackdropClick={disableBackdropClick}
 			disableEscapeKeyDown={disableEscapeKeyDown}
 			onBackdropClick={handleBackdropClick}
@@ -164,9 +157,10 @@ const Dialog = React.memo(function Dialog(props) {
 			onClose={onClose}
 			open={open}
 			role="dialog"
+			styles={rootStyles}
 			{...passThru}>
-			<TransitionComponent className={cn(containerStyles)} in={open}>
-				<div className={cn(containerStyles)} role="document">
+			<TransitionComponent className={cn(containerStyles)} in={open} {...TransitionProps}>
+				<div className={containerClassName} role="document">
 					<Paper elevation={24} styles={paperStyles} {...PaperProps}>
 						{children}
 					</Paper>
@@ -174,7 +168,7 @@ const Dialog = React.memo(function Dialog(props) {
 			</TransitionComponent>
 		</Modal>
 	);
-});
+}
 
 Dialog.displayName = 'Dialog';
 

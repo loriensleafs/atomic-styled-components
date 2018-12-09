@@ -1,4 +1,4 @@
-import React, { cloneElement, useCallback, useMemo, useRef, useState } from 'react';
+import React, { cloneElement, isValidElement, useCallback, useMemo, useRef, useState } from 'react';
 import { createPortal, findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import isWindow from 'dom-helpers/query/isWindow';
@@ -18,28 +18,46 @@ import ownerDocument from './../utils/ownerDocument';
 import ownerWindow from '../utils/ownerWindow';
 import { isFunc } from './../utils/helpers';
 
+/**
+ * Gets the container node.
+ * @param {HTMLElement} container
+ * @param {HTMLElement} defaultContainer
+ * @private
+ */
 function getContainer(container, defaultContainer) {
 	return isFunc(container)
 		? findDOMNode(container()) || defaultContainer
 		: findDOMNode(container) || defaultContainer;
 }
 
+/**
+ * Checks if the child component is a transition.
+ * @param {Object} props
+ * @private
+ */
 function getHasTransition(props) {
 	if (props.children) {
 		const children = React.Children.toArray(props.children);
-		return children.some(
-			child =>
-				React.isValidElement(child) &&
-				(child.type.displayName === 'Slide' || child.type.displayName === 'Fade'),
-		);
+		return children.some(child => isValidElement(child) && child.props.in !== undefined);
 	}
 	return false;
 }
 
+/**
+ * Is the node the document's body element.
+ * @param {HTMLElement} node
+ * @private
+ */
 function isBody(node) {
 	return node && node.tagName.toLowerCase() === 'body';
 }
 
+/**
+ * Compares the height of the container node to that of it's content
+ * to see if there is a vertical scrollbar.
+ * @param {HTMLElement} node
+ * @private
+ */
 function hasVerticalScrollbar(node) {
 	const doc = ownerDocument(node);
 	const win = ownerWindow(doc);
@@ -56,10 +74,21 @@ function hasVerticalScrollbar(node) {
 	return marginLeft + doc.body.clientWidth + marginRight < win.innerWidth;
 }
 
+/**
+ * Gets the padding-right style of the container node.
+ * @param {HTMLElement} node
+ * @private
+ */
 function getPaddingRight(node) {
 	return parseInt(css(node, 'paddingRight') || 0, 10);
 }
 
+/**
+ * Gets the styles for the container node taking into
+ * consideration the scrollbar width if it's content overflows.
+ * @param {HTMLElement} node
+ * @private
+ */
 function getContainerStyle(node) {
 	return {
 		overflow: 'hidden',
@@ -69,6 +98,11 @@ function getContainerStyle(node) {
 	};
 }
 
+/**
+ * Gets the base Modal styles.
+ * @param {Object} props
+ * @private
+ */
 const getBaseStyles = props => ({
 	rootStyles: {
 		zIndex: 1000,
@@ -81,6 +115,11 @@ const getBaseStyles = props => ({
 	},
 });
 
+/**
+ * Creates a Modal component.
+ * @param {Object} props
+ * @public
+ */
 function Modal(props) {
 	const {
 		BackdropComponent,
@@ -108,7 +147,6 @@ function Modal(props) {
 	const exiting = useRef(false);
 	const prevOpen = usePrevious(open);
 	const mounted = useRef(false);
-	const overflowing = useRef();
 	const lastFocus = useRef();
 	/**
 	 * The DOM element the modal container element is rendered into.
@@ -199,17 +237,17 @@ function Modal(props) {
 		const doc = ownerDocument(portalRef.current);
 		const container = getContainer(containerProp, doc.body);
 
-		add(id, container);
+		add(id, modalRef.current, container);
 		doc.addEventListener('keydown', handleDocumentKeyDown);
 		doc.addEventListener('focus', handleFocus, true);
 
-		if (dialogRef.current) {
+		if (container && modalRef.current) {
 			autoFocus();
 
-			if (containerStyle == null) {
-				containerStyle = useMemo(() => getContainerStyle(), []);
+			if (!containerStyle) {
+				containerStyle = getContainerStyle(modalRef.current);
 				Object.keys(containerStyle).forEach(property => {
-					container.style[property] = containerStyle.current[property];
+					container.style[property] = containerStyle[property];
 				});
 			}
 
@@ -223,9 +261,11 @@ function Modal(props) {
 		const doc = ownerDocument(portalRef.current);
 		const container = getContainer(containerProp, doc.body);
 
-		remove(id, container);
+		remove(id, modalRef.current, container);
 		doc.removeEventListener('keydown', handleDocumentKeyDown);
 		doc.removeEventListener('focus', handleFocus);
+
+		container.style.overflow = 'auto';
 
 		restoreLastFocus();
 	}, []);
@@ -287,7 +327,8 @@ function Modal(props) {
 			)}
 			{cloneElement(children, {
 				...childProps,
-				...{ ref: dialogRef.current },
+				ref: dialogRef.current,
+				onClick: handleBackdropClick,
 			})}
 		</div>
 	);

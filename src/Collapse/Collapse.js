@@ -41,7 +41,7 @@ Collapse.propTypes = {
 	/**
 	 * The height of the container when collapsed.
 	 */
-	collapsedHeight: PropTypes.string,
+	collapsedHeight: PropTypes.number,
 	/**
 	 * If `true`, the component will transition in.
 	 */

@@ -69,7 +69,7 @@ const DemoIntro = () => (
 		<Typography variant="h5" mb={4}>
 			Buttons allow users to take actions, and make choices, with a single tap.
 		</Typography>
-		<Typography mb={4}>
+		<Typography mb={4} component="div">
 			<a href="https://material.io/design/components/buttons.html">Buttons</a> communicate
 			actions that users can take. They are typically placed throughout your UI, in places
 			like:
@@ -122,7 +122,7 @@ const TextButtons = () => (
 		<Typography id="text-buttons" variant="h4" mb={4}>
 			Text Buttons
 		</Typography>
-		<Typography mb={3}>
+		<Typography mb={3} component="div">
 			<a href="https://material.io/design/components/buttons.html#text-button">
 				Text buttons
 			</a>{' '}

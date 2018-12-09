@@ -5,7 +5,6 @@ import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
 
 const getBaseStyles = props => ({
-	zIndex: -1,
 	position: 'fixed',
 	right: 0,
 	bottom: 0,
@@ -19,22 +18,13 @@ const getBaseStyles = props => ({
 });
 
 const Backdrop = React.memo(function Backdrop(props) {
-	const {
-		className: classNameProp,
-		invisible,
-		onClick,
-		open,
-		styles: stylesProp,
-		...passThru
-	} = props;
+	const { className: classNameProp, invisible, open, styles: stylesProp, ...passThru } = props;
 	const styles = useStyles([getBaseStyles], props);
 	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, invisible, styles]);
 
-	const handleClick = useCallback(event => onClick && onClick(event), []);
-
 	return (
-		<Fade in={open}>
-			<div className={className} onClick={handleClick} aria-hidden="true" />
+		<Fade in={open} {...passThru}>
+			<div className={className} aria-hidden="true" />
 		</Fade>
 	);
 });

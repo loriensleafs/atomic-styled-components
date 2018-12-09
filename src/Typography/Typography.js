@@ -25,13 +25,14 @@ export const variants = variant({
 	key: 'typography.variants',
 });
 
-export const getBaseStyles = props => ({
+export const getBaseStyles = {
 	margin: 0,
-});
+};
 
 function Typography(props) {
 	const {
 		className: classNameProp,
+		component,
 		font,
 		lineHeight,
 		m,
@@ -86,7 +87,7 @@ function Typography(props) {
 		},
 	);
 	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
-	const Component = paragraph ? 'p' : TAG_MAP[variant] || 'span';
+	const Component = component ? component : paragraph ? 'p' : TAG_MAP[variant] || 'span';
 
 	return <Component className={className}>{props.children}</Component>;
 }

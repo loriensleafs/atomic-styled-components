@@ -1,16 +1,28 @@
 import React, { lazy, Suspense, useContext, useState } from 'react';
-import GlobalStyle from './../GlobalStyle';
+import ThemeContext from './../theme/ThemeContext';
 import Box from './../Box';
+import Button from './../Button';
+import CircularProgress from './../CircularProgress';
+import Container from './../Container';
+import Dialog from './../Dialog';
+import DialogTitle from './../DialogTitle';
+import DialogContent from './../DialogContent';
+import ErrorBoundry from './../ErrorBoundry';
+import Fade from './../Fade';
 import Flex from './../Flex';
+import GlobalStyle from './../GlobalStyle';
 import List from './../List';
 import ListItem from './../ListItem';
 import ListItemText from './../ListItemText';
-import ErrorBoundry from './../ErrorBoundry';
-import Container from './../Container';
-import ThemeContext from './../theme/ThemeContext';
+import Modal from './../Modal';
+import Paper from './../Paper';
+import Slide from './../Slide';
+import Typography from './../Typography';
+import createBrowserHistory from 'history/createBrowserHistory';
 import { Router, Switch, Route } from 'react-router';
 import { Link } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
+
+const history = createBrowserHistory();
 
 const ButtonDemo = lazy(() => import('./ButtonDemo'));
 const CardDemo = React.lazy(() => import('./CardDemo'));
@@ -34,6 +46,10 @@ const getGlobalStyles = ({ theme }) => `
 		height: 100%;
 	}
 `;
+
+function Transition(props) {
+	return <Slide direction="up" {...props} />;
+}
 
 const AppNavigation = () => (
 	<Box minWidth={360} maxWidth={360}>
@@ -59,6 +75,9 @@ const AppNavigation = () => (
 			<ListItem button disabled>
 				<ListItemText primary="Paper" />
 			</ListItem>
+			<ListItem button disabled>
+				<ListItemText primary="Progress" />
+			</ListItem>
 			<ListItem button component={Link} to="/selectioncontrols">
 				<ListItemText primary="Selection Controls" />
 			</ListItem>
@@ -70,17 +89,46 @@ const AppNavigation = () => (
 );
 
 function App() {
+	const [open, setOpen] = useState(false);
 	const { theme } = useContext(ThemeContext);
 	console.log(theme);
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+
+	const handleOpen = () => {
+		setOpen(true);
+	};
 
 	return (
 		<ErrorBoundry>
 			<GlobalStyle styles={getGlobalStyles} />
-			<Router history={createBrowserHistory()}>
+			<Dialog
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+				onClose={handleClose}
+				open={open}
+				TransitionComponent={Transition}>
+				<DialogTitle id="alert-dialog-title">Test Dialog</DialogTitle>
+				<DialogContent>
+					<Typography id="alert-dialog-description">
+						Let Google help apps determine location. This means sending anonymous
+						location data to Google, even when no apps are running.
+					</Typography>
+				</DialogContent>
+			</Dialog>
+			<Button onClick={handleOpen}>Open Modal</Button>
+			<Router history={history}>
 				<Flex w={1} h={1}>
 					<AppNavigation />
 					<Container w={1} pt={3}>
-						<Suspense fallback={<div>Loading Biatch...</div>}>
+						<Suspense
+							fallback={
+								<Flex w={1} h={1} justifyContent="center" alignItems="center">
+									<CircularProgress color="primary" />
+								</Flex>
+							}>
 							<Switch>
 								<Route path="/buttons" component={ButtonDemo} />
 								<Route path="/cards" component={CardDemo} />

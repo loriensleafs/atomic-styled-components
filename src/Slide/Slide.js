@@ -1,5 +1,5 @@
 import React, { isValidElement, useRef, useReducer, useEffect, useCallback, useState } from 'react';
-import { animated, useSpring } from 'react-spring';
+import { Spring, animated, useSpring } from 'react-spring';
 import EventListener from 'react-event-listener';
 import debounce from 'debounce';
 import useDidMount from './../hooks/useDidMount';
@@ -9,8 +9,6 @@ import useWillUnmount from './../hooks/useWillUnmount';
 import ownerWindow from './../utils/ownerWindow';
 
 const GUTTER = 24;
-
-const SLIDE_TO = 'translateY(0)';
 
 function getRect(ref) {
 	const rect = ref.current.getBoundingClientRect();
@@ -33,7 +31,7 @@ function getRect(ref) {
 	return { offsetX, offsetY, rect };
 }
 
-function slideToReducer(state, action) {
+function slideFromReducer(state, action) {
 	const { offsetX, offsetY, rect } = getRect(action.ref);
 
 	switch (action.direction) {
@@ -50,45 +48,46 @@ function slideToReducer(state, action) {
 }
 
 function Slide(props) {
-	const { className, children, direction } = props;
+	const { children, direction, in: inProp, onEnd, onStart, ...passThru } = props;
 	const ref = useRef();
-	const [mounted, setMounted] = useState(false);
-	const [slideTo, updateSlideTo] = useReducer(slideToReducer, SLIDE_TO);
-	const prevSlideTo = useRef(slideTo || SLIDE_TO);
-	const prevDirection = usePrevious(direction);
-	const [slideTransition] = useSpring({
-		transform: mounted || props.in ? 'translateY(0px)' : slideTo,
-		from: {
-			transform: 'translateY(0px)',
-		},
-	});
+	const slideTo = `translate${direction === 'left' || direction === 'right' ? 'X' : 'Y'}(0px)`;
+	const [slideFrom, dispatch] = useReducer(slideFromReducer, slideTo);
+	const handleStart = useCallback(() => onStart && onStart(), []);
+	const handleEnd = useCallback(() => onEnd && onEnd(), []);
 
 	const handleResize = useCallback(
 		debounce(() => {
 			if (props.in || direction === 'down' || direction === 'right') {
 				return;
 			}
-			updateSlideTo({ ref, direction, in: props.in });
+			dispatch({ ref, direction });
 		}, 166),
 		[],
 	); // Corresponds to 10 frames at 60 Hz.
 
 	useDidMount(() => {
-		updateSlideTo({ ref, direction });
-		setMounted(() => false);
+		window.addEventListener('resize', handleResize);
+		dispatch({ ref, direction });
 	});
 
-	useDidUpdate(
-		() => {
-			if (!props.in) updateSlideTo({ ref, direction });
-		},
-		[props.in, mounted],
-	);
+	useDidUpdate(() => dispatch({ ref, direction }), [inProp]);
+
+	useWillUnmount(() => window.removeEventListener('resize', handleResize));
 
 	return (
-		<animated.div className={className} style={slideTransition} ref={ref}>
-			{children}
-		</animated.div>
+		<Spring
+			from={{ transform: inProp ? slideFrom : slideTo }}
+			to={{ transform: inProp ? slideTo : slideFrom }}
+			onStart={handleStart}
+			onRest={handleEnd}>
+			{style =>
+				React.cloneElement(children, {
+					style,
+					ref,
+					...passThru,
+				})
+			}
+		</Spring>
 	);
 }
 

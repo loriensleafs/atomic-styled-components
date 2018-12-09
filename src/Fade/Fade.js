@@ -1,24 +1,27 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { animated, useSpring } from 'react-spring';
+import { Spring, useSpring } from 'react-spring';
 
 function Fade(props) {
 	const { children, in: inProp, onEnd, onStart, ...passThru } = props;
+
 	const handleStart = useCallback(() => onStart && onStart(), []);
+
 	const handleEnd = useCallback(() => onEnd && onEnd(inProp), []);
-	const [transition] = useSpring({
-		opacity: inProp ? 1 : 0,
-		from: {
-			opacity: inProp ? 0 : 1,
-		},
-		onStart: handleStart,
-		onRest: handleEnd,
-	});
 
 	return (
-		<animated.div style={transition} {...passThru}>
-			{children}
-		</animated.div>
+		<Spring
+			from={{ opacity: inProp ? 0 : 1 }}
+			to={{ opacity: inProp ? 1 : 0 }}
+			onStart={handleStart}
+			onRest={handleEnd}>
+			{style =>
+				React.cloneElement(children, {
+					style,
+					...passThru,
+				})
+			}
+		</Spring>
 	);
 }
 
