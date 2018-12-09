@@ -145,13 +145,6 @@ function Modal(props) {
 	const hasTransition = getHasTransition(props);
 	let containerStyle;
 
-	const handleExited = useCallback(() => {
-		if (!open && exiting.current) {
-			exiting.current = false;
-			setExited(() => true);
-		}
-	}, []);
-
 	const handleBackdropClick = useCallback(event => {
 		if (event.target !== event.currentTarget) return;
 		if (onBackdropClick) onBackdropClick(event);
@@ -242,6 +235,13 @@ function Modal(props) {
 		if (open) handleOpen();
 	});
 
+	const handleExit = useCallback(() => {
+		if (!open && exiting.current) {
+			exiting.current = false;
+			setExited(() => true);
+		}
+	}, []);
+
 	useDidUpdate(
 		() => {
 			if (prevOpen && !open) {
@@ -269,7 +269,7 @@ function Modal(props) {
 	const childProps = {};
 
 	if (hasTransition) {
-		childProps.onEnd = handleExited;
+		childProps.onEnd = handleExit;
 	}
 
 	if (children.props.role === undefined) {
