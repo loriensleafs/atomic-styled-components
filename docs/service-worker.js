@@ -1,6 +1,6 @@
 'use strict';
 var precacheConfig = [
-		['/atomic-styled-components/index.html', '40464980e56e19ae444957a145304c57'],
+		['/index.html', '40464980e56e19ae444957a145304c57'],
 		['/atomic-styled-components/js/0.121676a9.chunk.js', '5d06c051811f23c07a9a48ef0e207414'],
 		['/atomic-styled-components/js/1.c4c21e7b.chunk.js', '66efe15276794463afd6a7b56e4d01ec'],
 		['/atomic-styled-components/js/2.aced9e76.chunk.js', '1d874865e016bc64118692869bb8aab9'],
