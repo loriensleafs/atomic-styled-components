@@ -1,38 +1,35 @@
-import React, { useContext, useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
-import {
-	maxHeight as maxHeightParser,
-	maxWidth as maxWidthParser,
-	minHeight as minHeightParser,
-	minWidth as minWidthParser,
-	space,
-} from 'styled-system';
-import { bgColor, height, textColor, width } from './../styles';
+import { height, maxHeight, minHeight, space, width, maxWidth, minWidth } from './../styles';
 
 const getBaseStyles = props => ({
-	backgroundColor: props.theme.palette.bg.paper,
-	boxShadow: props.theme.elevation[props.elevation - 1],
-	borderRadius: props.square ? '0px' : props.theme.shape.borderRadius.round,
+	rootStyles: {
+		backgroundColor: props.theme.palette.bg.paper,
+		boxShadow: props.theme.elevation[props.elevation - 1],
+		borderRadius: props.square ? '0px' : props.theme.shape.borderRadius.round,
+		...height(props),
+		...maxHeight(props),
+		...maxWidth(props),
+		...minHeight(props),
+		...minWidth(props),
+		...space(props),
+		...width(props),
+	},
 });
 
-function Paper(props) {
+const Paper = forwardRef((props, ref) => {
 	const {
-		bg,
 		children,
 		className: classNameProp,
-		color,
 		elevation,
 		h,
+		hMax,
+		hMin,
 		is,
 		m,
-		maxHeight,
-		maxWidth,
 		mb,
-		minHeight,
-		minWidth,
 		ml,
 		mr,
 		mt,
@@ -47,27 +44,41 @@ function Paper(props) {
 		px,
 		radius,
 		square,
-		styles: stylesProp,
+		styles,
 		w,
+		wMax,
+		wMin,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
-	const styles = useStyles(
-		[
-			getBaseStyles,
-			bgColor,
-			height,
-			maxHeightParser,
-			maxWidthParser,
-			minHeightParser,
-			minWidthParser,
-			space,
-			textColor,
-			width,
-		],
+	const { rootStyles } = useStyles(
+		[getBaseStyles],
 		{
-			bg,
-			color,
+			elevation,
+			h,
+			hMax,
+			hMin,
+			m,
+			mb,
+			ml,
+			mr,
+			mt,
+			mx,
+			my,
+			p,
+			pb,
+			pl,
+			pr,
+			pt,
+			py,
+			px,
+			radius,
+			square,
+			styles,
+			w,
+			wMax,
+			wMin,
+		},
+		[
 			elevation,
 			h,
 			m,
@@ -90,20 +101,19 @@ function Paper(props) {
 			px,
 			radius,
 			square,
-			stylesProp,
+			styles,
 			w,
-			theme,
-		},
+		],
 	);
-	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const Component = is;
 
 	return (
-		<Component className={className} {...passThru}>
+		<Component className={className} ref={ref} {...passThru}>
 			{props.children}
 		</Component>
 	);
-}
+});
 
 Paper.displayName = 'Paper';
 
@@ -114,20 +124,12 @@ Paper.propTypes = {
 	 */
 	elevation: PropTypes.number,
 	is: PropTypes.node,
+	ref: PropTypes.func,
 	/**
 	 * If `true`, rounded corners are disabled.
 	 */
 	square: PropTypes.bool,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	...bgColor.propTypes,
-	...textColor.propTypes,
-	...height.propTypes,
-	...maxHeightParser.propTypes,
-	...maxWidthParser.propTypes,
-	...minHeightParser.propTypes,
-	...minWidthParser.propTypes,
-	...space.propTypes,
-	...width.propTypes,
 };
 
 Paper.defaultProps = {

@@ -1,11 +1,10 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
 import ButtonBase from './../ButtonBase';
 import merge from './../utils/pureRecursiveMerge';
-import { space } from 'styled-system';
+import { space } from './../styles/space';
 import { fade } from './../utils/colorHelpers';
 
 export const getColorStyles = props => {
@@ -103,12 +102,8 @@ function IconButton(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 
-	const { rootStyles, labelStyles } = useStyles([getBaseStyles, getColorStyles], {
-		...props,
-		theme,
-	});
+	const { rootStyles, labelStyles } = useStyles([getBaseStyles, getColorStyles], props);
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (

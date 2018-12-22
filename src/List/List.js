@@ -1,27 +1,27 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import ListContext from './ListContext';
 import cn from './../theme/className';
 import { space } from 'styled-system';
-import ThemeContext from '../theme/ThemeContext';
 
-const getPaddingStyles = props =>
+const getPaddingStyles = ({theme, ...props}) =>
 	!props.disablePadding && {
 		rootStyles: space({
 			pt: props.subheader ? 0 : props.dense ? 1 : 2,
 			pb: props.dense ? 1 : 2,
+			theme
 		}),
 	};
 
-const getBaseStyles = props => ({
+const getBaseStyles = {
 	rootStyles: {
 		position: 'relative',
 		margin: 0,
 		padding: 0,
 		listStyle: 'none',
 	},
-});
+};
 
 function List(props) {
 	const {
@@ -34,13 +34,11 @@ function List(props) {
 		subheader,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { rootStyles } = useStyles([getBaseStyles, getPaddingStyles], {
 		dense,
 		disablePadding,
 		styles,
 		subheader,
-		theme,
 	});
 	const className = useMemo(() => cn(rootStyles), [rootStyles]);
 

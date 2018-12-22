@@ -1,24 +1,25 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import Typography from './../Typography';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { space } from 'styled-system';
 
-const getBaseStyles = props => ({
+const getBaseStyles = ({theme, ...props}) => ({
 	rootStyles: {
 		display: 'flex',
 		alignItems: 'center',
 		...space({
 			py: 3,
 			px: [3, 4],
+			theme
 		}),
 	},
 	avatarStyles: {
 		flex: '0 0 auto',
 		...space({
 			mr: 3,
+			theme
 		}),
 	},
 	actionStyles: {
@@ -27,6 +28,7 @@ const getBaseStyles = props => ({
 		...space({
 			mt: -2,
 			mr: [-3, -4],
+			theme
 		}),
 	},
 	contentStyles: {
@@ -81,7 +83,6 @@ function CardHeader(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const {
 		rootStyles,
 		avatarStyles,
@@ -89,7 +90,7 @@ function CardHeader(props) {
 		contentStyles,
 		titleStyles,
 		subheaderStyles,
-	} = useStyles([getBaseStyles], { ...props, theme });
+	} = useStyles([getBaseStyles], props);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const avatarClassName = useMemo(() => cn(avatarStyles), [avatarStyles]);
 	const actionClassName = useMemo(() => cn(actionStyles), [actionStyles]);

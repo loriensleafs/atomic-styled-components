@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react';
+import React, {useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
-import ThemeContext from '../theme/ThemeContext';
 import cn from './../theme/className';
 
 const getBaseStyles = {
@@ -15,14 +14,11 @@ const getBaseStyles = {
 
 function ListItemSecondaryAction(props) {
 	const { children, className: classNameProp, styles, ...passThru } = props;
-	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles([getBaseStyles], { theme });
+	const { rootStyles } = useStyles([getBaseStyles], { styles });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (
-		<div className={className} {...passThru}>
-			{children}
-		</div>
+		<div className={className} {...passThru}>{children}</div>
 	);
 }
 

@@ -2,8 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { maxHeight, maxWidth, minHeight, minWidth } from 'styled-system';
-import { height, space, width } from './../styles';
+import { height, maxHeight, maxWidth, minHeight, minWidth, space, width } from './../styles';
 
 const MEDIA_COMPONENTS = ['video', 'audio', 'picture', 'iframe', 'img'];
 
@@ -35,13 +34,11 @@ function CardMedia(props) {
 		className: classNameProp,
 		component: Component,
 		h,
+		hMax,
+		hMin,
 		image,
 		m,
-		maxHeight,
-		maxWidth,
 		mb,
-		minHeight,
-		minWidth,
 		ml,
 		mr,
 		mt,
@@ -58,18 +55,18 @@ function CardMedia(props) {
 		style,
 		styles,
 		w,
+		wMax,
+		wMin,
 		...passThru
 	} = props;
 	const isMedia = MEDIA_COMPONENTS.indexOf(Component) !== -1;
 	const { rootStyles } = useStyles([getBaseStyles, getMediaStyles], {
 		h,
+		hMax,
+		hMin,
 		isMedia,
 		m,
-		maxHeight,
-		maxWidth,
 		mb,
-		minHeight,
-		minWidth,
 		ml,
 		mr,
 		mt,
@@ -85,15 +82,15 @@ function CardMedia(props) {
 		src,
 		styles,
 		w,
+		wMax,
+		wMin,
 	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
-	const composedStyle =
-		!isMedia && image ? { backgroundImage: `url("${image}")`, ...style } : style;
 
 	return (
 		<Component
 			className={className}
-			style={composedStyle}
+			style={!isMedia && image ? { backgroundImage: `url("${image}")`, ...style } : style}
 			src={isMedia ? image || src : undefined}
 			{...passThru}
 		/>

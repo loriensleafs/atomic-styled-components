@@ -1,11 +1,10 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { space } from './../styles';
 
-const getBaseStyles = {
+const getBaseStyles = ({ theme, ...props}) => ({
 	rootStyles: {
 		flex: '1 1 auto',
 		overflowY: 'auto',
@@ -14,23 +13,22 @@ const getBaseStyles = {
 			pt: '0px',
 			px: 3.5,
 			pb: 3.5,
+			theme
 		}),
 		':first-child': space({
 			pt: 3.5,
+			theme
 		}),
 	},
-};
+});
 
 function DialogContent(props) {
 	const { children, className: classNameProp, styles, ...passThru } = props;
-	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles([getBaseStyles], { styles, theme });
+	const { rootStyles } = useStyles([getBaseStyles], { styles });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (
-		<div className={className} {...passThru}>
-			{children}
-		</div>
+		<div className={className} {...passThru}>{children}</div>
 	);
 }
 

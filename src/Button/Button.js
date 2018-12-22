@@ -2,9 +2,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-restricted-globals */
 
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
 import merge from './../utils/pureRecursiveMerge';
@@ -241,7 +240,6 @@ function Button(props) {
 		variant,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { rootStyles, labelStyles } = useStyles(
 		[
 			getBaseStyles,
@@ -278,7 +276,6 @@ function Button(props) {
 			styles,
 			type,
 			variant,
-			theme,
 		},
 	);
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);

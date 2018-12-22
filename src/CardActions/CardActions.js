@@ -4,14 +4,15 @@ import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { space } from './../styles';
 
-const getBaseStyles = props => ({
+const getBaseStyles = ({ theme, ...props }) => ({
 	rootStyles: {
 		display: 'flex',
 		alignItems: 'center',
 		boxSizing: 'border-box',
 		...space({
 			py: 2,
-			px: [1, 2.5],
+			px: [2, 2.5],
+			theme,
 		}),
 	},
 	actionStyles: {

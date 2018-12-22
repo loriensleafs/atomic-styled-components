@@ -1,6 +1,5 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
 import { space } from './../styles';
@@ -37,7 +36,7 @@ export const getColorStyles = props => {
 	}
 };
 
-export const getBaseStyles = {
+export const getBaseStyles = props => ({
 	rootStyles: {
 		userSelect: 'none',
 		fontSize: '24px',
@@ -45,8 +44,9 @@ export const getBaseStyles = {
 		height: '1em',
 		overflow: 'hidden',
 		flexShrink: 0,
+		...space(props),
 	},
-};
+});
 
 function Icon(props) {
 	const {
@@ -72,7 +72,6 @@ function Icon(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { rootStyles } = useStyles([getBaseStyles, getColorStyles, space], {
 		color,
 		disabled,
@@ -92,7 +91,6 @@ function Icon(props) {
 		py,
 		px,
 		styles,
-		theme,
 	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 

@@ -1,9 +1,8 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { space } from './../styles';
-import ThemeContext from '../theme/ThemeContext';
 
 const getStickyStyles = props =>
 	!props.disableSticky && {
@@ -23,18 +22,19 @@ const getColorStyles = props =>
 		},
 	});
 
-const getBaseStyles = props => ({
+const getBaseStyles = ({theme, ...props}) => ({
 	rootStyles: {
 		lineHeight: '48px',
 		listStyle: 'none',
-		color: props.theme.palette.text.secondary,
-		fontFamily: props.theme.typography.fontFamily,
-		fontWeight: props.theme.typography.fontWeight.medium,
-		fontSize: props.theme.typography.fontSizes[3],
+		color: theme.palette.text.secondary,
+		fontFamily: theme.typography.fontFamily,
+		fontWeight: theme.typography.fontWeight.medium,
+		fontSize: theme.typography.fontSizes[3],
 		...space({
 			py: !props.disableGutters && 2,
 			px: !props.disableGutters && [1, 2],
 			pl: props.inset ? 72 : null,
+			theme
 		}),
 	},
 });
@@ -50,14 +50,12 @@ function ListSubheader(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { rootStyles } = useStyles([getBaseStyles, getColorStyles, getStickyStyles], {
 		color,
 		disableGutters,
 		disableSticky,
 		inset,
 		styles,
-		theme,
 	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 

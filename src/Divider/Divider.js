@@ -1,6 +1,5 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
 import { fade } from './../utils/colorHelpers';
@@ -15,7 +14,7 @@ const getAbsoluteStyles = props =>
 		},
 	};
 
-const getBaseStyles = props => ({
+const getBaseStyles = ({theme, ...props}) => ({
 	rootStyles: {
 		width: '100%',
 		height: '1px',
@@ -23,8 +22,8 @@ const getBaseStyles = props => ({
 		border: 'none',
 		flexShrink: 0,
 		backgroundColor: props.light
-			? fade(props.theme.palette.divider, 0.08)
-			: props.theme.palette.divider,
+			? fade(theme.palette.divider, 0.08)
+			: theme.palette.divider,
 	},
 });
 
@@ -39,13 +38,11 @@ function Divider(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { rootStyles } = useStyles([getBaseStyles, getAbsoluteStyles], {
 		absolute,
 		inset,
 		light,
 		styles,
-		theme,
 	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 

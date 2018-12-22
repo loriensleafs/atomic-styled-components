@@ -1,11 +1,10 @@
-import React, { useContext, useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import SelectionControl from './../SelectionControl';
 import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
 import useDidUpdate from './../hooks/useDidUpdate';
 import useStyles from './../hooks/useStyles';
-import ThemeContext from '../theme/ThemeContext';
 import { isNil } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
@@ -63,12 +62,10 @@ function Radio(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
 	const { buttonStyles } = useStyles([getBaseStyles, getCheckedStyles, getDisabledStyles], {
 		...props,
 		checked,
-		theme,
 	});
 
 	const handleChange = useCallback(event => {

@@ -1,14 +1,13 @@
-import React, { Fragment, useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import useDidUpdate from './../hooks/useDidUpdate';
 import useStyles from './../hooks/useStyles';
-import ThemeContext from './../theme/ThemeContext';
 import IconButton from './../IconButton';
 import cn from './../theme/className';
 import { animated, useSpring } from 'react-spring';
 import { isNil } from './../utils/helpers';
 
-const getBaseStyles = props => ({
+const getBaseStyles = {
 	buttonStyles: {
 		rootStyles: {
 			display: 'inline-flex',
@@ -28,7 +27,7 @@ const getBaseStyles = props => ({
 		cursor: 'inherit',
 		opacity: 0,
 	},
-});
+};
 
 function SelectionControl(props) {
 	const {
@@ -53,12 +52,10 @@ function SelectionControl(props) {
 		value,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(checkedProp || false);
 	const { buttonStyles, inputStyles } = useStyles([getBaseStyles], {
 		...props,
-		checked,
-		theme,
+		checked
 	});
 	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
 

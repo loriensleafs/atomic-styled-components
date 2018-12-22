@@ -1,15 +1,14 @@
-import React, { cloneElement, isValidElement, useContext, useMemo } from 'react';
+import React, { cloneElement, isValidElement, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
 import {
-	bgColor,
+	backgroundColor,
+	color as colorParser,
 	fontFamily,
 	fontSize,
 	fontWeight,
 	lineHeight,
-	textColor,
 	space,
 } from './../styles';
 
@@ -39,11 +38,11 @@ export const getBaseStyles = props => ({
 		borderRadius: '50%',
 		overflow: 'hidden',
 		userSelect: 'none',
-		...bgColor(props),
+		...backgroundColor(props),
+		...colorParser(props),
 		...fontSize(props),
 		...fontWeight(props),
 		...lineHeight(props),
-		...textColor(props),
 		...space(props),
 	},
 	imageStyles: {
@@ -87,7 +86,6 @@ function Avatar(props) {
 		mt,
 		mx,
 		my,
-		order,
 		p,
 		pb,
 		pl,
@@ -103,12 +101,7 @@ function Avatar(props) {
 		weight,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
-
-	const { rootStyles, imageStyles } = useStyles([getBaseStyles, getColorStyles], {
-		...props,
-		theme,
-	});
+	const { rootStyles, imageStyles } = useStyles([getBaseStyles, getColorStyles], props);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const imageClassName = useMemo(() => cn(imageStyles), [imageStyles]);
 
@@ -135,6 +128,13 @@ function Avatar(props) {
 Avatar.displayName = 'Avatar';
 
 Avatar.propTypes = {
+	...backgroundColor.propTypes,
+	...colorParser.propTypes,
+	...fontFamily.propTypes,
+	...fontSize.propTypes,
+	...fontWeight.propTypes,
+	...lineHeight.propTypes,
+	...space.propTypes,
 	/**
 	 * Used in combination with `src` or `srcSet` to
 	 * provide an alt attribute for the rendered `img` element.
@@ -147,7 +147,10 @@ Avatar.propTypes = {
 	 *
 	 * This can be an element, or just a string.
 	 */
-	children: PropTypes.node,
+	children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ]),
 	/**
 	 * @ignore
 	 */
@@ -175,14 +178,7 @@ Avatar.propTypes = {
 	 */
 	srcSet: PropTypes.string,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	...bgColor.propTypes,
-	...fontFamily.propTypes,
-	...fontSize.propTypes,
-	...fontWeight.propTypes,
-	...textColor.propTypes,
-	...lineHeight.propTypes,
-	...space.propTypes,
-};
+}
 
 Avatar.defaultProps = {
 	component: 'div',

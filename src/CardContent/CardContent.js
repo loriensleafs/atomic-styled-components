@@ -1,6 +1,5 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { space } from './../styles';
@@ -10,9 +9,11 @@ const getBaseStyles = props => ({
 		...space({
 			py: 3,
 			px: [3, 3.5],
+			theme: props.theme,
 		}),
 		':last-child': space({
 			pb: 3.5,
+			theme: props.theme,
 		}),
 	},
 });
@@ -38,7 +39,6 @@ function CardContent(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { rootStyles } = useStyles([getBaseStyles, space], {
 		m,
 		ml,
@@ -55,7 +55,6 @@ function CardContent(props) {
 		px,
 		py,
 		styles,
-		theme,
 	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 

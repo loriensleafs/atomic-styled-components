@@ -4,7 +4,6 @@ import useStyles from './../hooks/useStyles';
 import ButtonBase from './../ButtonBase';
 import ListContext from './../List/ListContext';
 import cn from './../theme/className';
-import ThemeContext from '../theme/ThemeContext';
 import { space } from './../styles';
 
 const getButtonStyles = props =>
@@ -42,12 +41,12 @@ const getSelectedStyles = props =>
 		},
 	};
 
-const getBaseStyles = props => ({
+const getBaseStyles = ({theme, ...props}) => ({
 	containerStyles: {
 		position: 'relative',
 	},
 	dividerStyles: {
-		borderBottom: `1px solid ${props.theme.palette.divider}`,
+		borderBottom: `1px solid ${theme.palette.divider}`,
 		backgroundClip: 'padding-box',
 	},
 	rootStyles: {
@@ -59,9 +58,10 @@ const getBaseStyles = props => ({
 		textDecoration: 'none',
 		textAlign: 'left',
 		...space({
-			py: props.dense || props.hasAvatar ? 2 : 2.5,
+			py: props.dense || props.hasAvatar ? 1 : 1.5,
 			pl: !props.disableGutters ? [3, 3.5] : null,
-			pr: props.hasSecondaryAction ? 4 : !props.disableGutters ? [3, 3.5] : null,
+			pr: props.hasSecondaryAction ? 3 : !props.disableGutters ? [3, 3.5] : null,
+			theme
 		}),
 	},
 });
@@ -88,9 +88,7 @@ function ListItem(props) {
 		...{ alignItems: alignItemsProp, dense: denseProp },
 		...useContext(ListContext),
 	};
-	const { theme } = useContext(ThemeContext);
 	const [focusVisible, setFocusVisible] = useState(false);
-
 	const children = React.Children.toArray(childrenProp);
 	const hasAvatar = children.some(
 		child => isValidElement(child) && child.type.displayName === 'ListItemAvatar',
@@ -99,7 +97,6 @@ function ListItem(props) {
 		children.length &&
 		isValidElement(children[children.length - 1]) &&
 		children[children.length - 1].type.displayName === 'ListItemSecondaryAction';
-
 	const { containerStyles, dividerStyles, rootStyles } = useStyles(
 		[
 			getBaseStyles,
@@ -119,7 +116,6 @@ function ListItem(props) {
 			hasSecondaryAction,
 			selected,
 			styles,
-			theme,
 		},
 	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);

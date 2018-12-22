@@ -1,10 +1,8 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
-import { fontSize } from 'styled-system';
-import { space } from './../styles';
+import { fontSize as fontSizeParser, space } from './../styles';
 import { getColorStyles } from './../Icon/Icon';
 
 export const getFontSizeStyles = props =>
@@ -28,7 +26,7 @@ export const getBaseStyles = props => ({
 			props.theme.duration.shorter
 		}ms cubic-bezier(${props.theme.easing.in.join()})`,
 		...space(props),
-		...fontSize(props),
+		...fontSizeParser(props),
 	},
 });
 
@@ -59,11 +57,7 @@ function SvgIcon(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles([getBaseStyles, getFontSizeStyles, getColorStyles], {
-		...props,
-		theme,
-	});
+	const { rootStyles } = useStyles([getBaseStyles, getFontSizeStyles, getColorStyles], props);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	return (
@@ -120,8 +114,6 @@ SvgIcon.propTypes = {
 	 * to bottom right (50,20) and each unit will be worth 10px.
 	 */
 	viewBox: PropTypes.string,
-	...fontSize.propTypes,
-	...space.propTypes,
 };
 
 SvgIcon.defaultProps = {

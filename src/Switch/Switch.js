@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useContext, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useDidUpdate from './../hooks/useDidUpdate';
 import useStyles from './../hooks/useStyles';
-import ThemeContext from './../theme/ThemeContext';
 import SelectionControl from './../SelectionControl';
 import cn from './../theme/className';
 import { animated, useSpring } from 'react-spring';
@@ -43,8 +42,8 @@ export const getCheckedStyles = props => {
 			props.color === 'primary' || props.color === 'secondary'
 				? props.theme.palette[props.color].main
 				: props.theme.palette.type === 'light'
-					? props.theme.palette.common.black
-					: props.theme.palette.common.white;
+				? props.theme.palette.common.black
+				: props.theme.palette.common.white;
 
 		return {
 			barStyles: {
@@ -125,8 +124,8 @@ const getBaseStyles = props => {
 				props.color === 'primary' || props.color === 'secondary'
 					? props.theme.palette[props.color].main
 					: props.theme.palette.type === 'light'
-						? props.theme.palette.common.white
-						: props.theme.palette.grey.main,
+					? props.theme.palette.common.white
+					: props.theme.palette.grey.main,
 			boxShadow: props.theme.elevation[2],
 		},
 		selectControlUncheckedStyles: {
@@ -140,7 +139,6 @@ const getBaseStyles = props => {
 
 function Switch(props) {
 	const { className: classNameProp, color, icon, onChange, styles, ...passThru } = props;
-	const { theme } = useContext(ThemeContext);
 	const [checked, setChecked] = useState(props.checked || false);
 	const {
 		barStyles,
@@ -155,7 +153,6 @@ function Switch(props) {
 	} = useStyles([getBaseStyles, getCheckedStyles, getDisabledStyles], {
 		...props,
 		checked,
-		theme,
 	});
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const barClassName = useMemo(() => cn(barStyles), [barStyles]);

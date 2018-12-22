@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
-import ThemeContext from './../theme/ThemeContext';
 import cn from './../theme/className';
 import { clamp } from './../utils/helpers';
 
@@ -108,15 +107,19 @@ function CircularProgress(props) {
 		variant,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { rootStyles, circleStyles, svgStyles } = useStyles(
-		[getBaseStyles, getColorStyles, getDisabledStyles, getStaticStyles, getIndeterminateStyles],
+		[
+			getBaseStyles,
+			getColorStyles,
+			getDisabledStyles,
+			getStaticStyles,
+			getIndeterminateStyles
+		],
 		{
 			color,
 			disableShrink,
 			size,
 			styles,
-			theme,
 			thickness,
 			variant,
 		},

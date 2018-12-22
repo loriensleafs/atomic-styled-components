@@ -5,7 +5,6 @@ import Fade from './../Fade';
 import Paper from './../Paper';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { duration } from './../theme/createMotion';
 
 export const getScrollStyles = props => {
 	if (props.scroll === 'paper') {
@@ -16,8 +15,10 @@ export const getScrollStyles = props => {
 				alignItems: 'center',
 			},
 			paperStyles: {
-				flex: '0 1 auto',
-				maxHeight: 'calc(100% - 96px)',
+				rootStyles: {
+					flex: '0 1 auto',
+					maxHeight: 'calc(100% - 96px)',
+				},
 			},
 		};
 	} else if (props.scroll === 'body') {
@@ -27,7 +28,9 @@ export const getScrollStyles = props => {
 				overflowX: 'hidden',
 			},
 			paperStyles: {
-				margin: '48px auto',
+				rootStyles: {
+					margin: '48px auto',
+				},
 			},
 		};
 	}
@@ -46,12 +49,14 @@ export const getFullScreenStyles = props =>
 			width: '100%',
 		},
 		paperStyles: {
-			width: '100%',
-			maxWidth: '100%',
-			height: '100%',
-			maxHeight: '100%',
-			margin: '0px',
-			borderRadius: '0px',
+			rootStyles: {
+				width: '100%',
+				maxWidth: '100%',
+				height: '100%',
+				maxHeight: '100%',
+				margin: '0px',
+				borderRadius: '0px',
+			},
 		},
 	};
 
@@ -60,29 +65,37 @@ export const getMaxWidthStyles = props => {
 		case 'xs':
 			return {
 				paperStyles: {
-					maxWidth: '360px',
-					margin: '48px',
+					rootStyles: {
+						maxWidth: '360px',
+						margin: '48px',
+					},
 				},
 			};
 		case 'sm':
 			return {
 				paperStyles: {
-					maxWidth: '360px',
-					margin: '48px',
+					rootStyles: {
+						maxWidth: '360px',
+						margin: '48px',
+					},
 				},
 			};
 		case 'md':
 			return {
 				paperStyles: {
-					maxWidth: '360px',
-					margin: '48px',
+					rootStyles: {
+						maxWidth: '360px',
+						margin: '48px',
+					},
 				},
 			};
 		case 'lg':
 			return {
 				paperStyles: {
-					maxWidth: '360px',
-					margin: '48px',
+					rootStyles: {
+						maxWidth: '360px',
+						margin: '48px',
+					},
 				},
 			};
 		default:
@@ -90,20 +103,22 @@ export const getMaxWidthStyles = props => {
 	}
 };
 
-export const getBaseStyles = props => ({
+export const getBaseStyles = {
 	rootStyles: {},
 	containerStyles: {
 		height: '100%',
 		outline: 'none',
 	},
 	paperStyles: {
-		position: 'relative',
-		display: 'flex',
-		flexDirection: 'column',
-		margin: '48px',
-		overflowY: 'auto',
+		rootStyles: {
+			position: 'relative',
+			display: 'flex',
+			flexDirection: 'column',
+			margin: '48px',
+			overflowY: 'auto',
+		},
 	},
-});
+};
 
 function Dialog(props) {
 	const {
@@ -259,6 +274,7 @@ Dialog.propTypes = {
 	 * Determine the container for scrolling the dialog.
 	 */
 	scroll: PropTypes.oneOf(['body', 'paper']),
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/**
 	 * Transition component.
 	 */

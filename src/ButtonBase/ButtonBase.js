@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
-import ThemeContext from '../theme/ThemeContext';
 import useDidMount from './../hooks/useDidMount';
 import useDidUpdate from './../hooks/useDidUpdate';
 import usePrevious from './../hooks/usePrevious';
@@ -10,7 +9,7 @@ import useFocusVisible from './useFocusVisible';
 import Ripples, { useRipples } from './../Ripples';
 import cn from './../theme/className';
 
-export const getBaseStyles = props => ({
+export const getBaseStyles = {
 	rootStyles: {
 		position: 'relative',
 		display: 'inline-flex',
@@ -24,12 +23,15 @@ export const getBaseStyles = props => ({
 		outline: 'none',
 		border: 0,
 		// Remove the margin in Safari.
-		marginTop: 0,
-		marginRight: 0,
-		marginBottom: 0,
-		marginLeft: 0,
+		marginTop: '0px',
+		marginRight: '0px',
+		marginBottom: '0px',
+		marginLeft: '0px',
 		// Remove the padding in Firefox.
-		padding: 0,
+		paddingTop: '0px',
+		paddingRight: '0px',
+		paddingBottom: '0px',
+		paddingLeft: '0px',
 		borderRadius: 0,
 		cursor: 'pointer',
 		userSelect: 'none',
@@ -46,7 +48,7 @@ export const getBaseStyles = props => ({
 			cursor: 'default',
 		},
 	},
-});
+};
 
 function ButtonBase(props) {
 	const {
@@ -76,7 +78,6 @@ function ButtonBase(props) {
 		type,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const buttonRef = useRef(null);
 	const [keyDown, setKeyDown] = useState(false);
 	const {
@@ -101,8 +102,8 @@ function ButtonBase(props) {
 				  },
 		[Component, disabled, type],
 	);
-	const { rootStyles } = useStyles([getBaseStyles], { ...props, focusVisible, theme });
-	const className = useMemo(() => cn(classNameProp, rootStyles), [rootStyles]);
+	const { rootStyles } = useStyles([getBaseStyles], { ...props, focusVisible });
+	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
 	const handleMouseDown = useCallback(
 		rippleStartHandler(buttonRef.current, false, centerRipple, () => {
@@ -211,6 +212,7 @@ function ButtonBase(props) {
 			if (focusRipple && !disableRipple && !prevFocusVisible && focusVisible) {
 				rippleStartHandler(buttonRef.current, true, true)();
 			}
+			return;
 		},
 		[disabled, prevFocusVisible, focusVisible, keyDown],
 	);

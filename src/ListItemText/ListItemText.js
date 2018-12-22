@@ -1,15 +1,17 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
-import ThemeContext from '../theme/ThemeContext';
 import ListContext from './../List/ListContext';
 import Typography from './../Typography';
 import cn from './../theme/className';
 import { fontSize, space } from './../styles';
 
-const getDenseStyles = props =>
+const getDenseStyles = ({theme, ...props}) =>
 	props.dense && {
-		rootStyles: fontSize(2),
+		rootStyles: fontSize({
+			fontSize: 4,
+			theme
+		}),
 		primaryTextStyles: {
 			fontSize: 'inherit',
 		},
@@ -18,13 +20,14 @@ const getDenseStyles = props =>
 		},
 	};
 
-const getBaseStyles = props => ({
+const getBaseStyles =({theme, ...props}) => ({
 	rootStyles: {
 		minWidth: 0,
 		flex: '1 1 auto',
 		...space({
 			py: 0,
-			px: 3,
+			px: 2,
+			theme
 		}),
 		':first-child': {
 			paddingLeft: props.inset ? '56px' : 0,
@@ -47,11 +50,10 @@ function ListItemText(props) {
 		styles,
 		...passThru
 	} = props;
-	const { theme } = useContext(ThemeContext);
 	const { dense } = useContext(ListContext);
 	const { rootStyles, primaryTextStyles, secondaryTextStyles } = useStyles(
 		[getBaseStyles, getDenseStyles],
-		{ disableTypography, inset, primary, secondary, dense, styles, theme },
+		{ disableTypography, inset, primary, secondary, dense, styles },
 	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 	const primaryTextClassName = useMemo(() => cn(primaryTextStyles), [primaryTextStyles]);
