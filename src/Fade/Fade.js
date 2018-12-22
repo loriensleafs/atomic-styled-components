@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Spring, useSpring } from 'react-spring';
+import { Spring } from 'react-spring';
 
 function Fade(props) {
 	const { children, in: inProp, onEnd, onStart, ...passThru } = props;

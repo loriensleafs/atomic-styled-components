@@ -25,9 +25,7 @@ import { isFunc } from './../utils/helpers';
  * @private
  */
 function getContainer(container, defaultContainer) {
-	return isFunc(container)
-		? findDOMNode(container()) || defaultContainer
-		: findDOMNode(container) || defaultContainer;
+	return isFunc(container) ? container() || defaultContainer : container || defaultContainer;
 }
 
 /**
@@ -105,7 +103,7 @@ function getContainerStyle(node) {
  */
 const getBaseStyles = props => ({
 	rootStyles: {
-		zIndex: 1000,
+		zIndex: 1300,
 		position: 'fixed',
 		right: 0,
 		bottom: 0,
