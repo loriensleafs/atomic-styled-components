@@ -7,4 +7,6 @@ const CheckBox = props => (
 	</SvgIcon>
 );
 
+CheckBox.displayName = 'CheckBoxIcon';
+
 export default CheckBox;
