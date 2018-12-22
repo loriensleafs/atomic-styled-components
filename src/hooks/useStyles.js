@@ -1,18 +1,35 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
+import ThemeContext from './../theme/ThemeContext';
 import merge from './../utils/pureRecursiveMerge';
-import { isFunc } from './../utils/helpers';
+import { isFunc, isObject } from './../utils/helpers';
 
-export default (styles, { styles: _styles, stylesProp: _stylesProp, ...props }, conditions) => {
-	conditions = conditions ? conditions : ['styles', 'stylesProp', ...Object.keys(props)];
-	const parsedStyles = useMemo(
-		() =>
-			merge(
-				styles.map(style => (isFunc(style) ? style(props) : style || {})).reduce(merge, {}),
-				isFunc(_stylesProp) ? _stylesProp(props) : _stylesProp || {},
-				isFunc(_styles) ? _styles(props) : _styles || {},
-			),
-		conditions,
-	);
+function useStyles(
+	parsers,
+	{children, styles, ...props},
+	propDependancies
+) {
+	const { theme } = useContext(ThemeContext);
+	const dependancies = useMemo(() => {
+		if (propDependancies) {
+			return [...propDependancies, styles, theme]
+		} else if (Object.keys(props).length > 0) {
+			return [...Object.keys(props).map(p => props[p]), styles, theme];
+		} else {
+			return [styles, theme] || [];
+		}
+	}, [propDependancies, props, styles, theme]);
+	const styleProps = {...props, theme};
+	const parsedStyles = useMemo(() => {
+		let next = parsers.reduce((parsed,parser) => merge(parsed, isFunc(parser) ? parser(styleProps) : parser),{});
 
-	return parsedStyles;
-};
+		if (isFunc(styles) || isObject(styles)) {
+			next = merge(next, isFunc(styles) ? styles(styleProps) : styles);
+		}
+
+		return next;
+	}, [dependancies])
+
+	return parsedStyles
+}
+
+export default useStyles;
