@@ -14,7 +14,8 @@ export const fontSize = style({
 });
 
 export const fontWeight = style({
-	prop: 'fontWeight',
+	prop: 'weight',
+	cssProperty: 'fontWeight',
 	key: 'typography.fontWeights',
 });
 

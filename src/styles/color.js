@@ -1,13 +1,12 @@
 import { style } from 'styled-system';
 
-export const bgColor = style({
+export const backgroundColor = style({
 	prop: 'bg',
 	cssProperty: 'backgroundColor',
 	key: 'palette',
 });
 
-export const textColor = style({
+export const color = style({
 	prop: 'color',
-	cssProperty: 'color',
 	key: 'palette',
 });

@@ -11,3 +11,23 @@ export const height = style({
 height.propTypes = {
 	h: PropTypes.oneOfType([PropTypes.number, PropTypes.array, PropTypes.string]),
 };
+
+export const maxHeight = style({
+	prop: 'hMax',
+	cssProperty: 'maxHeight',
+	transformValue: getDimension,
+});
+
+maxHeight.propTypes = {
+	hMax: PropTypes.oneOfType([PropTypes.number, PropTypes.array, PropTypes.string]),
+};
+
+export const minHeight = style({
+	prop: 'hMin',
+	cssProperty: 'minHeight',
+	transformValue: getDimension,
+});
+
+minHeight.propTypes = {
+	hMin: PropTypes.oneOfType([PropTypes.number, PropTypes.array, PropTypes.string]),
+};

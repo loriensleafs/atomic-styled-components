@@ -11,3 +11,23 @@ export const width = style({
 width.propTypes = {
 	w: PropTypes.oneOfType([PropTypes.number, PropTypes.array, PropTypes.string]),
 };
+
+export const maxWidth = style({
+	prop: 'wMax',
+	cssProperty: 'maxWidth',
+	transformValue: getDimension,
+});
+
+maxWidth.propTypes = {
+	wMax: PropTypes.oneOfType([PropTypes.number, PropTypes.array, PropTypes.string]),
+};
+
+export const minWidth = style({
+	prop: 'wMin',
+	cssProperty: 'minWidth',
+	transformValue: getDimension,
+});
+
+minWidth.propTypes = {
+	wMin: PropTypes.oneOfType([PropTypes.number, PropTypes.array, PropTypes.string]),
+};

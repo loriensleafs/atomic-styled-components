@@ -10,9 +10,9 @@ const addAliases = (arr, aliases) =>
 		}),
 	);
 
-export let breakpoints = [0, 480, 765, 960, 1200, 1600];
+export let breakpoints = [480, 765, 960, 1200, 1600];
 
-export const aliases = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+export const aliases = ['sm', 'md', 'lg', 'xl', 'xxl'];
 
 export default overrides => {
 	breakpoints = [...breakpoints, ...overrides];
@@ -23,8 +23,6 @@ export default overrides => {
 			}px)`,
 		}))
 		.reduce(merge, {});
-
-	addAliases(breakpoints, aliases);
 
 	return {
 		breakpoints,

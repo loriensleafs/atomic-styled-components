@@ -49,7 +49,7 @@ const getValue = scale => n => {
 	return px(value * (neg ? -1 : 1));
 };
 
-const defaultScale = [0, 4, 8, 16, 32, 64, 128, 256, 512];
+const defaultScale = [4, 8, 16, 32, 64, 128, 256, 512];
 
 export const space = props => {
 	const keys = Object.keys(props)
