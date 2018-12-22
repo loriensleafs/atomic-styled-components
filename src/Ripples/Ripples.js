@@ -5,7 +5,7 @@ import useDidUpdate from './../hooks/useDidUpdate';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 
-export const getBaseStyles = props => ({
+export const getBaseStyles = {
 	rippleStyles: {
 		contain: 'strict',
 		zIndex: 0,
@@ -28,7 +28,7 @@ export const getBaseStyles = props => ({
 		borderRadius: '50%',
 		backgroundColor: 'currentColor',
 	},
-});
+};
 
 function Ripples(props) {
 	const [ripples, setRipples] = useState(props.ripples);
