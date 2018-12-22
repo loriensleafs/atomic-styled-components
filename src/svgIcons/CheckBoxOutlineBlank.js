@@ -7,4 +7,6 @@ const CheckBoxOutlineBlank = props => (
 	</SvgIcon>
 );
 
+CheckBoxOutlineBlank.displayName = 'CheckBoxOutlineBlankIcon';
+
 export default CheckBoxOutlineBlank;
