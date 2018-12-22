@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { isNil } from './../utils/helpers';
 
 function getRippleRect(ref, pulsate = false, center, event) {
 	const centered = center || pulsate;
