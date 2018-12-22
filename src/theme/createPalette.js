@@ -70,7 +70,7 @@ const contrastThreshold = 2;
 
 const tonalOffset = 0.2;
 
-const getContrastText = (background) =>
+const getContrastText = background =>
 	getContrastRatio(background, dark.text.primary) >= contrastThreshold
 		? dark.text.primary
 		: light.text.primary;
@@ -93,10 +93,10 @@ const augmentColor = (color, mainShade = 500, lightShade = 300, darkShade = 700)
 export default (palette = {}) => {
 	const {
 		primary = {
-			main: '#61ac47',
+			main: '#3B67D4',
 		},
 		secondary = {
-			main: '#ed7653',
+			main: '#A92BBF',
 		},
 		error = {
 			main: '#f44336',
