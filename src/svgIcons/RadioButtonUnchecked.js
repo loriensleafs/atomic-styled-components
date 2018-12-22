@@ -7,4 +7,6 @@ const RadioButtonUnchecked = props => (
 	</SvgIcon>
 );
 
+RadioButtonUnchecked.displayName = 'RadioButtonUncheckedIcon';
+
 export default RadioButtonUnchecked;
