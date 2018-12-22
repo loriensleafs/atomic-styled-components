@@ -1,10 +1,8 @@
-import React, { isValidElement, useRef, useReducer, useEffect, useCallback, useState } from 'react';
-import { Spring, animated, useSpring } from 'react-spring';
-import EventListener from 'react-event-listener';
+import React, { useRef, useReducer, useCallback } from 'react';
+import { Spring } from 'react-spring';
 import debounce from 'debounce';
 import useDidMount from './../hooks/useDidMount';
 import useDidUpdate from './../hooks/useDidUpdate';
-import usePrevious from './../hooks/usePrevious';
 import useWillUnmount from './../hooks/useWillUnmount';
 import ownerWindow from './../utils/ownerWindow';
 
@@ -31,7 +29,8 @@ function getRect(ref) {
 	return { offsetX, offsetY, rect };
 }
 
-function slideFromReducer(state, action) {
+function slideFromReducer(state = {}, action) {
+	if (!action.ref) return state;
 	const { offsetX, offsetY, rect } = getRect(action.ref);
 
 	switch (action.direction) {
