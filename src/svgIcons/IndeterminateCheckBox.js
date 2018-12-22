@@ -7,4 +7,6 @@ const IndeterminateCheckBox = props => (
 	</SvgIcon>
 );
 
+IndeterminateCheckBox.displayName = 'IndeterminateCheckBoxIcon';
+
 export default IndeterminateCheckBox;
