@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import Avatar from './../Avatar';
 import Box from './../Box';
 import Button from './../Button';
@@ -22,6 +22,7 @@ import Typography from './../Typography';
 import cn from './../theme/className';
 import DemoBox from './DemoBox';
 import { PlayArrowIcon, SkipNextIcon, SkipPreviousIcon } from './DemoIcons';
+import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 import CardHeader from '../CardHeader/CardHeader';
 
 const Bullet = () => (
@@ -30,8 +31,8 @@ const Bullet = () => (
 	</span>
 );
 
-const DemoNavigation = () => (
-	<Box minWidth={200} maxWidth={200} style={{ fontSize: '12px' }}>
+const Navigation = () => (
+	<Box w={200} display={['none', null, null, null, 'block']} style={{ fontSize: '12px' }}>
 		<List dense style={{ position: 'sticky', top: 0 }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
@@ -55,37 +56,31 @@ const DemoNavigation = () => (
 	</Box>
 );
 
-const DemoIntro = () => (
+const Intro = () => (
 	<Fragment>
-		<Typography variant="h2" mb={3}>
-			Cards
-		</Typography>
-		<Typography variant="h5" mb={4}>
-			Cards contain content and actions about a single subject.
-		</Typography>
-		<Typography mb={4}>
+		<PageHeader>Cards</PageHeader>
+		<SectionHeader>Cards contain content and actions about a single subject.</SectionHeader>
+		<Paragraph>
 			<a href="https://material.io/design/components/cards.html">Cards</a> are surfaces that
 			display content and actions on a single topic.
 			<br />
 			<br />
 			They should be easy to scan for relevant and actionable information. Elements, like text
 			and images, should be placed on them in a way that clearly indicates hierarchy.
-		</Typography>
+		</Paragraph>
 	</Fragment>
 );
 
 const SimpleCard = () => (
 	<Fragment>
-		<Typography id="contained-buttons" variant="h4" mb={4}>
-			Simple Card
-		</Typography>
-		<Typography mb={3}>
+		<SectionHeader>Simple Card</SectionHeader>
+		<Paragraph>
 			Although cards can support multiple actions, UI controls, and an overflow menu, use
 			restraint and remember that cards are entry points to more complex and detailed
 			information.
-		</Typography>
-		<DemoBox>
-			<Card minWidth={275}>
+		</Paragraph>
+		<DemoBox justifyContent="center">
+			<Card wMin={275}>
 				<CardContent>
 					<Typography color="text.secondary" mb={1}>
 						Word of the Day
@@ -119,15 +114,13 @@ const ComplexInteractiveCard = () => {
 
 	return (
 		<Fragment>
-			<Typography variant="h4" mb={4}>
-				Complex Interaction
-			</Typography>
-			<Typography mb={3}>On desktop, card content can expand.</Typography>
-			<DemoBox>
-				<Card maxWidth={400}>
+			<SectionHeader>Complex Interaction</SectionHeader>
+			<Paragraph>On desktop, card content can expand.</Paragraph>
+			<DemoBox justifyContent="center">
+				<Card wMax={400}>
 					<CardHeader
 						avatar={
-							<Avatar aria-label="Recipe" bg="primary.main">
+							<Avatar aria-label="Recipe" bg="primary.main" color="common.white">
 								R
 							</Avatar>
 						}
@@ -174,14 +167,14 @@ const ComplexInteractiveCard = () => {
 					</CardActions>
 					<Collapse in={expanded}>
 						<CardContent>
-							<Typography>Method:</Typography>
-							<br />
 							<Typography>
+								Method:
+								<br />
+								<br />
 								Heat 1/2 cup of the broth in a pot until simmering, add saffron and
 								set aside for 10 minutes.
-							</Typography>
-							<br />
-							<Typography>
+								<br />
+								<br />
 								Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
 								over medium-high heat. Add chicken, shrimp and chorizo, and cook,
 								stirring occasionally until lightly browned, 6 to 8 minutes.
@@ -190,18 +183,16 @@ const ComplexInteractiveCard = () => {
 								onion, salt and pepper, and cook, stirring often until thickened and
 								fragrant, about 10 minutes. Add saffron broth and remaining 4 1/2
 								cups chicken broth; bring to a boil.
-							</Typography>
-							<br />
-							<Typography>
+								<br />
+								<br />
 								Add rice and stir very gently to distribute. Top with artichokes and
 								peppers, and cook without stirring, until most of the liquid is
 								absorbed, 15 to 18 minutes. Reduce heat to medium-low, add reserved
 								shrimp and mussels, tucking them down into the rice, and cook again
 								without stirring, until mussels have opened and rice is just tender,
 								5 to 7 minutes more. (Discard any mussels that don’t open.)
-							</Typography>
-							<br />
-							<Typography>
+								<br />
+								<br />
 								Set aside off of the heat to let rest for 10 minutes, and then
 								serve.
 							</Typography>
@@ -215,12 +206,10 @@ const ComplexInteractiveCard = () => {
 
 const MediaCard = () => (
 	<Fragment>
-		<Typography id="contained-buttons" variant="h4" mb={4}>
-			Media
-		</Typography>
-		<Typography mb={3}>Example of a card using an image to reinforce the content.</Typography>
-		<DemoBox>
-			<Card maxWidth={345}>
+		<SectionHeader>Media</SectionHeader>
+		<Paragraph>Example of a card using an image to reinforce the content.</Paragraph>
+		<DemoBox justifyContent="center">
+			<Card wMax={345}>
 				<CardActionArea>
 					<CardMedia
 						h={140}
@@ -252,29 +241,27 @@ const MediaCard = () => (
 
 const UIControlsCard = () => (
 	<Fragment>
-		<Typography id="contained-buttons" variant="h4" mb={4}>
-			UI Controls
-		</Typography>
-		<Typography mb={3}>
+		<SectionHeader>UI Controls</SectionHeader>
+		<Paragraph>
 			Supplemental actions within the card are explicitly called out using icons, text, and UI
 			controls, typically placed at the bottom of the card.
 			<br />
 			<br />
 			Here's an example of a media control card.
-		</Typography>
-		<DemoBox>
+		</Paragraph>
+		<DemoBox justifyContent="center">
 			<Card>
 				<Flex>
-					<Flex direction="col">
+					<Flex dir="col">
 						<CardContent>
-							<Flex direction="col" flex="1 0 auto">
+							<Flex dir="col" flex="1 0 auto">
 								<Typography variant="h5">Live From Space</Typography>
 								<Typography variant="subtitle1" color="text.secondary">
 									Mac Miller
 								</Typography>
 							</Flex>
 						</CardContent>
-						<Flex align="center" pl={2} pb={1}>
+						<Flex alignItems="center" pl={2} pb={1}>
 							<IconButton aria-label="Previous">
 								<SkipPreviousIcon />
 							</IconButton>
@@ -299,13 +286,13 @@ const UIControlsCard = () => (
 
 export default () => (
 	<Flex w={1}>
-		<Box>
-			<DemoIntro />
+		<Box w={1} mt={5.5}>
+			<Intro />
 			<SimpleCard />
 			<ComplexInteractiveCard />
 			<MediaCard />
 			<UIControlsCard />
 		</Box>
-		<DemoNavigation />
+		<Navigation />
 	</Flex>
 );

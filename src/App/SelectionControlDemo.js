@@ -13,9 +13,10 @@ import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
 import Switch from './../Switch';
 import Typography from './../Typography';
 import DemoBox from './DemoBox';
+import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 
-const DemoNavigation = () => (
-	<Box minWidth={200} maxWidth={200} style={{ fontSize: '12px' }}>
+const Navigation = () => (
+	<Box w={200} display={['none', null, null, null, 'block']} style={{ fontSize: '12px' }}>
 		<List dense style={{ position: 'sticky', top: 0 }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
@@ -36,15 +37,11 @@ const DemoNavigation = () => (
 	</Box>
 );
 
-const DemoIntro = () => (
+const Intro = () => (
 	<Fragment>
-		<Typography variant="h2" mb={3}>
-			Selection Controls
-		</Typography>
-		<Typography variant="h5" mb={4}>
-			Selection controls allow the user to select options.
-		</Typography>
-		<Typography mb={4}>
+		<PageHeader>Selection Controls</PageHeader>
+		<SectionHeader>Selection controls allow the user to select options.</SectionHeader>
+		<Paragraph>
 			<a href="https://material.io/design/components/selection-controls.html">
 				Selection Controls
 			</a>{' '}
@@ -80,7 +77,7 @@ const DemoIntro = () => (
 					allow a selection to be turned on or off.
 				</li>
 			</ul>
-		</Typography>
+		</Paragraph>
 	</Fragment>
 );
 
@@ -91,14 +88,10 @@ const RadioButtons = () => {
 
 	return (
 		<Fragment>
-			<Typography variant="h4" mb={4}>
-				Standalone Radio Buttons
-			</Typography>
-			<Typography mb={3}>
-				Radio Buttons can also be used standalone, without the wrapper.
-			</Typography>
+			<SectionHeader>Standalone Radio Buttons</SectionHeader>
+			<Paragraph>Radio Buttons can also be used standalone, without the wrapper.</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="center" alignItems="center">
+				<Flex justifyContent="flex-start" alignItems="center" wrap>
 					<Radio
 						checked={checked === 'a'}
 						onChange={handleChange}
@@ -160,10 +153,8 @@ const Checkboxes = () => {
 
 	return (
 		<Fragment>
-			<Typography variant="h4" mb={4}>
-				Checkboxes
-			</Typography>
-			<Typography mb={3}>
+			<SectionHeader>Checkboxes</SectionHeader>
+			<Paragraph>
 				<a href="https://material.io/design/components/selection-controls.html#checkboxes">
 					Checkboxes
 				</a>{' '}
@@ -174,9 +165,9 @@ const Checkboxes = () => {
 				If you have multiple options appearing in a list, you can preserve space by using
 				checkboxes instead of on/off switches. If you have a single option, avoid using a
 				checkbox and use an on/off switch instead.
-			</Typography>
+			</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="center" alignItems="center">
+				<Flex justifyContent="flex-start" alignItems="center" wrap>
 					<Checkbox checked={checked.A} onChange={handleChange} value="A" />
 					<Checkbox
 						checked={checked.B}
@@ -211,10 +202,8 @@ const Switches = () => {
 
 	return (
 		<Fragment>
-			<Typography variant="h4" mb={4}>
-				Switches
-			</Typography>
-			<Typography mb={3}>
+			<SectionHeader>Switches</SectionHeader>
+			<Paragraph>
 				<a href="https://material.io/design/components/selection-controls.html#switches">
 					Switches
 				</a>{' '}
@@ -224,9 +213,9 @@ const Switches = () => {
 				<br />
 				The option that the switch controls, as well as the state it’s in, should be made
 				clear from the corresponding inline label.
-			</Typography>
+			</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="center" alignItems="center">
+				<Flex justifyContent="flex-start" alignItems="center" wrap>
 					<Switch checked={checked.A} onChange={handleChange} value="A" />
 					<Switch checked={checked.B} onChange={handleChange} value="B" color="primary" />
 					<Switch value="checkedC" />
@@ -241,12 +230,12 @@ const Switches = () => {
 
 export default () => (
 	<Flex w={1}>
-		<Box>
-			<DemoIntro />
+		<Box w={1} mt={5.5}>
+			<Intro />
 			<RadioButtons />
 			<Checkboxes />
 			<Switches />
 		</Box>
-		<DemoNavigation />
+		<Navigation />
 	</Flex>
 );

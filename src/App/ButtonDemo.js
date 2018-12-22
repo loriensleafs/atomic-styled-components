@@ -17,9 +17,10 @@ import {
 	SendIcon,
 	SaveIcon,
 } from './DemoIcons';
+import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 
-const DemoNavigation = () => (
-	<Box minWidth={200} maxWidth={200} style={{ fontSize: '12px' }}>
+const Navigation = () => (
+	<Box w={200} display={['none', null, null, null, 'block']} style={{ fontSize: '12px' }}>
 		<List dense style={{ position: 'sticky', top: 0 }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
@@ -61,15 +62,13 @@ const DemoNavigation = () => (
 	</Box>
 );
 
-const DemoIntro = () => (
+const Intro = () => (
 	<Fragment>
-		<Typography variant="h2" mb={3}>
-			Buttons
-		</Typography>
-		<Typography variant="h5" mb={4}>
+		<PageHeader>Buttons</PageHeader>
+		<SectionHeader>
 			Buttons allow users to take actions, and make choices, with a single tap.
-		</Typography>
-		<Typography mb={4} component="div">
+		</SectionHeader>
+		<Paragraph component="div">
 			<a href="https://material.io/design/components/buttons.html">Buttons</a> communicate
 			actions that users can take. They are typically placed throughout your UI, in places
 			like:
@@ -80,16 +79,14 @@ const DemoIntro = () => (
 				<li>Cards</li>
 				<li>Toolbars</li>
 			</ul>
-		</Typography>
+		</Paragraph>
 	</Fragment>
 );
 
 const ContainedButtons = () => (
 	<Fragment>
-		<Typography id="contained-buttons" variant="h4" mb={4}>
-			Contained Buttons
-		</Typography>
-		<Typography mb={3}>
+		<SectionHeader>Contained Buttons</SectionHeader>
+		<Paragraph>
 			<a href="https://material.io/design/components/buttons.html#contained-button">
 				Contained buttons
 			</a>{' '}
@@ -98,19 +95,21 @@ const ContainedButtons = () => (
 			<br />
 			<br />
 			The last example of this demo show how to use an upload button.
-		</Typography>
+		</Paragraph>
 		<DemoBox>
-			<Button variant="contained">Default</Button>
-			<Button variant="contained" color="primary" ml={3}>
+			<Button variant="contained" m={2}>
+				Default
+			</Button>
+			<Button variant="contained" color="primary" m={2}>
 				Primary
 			</Button>
-			<Button variant="contained" color="secondary" ml={3}>
+			<Button variant="contained" color="secondary" m={2}>
 				Secondary
 			</Button>
-			<Button variant="contained" disabled ml={3}>
+			<Button variant="contained" disabled m={2}>
 				Disabled
 			</Button>
-			<Button variant="contained" href="#link" ml={3}>
+			<Button variant="contained" href="#link" m={2}>
 				Link
 			</Button>
 		</DemoBox>
@@ -119,10 +118,8 @@ const ContainedButtons = () => (
 
 const TextButtons = () => (
 	<Fragment>
-		<Typography id="text-buttons" variant="h4" mb={4}>
-			Text Buttons
-		</Typography>
-		<Typography mb={3} component="div">
+		<SectionHeader>Text Buttons</SectionHeader>
+		<Paragraph component="div">
 			<a href="https://material.io/design/components/buttons.html#text-button">
 				Text buttons
 			</a>{' '}
@@ -132,19 +129,19 @@ const TextButtons = () => (
 				<li>In cards</li>
 			</ul>
 			In cards, text buttons help maintain an emphasis on card content.
-		</Typography>
+		</Paragraph>
 		<DemoBox>
-			<Button>Default</Button>
-			<Button color="primary" ml={3}>
+			<Button m={2}>Default</Button>
+			<Button color="primary" m={2}>
 				Primary
 			</Button>
-			<Button color="secondary" ml={3}>
+			<Button color="secondary" m={2}>
 				Secondary
 			</Button>
-			<Button disabled ml={3}>
+			<Button disabled m={2}>
 				Disabled
 			</Button>
-			<Button href="#link" ml={3}>
+			<Button href="#link" m={2}>
 				Link
 			</Button>
 		</DemoBox>
@@ -153,37 +150,33 @@ const TextButtons = () => (
 
 const OutlinedButtons = () => (
 	<Fragment>
-		<Typography id="text-buttons" variant="h4" mb={4}>
-			Outlined Buttons
-		</Typography>
-		<Typography>
+		<SectionHeader>Outlined Buttons</SectionHeader>
+		<Paragraph>
 			<a href="https://material.io/design/components/buttons.html#outlined-button">
 				Text buttons
 			</a>{' '}
 			are medium-emphasis buttons. They contain actions that are important, but aren’t the
 			primary action in an app.
-		</Typography>
-		<br />
-		<br />
-		<Typography variant="h5">Alternatives</Typography>
-		<br />
-		<br />
-		<Typography mb={3}>
+		</Paragraph>
+		<SectionHeader>Alternatives</SectionHeader>
+		<Paragraph>
 			Outlined buttons are also a lower emphasis alternative to contained buttons, or a higher
 			emphasis alternative to text buttons.
-		</Typography>
+		</Paragraph>
 		<DemoBox>
-			<Button variant="outlined">Default</Button>
-			<Button variant="outlined" color="primary" ml={3}>
+			<Button variant="outlined" m={2}>
+				Default
+			</Button>
+			<Button variant="outlined" color="primary" m={2}>
 				Primary
 			</Button>
-			<Button variant="outlined" color="secondary" ml={3}>
+			<Button variant="outlined" color="secondary" m={2}>
 				Secondary
 			</Button>
-			<Button variant="outlined" disabled ml={3}>
+			<Button variant="outlined" disabled m={2}>
 				Disabled
 			</Button>
-			<Button variant="outlined" href="#link" ml={3}>
+			<Button variant="outlined" href="#link" m={2}>
 				Link
 			</Button>
 		</DemoBox>
@@ -192,28 +185,26 @@ const OutlinedButtons = () => (
 
 const ButtonsWithIconsAndLabels = () => (
 	<Fragment>
-		<Typography id="text-buttons" variant="h4" mb={4}>
-			Buttons with icons and labels
-		</Typography>
-		<Typography mb={3}>
+		<SectionHeader>Buttons with icons and labels</SectionHeader>
+		<Paragraph>
 			Sometimes you might want to have icons for certain button to enhance the UX of the
 			application as we recognize logos more easily than plain text. For example, if you have
 			a delete button you can label it with a dustbin icon.
-		</Typography>
+		</Paragraph>
 		<DemoBox>
-			<Button variant="contained" color="secondary" ml={2}>
+			<Button variant="contained" color="secondary" m={2}>
 				Delete
 				<DeleteIcon ml={2} />
 			</Button>
-			<Button variant="contained" color="primary" ml={2}>
+			<Button variant="contained" color="primary" m={2}>
 				Send
 				<SendIcon ml={2} />
 			</Button>
-			<Button variant="contained" color="secondary" ml={2} disabled>
+			<Button variant="contained" color="secondary" m={2} disabled>
 				<KeyboardVoiceIcon mr={1} />
 				Talk
 			</Button>
-			<Button variant="contained" size="small" ml={2}>
+			<Button variant="contained" size="small" m={2}>
 				<SaveIcon mr={2} fontSize="20px" />
 				Save
 			</Button>
@@ -223,16 +214,14 @@ const ButtonsWithIconsAndLabels = () => (
 
 const IconButtons = () => (
 	<Fragment>
-		<Typography id="text-buttons" variant="h4" mb={4}>
-			Icon Buttons
-		</Typography>
-		<Typography mb={3}>
+		<SectionHeader>Icon Buttons</SectionHeader>
+		<Paragraph>
 			Icon buttons are commonly found in app bars and toolbars.
 			<br />
 			<br />
 			Icons are also appropriate for toggle buttons that allow a single choice to be selected
 			or deselected, such as adding or removing a star to an item.
-		</Typography>
+		</Paragraph>
 		<DemoBox>
 			<IconButton>
 				<DeleteIcon />
@@ -255,14 +244,14 @@ const IconButtons = () => (
 
 export default () => (
 	<Flex w={1}>
-		<Box>
-			<DemoIntro />
+		<Box w={1} mt={5.5}>
+			<Intro />
 			<ContainedButtons />
 			<TextButtons />
 			<OutlinedButtons />
 			<ButtonsWithIconsAndLabels />
 			<IconButtons />
 		</Box>
-		<DemoNavigation />
+		<Navigation />
 	</Flex>
 );
