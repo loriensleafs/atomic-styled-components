@@ -4,6 +4,7 @@
 	"private": true,
 	"homepage": "https://loriensleafs.github.io/atomic-styled-components",
 	"dependencies": {
+		"bezier-easing": "^2.1.0",
 		"clean-tag": "^2.0.0",
 		"debounce": "^1.2.0",
 		"dom-helpers": "^3.4.0",
