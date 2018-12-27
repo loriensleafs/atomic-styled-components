@@ -56,7 +56,10 @@ function getRect(
 	};
 }
 
-function ripplesReducer(ripples = [], { type, id, center, pulsate, rect, x, y }) {
+function ripplesReducer(
+	ripples = [],
+	{ type, id, center, pulsate, rect, x, y },
+) {
 	switch (type) {
 		case 'start':
 			return [...ripples, getRect(center, pulsate, rect, x, y)];
@@ -100,8 +103,16 @@ export default function useRippleManager(ref) {
 				center,
 				pulsate,
 				rect: event.currentTarget.getBoundingClientRect(),
-				x: event.clientX ? event.clientX : event && event.touches ? event.touches[0] : 0,
-				y: event.clientY ? event.clientY : event && event.touches ? event.touches[0] : 0,
+				x: event.clientX
+					? event.clientX
+					: event && event.touches
+					? event.touches[0]
+					: 0,
+				y: event.clientY
+					? event.clientY
+					: event && event.touches
+					? event.touches[0]
+					: 0,
 			});
 		},
 		[],
@@ -124,7 +135,9 @@ export default function useRippleManager(ref) {
 			type: 'start',
 			center,
 			pulsate,
-			rect: rect ? rect : ref && ref.current && ref.current.getBoundingClientRect(),
+			rect: rect
+				? rect
+				: ref && ref.current && ref.current.getBoundingClientRect(),
 			x,
 			y,
 		});

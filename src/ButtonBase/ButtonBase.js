@@ -95,8 +95,14 @@ const ButtonBase = React.forwardRef((props, ref) => {
 				  },
 		[Component, disabled, type],
 	);
-	const { rootStyles } = useStyles([getBaseStyles], { ...props, focusVisible: focused });
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const { rootStyles } = useStyles([getBaseStyles], {
+		...props,
+		focusVisible: focused,
+	});
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 
 	const handleMouseDown = rippleHandler(
 		{
@@ -168,7 +174,13 @@ const ButtonBase = React.forwardRef((props, ref) => {
 
 	useDidUpdate(
 		() => {
-			if (focusRipple && !disableRipple && !prevFocused && focused && ripples.length < 1) {
+			if (
+				focusRipple &&
+				!disableRipple &&
+				!prevFocused &&
+				focused &&
+				ripples.length < 1
+			) {
 				startRipple({ center: true, pulsate: true });
 			}
 		},
@@ -192,9 +204,12 @@ const ButtonBase = React.forwardRef((props, ref) => {
 			ref={ref}
 			tabIndex={disabled ? '-1' : tabIndex}
 			{...buttonProps}
-			{...passThru}>
+			{...passThru}
+		>
 			{children}
-			{!disableRipple && !disabled && <Ripples ripples={ripples} {...RippleProps} />}
+			{!disableRipple && !disabled && (
+				<Ripples ripples={ripples} {...RippleProps} />
+			)}
 		</Component>
 	);
 });
@@ -229,7 +244,11 @@ ButtonBase.propTypes = {
 	 * The component used for the root node.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	component: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * If `true`, the base button will be disabled.
 	 */

@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { animated, useTransition } from 'react-spring/hooks';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
+import { animated, useTransition } from 'react-spring/hooks';
 
 export const getBaseStyles = {
 	rootStyles: {
@@ -51,16 +51,23 @@ function Ripples(props) {
 			item.pulsate &&
 			setRipples(() =>
 				ripples.map(ripple =>
-					item.key === ripple.key ? { ...ripple, in: !item.in } : ripple,
+					item.key === ripple.key
+						? { ...ripple, in: !item.in }
+						: ripple,
 				),
 			),
-		update: item => item.pulsate && { transform: `scale(${item.in ? 1 : 0.8})` },
+		update: item =>
+			item.pulsate && { transform: `scale(${item.in ? 1 : 0.8})` },
 	});
 
 	return (
 		<div className={className}>
 			{transitions.map(({ key, props }) => (
-				<animated.div key={key} style={props} className={inkClassName} />
+				<animated.div
+					key={key}
+					style={props}
+					className={inkClassName}
+				/>
 			))}
 		</div>
 	);
