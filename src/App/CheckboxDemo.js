@@ -14,7 +14,11 @@ function CheckboxDemo(props) {
 	});
 
 	const handleChange = useCallback(
-		event => setChecked({ ...checked, ...{ [event.target.value]: event.target.checked } }),
+		event =>
+			setChecked({
+				...checked,
+				...{ [event.target.value]: event.target.checked },
+			}),
 		[],
 	);
 
@@ -22,7 +26,11 @@ function CheckboxDemo(props) {
 		<Card my={2}>
 			<Box w={1} py={4} px={2}>
 				<Flex justifyContent="center" alignItems="center">
-					<Checkbox checked={checked.A} onChange={handleChange} value="A" />
+					<Checkbox
+						checked={checked.A}
+						onChange={handleChange}
+						value="A"
+					/>
 					<Checkbox
 						checked={checked.B}
 						onChange={handleChange}
@@ -32,7 +40,12 @@ function CheckboxDemo(props) {
 					<Checkbox value="C" />
 					<Checkbox disabled value="D" />
 					<Checkbox disabled checked value="E" />
-					<Checkbox checked={checked.F} onChange={handleChange} value="F" indeterminate />
+					<Checkbox
+						checked={checked.F}
+						onChange={handleChange}
+						value="F"
+						indeterminate
+					/>
 					<Checkbox
 						defaultChecked
 						color="default"

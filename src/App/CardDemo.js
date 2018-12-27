@@ -26,13 +26,23 @@ import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 import CardHeader from '../CardHeader/CardHeader';
 
 const Bullet = () => (
-	<span className={cn({ display: 'inline-block', margin: '0 2px', transform: 'scale(0.8)' })}>
+	<span
+		className={cn({
+			display: 'inline-block',
+			margin: '0 2px',
+			transform: 'scale(0.8)',
+		})}
+	>
 		•
 	</span>
 );
 
 const Navigation = () => (
-	<Box w={200} display={['none', null, null, null, 'block']} style={{ fontSize: '12px' }}>
+	<Box
+		w={200}
+		display={['none', null, null, null, 'block']}
+		style={{ fontSize: '12px' }}
+	>
 		<List dense style={{ position: 'sticky', top: 0 }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
@@ -59,14 +69,17 @@ const Navigation = () => (
 const Intro = () => (
 	<Fragment>
 		<PageHeader>Cards</PageHeader>
-		<SectionHeader>Cards contain content and actions about a single subject.</SectionHeader>
+		<SectionHeader>
+			Cards contain content and actions about a single subject.
+		</SectionHeader>
 		<Paragraph>
-			<a href="https://material.io/design/components/cards.html">Cards</a> are surfaces that
-			display content and actions on a single topic.
+			<a href="https://material.io/design/components/cards.html">Cards</a>{' '}
+			are surfaces that display content and actions on a single topic.
 			<br />
 			<br />
-			They should be easy to scan for relevant and actionable information. Elements, like text
-			and images, should be placed on them in a way that clearly indicates hierarchy.
+			They should be easy to scan for relevant and actionable information.
+			Elements, like text and images, should be placed on them in a way
+			that clearly indicates hierarchy.
 		</Paragraph>
 	</Fragment>
 );
@@ -75,9 +88,9 @@ const SimpleCard = () => (
 	<Fragment>
 		<SectionHeader>Simple Card</SectionHeader>
 		<Paragraph>
-			Although cards can support multiple actions, UI controls, and an overflow menu, use
-			restraint and remember that cards are entry points to more complex and detailed
-			information.
+			Although cards can support multiple actions, UI controls, and an
+			overflow menu, use restraint and remember that cards are entry
+			points to more complex and detailed information.
 		</Paragraph>
 		<DemoBox justifyContent="center">
 			<Card wMin={275}>
@@ -120,7 +133,11 @@ const ComplexInteractiveCard = () => {
 				<Card wMax={400}>
 					<CardHeader
 						avatar={
-							<Avatar aria-label="Recipe" bg="primary.main" color="common.white">
+							<Avatar
+								aria-label="Recipe"
+								bg="primary.main"
+								color="common.white"
+							>
 								R
 							</Avatar>
 						}
@@ -140,9 +157,10 @@ const ComplexInteractiveCard = () => {
 					/>
 					<CardContent>
 						<Typography>
-							This impressive paella is a perfect party dish and a fun meal to cook
-							together with your guests. Add 1 cup of frozen peas along with the
-							mussels, if you like.
+							This impressive paella is a perfect party dish and a
+							fun meal to cook together with your guests. Add 1
+							cup of frozen peas along with the mussels, if you
+							like.
 						</Typography>
 					</CardContent>
 					<CardActions disableActionSpacing>
@@ -158,7 +176,8 @@ const ComplexInteractiveCard = () => {
 							<IconButton
 								aria-expanded={expanded}
 								aria-label="Show more"
-								onClick={() => setExpanded(() => !expanded)}>
+								onClick={() => setExpanded(() => !expanded)}
+							>
 								<Rotate deg={expanded ? 180 : 0}>
 									<ExpandMoreIcon />
 								</Rotate>
@@ -171,30 +190,37 @@ const ComplexInteractiveCard = () => {
 								Method:
 								<br />
 								<br />
-								Heat 1/2 cup of the broth in a pot until simmering, add saffron and
-								set aside for 10 minutes.
+								Heat 1/2 cup of the broth in a pot until
+								simmering, add saffron and set aside for 10
+								minutes.
 								<br />
 								<br />
-								Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
-								over medium-high heat. Add chicken, shrimp and chorizo, and cook,
-								stirring occasionally until lightly browned, 6 to 8 minutes.
-								Transfer shrimp to a large plate and set aside, leaving chicken and
-								chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes,
-								onion, salt and pepper, and cook, stirring often until thickened and
-								fragrant, about 10 minutes. Add saffron broth and remaining 4 1/2
-								cups chicken broth; bring to a boil.
+								Heat oil in a (14- to 16-inch) paella pan or a
+								large, deep skillet over medium-high heat. Add
+								chicken, shrimp and chorizo, and cook, stirring
+								occasionally until lightly browned, 6 to 8
+								minutes. Transfer shrimp to a large plate and
+								set aside, leaving chicken and chorizo in the
+								pan. Add pimentón, bay leaves, garlic, tomatoes,
+								onion, salt and pepper, and cook, stirring often
+								until thickened and fragrant, about 10 minutes.
+								Add saffron broth and remaining 4 1/2 cups
+								chicken broth; bring to a boil.
 								<br />
 								<br />
-								Add rice and stir very gently to distribute. Top with artichokes and
-								peppers, and cook without stirring, until most of the liquid is
-								absorbed, 15 to 18 minutes. Reduce heat to medium-low, add reserved
-								shrimp and mussels, tucking them down into the rice, and cook again
-								without stirring, until mussels have opened and rice is just tender,
-								5 to 7 minutes more. (Discard any mussels that don’t open.)
+								Add rice and stir very gently to distribute. Top
+								with artichokes and peppers, and cook without
+								stirring, until most of the liquid is absorbed,
+								15 to 18 minutes. Reduce heat to medium-low, add
+								reserved shrimp and mussels, tucking them down
+								into the rice, and cook again without stirring,
+								until mussels have opened and rice is just
+								tender, 5 to 7 minutes more. (Discard any
+								mussels that don’t open.)
 								<br />
 								<br />
-								Set aside off of the heat to let rest for 10 minutes, and then
-								serve.
+								Set aside off of the heat to let rest for 10
+								minutes, and then serve.
 							</Typography>
 						</CardContent>
 					</Collapse>
@@ -207,7 +233,9 @@ const ComplexInteractiveCard = () => {
 const MediaCard = () => (
 	<Fragment>
 		<SectionHeader>Media</SectionHeader>
-		<Paragraph>Example of a card using an image to reinforce the content.</Paragraph>
+		<Paragraph>
+			Example of a card using an image to reinforce the content.
+		</Paragraph>
 		<DemoBox justifyContent="center">
 			<Card wMax={345}>
 				<CardActionArea>
@@ -221,8 +249,9 @@ const MediaCard = () => (
 							Lizard
 						</Typography>
 						<Typography>
-							Lizards are a widespread group of squamate reptiles, with over 6,000
-							species, ranging across all continents except Antarctica
+							Lizards are a widespread group of squamate reptiles,
+							with over 6,000 species, ranging across all
+							continents except Antarctica
 						</Typography>
 					</CardContent>
 				</CardActionArea>
@@ -243,8 +272,9 @@ const UIControlsCard = () => (
 	<Fragment>
 		<SectionHeader>UI Controls</SectionHeader>
 		<Paragraph>
-			Supplemental actions within the card are explicitly called out using icons, text, and UI
-			controls, typically placed at the bottom of the card.
+			Supplemental actions within the card are explicitly called out using
+			icons, text, and UI controls, typically placed at the bottom of the
+			card.
 			<br />
 			<br />
 			Here's an example of a media control card.
@@ -255,8 +285,13 @@ const UIControlsCard = () => (
 					<Flex dir="col">
 						<CardContent>
 							<Flex dir="col" flex="1 0 auto">
-								<Typography variant="h5">Live From Space</Typography>
-								<Typography variant="subtitle1" color="text.secondary">
+								<Typography variant="h5">
+									Live From Space
+								</Typography>
+								<Typography
+									variant="subtitle1"
+									color="text.secondary"
+								>
 									Mac Miller
 								</Typography>
 							</Flex>

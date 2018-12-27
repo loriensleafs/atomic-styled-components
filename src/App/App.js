@@ -1,4 +1,11 @@
-import React, { Fragment, lazy, Suspense, useCallback, useContext, useState } from 'react';
+import React, {
+	Fragment,
+	lazy,
+	Suspense,
+	useCallback,
+	useContext,
+	useState,
+} from 'react';
 import ThemeContext from './../theme/ThemeContext';
 import AppNav from './AppNav';
 import Box from './../Box';
@@ -22,6 +29,7 @@ const DrawerDemo = lazy(() => import('./DrawerDemo'));
 // const ListDemo = React.lazy(() => import('./ListDemo'));
 // const PaperDemo = React.lazy(() => import('./PaperDemo'));
 const SelectionControlDemo = React.lazy(() => import('./SelectionControlDemo'));
+const TabsDemo = React.lazy(() => import('./TabsDemo'));
 // const TypographyDemo = React.lazy(() => import('./TypographyDemo'));
 
 const getGlobalStyles = ({ theme }) => `
@@ -53,17 +61,36 @@ export default function App() {
 						<Box w={1} wMax={1200} h={1} ml="auto" mr="auto" pt={3}>
 							<Suspense
 								fallback={
-									<Flex w={1} h={1} justifyContent="center" alignItems="center">
+									<Flex
+										w={1}
+										h={1}
+										justifyContent="center"
+										alignItems="center"
+									>
 										<CircularProgress color="primary" />
 									</Flex>
-								}>
+								}
+							>
 								<Switch>
-									<Route path={`/buttons`} component={ButtonDemo} />
-									<Route path={`/cards`} component={CardDemo} />
-									<Route path={`/drawers`} component={DrawerDemo} />
+									<Route
+										path={`/buttons`}
+										component={ButtonDemo}
+									/>
+									<Route
+										path={`/cards`}
+										component={CardDemo}
+									/>
+									<Route
+										path={`/drawers`}
+										component={DrawerDemo}
+									/>
 									<Route
 										path={`/selectioncontrols`}
 										component={SelectionControlDemo}
+									/>
+									<Route
+										path={`/tabs`}
+										component={TabsDemo}
 									/>
 								</Switch>
 							</Suspense>

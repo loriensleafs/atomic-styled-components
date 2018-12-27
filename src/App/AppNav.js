@@ -23,7 +23,8 @@ function DemoList(props) {
 			tabIndex={0}
 			role="button"
 			onClick={props.onClose || null}
-			onKeyDown={props.onClose || null}>
+			onKeyDown={props.onClose || null}
+		>
 			<Flex
 				zIndex={1}
 				position="sticky"
@@ -31,9 +32,12 @@ function DemoList(props) {
 				hMin={[48, 56, 64]}
 				dir="column"
 				alignItems="center"
-				bg="common.white">
+				bg="common.white"
+			>
 				<Flex px={[3, 3.5]} flex={1} alignItems="center">
-					<Typography variant="subtitle1">Atomic Styled Components</Typography>
+					<Typography variant="subtitle1">
+						Atomic Styled Components
+					</Typography>
 				</Flex>
 				<Divider />
 			</Flex>
@@ -74,6 +78,9 @@ function DemoList(props) {
 				<ListItem component={Link} to="/selectioncontrols" button>
 					<ListItemText primary="Selection Controls" />
 				</ListItem>
+				<ListItem component={Link} to="/tabs" button>
+					<ListItemText primary="Tabs" />
+				</ListItem>
 				<ListItem button disabled>
 					<ListItemText primary="Typography" />
 				</ListItem>
@@ -109,7 +116,8 @@ function AppNav(props) {
 							ml={-2.5}
 							mr={3.5}
 							color="inherit"
-							aria-label="Menu">
+							aria-label="Menu"
+						>
 							<MenuIcon />
 						</IconButton>
 					</Box>
@@ -124,7 +132,11 @@ function AppNav(props) {
 			<Drawer open={open} onClose={handleClose}>
 				<DemoList onClose={handleClose} />
 			</Drawer>
-			<Box is="nav" w={[null, null, null, 250]} display={['none', null, null, 'block']}>
+			<Box
+				is="nav"
+				w={[null, null, null, 250]}
+				display={['none', null, null, 'block']}
+			>
 				<Drawer variant="permanent" open>
 					<DemoList />
 				</Drawer>

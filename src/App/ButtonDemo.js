@@ -20,7 +20,11 @@ import {
 import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 
 const Navigation = () => (
-	<Box w={200} display={['none', null, null, null, 'block']} style={{ fontSize: '12px' }}>
+	<Box
+		w={200}
+		display={['none', null, null, null, 'block']}
+		style={{ fontSize: '12px' }}
+	>
 		<List dense style={{ position: 'sticky', top: 0 }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
@@ -66,12 +70,15 @@ const Intro = () => (
 	<Fragment>
 		<PageHeader>Buttons</PageHeader>
 		<SectionHeader>
-			Buttons allow users to take actions, and make choices, with a single tap.
+			Buttons allow users to take actions, and make choices, with a single
+			tap.
 		</SectionHeader>
 		<Paragraph component="div">
-			<a href="https://material.io/design/components/buttons.html">Buttons</a> communicate
-			actions that users can take. They are typically placed throughout your UI, in places
-			like:
+			<a href="https://material.io/design/components/buttons.html">
+				Buttons
+			</a>{' '}
+			communicate actions that users can take. They are typically placed
+			throughout your UI, in places like:
 			<ul>
 				<li>Dialogs</li>
 				<li>Modal Windows</li>
@@ -90,8 +97,8 @@ const ContainedButtons = () => (
 			<a href="https://material.io/design/components/buttons.html#contained-button">
 				Contained buttons
 			</a>{' '}
-			are high-emphasis, distinguished by their use of elevation and fill. They contain
-			actions that are primary to your app.
+			are high-emphasis, distinguished by their use of elevation and fill.
+			They contain actions that are primary to your app.
 			<br />
 			<br />
 			The last example of this demo show how to use an upload button.
@@ -123,7 +130,8 @@ const TextButtons = () => (
 			<a href="https://material.io/design/components/buttons.html#text-button">
 				Text buttons
 			</a>{' '}
-			are typically used for less-pronounced actions, including those located:
+			are typically used for less-pronounced actions, including those
+			located:
 			<ul>
 				<li>In dialogs</li>
 				<li>In cards</li>
@@ -155,13 +163,13 @@ const OutlinedButtons = () => (
 			<a href="https://material.io/design/components/buttons.html#outlined-button">
 				Text buttons
 			</a>{' '}
-			are medium-emphasis buttons. They contain actions that are important, but aren’t the
-			primary action in an app.
+			are medium-emphasis buttons. They contain actions that are
+			important, but aren’t the primary action in an app.
 		</Paragraph>
 		<SectionHeader>Alternatives</SectionHeader>
 		<Paragraph>
-			Outlined buttons are also a lower emphasis alternative to contained buttons, or a higher
-			emphasis alternative to text buttons.
+			Outlined buttons are also a lower emphasis alternative to contained
+			buttons, or a higher emphasis alternative to text buttons.
 		</Paragraph>
 		<DemoBox>
 			<Button variant="outlined" m={2}>
@@ -187,9 +195,10 @@ const ButtonsWithIconsAndLabels = () => (
 	<Fragment>
 		<SectionHeader>Buttons with icons and labels</SectionHeader>
 		<Paragraph>
-			Sometimes you might want to have icons for certain button to enhance the UX of the
-			application as we recognize logos more easily than plain text. For example, if you have
-			a delete button you can label it with a dustbin icon.
+			Sometimes you might want to have icons for certain button to enhance
+			the UX of the application as we recognize logos more easily than
+			plain text. For example, if you have a delete button you can label
+			it with a dustbin icon.
 		</Paragraph>
 		<DemoBox>
 			<Button variant="contained" color="secondary" m={2}>
@@ -219,8 +228,9 @@ const IconButtons = () => (
 			Icon buttons are commonly found in app bars and toolbars.
 			<br />
 			<br />
-			Icons are also appropriate for toggle buttons that allow a single choice to be selected
-			or deselected, such as adding or removing a star to an item.
+			Icons are also appropriate for toggle buttons that allow a single
+			choice to be selected or deselected, such as adding or removing a
+			star to an item.
 		</Paragraph>
 		<DemoBox>
 			<IconButton>

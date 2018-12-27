@@ -9,7 +9,10 @@ import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
 function RadioDemo(props) {
 	const [checked, setChecked] = useState('a');
 
-	const handleChange = useCallback(event => setChecked(event.target.value), []);
+	const handleChange = useCallback(
+		event => setChecked(event.target.value),
+		[],
+	);
 
 	return (
 		<Card my={2}>
