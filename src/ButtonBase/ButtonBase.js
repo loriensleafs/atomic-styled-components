@@ -1,12 +1,10 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
-import useDidMount from './../hooks/useDidMount';
 import useDidUpdate from './../hooks/useDidUpdate';
 import usePrevious from './../hooks/usePrevious';
 import useStyles from './../hooks/useStyles';
-import useFocusVisible from './useFocusVisible';
-import Ripples, { useRipples } from './../Ripples';
+import Ripples, { useRippleManager } from './../Ripples';
 import cn from './../theme/className';
 
 export const getBaseStyles = {
@@ -50,7 +48,7 @@ export const getBaseStyles = {
 	},
 };
 
-function ButtonBase(props) {
+const ButtonBase = React.forwardRef((props, ref) => {
 	const {
 		action,
 		centerRipple,
@@ -78,16 +76,11 @@ function ButtonBase(props) {
 		type,
 		...passThru
 	} = props;
-	const buttonRef = useRef(null);
-	const [keyDown, setKeyDown] = useState(false);
-	const {
-		focusVisible,
-		focusVisibilityHandler,
-		checkFocusTimer,
-		setFocusVisible,
-	} = useFocusVisible();
-	const prevFocusVisible = usePrevious(focusVisible || false);
-	const [ripples, rippleStartHandler, rippleEndHandler] = useRipples();
+	ref = ref ? ref : useRef(null);
+	const [ripples, rippleHandler, startRipple] = useRippleManager(ref);
+	const [focused, setFocused] = useState(false);
+	const prevFocused = usePrevious(focused);
+	const keyDown = useRef(false);
 	const isButton = component === 'button';
 	const Component = isButton && props.href ? 'a' : component || 'button';
 	const buttonProps = useMemo(
@@ -102,125 +95,91 @@ function ButtonBase(props) {
 				  },
 		[Component, disabled, type],
 	);
-	const { rootStyles } = useStyles([getBaseStyles], { ...props, focusVisible });
+	const { rootStyles } = useStyles([getBaseStyles], { ...props, focusVisible: focused });
 	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
 
-	const handleMouseDown = useCallback(
-		rippleStartHandler(buttonRef.current, false, centerRipple, () => {
-			clearTimeout(checkFocusTimer.current);
-			if (focusVisible) setFocusVisible(() => false);
-		}),
-		[],
+	const handleMouseDown = rippleHandler(
+		{
+			type: 'start',
+			center: centerRipple,
+		},
+		useCallback(() => focused && setFocused(() => false), []),
 	);
 
-	const handleMouseUp = useCallback(rippleEndHandler(), []);
+	const handleMouseUp = rippleHandler({ type: 'end' });
 
-	const handleMouseLeave = useCallback(
-		rippleEndHandler(event => focusVisible && event.preventDefault()),
-		[],
+	const handleMouseLeave = rippleHandler(
+		{ type: 'end' },
+		useCallback(event => focused && event.preventDefault(), []),
 	);
 
-	const handleTouchStart = useCallback(
-		rippleStartHandler(buttonRef.current, false, centerRipple),
-		[],
-	);
+	const handleTouchStart = rippleHandler({
+		type: 'start',
+		center: centerRipple,
+	});
 
-	const handleTouchEnd = useCallback(rippleEndHandler(), []);
+	const handleTouchEnd = rippleHandler({ type: 'end' });
 
-	const handleTouchMove = useCallback(rippleEndHandler(), []);
+	const handleTouchMove = rippleHandler({ type: 'end' });
 
-	const handleBlur = useCallback(
-		rippleEndHandler(event => {
-			clearTimeout(checkFocusTimer.current);
-			setFocusVisible(() => false);
+	const handleContextMenu = rippleHandler({ type: 'end' });
+
+	const handleBlur = rippleHandler(
+		{ type: 'end' },
+		useCallback(event => {
+			setFocused(() => false);
 			if (onBlur) onBlur(event);
-		}),
-		[],
+		}, []),
 	);
 
 	const handleFocus = useCallback(event => {
-		focusVisibilityHandler(
-			buttonRef.current,
-			disabled,
-			event => {
-				setFocusVisible(() => true);
-				setKeyDown(() => false);
-				if (onFocusVisible) onFocusVisible(event);
-			},
-			false,
-		)(event);
-
-		if (onFocus) {
-			onFocus(event);
-		}
+		keyDown.current = false;
+		setFocused(() => true);
+		if (onFocusVisible) onFocusVisible(event);
+		if (onFocus) onFocus(event);
 	}, []);
 
 	const handleKeyDown = useCallback(event => {
 		const key = keycode(event);
 
-		if (focusRipple && !keyDown && focusVisible && key === 'space') {
-			event.persist();
-			setKeyDown(() => true);
-			rippleEndHandler(() => rippleStartHandler(buttonRef.current)())();
+		if (focusRipple && !keyDown.current && focused && key === 'space') {
+			keyDown.current = true;
 
-			if (onKeyDown) {
-				onKeyDown(event);
-			}
+			if (onKeyDown) onKeyDown(event);
 
 			if (
 				event.target === event.currentTarget &&
 				component &&
-				component !== 'button' &&
+				!isButton &&
 				(key === 'space' || key === 'enter') &&
-				!(buttonRef.current.tagName === 'A' && buttonRef.current.href)
+				!(ref.current.tagName === 'A' && ref.current.href)
 			) {
 				event.preventDefault();
-				if (props.onClick) {
-					props.onClick(event);
-				}
 			}
 		}
 	}, []);
 
 	const handleKeyUp = useCallback(event => {
-		if (focusRipple && keycode(event) === 'space' && focusVisible) {
-			event.persist();
-			setKeyDown(() => false);
-			rippleEndHandler(() => rippleStartHandler(buttonRef.current, true, true)())();
-
-			if (onKeyUp) {
-				onKeyUp(event);
-			}
+		if (focusRipple && keycode(event) === 'space' && focused) {
+			keyDown.current = false;
+			if (onKeyUp) onKeyUp(event);
 		}
 	}, []);
 
-	useDidMount(() => {
-		if (action) {
-			action({
-				focusVisible: () => {
-					setFocusVisible(() => true);
-					if (buttonRef.current) {
-						buttonRef.current.focus();
-					}
-				},
-			});
-		}
-	});
-
 	useDidUpdate(
 		() => {
-			if (focusRipple && !disableRipple && !prevFocusVisible && focusVisible) {
-				rippleStartHandler(buttonRef.current, true, true)();
+			if (focusRipple && !disableRipple && !prevFocused && focused && ripples.length < 1) {
+				startRipple({ center: true, pulsate: true });
 			}
-			return;
 		},
-		[disabled, prevFocusVisible, focusVisible, keyDown],
+		[disabled, focused],
 	);
 
 	return (
 		<Component
 			className={className}
 			onBlur={handleBlur}
+			onContextMenu={handleContextMenu}
 			onFocus={handleFocus}
 			onKeyDown={handleKeyDown}
 			onKeyUp={handleKeyUp}
@@ -230,7 +189,7 @@ function ButtonBase(props) {
 			onTouchEnd={handleTouchEnd}
 			onTouchMove={handleTouchMove}
 			onTouchStart={handleTouchStart}
-			ref={buttonRef}
+			ref={ref}
 			tabIndex={disabled ? '-1' : tabIndex}
 			{...buttonProps}
 			{...passThru}>
@@ -238,7 +197,7 @@ function ButtonBase(props) {
 			{!disableRipple && !disabled && <Ripples ripples={ripples} {...RippleProps} />}
 		</Component>
 	);
-}
+});
 
 ButtonBase.displayName = 'ButtonBase';
 
@@ -255,7 +214,7 @@ ButtonBase.propTypes = {
 	/**
 	 * Use that property to pass a ref callback to the native button component.
 	 */
-	buttonRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	ref: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/**
 	 * If `true`, the ripples will be centered.
 	 * They won't start at the cursor interaction position.

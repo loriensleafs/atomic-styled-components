@@ -1,2 +1,2 @@
-export { default as useRipples } from './useRipples';
+export { default as useRippleManager } from './useRippleManager';
 export { default } from './Ripples';
