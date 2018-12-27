@@ -30,9 +30,7 @@ const getBaseStyles = props => ({
 		opacity: 0,
 		backgroundColor: 'currentcolor',
 		pointerEvents: 'none',
-		transition: `opacity ${
-			props.theme.duration.shortest
-		}ms cubic-bezier(${props.theme.easing.in.join()})`,
+		transition: props.theme.transition('opacity', 'shortest', 'in'),
 	},
 });
 
@@ -40,13 +38,18 @@ function CardActionArea(props) {
 	const { children, className, styles, ...passThru } = props;
 	const { theme } = useContext(ThemeContext);
 	const [focusVisible, setFocusVisible] = useState(false);
-	const { rootStyles, focusHighlightStyles } = useStyles([getBaseStyles, getFocusVisibleStyles], {
-		...props,
-		focusVisible,
-		styles,
-		theme,
-	});
-	const focusHilightClassName = useMemo(() => cn(focusHighlightStyles), [focusHighlightStyles]);
+	const { rootStyles, focusHighlightStyles } = useStyles(
+		[getBaseStyles, getFocusVisibleStyles],
+		{
+			...props,
+			focusVisible,
+			styles,
+			theme,
+		},
+	);
+	const focusHilightClassName = useMemo(() => cn(focusHighlightStyles), [
+		focusHighlightStyles,
+	]);
 
 	const handleFocusVisible = useCallback(event => setFocusVisible(true), []);
 
@@ -58,7 +61,8 @@ function CardActionArea(props) {
 			styles={{ rootStyles }}
 			onFocusVisible={handleFocusVisible}
 			onBlur={handleBlur}
-			{...passThru}>
+			{...passThru}
+		>
 			{children}
 			<span className={focusHilightClassName} />
 		</ButtonBase>

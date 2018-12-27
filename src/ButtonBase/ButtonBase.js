@@ -49,6 +49,7 @@ export const getBaseStyles = {
 };
 
 const ButtonBase = React.forwardRef((props, ref) => {
+	ref = ref ? ref : useRef(null);
 	const {
 		action,
 		centerRipple,

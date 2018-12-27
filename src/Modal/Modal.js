@@ -1,4 +1,11 @@
-import React, { cloneElement, isValidElement, useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+	cloneElement,
+	isValidElement,
+	useCallback,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import { createPortal, findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import isWindow from 'dom-helpers/query/isWindow';
@@ -25,7 +32,9 @@ import { isFunc } from './../utils/helpers';
  * @private
  */
 function getContainer(container, defaultContainer) {
-	return isFunc(container) ? container() || defaultContainer : container || defaultContainer;
+	return isFunc(container)
+		? container() || defaultContainer
+		: container || defaultContainer;
 }
 
 /**
@@ -36,7 +45,9 @@ function getContainer(container, defaultContainer) {
 function getHasTransition(props) {
 	if (props.children) {
 		const children = React.Children.toArray(props.children);
-		return children.some(child => isValidElement(child) && child.props.in !== undefined);
+		return children.some(
+			child => isValidElement(child) && child.props.in !== undefined,
+		);
 	}
 	return false;
 }
@@ -167,11 +178,11 @@ function Modal(props) {
 	// Persistant modal id for modal manager.
 	const { current: id } = useRef(nanoid());
 	const [topModal, add, remove] = useModalManager();
-	const { rootStyles } = useStyles([getBaseStyles], { exited, open, styles }, [
-		exited,
-		open,
-		styles,
-	]);
+	const { rootStyles } = useStyles(
+		[getBaseStyles],
+		{ exited, open, styles },
+		[exited, open, styles],
+	);
 	const className = useMemo(() => cn(classNameProp, rootStyles), [
 		classNameProp,
 		rootStyles,
@@ -188,7 +199,11 @@ function Modal(props) {
 	}, []);
 
 	const handleDocumentKeyDown = useCallback(event => {
-		if (keycode(event) !== 'esc' || !topModal(id) || event.defaultPrevented) {
+		if (
+			keycode(event) !== 'esc' ||
+			!topModal(id) ||
+			event.defaultPrevented
+		) {
 			return;
 		}
 		if (onEscapeKeyDown) onEscapeKeyDown(event);
@@ -197,7 +212,12 @@ function Modal(props) {
 
 	const handleFocus = useCallback(event => {
 		// Modal might already be mounted.
-		if (!topModal(id) || disableEnforceFocus || !mounted.current || !dialogRef.current) {
+		if (
+			!topModal(id) ||
+			disableEnforceFocus ||
+			!mounted.current ||
+			!dialogRef.current
+		) {
 			return;
 		}
 
@@ -288,7 +308,9 @@ function Modal(props) {
 				handleClose();
 			} else if (!prevOpen && open) {
 				setExited(() => false);
-				lastFocus.current = ownerDocument(portalRef.current).activeElement;
+				lastFocus.current = ownerDocument(
+					portalRef.current,
+				).activeElement;
 				handleOpen();
 			}
 		},
@@ -321,7 +343,11 @@ function Modal(props) {
 	const ModalComponent = (
 		<div ref={modalRef} className={className} {...passThru}>
 			{hideBackdrop ? null : (
-				<BackdropComponent open={open} onClick={handleBackdropClick} {...BackdropProps} />
+				<BackdropComponent
+					open={open}
+					onClick={handleBackdropClick}
+					{...BackdropProps}
+				/>
 			)}
 			{cloneElement(children, {
 				...childProps,
@@ -333,7 +359,9 @@ function Modal(props) {
 
 	if (disablePortal) return ModalComponent;
 
-	portalRef.current = findDOMNode(getContainer(containerProp, ownerDocument().body));
+	portalRef.current = findDOMNode(
+		getContainer(containerProp, ownerDocument().body),
+	);
 
 	return createPortal(ModalComponent, portalRef.current);
 }
@@ -344,7 +372,11 @@ Modal.propTypes = {
 	/**
 	 * A backdrop component. This property enables custom backdrop rendering.
 	 */
-	BackdropComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	BackdropComponent: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * Properties applied to the [`Backdrop`](/api/backdrop/) element.
 	 */

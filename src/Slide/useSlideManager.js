@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useReducer } from 'react';
-import useThrottle from './../hooks/useThrottle';
+import { useCallback, useEffect, useMemo, useRef, useReducer } from 'react';
+import debounce from 'debounce';
 
 const GUTTER = 24;
 
@@ -35,13 +35,17 @@ export default function useSlideManager(direction) {
 		direction,
 	]);
 	const [slideOut, dispatch] = useReducer(slideOutReducer);
-	const [handleResize] = useThrottle(
-		() =>
-			getAxis(direction) === 'X' &&
-			dispatch({
-				...ref.current.getBoundingClientRect().toJSON(),
-				direction,
-			}),
+	const handleResize = useCallback(
+		debounce(
+			() =>
+				getAxis(direction) === 'X' &&
+				dispatch({
+					...ref.current.getBoundingClientRect().toJSON(),
+					direction,
+				}),
+			166,
+		),
+		[],
 	);
 
 	useEffect(() => {

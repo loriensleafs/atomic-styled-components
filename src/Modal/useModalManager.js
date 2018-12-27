@@ -43,7 +43,10 @@ function getContainerIdx(node) {
  * @private
  */
 function isHidable(node) {
-	return node.nodeType === 1 && BLACKLIST.indexOf(node.tagName.toLowerCase()) === -1;
+	return (
+		node.nodeType === 1 &&
+		BLACKLIST.indexOf(node.tagName.toLowerCase()) === -1
+	);
 }
 
 /**
@@ -105,7 +108,10 @@ function useModalManager() {
 
 		const containerIdx = getContainerIdx(modalContainer);
 		if (containerIdx !== -1) {
-			containers[containerIdx].modals = [...containers[containerIdx].modals, modalId];
+			containers[containerIdx].modals = [
+				...containers[containerIdx].modals,
+				modalId,
+			];
 			return modalIdx;
 		}
 

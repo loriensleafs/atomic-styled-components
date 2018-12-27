@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { cloneElement, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import cn from './../theme/className';
+import useTransition from './../hooks/useTransition';
 import { animated as a, useSpring } from 'react-spring/hooks';
 
 function Rotate(props) {
@@ -8,12 +9,16 @@ function Rotate(props) {
 		children,
 		className: classNameProp,
 		component: componentProp,
+		ease,
+		duration: durationProp,
 		deg,
 		onEnd,
 		onStart,
 		onUpdate,
 		style = {},
+		...passThru
 	} = props;
+	const [easing, duration] = useTransition(ease, durationProp);
 	const className = useMemo(() => cn(classNameProp, { display: 'inherit' }), [
 		classNameProp,
 	]);
@@ -24,6 +29,7 @@ function Rotate(props) {
 		onStart: () => onStart && onStart(),
 		onFrame: val => onUpdate && onUpdate(val),
 		onRest: () => onEnd && onEnd(),
+		config: { duration, easing },
 	});
 
 	return (
@@ -31,6 +37,7 @@ function Rotate(props) {
 			children={children}
 			className={className}
 			style={{ ...style, ...transition }}
+			{...passThru}
 		/>
 	);
 }
@@ -47,6 +54,14 @@ Rotate.propTypes = {
 	 * The tag type the animated wrapper component should be.
 	 */
 	component: PropTypes.string,
+	/**
+	 * The duration type the animation should use.
+	 */
+	duration: PropTypes.string,
+	/**
+	 * The easing type the animation should use.
+	 */
+	ease: PropTypes.string,
 	/**
 	 * The degree to animate to.
 	 */
@@ -73,6 +88,8 @@ Rotate.propTypes = {
 Rotate.defaultProps = {
 	component: 'div',
 	deg: 0,
+	duration: 'shorter',
+	ease: 'inOut',
 };
 
 export default Rotate;

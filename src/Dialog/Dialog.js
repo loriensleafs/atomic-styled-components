@@ -153,7 +153,9 @@ function Dialog(props) {
 		],
 		props,
 	);
-	const containerClassName = useMemo(() => cn(containerStyles), [containerStyles]);
+	const containerClassName = useMemo(() => cn(containerStyles), [
+		containerStyles,
+	]);
 
 	const handleBackdropClick = useCallback(event => {
 		if (event.target !== event.currentTarget) return;
@@ -173,8 +175,13 @@ function Dialog(props) {
 			open={open}
 			role="dialog"
 			styles={rootStyles}
-			{...passThru}>
-			<TransitionComponent className={cn(containerStyles)} in={open} {...TransitionProps}>
+			{...passThru}
+		>
+			<TransitionComponent
+				className={cn(containerStyles)}
+				in={open}
+				{...TransitionProps}
+			>
 				<div className={containerClassName} role="document">
 					<Paper elevation={24} styles={paperStyles} {...PaperProps}>
 						{children}
@@ -278,7 +285,11 @@ Dialog.propTypes = {
 	/**
 	 * Transition component.
 	 */
-	TransitionComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	TransitionComponent: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * The duration for the transition, in milliseconds.
 	 * You may specify a single timeout for all transitions, or individually with an object.

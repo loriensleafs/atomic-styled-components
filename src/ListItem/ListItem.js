@@ -1,4 +1,10 @@
-import React, { isValidElement, useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+	isValidElement,
+	useCallback,
+	useContext,
+	useMemo,
+	useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import ButtonBase from './../ButtonBase';
@@ -9,9 +15,7 @@ import { space } from './../styles';
 const getButtonStyles = props =>
 	props.button && {
 		rootStyles: {
-			transition: `background-color ${
-				props.theme.duration.shortest
-			}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
+			transition: props.theme.transition('background-color', 'shortest'),
 			':hover': {
 				textDecoration: 'none',
 				backgroundColor: props.theme.palette.action.hover,
@@ -41,7 +45,7 @@ const getSelectedStyles = props =>
 		},
 	};
 
-const getBaseStyles = ({theme, ...props}) => ({
+const getBaseStyles = ({ theme, ...props }) => ({
 	containerStyles: {
 		position: 'relative',
 	},
@@ -60,8 +64,12 @@ const getBaseStyles = ({theme, ...props}) => ({
 		...space({
 			py: props.dense || props.hasAvatar ? 1 : 1.5,
 			pl: !props.disableGutters ? [3, 3.5] : null,
-			pr: props.hasSecondaryAction ? 3 : !props.disableGutters ? [3, 3.5] : null,
-			theme
+			pr: props.hasSecondaryAction
+				? 3
+				: !props.disableGutters
+				? [3, 3.5]
+				: null,
+			theme,
 		}),
 	},
 });
@@ -91,12 +99,15 @@ function ListItem(props) {
 	const [focusVisible, setFocusVisible] = useState(false);
 	const children = React.Children.toArray(childrenProp);
 	const hasAvatar = children.some(
-		child => isValidElement(child) && child.type.displayName === 'ListItemAvatar',
+		child =>
+			isValidElement(child) &&
+			child.type.displayName === 'ListItemAvatar',
 	);
 	const hasSecondaryAction =
 		children.length &&
 		isValidElement(children[children.length - 1]) &&
-		children[children.length - 1].type.displayName === 'ListItemSecondaryAction';
+		children[children.length - 1].type.displayName ===
+			'ListItemSecondaryAction';
 	const { containerStyles, dividerStyles, rootStyles } = useStyles(
 		[
 			getBaseStyles,
@@ -118,8 +129,13 @@ function ListItem(props) {
 			styles,
 		},
 	);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
-	const containerClassName = useMemo(() => cn(containerStyles), [containerStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
+	const containerClassName = useMemo(() => cn(containerStyles), [
+		containerStyles,
+	]);
 
 	const componentProps = { disabled, ...passThru };
 	let Component = component || 'li';
@@ -127,8 +143,14 @@ function ListItem(props) {
 	if (button) {
 		componentProps.component = component || 'div';
 		componentProps.styles = { rootStyles };
-		componentProps.onFocusVisible = useCallback(() => setFocusVisible(() => true), []);
-		componentProps.onBlur = useCallback(() => setFocusVisible(() => false), []);
+		componentProps.onFocusVisible = useCallback(
+			() => setFocusVisible(() => true),
+			[],
+		);
+		componentProps.onBlur = useCallback(
+			() => setFocusVisible(() => false),
+			[],
+		);
 		Component = ButtonBase;
 	} else {
 		componentProps.className = className;
@@ -149,7 +171,10 @@ function ListItem(props) {
 
 	return (
 		<ListContext.Provider value={{ alignItems, dense }}>
-			<ContainerComponent className={containerClassName} {...ContainerProps}>
+			<ContainerComponent
+				className={containerClassName}
+				{...ContainerProps}
+			>
 				<Component {...componentProps}>{children}</Component>
 			</ContainerComponent>
 		</ListContext.Provider>
@@ -180,11 +205,19 @@ ListItem.propTypes = {
 	 * Either a string to use a DOM element or a component.
 	 * By default, it's a `li` when `button` is `false` and a `div` when `button` is `true`.
 	 */
-	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	component: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * The container component used when a `ListItemSecondaryAction` is rendered.
 	 */
-	ContainerComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	ContainerComponent: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * Properties applied to the container element when the component
 	 * is used to display a `ListItemSecondaryAction`.

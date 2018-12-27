@@ -14,97 +14,99 @@ const oppositeDirection = {
 	bottom: 'up',
 };
 
-const getPositionStyles = props => {
+const getContainerPositionStyles = props => {
 	switch (props.anchor) {
 		case 'top':
 			return {
-				rootStyles: {},
-				paperStyles: {
-					rootStyles: {
-						top: '0px',
-						right: '0px',
-						bottom: 'auto',
-						left: '0px',
-						height: 'auto',
-						maxHeight: '100%',
-						...(props.variant !== 'temporary' && {
-							borderBottom: `1px solid ${props.theme.palette.divider}`,
-						}),
-					},
-				},
+				top: '0px',
+				right: '0px',
+				bottom: 'auto',
+				left: '0px',
+				height: 'auto',
+				maxHeight: '100%',
+				...(props.variant !== 'temporary' && {
+					borderBottom: `1px solid ${props.theme.palette.divider}`,
+				}),
 			};
 
 		case 'right':
 			return {
-				rootStyles: {},
-				paperStyles: {
-					rootStyles: {
-						right: '0px',
-						left: 'auto',
-						...(props.variant !== 'temporary' && {
-							borderLeft: `1px solid ${props.theme.palette.divider}`,
-						}),
-					},
-				},
+				right: '0px',
+				left: 'auto',
+				...(props.variant !== 'temporary' && {
+					borderLeft: `1px solid ${props.theme.palette.divider}`,
+				}),
 			};
 
 		case 'bottom':
 			return {
-				rootStyles: {},
-				paperStyles: {
-					rootStyles: {
-						top: 'auto',
-						right: '0px',
-						bottom: '0px',
-						left: '0px',
-						height: 'auto',
-						maxHeight: '100%',
-						...(props.variant !== 'temporary' && {
-							borderTop: `1px solid ${props.theme.palette.divider}`,
-						}),
-					},
-				},
-			};
-
-		case 'left':
-			return {
-				rootStyles: {},
-				paperStyles: {
-					rootStyles: {
-						right: 'auto',
-						left: '0px',
-						...(props.variant !== 'temporary' && {
-							borderRight: `1px solid ${props.theme.palette.divider}`,
-						}),
-					},
-				},
+				top: 'auto',
+				right: '0px',
+				bottom: '0px',
+				left: '0px',
+				height: 'auto',
+				maxHeight: '100%',
+				...(props.variant !== 'temporary' && {
+					borderTop: `1px solid ${props.theme.palette.divider}`,
+				}),
 			};
 
 		default:
-			return {};
+			return {
+				right: 'auto',
+				left: '0px',
+				...(props.variant !== 'temporary' && {
+					borderRight: `1px solid ${props.theme.palette.divider}`,
+				}),
+			};
 	}
 };
 
-const getBaseStyles = props => ({
-	modalStyles: {},
-	paperStyles: {
-		rootStyles: {
-			zIndex: 1200,
-			position: 'fixed',
-			top: '0px',
-			height: '100%',
-			display: 'flex',
-			flex: '1 0 auto',
-			flexDirection: 'column',
-			overflowY: 'auto',
-			outline: 'none',
-			WebkitOverflowScrolling: 'touch', // Add iOS momentum scrolling.
+const getPositionStyles = props => {
+	const containerStyles = getContainerPositionStyles(props);
+
+	return {
+		paperStyles: {
+			rootStyles:
+				props.variant === 'persistent' || props.variant === 'temporary'
+					? { height: '100%' }
+					: containerStyles,
 		},
-	},
-	rootStyles: (props.variant === 'permanent' || props.variant === 'persistent') && {
-		flex: '0 0 auto',
-	},
-});
+		slideStyles: containerStyles,
+	};
+};
+
+const getBaseStyles = props => {
+	const containerStyles = {
+		zIndex: 1200,
+		position: 'fixed',
+		top: '0px',
+		height: '100%',
+		overflowY: 'auto',
+		outline: 'none', // Add iOS momentum scrolling.
+	};
+
+	return {
+		modalStyles: {},
+		paperStyles: {
+			rootStyles: {
+				position: 'relative',
+				height: '100%',
+				display: 'flex',
+				flex: '1 0 auto',
+				flexDirection: 'column',
+				...(props.variant !== 'persistent' &&
+					props.variant !== 'temporary' &&
+					containerStyles),
+			},
+		},
+		rootStyles: (props.variant === 'permanent' ||
+			props.variant === 'persistent') && {
+			flex: '0 0 auto',
+		},
+		slideStyles: containerStyles,
+	};
+};
 
 function Drawer(props) {
 	const {
@@ -123,20 +125,28 @@ function Drawer(props) {
 		...passThru
 	} = props;
 	const { theme } = useContext(ThemeContext);
-	const { modalStyles, paperStyles, rootStyles } = useStyles([getBaseStyles, getPositionStyles], {
-		anchor,
-		styles,
-		theme,
-		variant,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const { modalStyles, paperStyles, rootStyles, slideStyles } = useStyles(
+		[getBaseStyles, getPositionStyles],
+		{
+			anchor,
+			styles,
+			theme,
+			variant,
+		},
+	);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
+	const slideClassName = useMemo(() => cn(slideStyles), [slideStyles]);
 
 	const DrawerBase = (
 		<Paper
 			elevation={variant === 'temporary' ? elevation : 0}
 			square
 			styles={paperStyles}
-			{...passThru}>
+			{...passThru}
+		>
 			{children}
 		</Paper>
 	);
@@ -150,7 +160,15 @@ function Drawer(props) {
 	}
 
 	const SlidingDrawer = (
-		<Slide in={open} direction={oppositeDirection[anchor]} {...SlideProps}>
+		<Slide
+			className={slideClassName}
+			direction={oppositeDirection[anchor]}
+			enter="short"
+			exit="shorter"
+			ease="sharp"
+			in={open}
+			{...SlideProps}
+		>
 			{DrawerBase}
 		</Slide>
 	);
@@ -171,7 +189,8 @@ function Drawer(props) {
 			open={open}
 			styles={modalStyles}
 			{...passThru}
-			{...ModalProps}>
+			{...ModalProps}
+		>
 			{SlidingDrawer}
 		</Modal>
 	);

@@ -32,8 +32,8 @@ const getCheckedStyles = props =>
 						props.color === 'primary' || props.color === 'secondary'
 							? props.theme.palette[props.color].main
 							: props.theme.palette.type === 'light'
-								? props.theme.palette.common.black
-								: props.theme.palette.common.white,
+							? props.theme.palette.common.black
+							: props.theme.palette.common.white,
 						props.theme.palette.action.hoverOpacity,
 					),
 				},
@@ -45,9 +45,7 @@ const getBaseStyles = props => ({
 	buttonStyles: {
 		rootStyles: {
 			color: props.theme.palette.text.secondary,
-			transition: `background-color ${
-				props.theme.duration.shortest
-			}ms cubic-bezier(${props.theme.easing.in.join()})`,
+			transition: props.theme.transition('opacity', 'shortest', 'in'),
 		},
 	},
 });
@@ -66,10 +64,13 @@ function Checkbox(props) {
 		...passThru
 	} = props;
 	const [checked, setChecked] = useState(props.checked || false);
-	const { buttonStyles } = useStyles([getBaseStyles, getCheckedStyles, getDisabledStyles], {
-		...props,
-		checked,
-	});
+	const { buttonStyles } = useStyles(
+		[getBaseStyles, getCheckedStyles, getDisabledStyles],
+		{
+			...props,
+			checked,
+		},
+	);
 
 	const handleChange = useCallback(event => {
 		if (isNil(props.checked)) {
@@ -80,7 +81,9 @@ function Checkbox(props) {
 		}
 	}, []);
 
-	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [props.checked]);
+	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [
+		props.checked,
+	]);
 
 	return (
 		<SelectionControl
