@@ -20,13 +20,14 @@ export default (overrides = {}) => {
 	const motion = createMotion(durationOverrides, easingOverrides);
 	const palette = createPalette(paletteOverrides);
 	const responsive = createResponsive(breakpointOverrides);
-	const typography = createTypography(palette, typographyOverrides);
+	const { pxToRem, ...typography } = createTypography(palette, typographyOverrides);
 	return merge(
 		{
 			elevation: elevationOverrides || elevation,
 			maxWidth: '1200px',
 			...motion,
 			palette,
+			pxToRem,
 			shape,
 			space,
 			...responsive,
