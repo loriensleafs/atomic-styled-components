@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-restricted-globals */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import cn from './../theme/className';
 import useStyles from './../hooks/useStyles';
@@ -183,15 +183,9 @@ const getBaseStyles = props => ({
 		borderRadius: `${props.theme.shape.borderRadius.round}`,
 		color: `${props.theme.palette.text.primary}`,
 		textTransform: 'uppercase',
-		transition: `background-color ${
-			props.theme.duration.short
-		}ms cubic-bezier(${props.theme.easing.inOut.join()}), color ${
-			props.theme.duration.short
-		}ms cubic-bezier(${props.theme.easing.inOut.join()}), box-shadow ${
-			props.theme.duration.shortest
-		}ms cubic-bezier(${props.theme.easing.in.join()}), border ${
-			props.theme.duration.short
-		}ms cubic-bezier(${props.theme.easing.inOut.join()})`,
+		transition: props.theme.transition(['background-color', 'color', 'box-shadow', 'border'], {
+			duration: 'short',
+		}),
 		':hover': {
 			textDecoration: 'none',
 			backgroundColor: props.theme.palette.grey.light,
@@ -209,7 +203,7 @@ const getBaseStyles = props => ({
 	},
 });
 
-function Button(props) {
+const Button = React.forwardRef((props, ref = useRef()) => {
 	const {
 		children,
 		color,
@@ -282,6 +276,7 @@ function Button(props) {
 
 	return (
 		<ButtonBase
+			ref={ref}
 			styles={{ rootStyles }}
 			className={className}
 			disabled={disabled}
@@ -290,7 +285,7 @@ function Button(props) {
 			<span className={labelClassName}>{children}</span>
 		</ButtonBase>
 	);
-}
+});
 
 Button.displayName = 'Button';
 
