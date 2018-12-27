@@ -5,21 +5,21 @@ import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
 import { space } from 'styled-system';
 
-const getBaseStyles = ({theme, ...props}) => ({
+const getBaseStyles = ({ theme, ...props }) => ({
 	rootStyles: {
 		display: 'flex',
 		alignItems: 'center',
 		...space({
 			py: 3,
 			px: [3, 4],
-			theme
+			theme,
 		}),
 	},
 	avatarStyles: {
 		flex: '0 0 auto',
 		...space({
 			mr: 3,
-			theme
+			theme,
 		}),
 	},
 	actionStyles: {
@@ -28,7 +28,7 @@ const getBaseStyles = ({theme, ...props}) => ({
 		...space({
 			mt: -2,
 			mr: [-3, -4],
-			theme
+			theme,
 		}),
 	},
 	contentStyles: {
@@ -46,23 +46,32 @@ const CardTitle = (avatar, className, disableTypography, title, ...passThru) =>
 				variant={avatar ? 'body2' : 'headline'}
 				className={className}
 				component="span"
-				{...passThru}>
+				{...passThru}
+			>
 				{title}
 			</Typography>
 		)) ||
 	title ||
 	null;
 
-const CardSubHeader = (avatar, className, disableTypography, subheader, ...passThru) =>
+const CardSubHeader = (
+	avatar,
+	className,
+	disableTypography,
+	subheader,
+	...passThru
+) =>
 	(subheader &&
-		(!subheader.type || (subheader.type && subheader.type !== Typography)) &&
+		(!subheader.type ||
+			(subheader.type && subheader.type !== Typography)) &&
 		!disableTypography && (
 			<Typography
 				variant={avatar ? 'body2' : 'body1'}
 				className={className}
 				color="text.secondary"
 				component="span"
-				{...passThru}>
+				{...passThru}
+			>
 				{subheader}
 			</Typography>
 		)) ||
@@ -91,12 +100,17 @@ function CardHeader(props) {
 		titleStyles,
 		subheaderStyles,
 	} = useStyles([getBaseStyles], props);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 	const avatarClassName = useMemo(() => cn(avatarStyles), [avatarStyles]);
 	const actionClassName = useMemo(() => cn(actionStyles), [actionStyles]);
 	const contentClassName = useMemo(() => cn(contentStyles), [contentStyles]);
 	const titleClassName = useMemo(() => cn(titleStyles), [titleStyles]);
-	const subheaderClassName = useMemo(() => cn(subheaderStyles), [subheaderStyles]);
+	const subheaderClassName = useMemo(() => cn(subheaderStyles), [
+		subheaderStyles,
+	]);
 
 	return (
 		<Component className={className} {...passThru}>
@@ -141,7 +155,11 @@ CardHeader.propTypes = {
 	 * The component used for the root node.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	component: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * If `true`, the children won't be wrapped by a Typography component.
 	 * This can be useful to render an alternative Typography variant by wrapping

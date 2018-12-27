@@ -19,7 +19,9 @@ export const getColorStyles = props =>
 					color: props.theme.palette.bg.default,
 					backgroundColor:
 						props.theme.palette.grey[
-							props.theme.palette.type === 'light' ? 'light' : 'dark'
+							props.theme.palette.type === 'light'
+								? 'light'
+								: 'dark'
 						],
 				},
 		  }
@@ -101,8 +103,14 @@ function Avatar(props) {
 		weight,
 		...passThru
 	} = props;
-	const { rootStyles, imageStyles } = useStyles([getBaseStyles, getColorStyles], props);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const { rootStyles, imageStyles } = useStyles(
+		[getBaseStyles, getColorStyles],
+		props,
+	);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 	const imageClassName = useMemo(() => cn(imageStyles), [imageStyles]);
 
 	return (
@@ -148,9 +156,9 @@ Avatar.propTypes = {
 	 * This can be an element, or just a string.
 	 */
 	children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.node),
-        PropTypes.node
-    ]),
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node,
+	]),
 	/**
 	 * @ignore
 	 */
@@ -159,7 +167,11 @@ Avatar.propTypes = {
 	 * The component used for the root node.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	component: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * Attributes applied to the `img` element if the component
 	 * is used to display an image.
@@ -178,7 +190,7 @@ Avatar.propTypes = {
 	 */
 	srcSet: PropTypes.string,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-}
+};
 
 Avatar.defaultProps = {
 	component: 'div',

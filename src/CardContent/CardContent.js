@@ -56,7 +56,10 @@ function CardContent(props) {
 		py,
 		styles,
 	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 
 	return <Component className={className} {...passThru} />;
 }
@@ -72,7 +75,11 @@ CardContent.propTypes = {
 	 * The component used for the root node.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	component: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	...space.propTypes,
 };

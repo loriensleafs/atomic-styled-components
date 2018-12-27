@@ -8,7 +8,10 @@ const getBaseStyles = props => ({
 
 function Card(props) {
 	const { raised, styles: stylesProp = {}, ...passThru } = props;
-	const styles = { ...getBaseStyles(), ...(stylesProp ? { styles: stylesProp } : null) };
+	const styles = {
+		...getBaseStyles(),
+		...(stylesProp ? { styles: stylesProp } : null),
+	};
 
 	return <Paper styles={styles} elevation={raised ? 8 : 1} {...passThru} />;
 }

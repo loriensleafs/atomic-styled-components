@@ -113,7 +113,7 @@ function CircularProgress(props) {
 			getColorStyles,
 			getDisabledStyles,
 			getStaticStyles,
-			getIndeterminateStyles
+			getIndeterminateStyles,
 		],
 		{
 			color,
@@ -124,7 +124,10 @@ function CircularProgress(props) {
 			variant,
 		},
 	);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 	const circleClassName = useMemo(() => cn(circleStyles), [circleStyles]);
 	const svgClassName = useMemo(() => cn(svgStyles), [svgStyles]);
 	const circleStyle = {};
@@ -137,15 +140,18 @@ function CircularProgress(props) {
 		rootProps['aria-valuenow'] = Math.round(value);
 
 		if (variant === 'static') {
-			circleStyle.strokeDashoffset = `${(((100 - value) / 100) * circumference).toFixed(
-				3,
-			)}px`;
+			circleStyle.strokeDashoffset = `${(
+				((100 - value) / 100) *
+				circumference
+			).toFixed(3)}px`;
 			rootStyle.transform = 'rotate(-90deg)';
 		} else {
-			circleStyle.strokeDashoffset = `${(easeIn((100 - value) / 100) * circumference).toFixed(
+			circleStyle.strokeDashoffset = `${(
+				easeIn((100 - value) / 100) * circumference
+			).toFixed(3)}px`;
+			rootStyle.transform = `rotate(${(easeOut(value / 70) * 270).toFixed(
 				3,
-			)}px`;
-			rootStyle.transform = `rotate(${(easeOut(value / 70) * 270).toFixed(3)}deg)`;
+			)}deg)`;
 		}
 	}
 
@@ -155,8 +161,12 @@ function CircularProgress(props) {
 			style={{ width: size, height: size, ...rootStyle, ...style }}
 			role="progressbar"
 			{...rootProps}
-			{...passThru}>
-			<svg className={svgClassName} viewBox={`${SIZE / 2} ${SIZE / 2} ${SIZE} ${SIZE}`}>
+			{...passThru}
+		>
+			<svg
+				className={svgClassName}
+				viewBox={`${SIZE / 2} ${SIZE / 2} ${SIZE} ${SIZE}`}
+			>
 				<circle
 					className={circleClassName}
 					style={circleStyle}

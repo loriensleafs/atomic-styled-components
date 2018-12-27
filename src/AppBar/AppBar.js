@@ -119,7 +119,8 @@ function AppBar(props) {
 			elevation={4}
 			className={className}
 			styles={paperStyles}
-			{...passThru}>
+			{...passThru}
+		>
 			{children}
 		</Paper>
 	);
@@ -145,7 +146,13 @@ AppBar.propTypes = {
 	 * [here](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Positioning).
 	 * Note: `sticky` is not universally supported and will fall back to `static` when unavailable.
 	 */
-	position: PropTypes.oneOf(['fixed', 'absolute', 'sticky', 'static', 'relative']),
+	position: PropTypes.oneOf([
+		'fixed',
+		'absolute',
+		'sticky',
+		'static',
+		'relative',
+	]),
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 

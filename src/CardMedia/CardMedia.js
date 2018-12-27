@@ -2,7 +2,15 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './../hooks/useStyles';
 import cn from './../theme/className';
-import { height, maxHeight, maxWidth, minHeight, minWidth, space, width } from './../styles';
+import {
+	height,
+	maxHeight,
+	maxWidth,
+	minHeight,
+	minWidth,
+	space,
+	width,
+} from './../styles';
 
 const MEDIA_COMPONENTS = ['video', 'audio', 'picture', 'iframe', 'img'];
 
@@ -85,12 +93,19 @@ function CardMedia(props) {
 		wMax,
 		wMin,
 	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 
 	return (
 		<Component
 			className={className}
-			style={!isMedia && image ? { backgroundImage: `url("${image}")`, ...style } : style}
+			style={
+				!isMedia && image
+					? { backgroundImage: `url("${image}")`, ...style }
+					: style
+			}
 			src={isMedia ? image || src : undefined}
 			{...passThru}
 		/>
@@ -108,7 +123,11 @@ CardMedia.propTypes = {
 	 * Component for rendering image.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	component: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * Image to be displayed as a background image.
 	 * Either `image` or `src` prop must be specified.

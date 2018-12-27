@@ -164,7 +164,10 @@ const Box = forwardRef((props, ref) => {
 			zIndex,
 		},
 	);
-	const className = useMemo(() => cn(classNameProp, styles), [classNameProp, styles]);
+	const className = useMemo(() => cn(classNameProp, styles), [
+		classNameProp,
+		styles,
+	]);
 	return (
 		<Component ref={ref} className={className} {...passThru}>
 			{children}
@@ -202,7 +205,7 @@ Box.propTypes = {
 	...width.propTypes,
 	...zIndexParser.propTypes,
 	is: PropTypes.node,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 Box.defaultProps = {
