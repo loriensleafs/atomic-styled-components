@@ -1,6 +1,9 @@
 export { default as useDidMount } from './useDidMount';
 export { default as useDidUpdate } from './useDidUpdate';
-export { default as useLifeCycle } from './useLifeCycle';
+export { default as useOnResize } from './useOnResize';
 export { default as usePrevious } from './usePrevious';
+export { default as useRefMounted } from './useRefMounted';
+export { default as useScrollbarSize } from './useScrollbarSize';
 export { default as useStyles } from './useStyles';
+export { default as useThrottle } from './useThrottle';
 export { default as useWillUnmount } from './useWillUnmount';
