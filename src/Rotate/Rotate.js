@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import usePrevious from './../hooks/usePrevious';
-import { animated, useSpring } from 'react-spring';
+import { animated, useSpring } from 'react-spring/hooks';
 
 function Rotate(props) {
 	const { children, deg, onEnd, onStart, ...passThru } = props;
