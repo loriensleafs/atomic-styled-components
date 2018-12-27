@@ -51,8 +51,8 @@ export default (palette, typography = {}) => {
 			lineHeights,
 			fontWeights,
 			letterSpacings,
+			pxToRem,
 			variants: {
-				pxToRem,
 				h1: createVariant(primary, fontFamily, fontWeights.light, 96, 1),
 				h2: createVariant(primary, fontFamily, fontWeights.light, 60, 1),
 				h3: createVariant(primary, fontFamily, fontWeights.regular, 48, 1.04),
