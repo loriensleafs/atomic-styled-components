@@ -9,6 +9,8 @@ export const px = n => (num(n) ? n + 'px' : n);
 
 export const isNil = n => n === null || typeof n === 'undefined';
 
+export const is = n => !isNil(n);
+
 export const isFunc = n => typeof n === 'function';
 
 export const isArray = n => Array.isArray(n);
@@ -20,5 +22,7 @@ export const isNum = n => !isNaN(parseFloat(n));
 export const isObject = n => !isNil(n) && !isArray(n) && typeof n === 'object';
 
 export const arr = n => (isArray(n) ? n : [n]);
+
+export const toArray = n => (isArray(n) ? n : [n]);
 
 export const formatMs = milliseconds => `${Math.round(milliseconds)}ms`;
