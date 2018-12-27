@@ -59,12 +59,16 @@ export default overrides => {
 			.map(
 				prop =>
 					`${prop} ${
-						isString(durationProp) ? durationProp : formatMs(durationProp)
+						isString(durationProp)
+							? duration[durationProp]
+								? `${duration[durationProp]}ms`
+								: durationProp
+							: formatMs(durationProp)
 					} cubic-bezier(${easingProp.join()}) ${
 						isString(delay) ? delay : formatMs(delay)
 					}`,
 			)
-			.join(',');
+			.join(', ');
 	};
 
 	return {
