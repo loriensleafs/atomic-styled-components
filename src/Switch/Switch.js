@@ -4,7 +4,7 @@ import useDidUpdate from './../hooks/useDidUpdate';
 import useStyles from './../hooks/useStyles';
 import SelectionControl from './../SelectionControl';
 import cn from './../theme/className';
-import { animated, useSpring } from 'react-spring';
+import { animated, useSpring } from 'react-spring/hooks';
 import { isNil } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
