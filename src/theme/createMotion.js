@@ -1,80 +1,93 @@
-import warning from 'warning';
-import { formatMs, isString, arr } from './../utils/helpers';
+import toCubicBezierFn from 'bezier-easing';
+import { capitalize, formatMs, isString, toArray } from './../utils/helpers';
 
 /**
- * Follow https://material.google.com/motion/duration-easing.html#duration-easing-natural-easing-curves
- * to learn the context in which each easing should be used.
+ * Easing options.
+ * The rate at which an animation changes. https://material.google.com/motion/duration-easing.html#duration-easing-natural-easing-curves
+ * @property {array} inOut The most common easing curve.
+ * @property {array} in Element enters screen at peak velocity and ends at rest.
+ * @property {array} out Exiting element starts at rest and exits the screen
+ * at peak velocity.
+ * @property {array} sharp Elements that have temporarily let the screen
+ * but can return at any time.
  */
 export let easing = {
-	// Most common easing curve.
 	inOut: [0.4, 0, 0.2, 1],
-	// Enter at full velocity from off-screen and slowly decelerate.
-	out: [0.0, 0, 0.2, 1],
-	// Leaves screen at full velocity w/ no deceleration.
 	in: [0.4, 0, 1, 1],
-	// For objects that may return to the screen at any time.
+	out: [0.0, 0, 0.2, 1],
 	sharp: [0.4, 0, 0.6, 1],
 };
 
 /**
- * Follow https://material.io/guidelines/motion/duration-easing.html#duration-easing-common-durations
- * to learn when use what timing
+ * Duration options.
+ * The length of time it takes to transition from one state to another.
+ *https://material.io/guidelines/motion/duration-easing.html#duration-easing-common-durations
+ * @property {number} [shortest=150]
+ * @property {number} [shorter=200]
+ * @property {number} [short=250] Most basic recommended timing.
+ * @property {number} [standard=300] For complex animations.
+ * @property {number} [complex=375] For elements entering the screen.
+ * @property {number} [entering=225] For elements leaving the screen.
+ * @property {number} [leaving=195]
  */
 export let duration = {
 	shortest: 150,
 	shorter: 200,
 	short: 250,
-	// Most basic recommended timing
 	standard: 300,
-	// For complex animations
 	complex: 375,
-	// For elements entering the screen
 	entering: 225,
-	// For elements leaving the screen
 	leaving: 195,
 };
 
-export let transition;
-
-export let getAutoHeightDuration;
-
-export default overrides => {
+/**
+ * Motion properties that are added to the theme object.
+ * @export
+ * @param {Object} overrides
+ * @param {object} overrides.duration
+ * @param {object} overrides.easing
+ * @returns {object}
+ */
+export default function(overrides) {
+	const { inOut, in: easeIn, out: easeOut, sharp } = {
+		...easing,
+		...overrides.easing,
+	};
+	easing = {
+		inOut: `cubic-bezier(${inOut.join()})`,
+		in: `cubic-bezier(${easeIn.join()})`,
+		out: `cubic-bezier(${easeOut.join()})`,
+		sharp: `cubic-bezier(${sharp.join()})`,
+		getInOut: toCubicBezierFn(inOut[0], inOut[1], inOut[2], inOut[3]),
+		getOut: toCubicBezierFn(easeOut[0], easeOut[1], easeOut[2], easeOut[3]),
+		getIn: toCubicBezierFn(easeIn[0], easeIn[1], easeIn[2], easeIn[3]),
+		getSharp: toCubicBezierFn(sharp[0], sharp[1], sharp[2], sharp[3]),
+	};
 	duration = { ...duration, ...overrides.duration };
-	easing = { ...easing, ...overrides.easing };
-	getAutoHeightDuration = height => {
-		if (!height) return 0;
-		const constant = height / 36;
-		// https://www.wolframalpha.com/input/?i=(4+%2B+15+*+(x+%2F+36+)+**+0.25+%2B+(x+%2F+36)+%2F+5)+*+10
-		return Math.round((4 + 15 * constant ** 0.25 + constant / 5) * 10);
-	};
-	transition = (props = ['all'], options = {}) => {
-		const {
-			duration: durationProp = duration.standard,
-			easing: easingProp = easing.inOut,
-			delay = 0,
-			...other
-		} = options;
-
-		return arr(props)
-			.map(
-				prop =>
-					`${prop} ${
-						isString(durationProp)
-							? duration[durationProp]
-								? `${duration[durationProp]}ms`
-								: durationProp
-							: formatMs(durationProp)
-					} cubic-bezier(${easingProp.join()}) ${
-						isString(delay) ? delay : formatMs(delay)
-					}`,
-			)
-			.join(', ');
-	};
 
 	return {
 		easing,
 		duration,
-		transition,
-		getAutoHeightDuration,
+		transition: (
+			props = ['all'],
+			dur = 'standard',
+			ease = 'inOut',
+			delay = 0,
+		) =>
+			toArray(props)
+				.map(
+					prop =>
+						`${prop} ${
+							isString(dur)
+								? duration[dur]
+									? `${duration[dur]}ms`
+									: dur
+								: formatMs(dur)
+						} ${easing[ease]} ${
+							isString(delay) ? delay : formatMs(delay)
+						}`,
+				)
+				.join(', '),
+		getEasingFn: type => easing[`get${capitalize(type)}`],
 	};
-};
+}

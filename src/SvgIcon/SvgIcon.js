@@ -22,9 +22,7 @@ export const getBaseStyles = props => ({
 		display: 'inline-block',
 		flexShrink: 0,
 		fill: 'currentColor',
-		transition: `fill ${
-			props.theme.duration.shorter
-		}ms cubic-bezier(${props.theme.easing.in.join()})`,
+		transition: props.theme.transition('fill', 'shorter', 'in'),
 		...space(props),
 		...fontSizeParser(props),
 	},
@@ -57,8 +55,14 @@ function SvgIcon(props) {
 		styles,
 		...passThru
 	} = props;
-	const { rootStyles } = useStyles([getBaseStyles, getFontSizeStyles, getColorStyles], props);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const { rootStyles } = useStyles(
+		[getBaseStyles, getFontSizeStyles, getColorStyles],
+		props,
+	);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 
 	return (
 		<Component
@@ -67,7 +71,8 @@ function SvgIcon(props) {
 			viewBox={viewBox}
 			color={nativeColor}
 			aria-hidden={titleAccess ? 'false' : 'true'}
-			{...passThru}>
+			{...passThru}
+		>
 			{children}
 			{titleAccess ? <title>{titleAccess}</title> : null}
 		</Component>
@@ -86,12 +91,23 @@ SvgIcon.propTypes = {
 	 * The color of the component. It supports those theme colors that make sense for this component.
 	 * You can use the `nativeColor` property to apply a color attribute to the SVG element.
 	 */
-	color: PropTypes.oneOf(['inherit', 'primary', 'secondary', 'action', 'error', 'disabled']),
+	color: PropTypes.oneOf([
+		'inherit',
+		'primary',
+		'secondary',
+		'action',
+		'error',
+		'disabled',
+	]),
 	/**
 	 * The component used for the root node.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+	component: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+		PropTypes.object,
+	]),
 	/**
 	 * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
 	 */

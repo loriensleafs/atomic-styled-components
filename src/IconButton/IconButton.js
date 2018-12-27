@@ -50,9 +50,11 @@ export const getBaseStyles = props => ({
 		padding: 0,
 		borderRadius: '50%',
 		color: props.theme.palette.action.active,
-		transition: `background-color ${
-			props.theme.duration.shortest
-		}ms cubic-bezier(${props.theme.easing.in.join()})`,
+		transition: props.theme.transition(
+			'background-color',
+			'shortest',
+			'in',
+		),
 		':hover': {
 			backgroundColor: fade(
 				props.theme.palette.action.active,
@@ -103,7 +105,10 @@ function IconButton(props) {
 		...passThru
 	} = props;
 
-	const { rootStyles, labelStyles } = useStyles([getBaseStyles, getColorStyles], props);
+	const { rootStyles, labelStyles } = useStyles(
+		[getBaseStyles, getColorStyles],
+		props,
+	);
 	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (
@@ -113,7 +118,8 @@ function IconButton(props) {
 			centerRipple
 			focusRipple
 			disabled={disabled}
-			{...passThru}>
+			{...passThru}
+		>
 			<span className={labelClassName}>{children}</span>
 		</ButtonBase>
 	);

@@ -101,11 +101,16 @@ const getBaseStyles = props => {
 				padding: '0px',
 				height: '48px',
 				width: '48px',
-				transition: `background-color ${
-					props.theme.duration.shortest
-				}ms cubic-bezier(${props.theme.easing.in.join()})`,
+				transition: props.theme.transition(
+					'background-color',
+					'shortest',
+					'in',
+				),
 				':hover': {
-					backgroundColor: fade(backgroundColor, props.theme.palette.action.hoverOpacity),
+					backgroundColor: fade(
+						backgroundColor,
+						props.theme.palette.action.hoverOpacity,
+					),
 				},
 			},
 		},
@@ -138,7 +143,14 @@ const getBaseStyles = props => {
 };
 
 function Switch(props) {
-	const { className: classNameProp, color, icon, onChange, styles, ...passThru } = props;
+	const {
+		className: classNameProp,
+		color,
+		icon,
+		onChange,
+		styles,
+		...passThru
+	} = props;
 	const [checked, setChecked] = useState(props.checked || false);
 	const {
 		barStyles,
@@ -154,18 +166,27 @@ function Switch(props) {
 		...props,
 		checked,
 	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const className = useMemo(() => cn(classNameProp, rootStyles), [
+		classNameProp,
+		rootStyles,
+	]);
 	const barClassName = useMemo(() => cn(barStyles), [barStyles]);
 	const iconClassName = useMemo(() => cn(iconStyles), [iconStyles]);
-	const selectControlClassName = useMemo(() => cn(selectControlStyles), [selectControlStyles]);
-	const [iconTransition] = useSpring({
+	const selectControlClassName = useMemo(() => cn(selectControlStyles), [
+		selectControlStyles,
+	]);
+	const iconTransition = useSpring({
 		...(checked ? iconCheckedStyles : iconUncheckedStyles),
 		from: checked ? iconUncheckedStyles : iconCheckedStyles,
 		config: { tension: 1200, friction: 40 },
 	});
-	const [selectControlTransition] = useSpring({
-		...(checked ? selectControlCheckedStyles : selectControlUncheckedStyles),
-		from: checked ? selectControlUncheckedStyles : selectControlCheckedStyles,
+	const selectControlTransition = useSpring({
+		...(checked
+			? selectControlCheckedStyles
+			: selectControlUncheckedStyles),
+		from: checked
+			? selectControlUncheckedStyles
+			: selectControlCheckedStyles,
 		config: { tension: 1200, friction: 40 },
 	});
 
@@ -178,16 +199,26 @@ function Switch(props) {
 		}
 	}, []);
 
-	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [props.checked]);
+	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [
+		props.checked,
+	]);
 
 	return (
 		<span className={className}>
 			<span className={barClassName} />
-			<animated.div className={selectControlClassName} style={selectControlTransition}>
+			<animated.div
+				className={selectControlClassName}
+				style={selectControlTransition}
+			>
 				<SelectionControl
 					onChange={handleChange}
 					type="checkbox"
-					icon={<animated.div className={iconClassName} style={iconTransition} />}
+					icon={
+						<animated.div
+							className={iconClassName}
+							style={iconTransition}
+						/>
+					}
 					styles={{ buttonStyles }}
 					{...passThru}
 				/>

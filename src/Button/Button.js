@@ -60,7 +60,8 @@ export const getSizeStyles = props => {
 		case 'small':
 			return {
 				rootStyles: {
-					padding: `${props.theme.space[2] - 1}px ${props.theme.space[2] + 1}px`,
+					padding: `${props.theme.space[2] - 1}px ${props.theme
+						.space[2] + 1}px`,
 					minWidth: '64px',
 					minHeight: '32px',
 					fontSize: `${props.theme.typography.fontSizes[2] - 0.07}${
@@ -132,9 +133,14 @@ export const getVariantStyles = props => {
 		if (props.color === 'primary' || props.color === 'secondary') {
 			next = merge(next, {
 				rootStyles: {
-					border: `1px solid ${fade(props.theme.palette[props.color].main, 0.5)}`,
+					border: `1px solid ${fade(
+						props.theme.palette[props.color].main,
+						0.5,
+					)}`,
 					':hover': {
-						border: `1px solid ${props.theme.palette[props.color].main}`,
+						border: `1px solid ${
+							props.theme.palette[props.color].main
+						}`,
 					},
 				},
 			});
@@ -177,15 +183,20 @@ const getBaseStyles = props => ({
 		minHeight: '36px',
 		padding: `${props.theme.space[2]}px ${props.theme.space[3]}px`,
 		fontFamily: props.theme.typography.fontFamily,
-		fontSize: `${props.theme.typography.fontSizes[2]}${props.theme.typography.fontUnit}`,
+		fontSize: `${props.theme.typography.fontSizes[2]}${
+			props.theme.typography.fontUnit
+		}`,
 		fontWeight: props.theme.typography.fontWeights.medium,
-		lineHeight: `${props.theme.typography.lineHeights[1]}${props.theme.typography.fontUnit}`,
+		lineHeight: `${props.theme.typography.lineHeights[1]}${
+			props.theme.typography.fontUnit
+		}`,
 		borderRadius: `${props.theme.shape.borderRadius.round}`,
 		color: `${props.theme.palette.text.primary}`,
 		textTransform: 'uppercase',
-		transition: props.theme.transition(['background-color', 'color', 'box-shadow', 'border'], {
-			duration: 'short',
-		}),
+		transition: props.theme.transition(
+			['background-color', 'color', 'box-shadow', 'border'],
+			'short',
+		),
 		':hover': {
 			textDecoration: 'none',
 			backgroundColor: props.theme.palette.grey.light,
@@ -203,7 +214,8 @@ const getBaseStyles = props => ({
 	},
 });
 
-const Button = React.forwardRef((props, ref = useRef()) => {
+const Button = React.forwardRef((props, ref) => {
+	ref = ref ? ref : useRef(null);
 	const {
 		children,
 		color,
@@ -281,7 +293,8 @@ const Button = React.forwardRef((props, ref = useRef()) => {
 			className={className}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
-			{...passThru}>
+			{...passThru}
+		>
 			<span className={labelClassName}>{children}</span>
 		</ButtonBase>
 	);
@@ -303,7 +316,13 @@ Button.propTypes = {
 	size: PropTypes.oneOf(['small', 'medium', 'large']),
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	type: PropTypes.string,
-	variant: PropTypes.oneOf(['text', 'outlined', 'contained', 'fab', 'extendedFab']),
+	variant: PropTypes.oneOf([
+		'text',
+		'outlined',
+		'contained',
+		'fab',
+		'extendedFab',
+	]),
 	...space.propTypes,
 };
 

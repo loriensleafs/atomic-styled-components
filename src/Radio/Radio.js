@@ -31,8 +31,8 @@ const getCheckedStyles = props =>
 						props.color === 'primary' || props.color === 'secondary'
 							? props.theme.palette[props.color].main
 							: props.theme.palette.type === 'light'
-								? props.theme.palette.common.black
-								: props.theme.palette.common.white,
+							? props.theme.palette.common.black
+							: props.theme.palette.common.white,
 						props.theme.palette.action.hoverOpacity,
 					),
 				},
@@ -44,9 +44,11 @@ const getBaseStyles = props => ({
 	buttonStyles: {
 		rootStyles: {
 			color: props.theme.palette.text.secondary,
-			transition: `background-color ${
-				props.theme.duration.shortest
-			}ms cubic-bezier(${props.theme.easing.in.join()})`,
+			transition: props.theme.transition(
+				'background-color',
+				'shortest',
+				'in',
+			),
 		},
 	},
 });
@@ -63,10 +65,13 @@ function Radio(props) {
 		...passThru
 	} = props;
 	const [checked, setChecked] = useState(props.checked || false);
-	const { buttonStyles } = useStyles([getBaseStyles, getCheckedStyles, getDisabledStyles], {
-		...props,
-		checked,
-	});
+	const { buttonStyles } = useStyles(
+		[getBaseStyles, getCheckedStyles, getDisabledStyles],
+		{
+			...props,
+			checked,
+		},
+	);
 
 	const handleChange = useCallback(event => {
 		if (isNil(props.checked)) {
@@ -77,7 +82,9 @@ function Radio(props) {
 		}
 	}, []);
 
-	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [props.checked]);
+	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [
+		props.checked,
+	]);
 	return (
 		<SelectionControl
 			className={className}
@@ -147,7 +154,11 @@ Radio.propTypes = {
 	/**
 	 * The value of the component.
 	 */
-	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+	value: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.number,
+		PropTypes.bool,
+	]),
 };
 
 Radio.defaultProps = {
