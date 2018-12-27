@@ -1,26 +1,37 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import usePrevious from './../hooks/usePrevious';
-import { animated, useSpring } from 'react-spring/hooks';
+import cn from './../theme/className';
+import { animated as a, useSpring } from 'react-spring/hooks';
 
 function Rotate(props) {
-	const { children, deg, onEnd, onStart, ...passThru } = props;
-	const prevDeg = usePrevious(deg);
-	const handleStart = useCallback(() => onStart && onStart(), []);
-	const handleEnd = useCallback(() => onEnd && onEnd(), []);
-	const [transition] = useSpring({
+	const {
+		children,
+		className: classNameProp,
+		component: componentProp,
+		deg,
+		onEnd,
+		onStart,
+		onUpdate,
+		style = {},
+	} = props;
+	const className = useMemo(() => cn(classNameProp, { display: 'inherit' }), [
+		classNameProp,
+	]);
+	const Component = a[componentProp];
+	const transition = useSpring({
+		native: true,
 		transform: `rotate(${deg}deg)`,
-		from: {
-			transform: `rotate(${prevDeg || deg}deg)`,
-		},
-		onStart: handleStart,
-		onRest: handleEnd,
+		onStart: () => onStart && onStart(),
+		onFrame: val => onUpdate && onUpdate(val),
+		onRest: () => onEnd && onEnd(),
 	});
 
 	return (
-		<animated.div style={{ ...transition, display: 'inherit' }} {...passThru}>
-			{children}
-		</animated.div>
+		<Component
+			children={children}
+			className={className}
+			style={{ ...style, ...transition }}
+		/>
 	);
 }
 
@@ -31,6 +42,11 @@ Rotate.propTypes = {
 	 * A single child content element.
 	 */
 	children: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+	className: PropTypes.string,
+	/**
+	 * The tag type the animated wrapper component should be.
+	 */
+	component: PropTypes.string,
 	/**
 	 * The degree to animate to.
 	 */
@@ -43,6 +59,15 @@ Rotate.propTypes = {
 	 * Callback that is triggered at the start of the animation.
 	 */
 	onStart: PropTypes.func,
+	/**
+	 * Callback that is triggered while the animation is entering.
+	 */
+	onUpdate: PropTypes.func,
+	/**
+	 * Inline styles that will be applied to the animated wrapper
+	 * component.
+	 */
+	style: PropTypes.object,
 };
 
 Rotate.defaultProps = {

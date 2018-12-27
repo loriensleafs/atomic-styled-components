@@ -1,33 +1,44 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { animated, useSpring } from 'react-spring/hooks';
+import cn from './../theme/className';
+import { animated as a, useSpring } from 'react-spring/hooks';
 
 function Collapse(props) {
 	const {
 		children,
-		collapsedHeight,
-		component: Component,
+		collapseTo,
+		component: componentProp,
 		in: inProp,
 		onEnd,
 		onStart,
-		...passThru
+		onEntering,
+		onExiting,
+		style = {},
 	} = props;
-	const ref = useRef();
-	const handleStart = useCallback(() => onStart && onStart(), []);
-	const handleEnd = useCallback(() => onEnd && onEnd(), []);
-	const [transition] = useSpring({
-		height: inProp ? ref.current.clientHeight : collapsedHeight,
-		from: {
-			height: collapsedHeight,
-		},
-		onStart: handleStart,
-		onRest: handleEnd,
+	const [expandTo, setExpandTo] = useState('auto');
+	const ref = useRef(null);
+	const className = useMemo(() => cn({ overflow: 'hidden' }), []);
+	const Component = a[componentProp];
+	const transition = useSpring({
+		native: true,
+		height: inProp ? expandTo : collapseTo,
+		onStart: () => onStart && onStart(),
+		onFrame: val =>
+			inProp
+				? onEntering && onEntering(val)
+				: onExiting && onExiting(val),
+		onRest: () => onEnd && onEnd(),
 	});
 
+	useEffect(() => setExpandTo(() => ref.current.scrollHeight), [inProp]);
+
 	return (
-		<animated.div style={{ ...transition, overflow: 'hidden' }} {...passThru}>
-			<Component ref={ref}>{children}</Component>
-		</animated.div>
+		<Component
+			children={children}
+			className={className}
+			ref={ref}
+			style={{ ...style, ...transition }}
+		/>
 	);
 }
 
@@ -38,10 +49,11 @@ Collapse.propTypes = {
 	 * The content node to be collapsed.
 	 */
 	children: PropTypes.node,
+	className: PropTypes.string,
 	/**
 	 * The height of the container when collapsed.
 	 */
-	collapsedHeight: PropTypes.number,
+	collapsedTo: PropTypes.number,
 	/**
 	 * If `true`, the component will transition in.
 	 */
@@ -54,10 +66,15 @@ Collapse.propTypes = {
 	 * Callback that is triggered at the start of the animation.
 	 */
 	onStart: PropTypes.func,
+	/**
+	 * Inline styles that will be applied to the animated wrapper
+	 * component.
+	 */
+	style: PropTypes.object,
 };
 
 Collapse.defaultProps = {
-	collapsedHeight: 0,
+	collapseTo: 0,
 	component: 'div',
 };
 
