@@ -23,3 +23,7 @@ export const lineHeight = style({
 	prop: 'lineHeight',
 	key: 'typography.lineHeights',
 });
+
+export const whiteSpace = style({
+	prop: 'whiteSpace',
+});
