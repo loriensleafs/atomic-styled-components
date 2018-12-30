@@ -96,24 +96,33 @@ export default function useRippleManager(ref) {
 		(props, cb) => event => {
 			if (cb) cb(event);
 			if (event.defaultPrevented) return;
-			const { type, center, pulsate } = props;
+			const { type, center, pulsate, id } = props;
 
-			dispatch({
-				type,
-				center,
-				pulsate,
-				rect: event.currentTarget.getBoundingClientRect(),
-				x: event.clientX
-					? event.clientX
-					: event && event.touches
-					? event.touches[0]
-					: 0,
-				y: event.clientY
-					? event.clientY
-					: event && event.touches
-					? event.touches[0]
-					: 0,
-			});
+			if (type === 'start') {
+				dispatch({
+					center,
+					pulsate,
+					rect: event.currentTarget.getBoundingClientRect(),
+					type,
+					x:
+						event && event.clientX
+							? event.clientX
+							: event && event.touches
+							? event.touches[0].clientX
+							: 0,
+					y:
+						event && event.clientY
+							? event.clientY
+							: event && event.touches
+							? event.touches[0].clientY
+							: 0,
+				});
+			} else if (type === 'end') {
+				dispatch({
+					id,
+					type,
+				});
+			}
 		},
 		[],
 	);
