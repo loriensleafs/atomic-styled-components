@@ -1,8 +1,14 @@
-import merge from './pureRecursiveMerge';
+import merge from './merge';
 
-export default (...funcs) => {
-	const fn = (props) => funcs.map((fn) => fn(props)).filter(Boolean).reduce(merge, {});
+function compose(...fns) {
+	const fn = props =>
+		fns
+			.map(fn => fn(props))
+			.filter(Boolean)
+			.reduce(merge, {});
+	fn.propTypes = fns.map(fn => fn.propTypes).reduce(merge, {});
 
-	fn.propTypes = funcs.map((fn) => fn.propTypes).reduce(merge, {});
 	return fn;
-};
+}
+
+export default compose;
