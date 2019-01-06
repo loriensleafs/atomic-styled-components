@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isFunc } from './../utils/helpers';
+import { isFn } from './../utils/helpers';
 
 /**
  * Triggers the function when the initial rendering occurs.
@@ -9,5 +9,5 @@ import { isFunc } from './../utils/helpers';
  * but it can be replaced by the 'useLayoutEffect' or 'useMutationEffect' hook.
  */
 export default function useDidMount(cb, hook = useEffect) {
-	hook(() => cb && isFunc(cb) && cb(), []);
+	hook(() => cb && isFn(cb) && cb(), []);
 }

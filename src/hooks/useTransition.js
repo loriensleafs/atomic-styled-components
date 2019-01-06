@@ -2,8 +2,8 @@ import { useContext, useMemo } from 'react';
 import ThemeContext from './../theme/ThemeContext';
 
 export default function useTransition(ease, enter, exit, state) {
-	const { duration: dur, getEasingFn } = useContext(ThemeContext).theme;
-	const easing = useMemo(() => getEasingFn(ease), [ease]);
+	const { duration: dur, getEasing } = useContext(ThemeContext).theme;
+	const easing = useMemo(() => getEasing(ease), [ease]);
 	const duration = useMemo(
 		() =>
 			enter && exit && state
