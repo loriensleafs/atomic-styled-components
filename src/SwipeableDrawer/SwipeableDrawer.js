@@ -1,13 +1,21 @@
-import React, { Fragment, useCallback, useContext, useRef, useState } from 'react';
+import React, {
+	Fragment,
+	useCallback,
+	useContext,
+	useRef,
+	useState,
+} from 'react';
 import PropTypes from 'prop-types';
-import nanoid from 'nanoid';
-import useDidMount from './../hooks/useDidMount';
-import useDidUpdate from './../hooks/useDidUpdate';
-import usePrevious from './../hooks/usePrevious';
-import useWillUnmount from './../hooks/useWillUnmount';
 import Drawer from './../Drawer';
 import SwipeArea from './SwipeArea';
 import ThemeContext from './../theme/ThemeContext';
+import nanoid from 'nanoid';
+import {
+	useDidMount,
+	useDidUpdate,
+	usePrevious,
+	useWillUnmount,
+} from './../hooks';
 
 // This value is closed to what browsers are using internally to
 // trigger a native scroll.
@@ -74,20 +82,26 @@ function SwipeableDrawer(props) {
 	const lastTranslate = useRef();
 
 	const getMaxTranslate = useCallback(() => {
-		return isHorizontal(props) ? paperRef.current.clientWidth : paperRef.current.clientHeight;
+		return isHorizontal(props)
+			? paperRef.current.clientWidth
+			: paperRef.current.clientHeight;
 	}, []);
 
 	const getTranslate = useCallback(current => {
 		const start = isHorizontal(props) ? startX.current : startY.current;
 		return Math.min(
-			Math.max(open ? start - current : getMaxTranslate() + start - current, 0),
+			Math.max(
+				open ? start - current : getMaxTranslate() + start - current,
+				0,
+			),
 			getMaxTranslate(),
 		);
 	}, []);
 
 	const setPosition = useCallback((translate, options = {}) => {
 		const { mode = null, changeTransition = true } = options;
-		const rtlTranslateMultiplier = ['right', 'bottom'].indexOf(anchor) !== -1 ? 1 : -1;
+		const rtlTranslateMultiplier =
+			['right', 'bottom'].indexOf(anchor) !== -1 ? 1 : -1;
 		const transform = isHorizontal(props)
 			? `translate(${rtlTranslateMultiplier * translate}px, 0)`
 			: `translate(0, ${rtlTranslateMultiplier * translate}px)`;
@@ -129,7 +143,10 @@ function SwipeableDrawer(props) {
 
 	const handleBodyTouchStart = useCallback(event => {
 		// We are not supposed to handle this touch move.
-		if (nodeThatClaimedTheSwipe !== null && nodeThatClaimedTheSwipe !== id) {
+		if (
+			nodeThatClaimedTheSwipe !== null &&
+			nodeThatClaimedTheSwipe !== id
+		) {
 			return;
 		}
 
@@ -158,16 +175,21 @@ function SwipeableDrawer(props) {
 		setMaybeSwiping(() => true);
 		if (!open && paperRef.current) {
 			// The ref may be null when a parent component updates while swiping.
-			setPosition(getMaxTranslate() + (disableDiscovery ? 20 : -swipeAreaWidth), {
-				changeTransition: false,
-			});
+			setPosition(
+				getMaxTranslate() + (disableDiscovery ? 20 : -swipeAreaWidth),
+				{
+					changeTransition: false,
+				},
+			);
 		}
 
 		velocity.current = 0;
 		lastTime.current = null;
 		lastTranslate.current = null;
 
-		document.body.addEventListener('touchmove', handleBodyTouchMove, { passive: false });
+		document.body.addEventListener('touchmove', handleBodyTouchMove, {
+			passive: false,
+		});
 		document.body.addEventListener('touchend', handleBodyTouchEnd);
 		document.body.addEventListener('touchcancel', handleBodyTouchEnd);
 	}, []);
@@ -200,7 +222,9 @@ function SwipeableDrawer(props) {
 
 			if (
 				isSwiping.current === true ||
-				(horizontalSwipe ? dy > UNCERTAINTY_THRESHOLD : dx > UNCERTAINTY_THRESHOLD)
+				(horizontalSwipe
+					? dy > UNCERTAINTY_THRESHOLD
+					: dx > UNCERTAINTY_THRESHOLD)
 			) {
 				isSwiping.current = isSwiping;
 				if (!isSwiping) {
@@ -233,7 +257,9 @@ function SwipeableDrawer(props) {
 		}
 
 		const currentVelocity =
-			((translate - lastTranslate.current) / (performance.now() - lastTime.current)) * 1e3;
+			((translate - lastTranslate.current) /
+				(performance.now() - lastTime.current)) *
+			1e3;
 
 		// Low Pass filter.
 		velocity.current = velocity.current * 0.4 + currentVelocity * 0.6;
@@ -274,7 +300,10 @@ function SwipeableDrawer(props) {
 		const translateRatio = getTranslate(current) / getMaxTranslate();
 
 		if (open) {
-			if (velocity.current > minFlingVelocity || translateRatio > hysteresis) {
+			if (
+				velocity.current > minFlingVelocity ||
+				translateRatio > hysteresis
+			) {
 				props.onClose();
 			} else {
 				setPosition(0, {
@@ -285,7 +314,10 @@ function SwipeableDrawer(props) {
 			return;
 		}
 
-		if (velocity.current < minFlingVelocity || 1 - translateRatio > hysteresis) {
+		if (
+			velocity.current < minFlingVelocity ||
+			1 - translateRatio > hysteresis
+		) {
 			props.onOpen();
 		} else {
 			// Reset the position, the swipe was aborted.
@@ -304,7 +336,9 @@ function SwipeableDrawer(props) {
 	}, []);
 
 	const removeBodyTouchListeners = useCallback(() => {
-		document.body.removeEventListener('touchmove', handleBodyTouchMove, { passive: false });
+		document.body.removeEventListener('touchmove', handleBodyTouchMove, {
+			passive: false,
+		});
 		document.body.removeEventListener('touchend', handleBodyTouchEnd);
 		document.body.removeEventListener('touchcancel', handleBodyTouchEnd);
 	}, []);
@@ -351,7 +385,8 @@ function SwipeableDrawer(props) {
 				PaperProps={{
 					...PaperProps,
 					style: {
-						pinterEvents: variant === 'temporary' && !open ? 'none' : '',
+						pinterEvents:
+							variant === 'temporary' && !open ? 'none' : '',
 						...PaperProps.style,
 					},
 					ref: paperRef.current,
@@ -362,7 +397,11 @@ function SwipeableDrawer(props) {
 			{!disableDiscovery &&
 				!disableSwipeToOpen &&
 				variant === 'temporary' && (
-					<SwipeArea anchor={anchor} width={swipeAreaWidth} {...SwipeAreaProps} />
+					<SwipeArea
+						anchor={anchor}
+						width={swipeAreaWidth}
+						{...SwipeAreaProps}
+					/>
 				)}
 		</Fragment>
 	);
@@ -454,7 +493,8 @@ SwipeableDrawer.defaultProps = {
 	disableBackdropTransition: false,
 	disableDiscovery: false,
 	disableSwipeToOpen:
-		typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent),
+		typeof navigator !== 'undefined' &&
+		/iPad|iPhone|iPod/.test(navigator.userAgent),
 	hysteresis: 0.55,
 	minFlingVelocity: 400,
 	swipeAreaWidth: 20,

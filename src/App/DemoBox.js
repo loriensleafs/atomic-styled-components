@@ -10,8 +10,8 @@ DemoBox.defaultProps = {
 	p: [3, 4],
 	justifyContent: ['flex-start', null, 'center'],
 	alignItems: 'center',
+	wrap: 'wrap',
 	bg: 'grey.light',
-	wrap: true,
 };
 
 export default DemoBox;

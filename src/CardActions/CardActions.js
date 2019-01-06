@@ -1,41 +1,34 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
-import { space } from './../styles';
+import { getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getBaseStyles = ({ theme, ...props }) => ({
-	rootStyles: {
-		display: 'flex',
-		alignItems: 'center',
-		boxSizing: 'border-box',
-		...space({
-			py: 2,
-			px: [2, 2.5],
-			theme,
-		}),
-	},
-	actionStyles: {
-		margin: '0px 4px',
-	},
-});
+function getStyles() {
+	return {
+		root: {
+			display: 'flex',
+			alignItems: 'center',
+			boxSizing: 'border-box',
+			...getSpacing({
+				py: 2,
+				px: [2, 2.5],
+			}),
+		},
+		action: {
+			margin: '0px 4px',
+		},
+	};
+}
 
 function CardActions(props) {
-	const {
-		children,
-		className: classNameProp,
-		disableActionSpacing,
+	const [
+		{ children, className, disableActionSpacing, ...passThru },
 		styles,
-		...passThru
-	} = props;
-	const { rootStyles } = useStyles([getBaseStyles], props);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-	]);
+		classes,
+	] = useStyles(props, getStyles);
 
 	return (
-		<div className={className} {...passThru}>
+		<div className={classes.root} {...passThru}>
 			{children}
 		</div>
 	);
@@ -52,7 +45,7 @@ CardActions.propTypes = {
 	 * @ignore
 	 */
 	className: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 };
 
 export default CardActions;

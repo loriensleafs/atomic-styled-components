@@ -1,12 +1,5 @@
-import React, {
-	Fragment,
-	useCallback,
-	useContext,
-	useMemo,
-	useState,
-	useRef,
-} from 'react';
-import useStyles from './../hooks/useStyles';
+import React, { Fragment, useCallback, useMemo, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import AppBar from './../AppBar';
 import Box from './../Box';
 import Button from './../Button';
@@ -24,19 +17,17 @@ import Paper from './../Paper';
 import SwipeableDrawer from './../SwipeableDrawer';
 import Toolbar from './../Toolbar';
 import Typography from './../Typography';
-import cn from './../theme/className';
-import ThemeContext from './../theme/ThemeContext';
-import merge from './../utils/pureRecursiveMerge';
+import merge from './../utils/merge';
+import { cn, getBg, getSpacing, getWidth, useStyles } from './../system';
 import { ChevronLeftIcon, InboxIcon, MailIcon } from './DemoIcons';
 import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
-import { space, width } from './../styles';
 
 const Navigation = () => (
 	<Box
 		w={200}
 		pt={5}
 		display={['none', null, null, null, 'block']}
-		fontSize={12}
+		fontSize="12px"
 	>
 		<List dense style={{ position: 'sticky', top: '64px' }}>
 			<ListItem button>
@@ -85,7 +76,7 @@ const Intro = () => (
 			sheets are surfaces containing supplementary content that are
 			anchored to the left or right edge of the screen.
 		</SectionHeader>
-		<Paragraph component="div">
+		<Paragraph as="div">
 			<a href="https://material.io/design/components/navigation-drawer.html">
 				Navigation drawers
 			</a>{' '}
@@ -167,7 +158,7 @@ const FullList = () => (
 );
 
 const TemporaryDrawer = () => {
-	const [side, setSide] = useState({
+	const [{ top, right, bottom, left }, setSide] = useState({
 		top: false,
 		right: false,
 		bottom: false,
@@ -175,12 +166,13 @@ const TemporaryDrawer = () => {
 	});
 
 	const handleToggle = useCallback(
-		anchor => () => setSide({ ...side, [anchor]: !side[anchor] }),
+		anchor => () =>
+			setSide(state => ({ ...state, [anchor]: !state[anchor] })),
 		[],
 	);
 
 	const handleClose = useCallback(
-		anchor => () => setSide({ ...side, [anchor]: false }),
+		anchor => () => setSide(state => ({ ...state, [anchor]: false })),
 		[],
 	);
 
@@ -198,7 +190,7 @@ const TemporaryDrawer = () => {
 				controlling the 'open' prop.
 			</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="flex-start" wrap>
+				<Flex justifyContent="flex-start" wrap="wrap">
 					<Button
 						variant="outlined"
 						color="primary"
@@ -232,11 +224,7 @@ const TemporaryDrawer = () => {
 						Open Left
 					</Button>
 				</Flex>
-				<Drawer
-					anchor="top"
-					open={side.top}
-					onClose={handleClose('top')}
-				>
+				<Drawer anchor="top" open={top} onClose={handleClose('top')}>
 					<div
 						tabIndex={0}
 						role="button"
@@ -248,7 +236,7 @@ const TemporaryDrawer = () => {
 				</Drawer>
 				<Drawer
 					anchor="right"
-					open={side.right}
+					open={right}
 					onClose={handleClose('right')}
 				>
 					<div
@@ -262,7 +250,7 @@ const TemporaryDrawer = () => {
 				</Drawer>
 				<Drawer
 					anchor="bottom"
-					open={side.bottom}
+					open={bottom}
 					onClose={handleClose('bottom')}
 				>
 					<div
@@ -274,11 +262,7 @@ const TemporaryDrawer = () => {
 						<FullList />
 					</div>
 				</Drawer>
-				<Drawer
-					anchor="left"
-					open={side.left}
-					onClose={handleClose('left')}
-				>
+				<Drawer anchor="left" open={left} onClose={handleClose('left')}>
 					<div
 						tabIndex={0}
 						role="button"
@@ -294,7 +278,7 @@ const TemporaryDrawer = () => {
 };
 
 const SwipeableTemporaryDrawer = () => {
-	const [side, setSide] = useState({
+	const [{ top, right, bottom, left }, setSide] = useState({
 		top: false,
 		right: false,
 		bottom: false,
@@ -302,12 +286,13 @@ const SwipeableTemporaryDrawer = () => {
 	});
 
 	const handleToggle = useCallback(
-		anchor => () => setSide({ ...side, [anchor]: !side[anchor] }),
+		anchor => () =>
+			setSide(state => ({ ...state, [anchor]: !state[anchor] })),
 		[],
 	);
 
 	const handleClose = useCallback(
-		anchor => () => setSide({ ...side, [anchor]: false }),
+		anchor => () => setSide(state => ({ ...state, [anchor]: false })),
 		[],
 	);
 
@@ -325,7 +310,7 @@ const SwipeableTemporaryDrawer = () => {
 				help.
 			</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="flex-start" wrap>
+				<Flex justifyContent="flex-start" wrap="wrap">
 					<Button
 						variant="outlined"
 						color="primary"
@@ -361,7 +346,7 @@ const SwipeableTemporaryDrawer = () => {
 				</Flex>
 				<SwipeableDrawer
 					anchor="top"
-					open={side.top}
+					open={top}
 					onClose={handleClose('top')}
 				>
 					<div
@@ -375,7 +360,7 @@ const SwipeableTemporaryDrawer = () => {
 				</SwipeableDrawer>
 				<SwipeableDrawer
 					anchor="right"
-					open={side.right}
+					open={right}
 					onClose={handleClose('right')}
 				>
 					<div
@@ -389,7 +374,7 @@ const SwipeableTemporaryDrawer = () => {
 				</SwipeableDrawer>
 				<SwipeableDrawer
 					anchor="bottom"
-					open={side.bottom}
+					open={bottom}
 					onClose={handleClose('bottom')}
 				>
 					<div
@@ -403,7 +388,7 @@ const SwipeableTemporaryDrawer = () => {
 				</SwipeableDrawer>
 				<SwipeableDrawer
 					anchor="left"
-					open={side.left}
+					open={left}
 					onClose={handleClose('left')}
 				>
 					<div
@@ -416,7 +401,7 @@ const SwipeableTemporaryDrawer = () => {
 					</div>
 				</SwipeableDrawer>
 			</DemoBox>
-			<Paragraph component="div" mt={4}>
+			<Paragraph as="div" mt={4}>
 				We are using the following set of properties on this
 				documentation website for optimal usability of the component:
 				<br />
@@ -480,23 +465,18 @@ const MainContent = () => (
 );
 
 const ResponsiveDrawer = () => {
-	const { theme } = useContext(ThemeContext);
 	const [open, setOpen] = useState(false);
 	const containerRef = useRef();
+	const paperStyles = merge(
+		getWidth({
+			w: [1, 'calc(100% - 250px)'],
+		}),
+		getSpacing({ ml: [0, 250] }),
+	);
 
-	const handleToggle = useCallback(() => setOpen(() => !open), []);
+	const handleToggle = useCallback(() => setOpen(state => !state), []);
 
 	const handleClose = useCallback(() => setOpen(() => false), []);
-
-	const paperStyles = {
-		rootStyles: merge(
-			width({
-				theme,
-				w: [1, 'calc(100% - 250px)'],
-			}),
-			space({ ml: [0, 250], theme }),
-		),
-	};
 
 	return (
 		<Fragment>
@@ -516,7 +496,7 @@ const ResponsiveDrawer = () => {
 							overflow: 'hidden',
 						}}
 					>
-						<AppBar position="fixed" styles={{ paperStyles }}>
+						<AppBar position="fixed" styles={paperStyles}>
 							<Toolbar>
 								<Box display={['block', 'none']}>
 									<IconButton
@@ -528,7 +508,11 @@ const ResponsiveDrawer = () => {
 										<MenuIcon />
 									</IconButton>
 								</Box>
-								<Typography variant="h6" color="inherit" noWrap>
+								<Typography
+									variant="h6"
+									color="inherit"
+									whiteSpace="nowrap"
+								>
 									Responsive drawer
 								</Typography>
 							</Toolbar>
@@ -543,7 +527,7 @@ const ResponsiveDrawer = () => {
 						>
 							<SideList />
 						</Drawer>
-						<Box is="nav" w={[null, 250]}>
+						<Box as="nav" w={[null, 250]}>
 							<Box display={['none', 'block']}>
 								<Drawer variant="permanent" open>
 									<Box px={[3, 3.5]} hMin={[48, 56, 64]} />
@@ -552,7 +536,7 @@ const ResponsiveDrawer = () => {
 								</Drawer>
 							</Box>
 						</Box>
-						<Flex is="main" p={3.5} flex={1} bg="bg.default" child>
+						<Flex as="main" p={3.5} flex={1} bg="bg.default">
 							<MainContent />
 						</Flex>
 					</Flex>
@@ -562,46 +546,56 @@ const ResponsiveDrawer = () => {
 	);
 };
 
-const getPersistentDrawerStyles = props => ({
-	paperStyles: {
-		rootStyles: {
-			width: props.open ? 'calc(100% - 250px)' : '100%',
-			marginLeft: props.open ? '250px' : '0px',
-			transition: props.theme.transition(
+function getPersistentStyles(props) {
+	const {
+		open,
+		theme: { getTransition },
+	} = props;
+
+	return {
+		paper: {
+			...getWidth({
+				w: open ? 'calc(100% - 250px)' : 1,
+			}),
+			...getSpacing({
+				ml: open ? 250 : 0,
+			}),
+			transition: getTransition(
 				['margin', 'width'],
-				props.open ? 'entering' : 'leaving',
+				open ? 'entering' : 'leaving',
 				'sharp',
 			),
 		},
-	},
-	contentStyles: {
-		flexGrow: 1,
-		transition: props.theme.transition(
-			'margin',
-			props.open ? 'entering' : 'leaving',
-			'sharp',
-		),
-		backgroundColor: props.theme.palette.bg.default,
-		...space({ ml: props.open ? 250 : 0, p: 3.5, theme: props.theme }),
-	},
-});
+		content: {
+			flexGrow: 1,
+			transition: getTransition(
+				'margin',
+				open ? 'entering' : 'leaving',
+				'sharp',
+			),
+			...getBg({
+				bg: 'bg.default',
+			}),
+			...getSpacing({
+				ml: open ? 250 : 0,
+				p: 3.5,
+			}),
+		},
+	};
+}
+getPersistentStyles.propTypes = {
+	open: PropTypes.bool,
+};
 
 const PersistentDrawer = () => {
-	const [open, setOpen] = useState(false);
 	const containerRef = useRef();
-	const { paperStyles, contentStyles } = useStyles(
-		[getPersistentDrawerStyles],
-		{
-			open,
-		},
-		[open],
+	const [open, setOpen] = useState(false);
+	const [nextProps, styles, classes] = useStyles(
+		{ open },
+		getPersistentStyles,
 	);
-	const contentClassName = useMemo(() => cn(contentStyles), [
-		contentStyles,
-		open,
-	]);
 
-	const handleToggle = useCallback(() => setOpen(() => !open), []);
+	const handleToggle = useCallback(() => setOpen(state => !state), []);
 
 	const handleClose = useCallback(() => setOpen(() => false), []);
 
@@ -635,7 +629,7 @@ const PersistentDrawer = () => {
 							overflow: 'hidden',
 						}}
 					>
-						<AppBar position="fixed" styles={{ paperStyles }}>
+						<AppBar position="fixed" styles={styles.paper}>
 							<Toolbar disableGutters={!open}>
 								<Box
 									ml={2.5}
@@ -650,12 +644,16 @@ const PersistentDrawer = () => {
 										<MenuIcon />
 									</IconButton>
 								</Box>
-								<Typography variant="h6" color="inherit" noWrap>
+								<Typography
+									variant="h6"
+									color="inherit"
+									whiteSpace="nowrap"
+								>
 									Persistent drawer
 								</Typography>
 							</Toolbar>
 						</AppBar>
-						<Drawer variant="persistent" open={open}>
+						<Drawer open={open} variant="persistent">
 							<Flex
 								hMin={[48, 56, 64]}
 								alignItems="center"
@@ -671,7 +669,7 @@ const PersistentDrawer = () => {
 							<Divider />
 							<SideList />
 						</Drawer>
-						<main className={contentClassName}>
+						<main className={classes.content}>
 							<MainContent />
 						</main>
 					</Flex>
@@ -682,23 +680,14 @@ const PersistentDrawer = () => {
 };
 
 const PersistentMiniVariant = () => {
-	const { theme } = useContext(ThemeContext);
-	const [open, setOpen] = useState(false);
 	const containerRef = useRef();
-	const { paperStyles, contentStyles } = useStyles(
-		[getPersistentDrawerStyles],
-		{
-			open,
-			theme,
-		},
-		[open, theme],
+	const [open, setOpen] = useState(true);
+	const [nextProps, styles, classes] = useStyles(
+		{ open },
+		getPersistentStyles,
 	);
-	const contentClassName = useMemo(() => cn(contentStyles), [
-		contentStyles,
-		open,
-	]);
 
-	const handleToggle = useCallback(() => setOpen(() => !open), []);
+	const handleToggle = useCallback(() => setOpen(state => !state), []);
 
 	const handleClose = useCallback(() => setOpen(() => false), []);
 
@@ -724,7 +713,7 @@ const PersistentMiniVariant = () => {
 							overflow: 'hidden',
 						}}
 					>
-						<AppBar position="fixed" styles={{ paperStyles }}>
+						<AppBar position="fixed" styles={styles.paper}>
 							<Toolbar disableGutters={!open}>
 								<Box
 									ml={2.5}
@@ -739,7 +728,11 @@ const PersistentMiniVariant = () => {
 										<MenuIcon />
 									</IconButton>
 								</Box>
-								<Typography variant="h6" color="inherit" noWrap>
+								<Typography
+									variant="h6"
+									color="inherit"
+									whiteSpace="nowrap"
+								>
 									Persistent drawer
 								</Typography>
 							</Toolbar>
@@ -760,7 +753,7 @@ const PersistentMiniVariant = () => {
 							<Divider />
 							<SideList />
 						</Drawer>
-						<main className={contentClassName}>
+						<main className={classes.content}>
 							<MainContent />
 						</main>
 					</Flex>

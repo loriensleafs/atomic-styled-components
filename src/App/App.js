@@ -1,18 +1,8 @@
-import React, {
-	Fragment,
-	lazy,
-	Suspense,
-	useCallback,
-	useContext,
-	useState,
-} from 'react';
+import React, { Fragment, lazy, Suspense, useContext } from 'react';
 import ThemeContext from './../theme/ThemeContext';
 import AppNav from './AppNav';
 import Box from './../Box';
-import Button from './../Button';
 import CircularProgress from './../CircularProgress';
-import Container from './../Container';
-import Drawer from './../Drawer';
 import ErrorBoundry from './../ErrorBoundry';
 import Flex from './../Flex';
 import GlobalStyle from './../GlobalStyle';
@@ -24,13 +14,7 @@ const history = createBrowserHistory();
 const ButtonDemo = lazy(() => import('./ButtonDemo'));
 const CardDemo = lazy(() => import('./CardDemo'));
 const DrawerDemo = lazy(() => import('./DrawerDemo'));
-// const DividerDemo = React.lazy(() => import('./DividerDemo'));
-// const LayoutDemo = React.lazy(() => import('./DividerDemo'));
-// const ListDemo = React.lazy(() => import('./ListDemo'));
-// const PaperDemo = React.lazy(() => import('./PaperDemo'));
 const SelectionControlDemo = React.lazy(() => import('./SelectionControlDemo'));
-const TabsDemo = React.lazy(() => import('./TabsDemo'));
-// const TypographyDemo = React.lazy(() => import('./TypographyDemo'));
 
 const getGlobalStyles = ({ theme }) => `
 	* {
@@ -73,24 +57,29 @@ export default function App() {
 							>
 								<Switch>
 									<Route
+										exact
+										path="/"
+										render={() => (
+											<Box w={1} mt={5.5}>
+												<div>HOME PAGE BITCHES</div>
+											</Box>
+										)}
+									/>
+									<Route
 										path={`/buttons`}
-										component={ButtonDemo}
+										render={() => <ButtonDemo />}
 									/>
 									<Route
 										path={`/cards`}
-										component={CardDemo}
+										render={() => <CardDemo />}
 									/>
 									<Route
 										path={`/drawers`}
-										component={DrawerDemo}
+										render={() => <DrawerDemo />}
 									/>
 									<Route
 										path={`/selectioncontrols`}
-										component={SelectionControlDemo}
-									/>
-									<Route
-										path={`/tabs`}
-										component={TabsDemo}
+										render={() => <SelectionControlDemo />}
 									/>
 								</Switch>
 							</Suspense>

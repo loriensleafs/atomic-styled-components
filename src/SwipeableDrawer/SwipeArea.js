@@ -1,8 +1,7 @@
-import React, { useContext, useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
-import cn from './../theme/className';
-import useStyles from './../hooks/useStyles';
+import useStyles from './../system/useStyles';
+import { stylesPropType } from './../utils/propTypes';
 
 function isHorizontal(props) {
 	return ['left', 'right'].indexOf(props.anchor) !== -1;
@@ -12,34 +11,26 @@ const getPositionStyles = props => {
 	switch (props.anchor) {
 		case 'top':
 			return {
-				rootStyles: {
-					bottom: 'auto',
-					right: '0px',
-				},
+				bottom: 'auto',
+				right: '0px',
 			};
 
 		case 'right':
 			return {
-				rootStyles: {
-					left: 'auto',
-					right: '0px',
-				},
+				left: 'auto',
+				right: '0px',
 			};
 
 		case 'bottom':
 			return {
-				rootStyles: {
-					top: 'auto',
-					bottom: '0px',
-					right: '0px',
-				},
+				top: 'auto',
+				bottom: '0px',
+				right: '0px',
 			};
 
 		case 'left':
 			return {
-				rootStyles: {
-					right: 'auto',
-				},
+				right: 'auto',
 			};
 
 		default:
@@ -47,30 +38,24 @@ const getPositionStyles = props => {
 	}
 };
 
-const getBaseStyles = props => ({
-	rootStyles: {
-		zIndex: 1199,
-		position: 'fixed',
-		top: '0px',
-		left: '0px',
-		bottom: '0px',
-	},
-});
+const baseStyles = {
+	zIndex: 1199,
+	position: 'fixed',
+	top: '0px',
+	left: '0px',
+	bottom: '0px',
+};
 
 function SwipeArea(props) {
-	const { anchor, className: classNameProp, styles, width, ...passThru } = props;
-	const { theme } = useContext(ThemeContext);
-	const { rootStyles } = useStyles([getBaseStyles, getPositionStyles], {
-		anchor,
-		styles,
-		width,
-		theme,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const [{ className, width, ...passThru }, styles, classes] = useStyles(
+		props,
+		getPositionStyles,
+		{ baseStyles },
+	);
 
 	return (
 		<div
-			className={className}
+			className={classes}
 			style={{
 				[isHorizontal(props) ? 'width' : 'height']: width,
 			}}
@@ -90,7 +75,7 @@ SwipeArea.propTypes = {
 	 * @ignore
 	 */
 	className: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 	/**
 	 * The width of the left most (or right most) area in pixels where the
 	 * drawer can be swiped open from.

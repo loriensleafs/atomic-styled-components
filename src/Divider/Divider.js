@@ -1,59 +1,37 @@
-import React, { useContext, useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import cn from './../theme/className';
-import useStyles from './../hooks/useStyles';
+import useStyles from './../system/useStyles';
+import combine from './../utils/combine';
 import { fade } from './../utils/colorHelpers';
+import { stylesPropType } from './../utils/propTypes';
 
-const getAbsoluteStyles = props =>
-	props.absolute && {
-		rootStyles: {
+function getPositionStyles({ absolute }) {
+	if (absolute) {
+		return {
 			position: 'absolute',
 			bottom: 0,
 			left: 0,
 			width: '100%',
-		},
-	};
-
-const getBaseStyles = ({theme, ...props}) => ({
-	rootStyles: {
-		width: '100%',
-		height: '1px',
-		margin: props.inset ? '72px' : 0,
-		border: 'none',
-		flexShrink: 0,
-		backgroundColor: props.light
-			? fade(theme.palette.divider, 0.08)
-			: theme.palette.divider,
-	},
-});
-
-function Divider(props) {
-	const {
-		absolute,
-		children,
-		className: classNameProp,
-		inset,
-		is: C,
-		light,
-		styles,
-		...passThru
-	} = props;
-	const { rootStyles } = useStyles([getBaseStyles, getAbsoluteStyles], {
-		absolute,
-		inset,
-		light,
-		styles,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
-
-	return <C className={className}>{children}</C>;
+		};
+	}
+	return null;
 }
 
-Divider.displayName = 'Divider';
+function getColorStyles({ light, theme }) {
+	return {
+		backgroundColor: light
+			? fade(theme.palette.divider, 0.08)
+			: theme.palette.divider,
+	};
+}
 
-Divider.propTypes = {
+function getIndentStyles({ inset }) {
+	return inset ? { margin: '72px' } : null;
+}
+
+const getStyles = combine(getPositionStyles, getColorStyles, getIndentStyles);
+getStyles.propTypes = {
 	absolute: PropTypes.bool,
-	className: PropTypes.string,
 	/**
 	 * If `true`, the divider will be indented.
 	 */
@@ -62,13 +40,38 @@ Divider.propTypes = {
 	 * If `true`, the divider will have a lighter color.
 	 */
 	light: PropTypes.bool,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+};
+
+const baseStyles = {
+	width: '100%',
+	height: '1px',
+	margin: '0px',
+	border: 'none',
+	flexShrink: 0,
+};
+
+function Divider(props) {
+	const [
+		{ children, className, as: C, ...passThru },
+		styles,
+		classes,
+	] = useStyles(props, getStyles, { baseStyles });
+
+	return <C className={classes}>{children}</C>;
+}
+
+Divider.displayName = 'Divider';
+
+Divider.propTypes = {
+	className: PropTypes.string,
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 Divider.defaultProps = {
 	absolute: false,
 	inset: false,
-	is: 'hr',
+	as: 'hr',
 	light: false,
 };
 

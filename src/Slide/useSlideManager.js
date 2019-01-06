@@ -1,16 +1,26 @@
-import { useCallback, useEffect, useMemo, useRef, useReducer } from 'react';
+import { useCallback, useMemo, useRef, useReducer } from 'react';
+import { useDidMount, useDidUpdate } from './../hooks';
 import debounce from 'debounce';
+import { capitalize } from './../utils/helpers';
 
 const GUTTER = 24;
 
 function getAxis(direction) {
-	return direction === 'left' || direction === 'right' ? 'X' : 'Y';
+	return direction === 'left' || direction === 'right' ? 'x' : 'y';
 }
 
-function slideOutReducer(
-	state = {},
-	{ direction, left = 0, top = 0, width = 0, height = 0 },
-) {
+function initialState(isX) {
+	const axis = isX ? 'X' : 'Y';
+	const method = `inner${isX ? 'Width' : 'Height'}`;
+
+	return `translate${axis}(-${window[method]}px)`;
+}
+
+function slideOutReducer(state = {}, { direction, ref }) {
+	const { top, left, width, height } = ref.current
+		? ref.current.getBoundingClientRect()
+		: window.getBoundingClientRect();
+
 	switch (direction) {
 		case 'left':
 			return `translateX(${window.innerWidth - left}px)`;
@@ -31,36 +41,22 @@ function slideOutReducer(
 
 export default function useSlideManager(direction) {
 	const ref = useRef(null);
-	const slideIn = useMemo(() => `translate${getAxis(direction)}(0px)`, [
-		direction,
-	]);
-	const [slideOut, dispatch] = useReducer(slideOutReducer);
+	const isX = useMemo(() => getAxis(direction) === 'x', [direction]);
+	const slideIn = useMemo(() => `translate${isX ? 'X' : 'Y'}(0px)`, [isX]);
+	const [slideOut, dispatch] = useReducer(slideOutReducer, initialState(isX));
+
 	const handleResize = useCallback(
-		debounce(
-			() =>
-				getAxis(direction) === 'X' &&
-				dispatch({
-					...ref.current.getBoundingClientRect().toJSON(),
-					direction,
-				}),
-			166,
-		),
+		debounce(() => isX && dispatch({ ref, direction }), 166),
 		[],
 	);
 
-	useEffect(() => {
+	useDidMount(() => {
+		if (isX) dispatch({ ref, direction });
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
-	}, []);
+	});
 
-	useEffect(
-		() =>
-			dispatch({
-				...ref.current.getBoundingClientRect().toJSON(),
-				direction,
-			}),
-		[direction],
-	);
+	useDidUpdate(() => dispatch({ ref, direction }), [direction, ref.current]);
 
 	return [slideIn, slideOut, ref];
 }

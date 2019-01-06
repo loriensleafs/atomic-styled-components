@@ -1,175 +1,17 @@
-import React, { forwardRef, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import cn from './../theme/className';
-import useStyles from './../hooks/useStyles';
-import {
-	borders,
-	borderColor as borderColorParser,
-	bottom as bottomParser,
-	display as displayParser,
-	left as leftParser,
-	opacity as opacityParser,
-	position as positionParser,
-	right as rightParser,
-	sizeHeight,
-	sizeWidth,
-	style,
-	top as topParser,
-	zIndex as zIndexParser,
-} from 'styled-system';
-import {
-	backgroundColor,
-	borderRadius,
-	color as colorParser,
-	fontSize as fontSizeParser,
-	fontWeight as fontWeightParser,
-	height,
-	lineHeight as lineHeightParser,
-	maxHeight,
-	maxWidth,
-	minHeight,
-	minWidth,
-	space,
-	width,
-} from './../styles';
-
-const elevationParser = style({
-	prop: 'elevation',
-	cssProperty: 'boxShadow',
-	key: 'elevation',
-});
+import React, { forwardRef } from 'react';
+import { getBox, useStyles } from './../system';
+import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 const Box = forwardRef((props, ref) => {
-	const {
-		children,
-		className: classNameProp,
-		bg,
-		border,
-		borderTop,
-		borderRight,
-		borderBottom,
-		borderLeft,
-		borderColor,
-		bottom,
-		color,
-		display,
-		elevation,
-		fontSize,
-		left,
-		lineHeight,
-		h,
-		hMax,
-		hMin,
-		is,
-		m,
-		mb,
-		ml,
-		mr,
-		mt,
-		mx,
-		my,
-		opacity,
-		p,
-		pb,
-		pl,
-		position,
-		pr,
-		pt,
-		px,
-		py,
-		radius,
-		right,
-		size,
-		styles: stylesProp,
-		top,
-		w,
-		weight,
-		wMax,
-		wMin,
-		zIndex,
-		...passThru
-	} = props;
-	const Component = props.is;
-	const styles = useStyles(
-		[
-			backgroundColor,
-			borders,
-			borderColorParser,
-			borderRadius,
-			bottomParser,
-			colorParser,
-			displayParser,
-			elevationParser,
-			fontSizeParser,
-			fontWeightParser,
-			leftParser,
-			lineHeightParser,
-			height,
-			maxHeight,
-			maxWidth,
-			minHeight,
-			minWidth,
-			opacityParser,
-			positionParser,
-			rightParser,
-			sizeHeight,
-			sizeWidth,
-			space,
-			topParser,
-			width,
-			zIndexParser,
-		],
-		{
-			bg,
-			border,
-			borderTop,
-			borderRight,
-			borderBottom,
-			borderLeft,
-			borderColor,
-			bottom,
-			color,
-			display,
-			elevation,
-			fontSize,
-			left,
-			lineHeight,
-			h,
-			hMax,
-			hMin,
-			m,
-			mb,
-			ml,
-			mr,
-			mt,
-			mx,
-			my,
-			opacity,
-			p,
-			pb,
-			pl,
-			position,
-			pr,
-			pt,
-			px,
-			py,
-			right,
-			size,
-			styles: stylesProp,
-			top,
-			w,
-			weight,
-			wMax,
-			wMin,
-			zIndex,
-		},
-	);
-	const className = useMemo(() => cn(classNameProp, styles), [
-		classNameProp,
+	const [
+		{ children, className, as, ...passThru },
 		styles,
-	]);
+		classes,
+	] = useStyles(props, getBox);
+	const Component = as;
+
 	return (
-		<Component ref={ref} className={className} {...passThru}>
+		<Component ref={ref} className={classes} {...passThru}>
 			{children}
 		</Component>
 	);
@@ -178,38 +20,13 @@ const Box = forwardRef((props, ref) => {
 Box.displayName = 'Box';
 
 Box.propTypes = {
-	...backgroundColor.propTypes,
-	...borders.propTypes,
-	...borderColorParser.propTypes,
-	...borderRadius.propTypes,
-	...bottomParser.propTypes,
-	...colorParser.propTypes,
-	...displayParser.propTypes,
-	...elevationParser.propTypes,
-	...fontSizeParser.propTypes,
-	...fontWeightParser.propTypes,
-	...leftParser.propTypes,
-	...lineHeightParser.propTypes,
-	...height.propTypes,
-	...maxHeight.propTypes,
-	...maxWidth.propTypes,
-	...minHeight.propTypes,
-	...minWidth.propTypes,
-	...opacityParser.propTypes,
-	...positionParser.propTypes,
-	...rightParser.propTypes,
-	...sizeHeight.propTypes,
-	...sizeWidth.propTypes,
-	...space.propTypes,
-	...topParser.propTypes,
-	...width.propTypes,
-	...zIndexParser.propTypes,
-	is: PropTypes.node,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...componentPropType,
+	...getBox.propTypes,
+	...stylesPropType,
 };
 
 Box.defaultProps = {
-	is: 'div',
+	as: 'div',
 };
 
 export default Box;

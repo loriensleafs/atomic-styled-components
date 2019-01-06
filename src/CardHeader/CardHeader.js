@@ -1,42 +1,33 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from './../Typography';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
-import { space } from 'styled-system';
+import { getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getBaseStyles = ({ theme, ...props }) => ({
-	rootStyles: {
-		display: 'flex',
-		alignItems: 'center',
-		...space({
-			py: 3,
-			px: [3, 4],
-			theme,
-		}),
-	},
-	avatarStyles: {
-		flex: '0 0 auto',
-		...space({
-			mr: 3,
-			theme,
-		}),
-	},
-	actionStyles: {
-		flex: '0 0 auto',
-		alignSelf: 'flex-start',
-		...space({
-			mt: -2,
-			mr: [-3, -4],
-			theme,
-		}),
-	},
-	contentStyles: {
-		flex: '1 1 auto',
-	},
-	titleStyles: {},
-	subheaderStyles: {},
-});
+function getStyles(props) {
+	return {
+		root: {
+			display: 'flex',
+			alignItems: 'center',
+			...getSpacing({ py: 3, px: [3, 4] }),
+		},
+		avatar: {
+			flex: '0 0 auto',
+			...getSpacing({ mr: 3 }),
+		},
+		action: {
+			flex: '0 0 auto',
+			alignSelf: 'flex-start',
+			...getSpacing({ mt: -2, mr: [-3, -4] }),
+		},
+		content: {
+			flex: '1 1 auto',
+		},
+		title: {},
+		subheader: {},
+	};
+}
+getStyles.propTypes = getSpacing.propTypes;
 
 const CardTitle = (avatar, className, disableTypography, title, ...passThru) =>
 	(title &&
@@ -79,59 +70,43 @@ const CardSubHeader = (
 	null;
 
 function CardHeader(props) {
-	const {
-		action,
-		avatar,
-		className: classNameProp,
-		component: Component,
-		disableTypography,
-		subheader,
-		subheaderTypographyProps,
-		title,
-		titleTypographyProps,
+	const [
+		{
+			action,
+			avatar,
+			className,
+			component: Component,
+			disableTypography,
+			subheader,
+			subheaderTypographyProps,
+			title,
+			titleTypographyProps,
+			...passThru
+		},
 		styles,
-		...passThru
-	} = props;
-	const {
-		rootStyles,
-		avatarStyles,
-		actionStyles,
-		contentStyles,
-		titleStyles,
-		subheaderStyles,
-	} = useStyles([getBaseStyles], props);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-	]);
-	const avatarClassName = useMemo(() => cn(avatarStyles), [avatarStyles]);
-	const actionClassName = useMemo(() => cn(actionStyles), [actionStyles]);
-	const contentClassName = useMemo(() => cn(contentStyles), [contentStyles]);
-	const titleClassName = useMemo(() => cn(titleStyles), [titleStyles]);
-	const subheaderClassName = useMemo(() => cn(subheaderStyles), [
-		subheaderStyles,
-	]);
+		classes,
+	] = useStyles(props, getStyles);
 
 	return (
-		<Component className={className} {...passThru}>
-			{avatar && <div className={avatarClassName}>{avatar}</div>}
-			<div className={contentClassName}>
+		<Component className={classes.root} {...passThru}>
+			{avatar && <div className={classes.avatar}>{avatar}</div>}
+			<div className={classes.content}>
 				<CardTitle
 					avatar={avatar}
-					className={titleClassName}
+					className={classes.title}
 					disableTypography={disableTypography}
 					title={title}
 					titleProps={titleTypographyProps}
 				/>
 				<CardSubHeader
 					avatar={avatar}
-					className={subheaderClassName}
+					className={classes.subheader}
 					disableTypography={disableTypography}
 					subheader={subheader}
 					subheaderProps={subheaderTypographyProps}
 				/>
 			</div>
-			{action && <div className={actionClassName}>{action}</div>}
+			{action && <div className={classes.action}>{action}</div>}
 		</Component>
 	);
 }
@@ -185,7 +160,7 @@ CardHeader.propTypes = {
 	 * (as long as disableTypography is not `true`).
 	 */
 	titleTypographyProps: PropTypes.object,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 };
 
 CardHeader.defaultProps = {

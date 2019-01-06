@@ -10,10 +10,10 @@ import React, {
 import { createPortal, findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import ownerDocument from './../utils/ownerDocument';
-import { isFunc } from './../utils/helpers';
+import { isFn } from './../utils/helpers';
 
 function getContainer(container, defaultContainer) {
-	container = isFunc(container) ? container() : container;
+	container = isFn(container) ? container() : container;
 	return findDOMNode(container) || defaultContainer;
 }
 
@@ -27,7 +27,7 @@ function Portal(props) {
 			return findDOMNode(mountNode).parentElement;
 		}
 		const node = getContainer(props.container, getOwnerDocument().body);
-		if (props.ref && isFunc(props.ref)) props.ref(node);
+		if (props.ref && isFn(props.ref)) props.ref(node);
 		return node;
 	};
 	let mountNode = getMountNode();

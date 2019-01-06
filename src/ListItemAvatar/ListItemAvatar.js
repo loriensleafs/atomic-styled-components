@@ -1,50 +1,47 @@
-import React, { cloneElement, useContext, useMemo } from 'react';
+import React, { cloneElement, useContext } from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
 import ListContext from './../List/ListContext';
-import cn from './../theme/className';
-import { fontSize, space } from './../styles';
+import { getFontSize, getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getBaseStyles = ({theme, ...props}) => ({
-	rootStyles: {
+const getStyles = ({ theme, ...props }) => ({
+	root: {
 		width: '36px',
 		height: '36px',
-		...fontSize({
+		...getFontSize({
 			fontSize: 4,
-			theme
 		}),
-		...space({
+		...getSpacing({
 			mt: props.alignItems === 'flex-start' ? 1 : null,
 			mr: 1,
-			theme
 		}),
 	},
-	iconStyles: props.dense
+	icon: props.dense
 		? {
 				width: '20px',
 				height: '20px',
-				...fontSize({
+				...getFontSize({
 					fontSize: 4,
-					theme
 				}),
 		  }
 		: null,
 });
+getStyles.propTypes = {
+	alignItems: PropTypes.string,
+	dense: PropTypes.bool,
+};
 
 function ListItemAvatar(props) {
-	const { children, className: classNameProp, styles, ...passThru } = props;
 	const { alignItems, dense } = useContext(ListContext);
-	const { rootStyles, iconStyles } = useStyles([getBaseStyles], {
-		alignItems,
-		dense,
-		styles,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
-	const iconClassName = useMemo(() => cn(iconStyles), [iconStyles]);
+	const [{ children, className, ...passThru }, styles, classes] = useStyles(
+		{ ...props, alignItems, dense },
+		getStyles,
+	);
 
 	return cloneElement(children, {
-		className,
-		childrenClassName: iconClassName + ' ' + children.props.childrenClassName,
+		className: classes.root,
+		childrenClassName:
+			classes.icon + ' ' + children.props.childrenClassName,
 		...passThru,
 	});
 }
@@ -60,7 +57,8 @@ ListItemAvatar.propTypes = {
 	 * @ignore
 	 */
 	className: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 export default ListItemAvatar;

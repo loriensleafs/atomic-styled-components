@@ -4,92 +4,96 @@ import SelectionControl from './../SelectionControl';
 import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
 import useDidUpdate from './../hooks/useDidUpdate';
-import useStyles from './../hooks/useStyles';
+import combine from './../utils/combine';
+import { getColor, useStyles } from './../system';
 import { isNil } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
 
-const getDisabledStyles = props =>
-	props.disabled && {
-		buttonStyles: {
-			rootStyles: {
-				color: props.theme.palette.action.disabled,
-				pointerEvents: 'none',
-			},
-		},
-	};
+function getColorStyles(props) {
+	const {
+		checked,
+		color,
+		disabled = false,
+		theme: { palette },
+	} = props;
+	const isBrandColor = color === 'primary' || color === 'secondary';
+	const state = disabled ? 'disabled' : checked ? 'checked' : null;
 
-const getCheckedStyles = props =>
-	props.checked && {
-		buttonStyles: {
-			rootStyles: {
-				color:
-					props.color === 'primary' || props.color === 'secondary'
-						? props.theme.palette[props.color].main
-						: props.theme.palette.text.secondary,
+	switch (state) {
+		case 'disabled':
+			return {
+				...getColor({
+					color: 'action.disabled',
+				}),
+				pointerEvents: 'none',
+			};
+
+		case 'checked':
+			return {
+				...getColor({
+					color: isBrandColor ? `${color}.main` : 'text.secondary',
+				}),
 				':hover': {
 					backgroundColor: fade(
-						props.color === 'primary' || props.color === 'secondary'
-							? props.theme.palette[props.color].main
-							: props.theme.palette.type === 'light'
-							? props.theme.palette.common.black
-							: props.theme.palette.common.white,
-						props.theme.palette.action.hoverOpacity,
+						isBrandColor
+							? palette[color].main
+							: palette.type === 'light'
+							? palette.common.black
+							: palette.common.white,
+						palette.action.hoverOpacity,
 					),
 				},
-			},
-		},
-	};
+			};
 
-const getBaseStyles = props => ({
-	buttonStyles: {
-		rootStyles: {
-			color: props.theme.palette.text.secondary,
-			transition: props.theme.transition(
-				'background-color',
-				'shortest',
-				'in',
-			),
-		},
-	},
-});
+		default:
+			// Default colors.
+			return getColor({
+				color: 'text.secondary',
+			});
+	}
+}
+
+function getBaseStyles(props) {
+	const { getTransition } = props.theme;
+
+	return {
+		transition: getTransition('background-color', 'shortest', 'in'),
+	};
+}
+
+const getStyles = combine(getBaseStyles, getColorStyles);
+getStyles.propTypes = {
+	/**
+	 * If `true`, the component is checked.
+	 */
+	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+	/**
+	 * The color of the component. It supports those theme colors that make sense for this component.
+	 */
+	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
+};
 
 function Radio(props) {
-	const {
-		className,
-		color,
-		indeterminate,
-		indeterminateIcon,
-		inputProps,
-		onChange,
-		styles,
-		...passThru
-	} = props;
 	const [checked, setChecked] = useState(props.checked || false);
-	const { buttonStyles } = useStyles(
-		[getBaseStyles, getCheckedStyles, getDisabledStyles],
-		{
-			...props,
-			checked,
-		},
-	);
+	const [
+		{ checkedIcon, icon, indeterminate, inputProps, onChange, ...passThru },
+		buttonStyles,
+	] = useStyles({ ...props, checked }, getStyles, { whitelist: ['checked'] });
 
-	const handleChange = useCallback(event => {
-		if (isNil(props.checked)) {
-			setChecked(event.target.checked);
-		}
-		if (onChange) {
-			onChange(event, event.target.checked);
-		}
+	const handleChange = useCallback((event, isChecked) => {
+		if (isNil(props.checked)) setChecked(() => isChecked);
+		if (onChange) onChange(event, isChecked);
 	}, []);
 
-	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [
-		props.checked,
-	]);
+	useDidUpdate(
+		() => !isNil(props.checked) && setChecked(() => props.checked),
+		[props.checked, checked],
+	);
+
 	return (
 		<SelectionControl
-			className={className}
-			checkedIcon={<RadioButtonCheckedIcon />}
-			icon={<RadioButtonUncheckedIcon />}
+			checkedIcon={checkedIcon}
+			icon={icon}
 			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			onChange={handleChange}
 			styles={{ buttonStyles }}
@@ -110,10 +114,6 @@ Radio.propTypes = {
 	 * The icon to display when the component is checked.
 	 */
 	checkedIcon: PropTypes.node,
-	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
-	 */
-	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 	/**
 	 * If `true`, the switch will be disabled.
 	 */
@@ -162,7 +162,9 @@ Radio.propTypes = {
 };
 
 Radio.defaultProps = {
+	checkedIcon: <RadioButtonCheckedIcon />,
 	color: 'secondary',
+	icon: <RadioButtonUncheckedIcon />,
 };
 
 export default Radio;

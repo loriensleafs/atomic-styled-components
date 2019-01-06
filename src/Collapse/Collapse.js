@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import cn from './../theme/className';
 import useTransition from './../hooks/useTransition';
+import cn from './../system/className';
 import { animated as a, useSpring } from 'react-spring/hooks';
 
 function Collapse(props) {

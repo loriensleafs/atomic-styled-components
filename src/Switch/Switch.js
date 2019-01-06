@@ -1,42 +1,45 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import useDidUpdate from './../hooks/useDidUpdate';
-import useStyles from './../hooks/useStyles';
 import SelectionControl from './../SelectionControl';
-import cn from './../theme/className';
+import useDidUpdate from './../hooks/useDidUpdate';
+import useStyles from './../system/useStyles';
+import combine from './../utils/combine';
 import { animated, useSpring } from 'react-spring/hooks';
 import { isNil } from './../utils/helpers';
 import { fade } from './../utils/colorHelpers';
+import { stylesPropType } from './../utils/propTypes';
 
-export const getDisabledStyles = props =>
-	props.disabled && {
-		barStyles: {
-			backgroundColor:
-				props.theme.palette.type === 'light'
-					? props.theme.palette.common.black
-					: props.theme.palette.common.white,
-			opacity: props.theme.palette.type === 'light' ? 0.12 : 0.1,
-		},
-		buttonStyles: {
-			rootStyles: {
+function getDisabledStyles(props) {
+	if (props.disabled) {
+		return {
+			bar: {
+				backgroundColor:
+					props.theme.palette.type === 'light'
+						? props.theme.palette.common.black
+						: props.theme.palette.common.white,
+				opacity: props.theme.palette.type === 'light' ? 0.12 : 0.1,
+			},
+			button: {
 				pointerEvents: 'none',
 			},
-		},
-		iconCheckedStyles: {
-			color:
-				props.theme.palette.type === 'light'
-					? props.theme.palette.grey.main
-					: props.theme.palette.grey.dark,
-		},
-		iconUncheckedStyles: {
-			color:
-				props.theme.palette.type === 'light'
-					? props.theme.palette.grey.main
-					: props.theme.palette.grey.dark,
-		},
-	};
+			iconChecked: {
+				color:
+					props.theme.palette.type === 'light'
+						? props.theme.palette.grey.main
+						: props.theme.palette.grey.dark,
+			},
+			iconUnchecked: {
+				color:
+					props.theme.palette.type === 'light'
+						? props.theme.palette.grey.main
+						: props.theme.palette.grey.dark,
+			},
+		};
+	}
+	return null;
+}
 
-export const getCheckedStyles = props => {
+function getCheckedStyles(props) {
 	if (props.checked) {
 		const backgroundColor =
 			props.color === 'primary' || props.color === 'secondary'
@@ -46,34 +49,32 @@ export const getCheckedStyles = props => {
 				: props.theme.palette.common.white;
 
 		return {
-			barStyles: {
+			bar: {
 				backgroundColor,
 				opacity: 0.5,
 			},
-			buttonStyles: {
-				rootStyles: {
-					color: backgroundColor,
-					':hover': {
-						backgroundColor: fade(
-							backgroundColor,
-							props.theme.palette.action.hoverOpacity,
-						),
-					},
+			button: {
+				color: backgroundColor,
+				':hover': {
+					backgroundColor: fade(
+						backgroundColor,
+						props.theme.palette.action.hoverOpacity,
+					),
 				},
 			},
 		};
 	}
 	return null;
-};
+}
 
-const getBaseStyles = props => {
+function getBaseStyles(props) {
 	const backgroundColor =
 		props.theme.palette.type === 'light'
 			? props.theme.palette.common.black
 			: props.theme.palette.common.white;
 
 	return {
-		rootStyles: {
+		root: {
 			position: 'relative',
 			display: 'inline-flex',
 			width: '62px',
@@ -81,7 +82,7 @@ const getBaseStyles = props => {
 			// For correct alignment with text
 			verticalAlign: 'middle',
 		},
-		barStyles: {
+		bar: {
 			position: 'absolute',
 			top: '50%',
 			left: '50%',
@@ -94,37 +95,35 @@ const getBaseStyles = props => {
 			borderRadius: `${14 / 2}px`,
 			opacity: props.theme.palette.type === 'light' ? 0.38 : 0.3,
 		},
-		buttonStyles: {
-			rootStyles: {
-				zIndex: 1,
-				color: 'currentColor',
-				padding: '0px',
-				height: '48px',
-				width: '48px',
-				transition: props.theme.transition(
-					'background-color',
-					'shortest',
-					'in',
+		button: {
+			zIndex: 1,
+			color: 'currentColor',
+			padding: '0px',
+			height: '48px',
+			width: '48px',
+			transition: props.theme.getTransition(
+				'background-color',
+				'shortest',
+				'in',
+			),
+			':hover': {
+				backgroundColor: fade(
+					backgroundColor,
+					props.theme.palette.action.hoverOpacity,
 				),
-				':hover': {
-					backgroundColor: fade(
-						backgroundColor,
-						props.theme.palette.action.hoverOpacity,
-					),
-				},
 			},
 		},
-		iconStyles: {
+		icon: {
 			width: '20px',
 			height: '20px',
 			backgroundColor: 'currentColor',
 			borderRadius: '50%',
 		},
-		iconUncheckedStyles: {
+		iconUnchecked: {
 			color: props.theme.palette.common.white,
 			boxShadow: props.theme.elevation[1],
 		},
-		iconCheckedStyles: {
+		iconChecked: {
 			color:
 				props.color === 'primary' || props.color === 'secondary'
 					? props.theme.palette[props.color].main
@@ -133,70 +132,48 @@ const getBaseStyles = props => {
 					: props.theme.palette.grey.main,
 			boxShadow: props.theme.elevation[2],
 		},
-		selectControlUncheckedStyles: {
+		selectControlUnchecked: {
 			transform: 'translate3d(0px, 0px, 0px)',
 		},
-		selectControlCheckedStyles: {
+		selectControlChecked: {
 			transform: 'translate3d(14px, 0px, 0px)',
 		},
 	};
+}
+
+const getStyles = combine(getBaseStyles, getCheckedStyles, getDisabledStyles);
+getStyles.propTypes = {
+	/**
+	 * The color of the component. It supports those theme colors that make sense for this component.
+	 */
+	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
 
 function Switch(props) {
-	const {
-		className: classNameProp,
-		color,
-		icon,
-		onChange,
-		styles,
-		...passThru
-	} = props;
 	const [checked, setChecked] = useState(props.checked || false);
-	const {
-		barStyles,
-		buttonStyles,
-		iconStyles,
-		iconUncheckedStyles,
-		iconCheckedStyles,
-		rootStyles,
-		selectControlStyles,
-		selectControlUncheckedStyles,
-		selectControlCheckedStyles,
-	} = useStyles([getBaseStyles, getCheckedStyles, getDisabledStyles], {
-		...props,
-		checked,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-	]);
-	const barClassName = useMemo(() => cn(barStyles), [barStyles]);
-	const iconClassName = useMemo(() => cn(iconStyles), [iconStyles]);
-	const selectControlClassName = useMemo(() => cn(selectControlStyles), [
-		selectControlStyles,
-	]);
+	const [
+		{ className, icon, onChange, ...passThru },
+		styles,
+		classes,
+	] = useStyles({ ...props, checked }, getStyles);
 	const iconTransition = useSpring({
-		...(checked ? iconCheckedStyles : iconUncheckedStyles),
-		from: checked ? iconUncheckedStyles : iconCheckedStyles,
+		...(checked ? styles.iconChecked : styles.iconUnchecked),
+		from: checked ? styles.iconUnchecked : styles.iconChecked,
 		config: { tension: 1200, friction: 40 },
 	});
 	const selectControlTransition = useSpring({
 		...(checked
-			? selectControlCheckedStyles
-			: selectControlUncheckedStyles),
+			? styles.selectControlChecked
+			: styles.selectControlUnchecked),
 		from: checked
-			? selectControlUncheckedStyles
-			: selectControlCheckedStyles,
+			? styles.selectControlUnchecked
+			: styles.selectControlChecked,
 		config: { tension: 1200, friction: 40 },
 	});
 
 	const handleChange = useCallback(event => {
-		if (isNil(props.checked)) {
-			setChecked(event.target.checked);
-		}
-		if (onChange) {
-			onChange(event, event.target.checked);
-		}
+		if (isNil(props.checked)) setChecked(event.target.checked);
+		if (onChange) onChange(event, event.target.checked);
 	}, []);
 
 	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [
@@ -204,10 +181,10 @@ function Switch(props) {
 	]);
 
 	return (
-		<span className={className}>
-			<span className={barClassName} />
+		<span className={classes.root}>
+			<span className={classes.bar} />
 			<animated.div
-				className={selectControlClassName}
+				className={classes.selectControl}
 				style={selectControlTransition}
 			>
 				<SelectionControl
@@ -215,11 +192,11 @@ function Switch(props) {
 					type="checkbox"
 					icon={
 						<animated.div
-							className={iconClassName}
+							className={classes.icon}
 							style={iconTransition}
 						/>
 					}
-					styles={{ buttonStyles }}
+					styles={{ buttonStyles: styles.button }}
 					{...passThru}
 				/>
 			</animated.div>
@@ -239,10 +216,6 @@ Switch.propTypes = {
 	 */
 	checkedIcon: PropTypes.node,
 	className: PropTypes.string,
-	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
-	 */
-	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 	defaultChecked: PropTypes.bool,
 	/**
 	 * If `true`, the switch will be disabled.
@@ -276,7 +249,7 @@ Switch.propTypes = {
 	 * @param {boolean} checked The `checked` value of the switch
 	 */
 	onChange: PropTypes.func,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 	/**
 	 * The input component property `type`.
 	 */
@@ -285,6 +258,7 @@ Switch.propTypes = {
 	 * The value of the component.
 	 */
 	value: PropTypes.string,
+	...getStyles.propTypes,
 };
 
 Switch.defaultProps = {

@@ -1,72 +1,80 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
 import ListContext from './../List/ListContext';
 import Typography from './../Typography';
-import cn from './../theme/className';
-import { fontSize, space } from './../styles';
+import combine from './../utils/combine';
+import { getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getDenseStyles = ({theme, ...props}) =>
-	props.dense && {
-		rootStyles: fontSize({
-			fontSize: 4,
-			theme
-		}),
-		primaryTextStyles: {
-			fontSize: 'inherit',
+function getDenseStyles(props) {
+	if (props.dense) {
+		return {
+			primaryText: {
+				fontSize: 'inherit',
+			},
+			root: {
+				fontSize: '0.8125rem',
+			},
+			secondaryText: {
+				fontSize: 'inherit',
+			},
+		};
+	}
+	return null;
+}
+
+function getBaseStyles(props) {
+	return {
+		primaryText: {},
+		root: {
+			minWidth: 0,
+			flex: '1 1 auto',
+			lineHeight: 1.5,
+			...getSpacing({ py: 0, px: 2 }),
+			':first-child': {
+				paddingLeft: props.inset ? '56px' : 0,
+			},
 		},
-		secondaryTextStyles: {
-			fontSize: 'inherit',
-		},
+		secondaryText: {},
 	};
+}
 
-const getBaseStyles =({theme, ...props}) => ({
-	rootStyles: {
-		minWidth: 0,
-		flex: '1 1 auto',
-		...space({
-			py: 0,
-			px: 2,
-			theme
-		}),
-		':first-child': {
-			paddingLeft: props.inset ? '56px' : 0,
-		},
-	},
-	primaryTextStyles: {},
-	secondaryTextStyles: {},
-});
+const getStyles = combine(getBaseStyles, getDenseStyles);
+getStyles.propTypes = {
+	dense: PropTypes.bool,
+	/**
+	 * If `true`, the children will be indented.
+	 * This should be used if there is no left avatar or left icon.
+	 */
+	inset: PropTypes.bool,
+};
 
 function ListItemText(props) {
-	const {
-		children,
-		className: classNameProp,
-		disableTypography,
-		inset,
-		primary,
-		primaryTextProps,
-		secondary,
-		secondaryTextProps,
-		styles,
-		...passThru
-	} = props;
 	const { dense } = useContext(ListContext);
-	const { rootStyles, primaryTextStyles, secondaryTextStyles } = useStyles(
-		[getBaseStyles, getDenseStyles],
-		{ disableTypography, inset, primary, secondary, dense, styles },
-	);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
-	const primaryTextClassName = useMemo(() => cn(primaryTextStyles), [primaryTextStyles]);
-	const secondaryTextClassName = useMemo(() => cn(secondaryTextStyles), [secondaryTextStyles]);
+	const [
+		{
+			children,
+			className,
+			disableTypography,
+			primary,
+			primaryTextProps,
+			secondary,
+			secondaryTextProps,
+			...passThru
+		},
+		styles,
+		classes,
+	] = useStyles({ ...props, dense }, getStyles);
 
 	return (
-		<div className={className} {...passThru}>
+		<div className={classes.root} {...passThru}>
 			{primary !== null && !disableTypography ? (
 				<Typography
 					variant="subtitle1"
-					styles={primaryTextStyles}
+					styles={styles.primaryText}
 					component="span"
-					{...primaryTextProps}>
+					{...primaryTextProps}
+				>
 					{primary}
 				</Typography>
 			) : primary ? (
@@ -76,9 +84,10 @@ function ListItemText(props) {
 			)}
 			{secondary !== null && !disableTypography ? (
 				<Typography
-					styles={secondaryTextStyles}
+					styles={styles.secondaryText}
 					color="text.secondary"
-					{...secondaryTextProps}>
+					{...secondaryTextProps}
+				>
 					{secondary}
 				</Typography>
 			) : (
@@ -100,18 +109,6 @@ ListItemText.propTypes = {
 	 */
 	className: PropTypes.string,
 	/**
-	 * If `true`, the children won't be wrapped by a Typography component.
-	 * This can be useful to render an alternative Typography variant by wrapping
-	 * the `children` (or `primary`) text, and optional `secondary` text
-	 * with the Typography component.
-	 */
-	disableTypography: PropTypes.bool,
-	/**
-	 * If `true`, the children will be indented.
-	 * This should be used if there is no left avatar or left icon.
-	 */
-	inset: PropTypes.bool,
-	/**
 	 * The main content element.
 	 */
 	primary: PropTypes.node,
@@ -129,7 +126,8 @@ ListItemText.propTypes = {
 	 * (as long as disableTypography is not `true`).
 	 */
 	secondaryTextProps: PropTypes.object,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 ListItemText.defaultProps = {

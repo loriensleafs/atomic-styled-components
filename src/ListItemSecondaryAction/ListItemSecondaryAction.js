@@ -1,9 +1,10 @@
-import React, {useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
+import cn from './../system/className';
+import merge from './../utils/merge';
+import { isFn } from './../utils/helpers';
 
-const getBaseStyles = {
+const baseStyles = {
 	rootStyles: {
 		position: 'absolute',
 		top: '50%',
@@ -13,12 +14,29 @@ const getBaseStyles = {
 };
 
 function ListItemSecondaryAction(props) {
-	const { children, className: classNameProp, styles, ...passThru } = props;
-	const { rootStyles } = useStyles([getBaseStyles], { styles });
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const {
+		children,
+		className: classNameProp,
+		styles: stylesProp,
+		...passThru
+	} = props;
+	const styles = useMemo(
+		() =>
+			merge(
+				baseStyles,
+				isFn(stylesProp) ? stylesProp(props) : stylesProp || {},
+			),
+		[props],
+	);
+	const className = useMemo(() => cn(classNameProp, styles), [
+		classNameProp,
+		styles,
+	]);
 
 	return (
-		<div className={className} {...passThru}>{children}</div>
+		<div className={className} {...passThru}>
+			{children}
+		</div>
 	);
 }
 

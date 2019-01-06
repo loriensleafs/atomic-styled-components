@@ -1,61 +1,65 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+	forwardRef,
+	useCallback,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
-import useDidUpdate from './../hooks/useDidUpdate';
-import usePrevious from './../hooks/usePrevious';
-import useStyles from './../hooks/useStyles';
 import Ripples, { useRippleManager } from './../Ripples';
-import cn from './../theme/className';
+import cn from './../system/className';
+import merge from './../utils/merge';
+import { useDidUpdate, usePrevious } from './../hooks';
+import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-export const getBaseStyles = {
-	rootStyles: {
-		position: 'relative',
-		display: 'inline-flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		// Removes the grey highlight.
-		WebkitTapHighlightColor: 'transparent',
-		// Reset default value
-		backgroundColor: 'transparent',
-		// Disable the focus ring for mouse, touch and keyboard users.
-		outline: 'none',
-		border: 0,
-		// Remove the margin in Safari.
-		marginTop: '0px',
-		marginRight: '0px',
-		marginBottom: '0px',
-		marginLeft: '0px',
-		// Remove the padding in Firefox.
-		paddingTop: '0px',
-		paddingRight: '0px',
-		paddingBottom: '0px',
-		paddingLeft: '0px',
-		borderRadius: 0,
-		cursor: 'pointer',
-		userSelect: 'none',
-		verticalAlign: 'middle',
-		// Reset
-		'-moz-appearance': 'none',
-		'-webkit-appearance': 'none',
-		textDecoration: 'none',
-		// So we take precedent over the style of a native <a /> element.
-		color: 'inherit',
-		':disabled': {
-			// Disable the link interactions.
-			pointerEvents: 'none',
-			cursor: 'default',
-		},
+export const baseStyles = {
+	position: 'relative',
+	display: 'inline-flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	// Removes the grey highlight.
+	WebkitTapHighlightColor: 'transparent',
+	// Reset default value
+	backgroundColor: 'transparent',
+	// Disable the focus ring for mouse, touch and keyboard users.
+	outline: 'none',
+	border: 0,
+	// Remove the margin in Safari.
+	marginTop: '0px',
+	marginRight: '0px',
+	marginBottom: '0px',
+	marginLeft: '0px',
+	// Remove the padding in Firefox.
+	paddingTop: '0px',
+	paddingRight: '0px',
+	paddingBottom: '0px',
+	paddingLeft: '0px',
+	borderRadius: 0,
+	cursor: 'pointer',
+	userSelect: 'none',
+	verticalAlign: 'middle',
+	// Reset
+	'-moz-appearance': 'none',
+	'-webkit-appearance': 'none',
+	textDecoration: 'none',
+	// So we take precedent over the style of a native <a /> element.
+	color: 'inherit',
+	':disabled': {
+		// Disable the link interactions.
+		pointerEvents: 'none',
+		cursor: 'default',
 	},
 };
 
-const ButtonBase = React.forwardRef((props, ref) => {
+const ButtonBase = forwardRef((props, ref) => {
 	ref = ref ? ref : useRef(null);
 	const {
+		as,
 		action,
 		centerRipple,
 		children,
 		className: classNameProp,
-		component,
 		disabled,
 		disableRipple,
 		disableTouchRipple,
@@ -71,7 +75,7 @@ const ButtonBase = React.forwardRef((props, ref) => {
 		onTouchEnd,
 		onTouchMove,
 		onTouchStart,
-		styles,
+		styles: stylesProp,
 		tabIndex,
 		RippleProps,
 		type,
@@ -82,8 +86,8 @@ const ButtonBase = React.forwardRef((props, ref) => {
 	const [focused, setFocused] = useState(false);
 	const prevFocused = usePrevious(focused);
 	const keyDown = useRef(false);
-	const isButton = component === 'button';
-	const Component = isButton && props.href ? 'a' : component || 'button';
+	const isButton = as === 'button';
+	const Component = isButton && props.href ? 'a' : as || 'button';
 	const buttonProps = useMemo(
 		() =>
 			isButton
@@ -96,13 +100,12 @@ const ButtonBase = React.forwardRef((props, ref) => {
 				  },
 		[Component, disabled, type],
 	);
-	const { rootStyles } = useStyles([getBaseStyles], {
-		...props,
-		focusVisible: focused,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
+	const styles = useMemo(() => merge(baseStyles, stylesProp || {}), [
+		stylesProp,
+	]);
+	const className = useMemo(() => cn(classNameProp, styles), [
 		classNameProp,
-		rootStyles,
+		styles,
 	]);
 
 	const handleMouseDown = rippleHandler(
@@ -156,7 +159,7 @@ const ButtonBase = React.forwardRef((props, ref) => {
 
 			if (
 				event.target === event.currentTarget &&
-				component &&
+				as &&
 				!isButton &&
 				(key === 'space' || key === 'enter') &&
 				!(ref.current.tagName === 'A' && ref.current.href)
@@ -242,15 +245,6 @@ ButtonBase.propTypes = {
 	children: PropTypes.node,
 	className: PropTypes.string,
 	/**
-	 * The component used for the root node.
-	 * Either a string to use a DOM element or a component.
-	 */
-	component: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-		PropTypes.object,
-	]),
-	/**
 	 * If `true`, the base button will be disabled.
 	 */
 	disabled: PropTypes.bool,
@@ -284,7 +278,6 @@ ButtonBase.propTypes = {
 	onTouchMove: PropTypes.func,
 	onTouchStart: PropTypes.func,
 	role: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	tabIndex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	/**
 	 * Properties applied to the `TouchRipple` element.
@@ -296,6 +289,8 @@ ButtonBase.propTypes = {
 	 * Valid property values include `button`, `submit`, and `reset`.
 	 */
 	type: PropTypes.string,
+	...componentPropType,
+	...stylesPropType,
 };
 
 ButtonBase.defaultProps = {

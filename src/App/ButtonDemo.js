@@ -6,7 +6,6 @@ import IconButton from './../IconButton';
 import List from './../List';
 import ListItem from './../ListItem';
 import ListItemText from './../ListItemText';
-import Typography from './../Typography';
 import DemoBox from './DemoBox';
 import {
 	AddShoppingCartIcon,
@@ -20,16 +19,12 @@ import {
 import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 
 const Navigation = () => (
-	<Box
-		w={200}
-		display={['none', null, null, null, 'block']}
-		style={{ fontSize: '12px' }}
-	>
-		<List dense style={{ position: 'sticky', top: 0 }}>
+	<Box w={200} display={['none', null, null, null, 'block']} fontSize="12px">
+		<List dense style={{ position: 'sticky', top: '64px' }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
 			</ListItem>
-			<ListItem button component="a" href="#contained-buttons">
+			<ListItem button as="a" href="#contained-buttons">
 				<ListItemText secondary="Contained Buttons" />
 			</ListItem>
 			<ListItem button>
@@ -73,7 +68,7 @@ const Intro = () => (
 			Buttons allow users to take actions, and make choices, with a single
 			tap.
 		</SectionHeader>
-		<Paragraph component="div">
+		<Paragraph as="div">
 			<a href="https://material.io/design/components/buttons.html">
 				Buttons
 			</a>{' '}
@@ -126,7 +121,7 @@ const ContainedButtons = () => (
 const TextButtons = () => (
 	<Fragment>
 		<SectionHeader>Text Buttons</SectionHeader>
-		<Paragraph component="div">
+		<Paragraph as="div">
 			<a href="https://material.io/design/components/buttons.html#text-button">
 				Text buttons
 			</a>{' '}

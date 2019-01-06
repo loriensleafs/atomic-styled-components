@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import AppBar from './../AppBar';
 import Box from './../Box';
 import Divider from './../Divider';
@@ -9,12 +9,11 @@ import List from './../List';
 import ListItem from './../ListItem';
 import ListItemText from './../ListItemText';
 import MenuIcon from './../svgIcons/Menu';
-import ThemeContext from './../theme/ThemeContext';
 import Toolbar from './../Toolbar';
 import Typography from './../Typography';
-import merge from './../utils/pureRecursiveMerge';
+import merge from './../utils/merge';
 import { Link } from 'react-router-dom';
-import { space, width } from './../styles';
+import { getSpacing, getWidth } from './../system';
 
 function DemoList(props) {
 	return (
@@ -30,28 +29,28 @@ function DemoList(props) {
 				position="sticky"
 				top={1}
 				hMin={[48, 56, 64]}
-				dir="column"
+				direction="column"
 				alignItems="center"
 				bg="common.white"
 			>
 				<Flex px={[3, 3.5]} flex={1} alignItems="center">
-					<Typography variant="subtitle1">
+					<Typography variant="subtitle1" whiteSpace="nowrap">
 						Atomic Styled Components
 					</Typography>
 				</Flex>
 				<Divider />
 			</Flex>
-			<List component="nav" style={{ position: 'sticky', top: 0 }}>
+			<List as="nav" style={{ position: 'sticky', top: 0 }}>
 				<ListItem button disabled>
 					<ListItemText primary="App Bar" />
 				</ListItem>
 				<ListItem button disabled>
 					<ListItemText primary="Avatars" />
 				</ListItem>
-				<ListItem component={Link} to="/buttons" button>
+				<ListItem as={Link} to="/buttons" button>
 					<ListItemText primary="Buttons" />
 				</ListItem>
-				<ListItem component={Link} to="/cards" button>
+				<ListItem as={Link} to="/cards" button>
 					<ListItemText primary="Cards" />
 				</ListItem>
 				<ListItem button disabled>
@@ -60,7 +59,7 @@ function DemoList(props) {
 				<ListItem button disabled>
 					<ListItemText primary="Dividers" />
 				</ListItem>
-				<ListItem component={Link} to="/drawers" button>
+				<ListItem as={Link} to="/drawers" button>
 					<ListItemText primary="Drawers" />
 				</ListItem>
 				<ListItem button disabled>
@@ -75,10 +74,10 @@ function DemoList(props) {
 				<ListItem button disabled>
 					<ListItemText primary="Progress" />
 				</ListItem>
-				<ListItem component={Link} to="/selectioncontrols" button>
+				<ListItem as={Link} to="/selectioncontrols" button>
 					<ListItemText primary="Selection Controls" />
 				</ListItem>
-				<ListItem component={Link} to="/tabs" button>
+				<ListItem as={Link} to="/tabs" button>
 					<ListItemText primary="Tabs" />
 				</ListItem>
 				<ListItem button disabled>
@@ -90,25 +89,19 @@ function DemoList(props) {
 }
 
 function AppNav(props) {
-	const { theme } = useContext(ThemeContext);
 	const [open, setOpen] = useState(false);
-	const paperStyles = useMemo(
-		() => ({
-			paperStyles: {
-				rootStyles: merge(
-					width({ w: [1, null, null, 'calc(100% - 250px)'], theme }),
-					space({ ml: [0, 0, 0, 250], theme }),
-				),
-			},
+	const styles = merge(
+		getWidth({
+			w: [1, null, null, 'calc(100% - 250px)'],
 		}),
-		[],
+		getSpacing({ ml: [0, 0, 250] }),
 	);
 
 	const handleClose = useCallback(() => setOpen(() => false), []);
 
 	return (
 		<Flex>
-			<AppBar position="fixed" styles={paperStyles}>
+			<AppBar position="fixed" styles={styles}>
 				<Toolbar>
 					<Box display={['block', null, null, 'none']}>
 						<IconButton
@@ -133,7 +126,7 @@ function AppNav(props) {
 				<DemoList onClose={handleClose} />
 			</Drawer>
 			<Box
-				is="nav"
+				as="nav"
 				w={[null, null, null, 250]}
 				display={['none', null, null, 'block']}
 			>

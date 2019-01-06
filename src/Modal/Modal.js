@@ -8,22 +8,23 @@ import React, {
 } from 'react';
 import { createPortal, findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
+import Backdrop from './../Backdrop';
 import isWindow from 'dom-helpers/query/isWindow';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 import css from 'dom-helpers/style';
 import nanoid from 'nanoid';
 import keycode from 'keycode';
-import useDidMount from './../hooks/useDidMount';
-import useDidUpdate from './../hooks/useDidUpdate';
-import usePrevious from './../hooks/usePrevious';
-import useWillUnmount from './../hooks/useWillUnmount';
-import useStyles from './../hooks/useStyles';
 import useModalManager from './useModalManager';
-import Backdrop from './../Backdrop';
-import cn from './../theme/className';
 import ownerDocument from './../utils/ownerDocument';
 import ownerWindow from '../utils/ownerWindow';
-import { isFunc } from './../utils/helpers';
+import useStyles from './../system/useStyles';
+import {
+	useDidMount,
+	useDidUpdate,
+	usePrevious,
+	useWillUnmount,
+} from './../hooks';
+import { isFn } from './../utils/helpers';
 
 /**
  * Gets the container node.
@@ -32,7 +33,7 @@ import { isFunc } from './../utils/helpers';
  * @private
  */
 function getContainer(container, defaultContainer) {
-	return isFunc(container)
+	return isFn(container)
 		? container() || defaultContainer
 		: container || defaultContainer;
 }
@@ -112,17 +113,22 @@ function getContainerStyle(node) {
  * @param {Object} props
  * @private
  */
-const getBaseStyles = props => ({
-	rootStyles: {
+function getStyles(props) {
+	const { exited } = props;
+
+	return {
 		zIndex: 1300,
 		position: 'fixed',
 		right: 0,
 		bottom: 0,
 		top: 0,
 		left: 0,
-		visibility: props.exited ? 'hidden' : 'visible',
-	},
-});
+		visibility: exited ? 'hidden' : 'visible',
+	};
+}
+getStyles.propTypes = {
+	exited: PropTypes.bool,
+};
 
 /**
  * Creates a Modal component.
@@ -130,33 +136,36 @@ const getBaseStyles = props => ({
  * @public
  */
 function Modal(props) {
-	const {
-		BackdropComponent,
-		BackdropProps,
-		children,
-		className: classNameProp,
-		container: containerProp,
-		disableAutoFocus,
-		disableBackdropClick,
-		disableEnforceFocus,
-		disableEscapeKeyDown,
-		disablePortal,
-		disableRestoreFocus,
-		hideBackdrop,
-		keepMounted,
-		onBackdropClick,
-		onClose,
-		onEscapeKeyDown,
-		onRendered,
-		open,
-		styles,
-		...passThru
-	} = props;
-	const [exited, setExited] = useState(!open);
+	const [exited, setExited] = useState(!props.open);
 	const exiting = useRef(false);
-	const prevOpen = usePrevious(open);
+	const prevOpen = usePrevious(props.open);
 	const mounted = useRef(false);
 	const lastFocus = useRef();
+	const [
+		{
+			BackdropComponent,
+			BackdropProps,
+			children,
+			className: classNameProp,
+			container: containerProp,
+			disableAutoFocus,
+			disableBackdropClick,
+			disableEnforceFocus,
+			disableEscapeKeyDown,
+			disablePortal,
+			disableRestoreFocus,
+			hideBackdrop,
+			keepMounted,
+			onBackdropClick,
+			onClose,
+			onEscapeKeyDown,
+			onRendered,
+			open,
+			...passThru
+		},
+		styles,
+		classes,
+	] = useStyles({ ...props, exited }, getStyles);
 	/**
 	 * The DOM element the modal container element is rendered into.
 	 * This DOM element is outside of the actual React app.
@@ -178,17 +187,6 @@ function Modal(props) {
 	// Persistant modal id for modal manager.
 	const { current: id } = useRef(nanoid());
 	const [topModal, add, remove] = useModalManager();
-	const { rootStyles } = useStyles(
-		[getBaseStyles],
-		{ exited, open, styles },
-		[exited, open, styles],
-	);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-		exited,
-		open,
-	]);
 	const hasTransition = getHasTransition(props);
 	let containerStyle;
 
@@ -341,7 +339,7 @@ function Modal(props) {
 	}
 
 	const ModalComponent = (
-		<div ref={modalRef} className={className} {...passThru}>
+		<div ref={modalRef} className={classes} {...passThru}>
 			{hideBackdrop ? null : (
 				<BackdropComponent
 					open={open}

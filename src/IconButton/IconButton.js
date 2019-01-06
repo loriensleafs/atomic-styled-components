@@ -1,126 +1,116 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import cn from './../theme/className';
-import useStyles from './../hooks/useStyles';
 import ButtonBase from './../ButtonBase';
-import merge from './../utils/pureRecursiveMerge';
-import { space } from './../styles/space';
+import combine from './../utils/combine';
+import { getColors, getSpacing, useStyles } from './../system';
 import { fade } from './../utils/colorHelpers';
+import { stylesPropType } from '../utils/propTypes';
 
-export const getColorStyles = props => {
-	let next = {};
-
-	if (props.disabled) {
-		next = merge(next, {
-			rootStyles: {
-				color: props.theme.palette.action.disabled,
-			},
-		});
-	} else if (props.color === 'inherit') {
-		next = merge(next, {
-			rootStyles: {
-				color: 'inherit',
-			},
-		});
-	} else if (props.color === 'primary' || props.color === 'secondary') {
-		next = merge(next, {
-			rootStyles: {
-				color: props.theme.palette[props.color].main,
-				':hover': {
-					backgroundColor: fade(
-						props.theme.palette[props.color].main,
-						props.theme.palette.action.hoverOpacity,
-					),
-				},
-			},
-		});
-	}
-
-	return next;
-};
-
-export const getBaseStyles = props => ({
-	rootStyles: {
-		position: 'relative',
-		textAlign: 'center',
-		flex: '0 0 auto',
-		fontSize: '24px',
-		width: '48px',
-		height: '48px',
-		padding: 0,
-		borderRadius: '50%',
-		color: props.theme.palette.action.active,
-		transition: props.theme.transition(
-			'background-color',
-			'shortest',
-			'in',
-		),
-		':hover': {
-			backgroundColor: fade(
-				props.theme.palette.action.active,
-				props.theme.palette.action.hoverOpacity,
-			),
-			'@media (hover: none)': {
-				backgroundColor: 'transparent',
-			},
-			':disabled': {
-				backgroundColor: 'transparent',
-			},
-		},
-		':disabled': {
-			color: props.theme.palette.action.disabled,
-		},
-		...space(props),
-	},
-	labelStyles: {
-		position: 'relative',
-		width: '100%',
-		display: 'flex',
-		alignItems: 'inherit',
-		justifyContent: 'inherit',
-	},
-});
-
-function IconButton(props) {
+function getColorStyles(props) {
 	const {
-		children,
-		className,
 		color,
 		disabled,
-		m,
-		ml,
-		mr,
-		mt,
-		mb,
-		mx,
-		my,
-		p,
-		pl,
-		pr,
-		pt,
-		pb,
-		px,
-		py,
-		styles,
-		...passThru
+		theme: { palette },
 	} = props;
+	const backgroundColor = {
+		':hover': {
+			backgroundColor: fade(
+				palette.action.active,
+				palette.action.hoverOpacity,
+			),
+		},
+		'@media (hover: none)': {
+			backgroundColor: 'transparent',
+		},
+		':disabled': {
+			backgroundColor: 'transparent',
+		},
+	};
 
-	const { rootStyles, labelStyles } = useStyles(
-		[getBaseStyles, getColorStyles],
+	if (disabled) {
+		return {
+			root: {
+				...getColors({ color: 'action.disabled' }),
+				':disabled': getColors({ color: 'action.disabled' }),
+			},
+		};
+	}
+
+	switch (color) {
+		case 'primary':
+		case 'secondary':
+		case 'error':
+			return {
+				root: {
+					...getColors({ color: `${color}.main` }),
+					...backgroundColor,
+				},
+			};
+
+		case 'inherit':
+			return {
+				root: {
+					color: 'inherit',
+					...backgroundColor,
+				},
+			};
+
+		default:
+			return {
+				root: {
+					...getColors({ color: 'action.active' }),
+					...backgroundColor,
+				},
+			};
+	}
+}
+
+function getBaseStyles(props) {
+	return {
+		root: {
+			position: 'relative',
+			textAlign: 'center',
+			flex: '0 0 auto',
+			fontSize: '24px',
+			width: '48px',
+			height: '48px',
+			padding: 0,
+			borderRadius: '50%',
+			transition: props.theme.getTransition(
+				'background-color',
+				'shortest',
+				'in',
+			),
+			...getSpacing(props),
+		},
+		label: {
+			position: 'relative',
+			width: '100%',
+			display: 'flex',
+			alignItems: 'inherit',
+			justifyContent: 'inherit',
+		},
+	};
+}
+
+const getStyles = combine(getBaseStyles, getColorStyles);
+getStyles.propTypes = {
+	/**
+	 * The color of the component. It supports those theme palette that make sense for this component.
+	 */
+	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
+	...getSpacing.propTypes,
+};
+
+function IconButton(props) {
+	const [{ children, ...passThru }, styles, classes] = useStyles(
 		props,
+		getStyles,
 	);
-	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
 
 	return (
-		<ButtonBase
-			styles={{ rootStyles }}
-			className={className}
-			centerRipple
-			focusRipple
-			disabled={disabled}
-			{...passThru}
-		>
-			<span className={labelClassName}>{children}</span>
+		<ButtonBase styles={styles.root} {...passThru}>
+			<span className={classes.label}>{children}</span>
 		</ButtonBase>
 	);
 }
@@ -134,19 +124,11 @@ IconButton.propTypes = {
 	children: PropTypes.node,
 	className: PropTypes.string,
 	/**
-	 * The color of the component. It supports those theme palette that make sense for this component.
-	 */
-	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
-	/**
-	 * If `true`, the button will be disabled.
-	 */
-	disabled: PropTypes.bool,
-	/**
 	 * If `true`, the ripple will be disabled.
 	 */
 	disableRipple: PropTypes.bool,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	...space.propTypes,
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 IconButton.defaultProps = {

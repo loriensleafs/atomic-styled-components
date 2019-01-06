@@ -1,55 +1,60 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import ButtonBase from './../ButtonBase';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
+import useStyles from './../system/useStyles';
+import { stylesPropType } from './../utils/propTypes';
 
-const getFocusVisibleStyles = props =>
-	props.focusVisible && {
-		focusHighlightStyles: {
-			opacity: 0.12,
-			':hover': {
-				opacity: props.theme.palette.action.hoverOpacity,
+function getFocusVisibleStyles({ focusVisible, theme }) {
+	if (focusVisible) {
+		return {
+			focusHighlight: {
+				opacity: 0.12,
+				':hover': {
+					opacity: theme.palette.action.hoverOpacity,
+				},
 			},
+		};
+	}
+	return null;
+}
+
+function getStyles(props) {
+	return {
+		root: {
+			display: 'block',
+			width: '100%',
+			textAlign: 'inherit',
+		},
+		focusHighlight: {
+			...{
+				position: 'absolute',
+				top: '0px',
+				right: '0px',
+				bottom: '0px',
+				left: '0px',
+				opacity: 0,
+				backgroundColor: 'currentcolor',
+				pointerEvents: 'none',
+				transition: props.theme.getTransition(
+					'opacity',
+					'shortest',
+					'in',
+				),
+			},
+			...getFocusVisibleStyles(props),
 		},
 	};
-
-const getBaseStyles = props => ({
-	rootStyles: {
-		display: 'block',
-		width: '100%',
-		textAlign: 'inherit',
-	},
-	focusHighlightStyles: {
-		position: 'absolute',
-		top: '0px',
-		right: '0px',
-		bottom: '0px',
-		left: '0px',
-		opacity: 0,
-		backgroundColor: 'currentcolor',
-		pointerEvents: 'none',
-		transition: props.theme.transition('opacity', 'shortest', 'in'),
-	},
-});
+}
+getStyles.propTypes = {
+	focusVisible: PropTypes.bool,
+};
 
 function CardActionArea(props) {
-	const { children, className, styles, ...passThru } = props;
-	const { theme } = useContext(ThemeContext);
 	const [focusVisible, setFocusVisible] = useState(false);
-	const { rootStyles, focusHighlightStyles } = useStyles(
-		[getBaseStyles, getFocusVisibleStyles],
-		{
-			...props,
-			focusVisible,
-			styles,
-			theme,
-		},
+	const [{ children, ...passThru }, styles, classes] = useStyles(
+		{ ...props, focusVisible },
+		getStyles,
 	);
-	const focusHilightClassName = useMemo(() => cn(focusHighlightStyles), [
-		focusHighlightStyles,
-	]);
 
 	const handleFocusVisible = useCallback(event => setFocusVisible(true), []);
 
@@ -57,14 +62,13 @@ function CardActionArea(props) {
 
 	return (
 		<ButtonBase
-			className={className}
-			styles={{ rootStyles }}
+			styles={styles.root}
 			onFocusVisible={handleFocusVisible}
 			onBlur={handleBlur}
 			{...passThru}
 		>
 			{children}
-			<span className={focusHilightClassName} />
+			<span className={classes.focusHighlight} />
 		</ButtonBase>
 	);
 }
@@ -80,7 +84,7 @@ CardActionArea.propTypes = {
 	 * @ignore
 	 */
 	className: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 };
 
 export default CardActionArea;

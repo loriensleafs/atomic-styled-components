@@ -1,67 +1,32 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
-import { space } from './../styles';
+import combine from './../utils/combine';
+import { getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getBaseStyles = props => ({
-	rootStyles: {
-		...space({
+function getBaseStyles() {
+	return {
+		...getSpacing({
 			py: 3,
 			px: [3, 3.5],
-			theme: props.theme,
 		}),
-		':last-child': space({
+		':last-child': getSpacing({
 			pb: 3.5,
-			theme: props.theme,
 		}),
-	},
-});
+	};
+}
+
+const getStyles = combine(getBaseStyles, getSpacing);
+getStyles.propTypes = getSpacing.propTypes;
 
 function CardContent(props) {
-	const {
-		className: classNameProp,
-		component: Component,
-		m,
-		ml,
-		mr,
-		mt,
-		mb,
-		mx,
-		my,
-		p,
-		pl,
-		pr,
-		pt,
-		pb,
-		px,
-		py,
+	const [
+		{ className, component: Component, ...passThru },
 		styles,
-		...passThru
-	} = props;
-	const { rootStyles } = useStyles([getBaseStyles, space], {
-		m,
-		ml,
-		mr,
-		mt,
-		mb,
-		mx,
-		my,
-		p,
-		pl,
-		pr,
-		pt,
-		pb,
-		px,
-		py,
-		styles,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-	]);
+		classes,
+	] = useStyles(props, getStyles);
 
-	return <Component className={className} {...passThru} />;
+	return <Component className={classes} {...passThru} />;
 }
 
 CardContent.displayName = 'CardContent';
@@ -80,8 +45,8 @@ CardContent.propTypes = {
 		PropTypes.func,
 		PropTypes.object,
 	]),
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	...space.propTypes,
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 CardContent.defaultProps = {

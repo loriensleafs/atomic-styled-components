@@ -11,17 +11,17 @@ import Radio from './../Radio';
 import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
 import Switch from './../Switch';
-import Typography from './../Typography';
 import DemoBox from './DemoBox';
 import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 
 const Navigation = () => (
 	<Box
 		w={200}
+		pt={5}
 		display={['none', null, null, null, 'block']}
-		style={{ fontSize: '12px' }}
+		fontSize="12px"
 	>
-		<List dense style={{ position: 'sticky', top: 0 }}>
+		<List dense style={{ position: 'sticky', top: '64px' }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
 			</ListItem>
@@ -103,7 +103,11 @@ const RadioButtons = () => {
 				Radio Buttons can also be used standalone, without the wrapper.
 			</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="flex-start" alignItems="center" wrap>
+				<Flex
+					justifyContent="flex-start"
+					alignItems="center"
+					wrap="wrap"
+				>
 					<Radio
 						checked={checked === 'a'}
 						onChange={handleChange}
@@ -152,20 +156,12 @@ const RadioButtons = () => {
 };
 
 const Checkboxes = () => {
-	const [checked, setChecked] = useState({
-		A: true,
-		B: true,
-		F: true,
-	});
+	const [{ a, b, f }, setChecked] = useState({ a: true, b: true, f: true });
 
-	const handleChange = useCallback(
-		event =>
-			setChecked({
-				...checked,
-				...{ [event.target.value]: event.target.checked },
-			}),
-		[],
-	);
+	const handleChange = useCallback((event, isChecked) => {
+		const next = { [event.target.value]: isChecked };
+		setChecked(state => ({ ...state, ...next }));
+	}, []);
 
 	return (
 		<Fragment>
@@ -184,31 +180,31 @@ const Checkboxes = () => {
 				on/off switch instead.
 			</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="flex-start" alignItems="center" wrap>
+				<Flex
+					justifyContent="flex-start"
+					alignItems="center"
+					wrap="wrap"
+				>
+					<Checkbox checked={a} onChange={handleChange} value="a" />
 					<Checkbox
-						checked={checked.A}
+						checked={b}
 						onChange={handleChange}
-						value="A"
-					/>
-					<Checkbox
-						checked={checked.B}
-						onChange={handleChange}
-						value="B"
+						value="b"
 						color="primary"
 					/>
-					<Checkbox value="C" />
-					<Checkbox disabled value="D" />
-					<Checkbox disabled checked value="E" />
+					<Checkbox value="c" />
+					<Checkbox disabled value="d" />
+					<Checkbox disabled checked value="e" />
 					<Checkbox
-						checked={checked.F}
+						checked={f}
 						onChange={handleChange}
-						value="F"
+						value="f"
 						indeterminate
 					/>
 					<Checkbox
 						defaultChecked
 						color="default"
-						value="G"
+						value="g"
 						icon={<CheckboxOutlineBlankIcon fontSize="20px" />}
 						checkedIcon={<CheckBoxIcon fontSize="20px" />}
 					/>
@@ -219,16 +215,12 @@ const Checkboxes = () => {
 };
 
 const Switches = () => {
-	const [checked, setChecked] = useState({ A: true, B: true });
+	const [{ a, b }, setChecked] = useState({ a: true, b: true });
 
-	const handleChange = useCallback(
-		event =>
-			setChecked({
-				...checked,
-				...{ [event.target.value]: event.target.checked },
-			}),
-		[],
-	);
+	const handleChange = useCallback((event, isChecked) => {
+		const next = { [event.target.value]: isChecked };
+		setChecked(state => ({ ...state, ...next }));
+	}, []);
 
 	return (
 		<Fragment>
@@ -245,22 +237,22 @@ const Switches = () => {
 				in, should be made clear from the corresponding inline label.
 			</Paragraph>
 			<DemoBox>
-				<Flex justifyContent="flex-start" alignItems="center" wrap>
+				<Flex
+					justifyContent="flex-start"
+					alignItems="center"
+					wrap="wrap"
+				>
+					<Switch checked={a} onChange={handleChange} value="a" />
 					<Switch
-						checked={checked.A}
+						checked={b}
 						onChange={handleChange}
-						value="A"
-					/>
-					<Switch
-						checked={checked.B}
-						onChange={handleChange}
-						value="B"
+						value="b"
 						color="primary"
 					/>
-					<Switch value="checkedC" />
-					<Switch disabled value="checkedD" />
-					<Switch disabled checked value="E" />
-					<Switch defaultChecked value="F" color="default" />
+					<Switch value="c" />
+					<Switch disabled value="d" />
+					<Switch disabled checked value="e" />
+					<Switch defaultChecked value="f" color="default" />
 				</Flex>
 			</DemoBox>
 		</Fragment>

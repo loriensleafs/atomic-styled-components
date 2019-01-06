@@ -1,34 +1,28 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
-import { space } from './../styles';
+import { getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getBaseStyles = ({ theme, ...props}) => ({
-	rootStyles: {
+function getStyles(props) {
+	return {
 		flex: '1 1 auto',
 		overflowY: 'auto',
 		WebkitOverflowScrolling: 'touch', // Add iOS momentum scrolling.
-		...space({
-			pt: '0px',
-			px: 3.5,
-			pb: 3.5,
-			theme
-		}),
-		':first-child': space({
-			pt: 3.5,
-			theme
-		}),
-	},
-});
+		...getSpacing({ pt: 0, px: 3.5, pb: 3.5 }),
+		':first-child': getSpacing({ pt: 3.5 }),
+	};
+}
 
 function DialogContent(props) {
-	const { children, className: classNameProp, styles, ...passThru } = props;
-	const { rootStyles } = useStyles([getBaseStyles], { styles });
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const [{ children, className, ...passThru }, styles, classes] = useStyles(
+		props,
+		getStyles,
+	);
 
 	return (
-		<div className={className} {...passThru}>{children}</div>
+		<div className={classes} {...passThru}>
+			{children}
+		</div>
 	);
 }
 
@@ -43,7 +37,7 @@ DialogContent.propTypes = {
 	 * @ignore
 	 */
 	className: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 };
 
 export default DialogContent;

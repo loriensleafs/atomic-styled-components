@@ -2,18 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from './../Paper';
 
-const getBaseStyles = props => ({
-	overflow: 'hidden',
-});
-
 function Card(props) {
-	const { raised, styles: stylesProp = {}, ...passThru } = props;
+	const { children, raised, styles: stylesProp = {}, ...passThru } = props;
 	const styles = {
-		...getBaseStyles(),
-		...(stylesProp ? { styles: stylesProp } : null),
+		...stylesProp,
+		overflow: 'hidden',
 	};
 
-	return <Paper styles={styles} elevation={raised ? 8 : 1} {...passThru} />;
+	return (
+		<Paper styles={styles} elevation={raised ? 8 : 1} {...passThru}>
+			{children}
+		</Paper>
+	);
 }
 
 Card.displayName = 'Card';
@@ -23,6 +23,7 @@ Card.propTypes = {
 };
 
 Card.defaultProps = {
+	radius: 'round',
 	raised: false,
 };
 

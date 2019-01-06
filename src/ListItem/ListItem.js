@@ -2,102 +2,124 @@ import React, {
 	isValidElement,
 	useCallback,
 	useContext,
-	useMemo,
 	useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
 import ButtonBase from './../ButtonBase';
 import ListContext from './../List/ListContext';
-import cn from './../theme/className';
-import { space } from './../styles';
+import combine from './../utils/combine';
+import { getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getButtonStyles = props =>
-	props.button && {
-		rootStyles: {
-			transition: props.theme.transition('background-color', 'shortest'),
-			':hover': {
-				textDecoration: 'none',
+function getButtonStyles({ button, theme: { getTransition, palette } }) {
+	if (button) {
+		return {
+			root: {
+				transition: getTransition('background-color', 'shortest'),
+				':hover': {
+					textDecoration: 'none',
+					backgroundColor: palette.action.hover,
+				},
+			},
+		};
+	}
+	return null;
+}
+
+function getDisabledStyles(props) {
+	if (props.disabled) {
+		return {
+			root: {
+				opacity: 0.5,
+			},
+		};
+	}
+	return null;
+}
+
+function getFocusVisibleStyles(props) {
+	if (props.focusVisible) {
+		return {
+			root: {
 				backgroundColor: props.theme.palette.action.hover,
 			},
+		};
+	}
+	return null;
+}
+
+function getSelectedStyles(props) {
+	if (props.selected) {
+		return {
+			root: {
+				backgroundColor: props.theme.palette.action.selected,
+				':hover': {
+					backgroundColor: props.theme.palette.action.selected,
+				},
+			},
+		};
+	}
+	return null;
+}
+
+function getBaseStyles(props) {
+	return {
+		container: {
+			position: 'relative',
+		},
+		divider: {
+			borderBottom: `1px solid ${props.theme.palette.divider}`,
+			backgroundClip: 'padding-box',
+		},
+		root: {
+			position: 'relative',
+			width: '100%',
+			display: 'flex',
+			justifyContent: 'flex-start',
+			alignItems: props.alignItems === 'flex-start' ? 'flex-start' : null,
+			textDecoration: 'none',
+			textAlign: 'left',
+			...getSpacing({
+				py: props.dense || props.hasAvatar ? 1 : 1.5,
+				pl: !props.disableGutters ? [3, 3.5] : null,
+				pr: props.hasSecondaryAction
+					? 3
+					: !props.disableGutters
+					? [3, 3.5]
+					: null,
+			}),
 		},
 	};
+}
 
-const getDisabledStyles = props =>
-	props.disabled && {
-		rootStyles: {
-			opacity: 0.5,
-		},
-	};
-
-const getFocusVisibleStyles = props =>
-	props.focusVisible && {
-		rootStyles: {
-			backgroundColor: props.theme.palette.action.hover,
-		},
-	};
-
-const getSelectedStyles = props =>
-	props.selected && {
-		backgroundColor: props.theme.palette.action.selected,
-		':hover': {
-			backgroundColor: props.theme.palette.action.selected,
-		},
-	};
-
-const getBaseStyles = ({ theme, ...props }) => ({
-	containerStyles: {
-		position: 'relative',
-	},
-	dividerStyles: {
-		borderBottom: `1px solid ${theme.palette.divider}`,
-		backgroundClip: 'padding-box',
-	},
-	rootStyles: {
-		position: 'relative',
-		width: '100%',
-		display: 'flex',
-		justifyContent: 'flex-start',
-		alignItems: props.alignItems === 'flex-start' ? 'flex-start' : null,
-		textDecoration: 'none',
-		textAlign: 'left',
-		...space({
-			py: props.dense || props.hasAvatar ? 1 : 1.5,
-			pl: !props.disableGutters ? [3, 3.5] : null,
-			pr: props.hasSecondaryAction
-				? 3
-				: !props.disableGutters
-				? [3, 3.5]
-				: null,
-			theme,
-		}),
-	},
-});
+const getStyles = combine(
+	getBaseStyles,
+	getDisabledStyles,
+	getFocusVisibleStyles,
+	getSelectedStyles,
+	getButtonStyles,
+);
+getStyles.propTypes = {
+	alignItems: PropTypes.oneOf(['flex-start', 'center']),
+	dense: PropTypes.bool,
+	disableGutters: PropTypes.bool,
+	focusVisible: PropTypes.bool,
+	hasAvatar: PropTypes.bool,
+	hasSecondaryAction: PropTypes.bool,
+	/**
+	 * Use to apply selected styling.
+	 */
+	selected: PropTypes.bool,
+};
 
 function ListItem(props) {
-	const {
-		alignItems: alignItemsProp,
-		button,
-		children: childrenProp,
-		className: classNameProp,
-		component,
-		ContainerComponent,
-		ContainerProps,
-		dense: denseProp,
-		disabled,
-		disableGutters,
-		divider,
-		selected,
-		styles,
-		...passThru
-	} = props;
+	const [focusVisible, setFocusVisible] = useState(false);
 	const { alignItems, dense } = {
 		...{ dense: false },
-		...{ alignItems: alignItemsProp, dense: denseProp },
+		...{ alignItems: props.alignItems, dense: props.dense },
 		...useContext(ListContext),
 	};
-	const [focusVisible, setFocusVisible] = useState(false);
-	const children = React.Children.toArray(childrenProp);
+	const children = React.Children.toArray(props.children);
 	const hasAvatar = children.some(
 		child =>
 			isValidElement(child) &&
@@ -108,41 +130,38 @@ function ListItem(props) {
 		isValidElement(children[children.length - 1]) &&
 		children[children.length - 1].type.displayName ===
 			'ListItemSecondaryAction';
-	const { containerStyles, dividerStyles, rootStyles } = useStyles(
-		[
-			getBaseStyles,
-			getSelectedStyles,
-			getFocusVisibleStyles,
-			getDisabledStyles,
-			getButtonStyles,
-		],
+	const [
 		{
-			alignItems,
 			button,
-			dense,
+			children: childrenProp,
+			className,
+			component,
+			ContainerComponent,
+			ContainerProps,
 			disabled,
 			disableGutters,
-			focusVisible,
-			hasAvatar,
-			hasSecondaryAction,
-			selected,
-			styles,
+			divider,
+			...passThru
 		},
+		styles,
+		classes,
+	] = useStyles(
+		{
+			...props,
+			alignItems,
+			focusVisible,
+			dense,
+			hasAvatar,
+		},
+		getStyles,
 	);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-	]);
-	const containerClassName = useMemo(() => cn(containerStyles), [
-		containerStyles,
-	]);
 
 	const componentProps = { disabled, ...passThru };
 	let Component = component || 'li';
 
 	if (button) {
 		componentProps.component = component || 'div';
-		componentProps.styles = { rootStyles };
+		componentProps.styles = styles.root;
 		componentProps.onFocusVisible = useCallback(
 			() => setFocusVisible(() => true),
 			[],
@@ -153,7 +172,7 @@ function ListItem(props) {
 		);
 		Component = ButtonBase;
 	} else {
-		componentProps.className = className;
+		componentProps.className = classes.root;
 	}
 
 	if (hasSecondaryAction) {
@@ -172,7 +191,7 @@ function ListItem(props) {
 	return (
 		<ListContext.Provider value={{ alignItems, dense }}>
 			<ContainerComponent
-				className={containerClassName}
+				className={classes.container}
 				{...ContainerProps}
 			>
 				<Component {...componentProps}>{children}</Component>
@@ -184,10 +203,6 @@ function ListItem(props) {
 ListItem.displayName = 'ListItem';
 
 ListItem.propTypes = {
-	/**
-	 * Defines the `align-items` style property.
-	 */
-	alignItems: PropTypes.oneOf(['flex-start', 'center']),
 	/**
 	 * If `true`, the list item will be a button (using `ButtonBase`).
 	 */
@@ -239,11 +254,8 @@ ListItem.propTypes = {
 	 * If `true`, a 1px light border is added to the bottom of the list item.
 	 */
 	divider: PropTypes.bool,
-	/**
-	 * Use to apply selected styling.
-	 */
-	selected: PropTypes.bool,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 ListItem.defaultProps = {

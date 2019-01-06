@@ -1,20 +1,11 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
 import Box from './../Box';
-import {
-	fontFamily as fontFamilyParser,
-	fontSize as fontSizeParser,
-	fontStyle as fontStyleParser,
-	fontWeight as fontWeightParser,
-	lineHeight as lineHeightParser,
-	textAlign as textAlignParser,
-	variant,
-} from 'styled-system';
-import { whiteSpace as whiteSpaceParser } from './../styles';
+import combine from './../utils/combine';
+import { getColor, getText, useStyles } from './../system';
+import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-const TAG_MAP = {
+const TAGS = {
 	h1: 'h1',
 	h2: 'h2',
 	h3: 'h3',
@@ -29,20 +20,18 @@ const TAG_MAP = {
 	overline: 'span',
 };
 
-export const variants = variant({
-	key: 'typography.variants',
-});
+function getColorStyles(props) {
+	const { color } = props;
 
-const getColorStyles = props => {
-	switch (props.color) {
+	switch (color) {
 		case 'primary':
 		case 'secondary':
 		case 'textPrimary':
 		case 'textSecondary':
 		case 'error':
-			return {
-				color: props.theme.palette[props.color].main,
-			};
+			return getColor({
+				color: `${color}.main`,
+			});
 
 		case 'inherit':
 			return {
@@ -52,64 +41,25 @@ const getColorStyles = props => {
 		default:
 			return null;
 	}
-};
+}
 
-export const getBaseStyles = {
-	margin: '0px',
+const getStyles = combine(getColorStyles, getText, getColor);
+getStyles.propTypes = {
+	...getColor.propTypes,
+	...getText.propTypes,
 };
 
 function Typography(props) {
-	const {
-		children,
-		className: classNameProp,
-		component,
-		fontFamily,
-		fontSize,
-		fontWeight,
-		lineHeight,
-		paragraph,
-		styles: stylesProp,
-		textAlign,
-		variant,
-		whiteSpace,
-		...passThru
-	} = props;
-	const styles = useStyles(
-		[
-			getBaseStyles,
-			getColorStyles,
-			fontFamilyParser,
-			fontSizeParser,
-			fontStyleParser,
-			fontWeightParser,
-			lineHeightParser,
-			textAlignParser,
-			whiteSpaceParser,
-		],
-		{
-			fontFamily,
-			fontSize,
-			fontWeight,
-			lineHeight,
-			paragraph,
-			styles: stylesProp,
-			textAlign,
-			variant,
-			whiteSpace,
-		},
-	);
-	const className = useMemo(() => cn(classNameProp, styles), [
-		classNameProp,
+	const [
+		{ as, children, paragraph, variant, ...passThru },
 		styles,
-	]);
-	const Component = component
-		? component
-		: paragraph
-		? 'p'
-		: TAG_MAP[variant] || 'span';
+	] = useStyles(props, getStyles, {
+		whitelist: ['variant'],
+	});
+	const component = as ? as : paragraph ? 'p' : TAGS[variant] || 'span';
 
 	return (
-		<Box className={className} is={Component} {...passThru}>
+		<Box styles={styles} as={component} {...passThru}>
 			{children}
 		</Box>
 	);
@@ -122,19 +72,17 @@ Typography.propTypes = {
 		PropTypes.arrayOf(PropTypes.node),
 		PropTypes.node,
 	]),
-	...fontFamilyParser.propTypes,
-	...fontSizeParser.propTypes,
-	...fontStyleParser.propTypes,
-	...fontWeightParser.propTypes,
-	...lineHeightParser.propTypes,
 	paragraph: PropTypes.bool,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	...textAlignParser.propTypes,
-	...whiteSpaceParser.propTypes,
+	...componentPropType,
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 Typography.defaultProps = {
-	color: 'default',
+	mt: 0,
+	mr: 0,
+	mb: 0,
+	ml: 0,
 	variant: 'body1',
 };
 

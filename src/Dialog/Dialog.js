@@ -1,161 +1,164 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Modal from './../Modal';
 import Fade from './../Fade';
 import Paper from './../Paper';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
+import combine from './../utils/combine';
+import { getSizing, getSpacing, useStyles } from '../system';
+import { stylesPropType } from './../utils/propTypes';
 
-export const getScrollStyles = props => {
-	if (props.scroll === 'paper') {
-		return {
-			containerStyles: {
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'center',
-			},
-			paperStyles: {
-				rootStyles: {
+function getScrollStyles({ scroll }) {
+	switch (scroll) {
+		case 'body':
+			return {
+				containerStyles: {
+					overflowY: 'auto',
+					overflowX: 'hidden',
+				},
+				paperStyles: {
+					margin: '48px auto',
+				},
+			};
+
+		default:
+			// 'paper'
+			return {
+				containerStyles: {
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+				},
+				paperStyles: {
 					flex: '0 1 auto',
 					maxHeight: 'calc(100% - 96px)',
 				},
-			},
-		};
-	} else if (props.scroll === 'body') {
-		return {
-			containerStyles: {
-				overflowY: 'auto',
-				overflowX: 'hidden',
-			},
-			paperStyles: {
-				rootStyles: {
-					margin: '48px auto',
-				},
-			},
-		};
+			};
 	}
-	return {};
-};
+}
 
-export const getFullWidthStyles = props =>
-	props.fullWidth && {
-		paperStyles: { width: '100%' },
+function getSizeStyles(props) {
+	const { fullScreen, fullWidth, maxWidth } = props;
+	const w = fullWidth ? 1 : null;
+	const container = getSizing({
+		h: fullScreen ? 1 : null,
+		w: fullScreen ? 1 : null,
+	});
+	const paper = {
+		...getSizing({
+			w: fullScreen ? 1 : null,
+			wMax: fullScreen ? 1 : null,
+			h: fullScreen ? 1 : null,
+			hMax: fullScreen ? 1 : null,
+		}),
+		margin: '0px',
+		borderRadius: '0px',
 	};
 
-export const getFullScreenStyles = props =>
-	props.fullScreen && {
-		containerStyles: {
-			height: '100%',
-			width: '100%',
-		},
-		paperStyles: {
-			rootStyles: {
-				width: '100%',
-				maxWidth: '100%',
-				height: '100%',
-				maxHeight: '100%',
-				margin: '0px',
-				borderRadius: '0px',
-			},
-		},
-	};
-
-export const getMaxWidthStyles = props => {
-	switch (props.maxWidth) {
+	switch (maxWidth) {
 		case 'xs':
 			return {
-				paperStyles: {
-					rootStyles: {
-						maxWidth: '360px',
-						margin: '48px',
-					},
+				container,
+				paper: {
+					...paper,
+					...getSizing({ w, wMax: 360 }),
+					...getSpacing({ m: 5.5 }),
 				},
 			};
 		case 'sm':
 			return {
-				paperStyles: {
-					rootStyles: {
-						maxWidth: '360px',
-						margin: '48px',
-					},
+				container,
+				paper: {
+					...paper,
+					...getSizing({ w, wMax: 360 }),
+					...getSpacing({ m: 5.5 }),
 				},
 			};
 		case 'md':
 			return {
-				paperStyles: {
-					rootStyles: {
-						maxWidth: '360px',
-						margin: '48px',
-					},
+				container,
+				paper: {
+					...paper,
+					...getSizing({ w, wMax: 360 }),
+					...getSpacing({ m: 5.5 }),
 				},
 			};
 		case 'lg':
 			return {
-				paperStyles: {
-					rootStyles: {
-						maxWidth: '360px',
-						margin: '48px',
-					},
+				container,
+				paper: {
+					...paper,
+					...getSizing({ w, wMax: 360 }),
+					...getSpacing({ m: 5.5 }),
 				},
 			};
 		default:
-			return {};
+			return {
+				container,
+				paper,
+			};
 	}
+}
+
+const getStyles = combine(getScrollStyles, getSizeStyles);
+getStyles.propTypes = {
+	/**
+	 * If `true`, the dialog will be full-screen
+	 */
+	fullScreen: PropTypes.bool,
+	/**
+	 * If `true`, the dialog stretches to `maxWidth`.
+	 */
+	fullWidth: PropTypes.bool,
+	/**
+	 * Determine the max width of the dialog.
+	 * The dialog width grows with the size of the screen, this property is useful
+	 * on the desktop where you might need some coherent different width size across your
+	 * application. Set to `false` to disable `maxWidth`.
+	 */
+	maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', false]),
+	/**
+	 * Determine the container for scrolling the dialog.
+	 */
+	scroll: PropTypes.oneOf(['body', 'paper']),
 };
 
-export const getBaseStyles = {
-	rootStyles: {},
-	containerStyles: {
+const baseStyles = {
+	container: {
 		height: '100%',
 		outline: 'none',
 	},
-	paperStyles: {
-		rootStyles: {
-			position: 'relative',
-			display: 'flex',
-			flexDirection: 'column',
-			margin: '48px',
-			overflowY: 'auto',
-		},
+	paper: {
+		position: 'relative',
+		margin: '48px',
+		display: 'flex',
+		flexDirection: 'column',
+		overflowY: 'auto',
 	},
+	root: {},
 };
 
 function Dialog(props) {
-	const {
-		BackdropProps,
-		children,
-		className,
-		disableBackdropClick,
-		disableEscapeKeyDown,
-		fullScreen,
-		fullWidth,
-		maxWidth,
-		onBackdropClick,
-		onClose,
-		onEscapeKeyDown,
-		onEnd,
-		onStart,
-		open,
-		PaperProps,
-		scroll,
+	const [
+		{
+			BackdropProps,
+			children,
+			className,
+			disableBackdropClick,
+			disableEscapeKeyDown,
+			onBackdropClick,
+			onClose,
+			onEscapeKeyDown,
+			onEnd,
+			onStart,
+			open,
+			PaperProps,
+			TransitionComponent,
+			TransitionProps,
+			...passThru
+		},
 		styles,
-		TransitionComponent,
-		TransitionProps,
-		...passThru
-	} = props;
-	const { rootStyles, paperStyles, containerStyles } = useStyles(
-		[
-			getBaseStyles,
-			getScrollStyles,
-			getMaxWidthStyles,
-			getFullWidthStyles,
-			getFullScreenStyles,
-		],
-		props,
-	);
-	const containerClassName = useMemo(() => cn(containerStyles), [
-		containerStyles,
-	]);
+		classes,
+	] = useStyles(props, getStyles, { baseStyles });
 
 	const handleBackdropClick = useCallback(event => {
 		if (event.target !== event.currentTarget) return;
@@ -174,16 +177,16 @@ function Dialog(props) {
 			onClose={onClose}
 			open={open}
 			role="dialog"
-			styles={rootStyles}
+			styles={styles.root}
 			{...passThru}
 		>
 			<TransitionComponent
-				className={cn(containerStyles)}
+				className={classes.container}
 				in={open}
 				{...TransitionProps}
 			>
-				<div className={containerClassName} role="document">
-					<Paper elevation={24} styles={paperStyles} {...PaperProps}>
+				<div className={classes.container} role="document">
+					<Paper elevation={24} styles={styles.paper} {...PaperProps}>
 						{children}
 					</Paper>
 				</div>
@@ -215,21 +218,6 @@ Dialog.propTypes = {
 	 * If `true`, hitting escape will not fire the `onClose` callback.
 	 */
 	disableEscapeKeyDown: PropTypes.bool,
-	/**
-	 * If `true`, the dialog will be full-screen
-	 */
-	fullScreen: PropTypes.bool,
-	/**
-	 * If `true`, the dialog stretches to `maxWidth`.
-	 */
-	fullWidth: PropTypes.bool,
-	/**
-	 * Determine the max width of the dialog.
-	 * The dialog width grows with the size of the screen, this property is useful
-	 * on the desktop where you might need some coherent different width size across your
-	 * application. Set to `false` to disable `maxWidth`.
-	 */
-	maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', false]),
 	/**
 	 * Callback fired when the backdrop is clicked.
 	 */
@@ -277,11 +265,7 @@ Dialog.propTypes = {
 	 * Properties applied to the [`Paper`](/api/paper/) element.
 	 */
 	PaperProps: PropTypes.object,
-	/**
-	 * Determine the container for scrolling the dialog.
-	 */
-	scroll: PropTypes.oneOf(['body', 'paper']),
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 	/**
 	 * Transition component.
 	 */
@@ -302,6 +286,8 @@ Dialog.propTypes = {
 	 * Properties applied to the `Transition` element.
 	 */
 	TransitionProps: PropTypes.object,
+	...getScrollStyles.propTypes,
+	...getSizeStyles.propTypes,
 };
 
 Dialog.defaultProps = {

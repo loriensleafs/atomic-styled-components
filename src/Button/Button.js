@@ -2,300 +2,218 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-restricted-globals */
 
-import React, { useMemo, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import cn from './../theme/className';
-import useStyles from './../hooks/useStyles';
-import merge from './../utils/pureRecursiveMerge';
 import ButtonBase from './../ButtonBase/ButtonBase';
-import { space } from 'styled-system';
+import combine from './../utils/combine';
+import {
+	getColors,
+	getElevation,
+	getSizing,
+	getSpacing,
+	getText,
+	useStyles,
+} from './../system';
 import { fade } from './../utils/colorHelpers';
+import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-export const getColorStyles = props =>
-	(props.color === 'primary' || props.color === 'secondary') && {
-		rootStyles: {
-			color: props.theme.palette[props.color].main,
-			':hover': {
-				backgroundColor: fade(
-					props.theme.palette[props.color].main,
-					props.theme.palette.action.hoverOpacity,
-				),
-			},
-		},
+function getSizeStyles({ fullWidth, mini, size }) {
+	const w = mini ? 40 : fullWidth ? 1 : null;
+	const h = mini ? 40 : null;
+	const text = {
+		fontFamily: 'ui',
+		fontWeight: 'medium',
+		lineHeight: 1,
 	};
 
-export const getFabStyles = props =>
-	props.fab && {
-		rootStyles: {
-			borderRadius: '50%',
-			padding: '0px',
-			minWidth: '0px',
-			width: '56px',
-			height: '56px',
-			boxShadow: props.theme.elevation[6],
-			':active': {
-				boxShadow: props.theme.elevation[12],
-			},
-		},
-	};
-
-export const getFullWidthStyles = props =>
-	props.fullWidth && {
-		rootStyles: {
-			width: '100%',
-		},
-	};
-
-export const getMiniStyles = props =>
-	props.fab &&
-	props.mini && {
-		rootStyles: {
-			width: '40px',
-			height: '40px',
-		},
-	};
-
-export const getSizeStyles = props => {
-	switch (props.size) {
+	switch (size) {
 		case 'small':
 			return {
-				rootStyles: {
-					padding: `${props.theme.space[2] - 1}px ${props.theme
-						.space[2] + 1}px`,
-					minWidth: '64px',
-					minHeight: '32px',
-					fontSize: `${props.theme.typography.fontSizes[2] - 0.07}${
-						props.theme.typography.fontUnit
-					}`,
-				},
+				...getSizing({ h, hMin: 31, w, wMin: 64 }),
+				...getSpacing({ py: 1, px: 2 }),
+				...getText({ ...text, fontSize: '0.8125rem' }),
 			};
 		case 'large':
 			return {
-				rootStyles: {
-					padding: `${props.theme.space[2]}px ${props.theme.space[3] +
-						props.theme.space[2]}px`,
-					minWidth: '112px',
-					minHeight: '40px',
-					fontSize: `${props.theme.typography.fontSizes[2] + 0.0625}${
-						props.theme.typography.fontUnit
-					}`,
-				},
+				...getSizing({ h, hMin: 42, w }),
+				...getSpacing({ py: 2, px: 3.5 }),
+				...getText({ ...text, fontSize: '0.9375rem' }),
 			};
 		default:
-			return {};
+			// 'medium'
+			return {
+				...getSizing({ h, hMin: 36, w, wMin: 64 }),
+				...getSpacing({ py: 2, px: 3 }),
+				...getText({ ...text, fontSize: 2 }),
+			};
 	}
-};
+}
 
-export const getVariantStyles = props => {
-	let next = {};
+function getVariantStyles(props) {
+	const { color, variant, theme } = props;
+	const { palette, shape } = theme;
+	const isBrandColor = color === 'primary' || color === 'secondary';
+	const isDefaultColor = color === 'default';
 
-	if (props.variant === 'contained') {
-		next = merge(next, {
-			rootStyles: {
-				color: props.theme.palette.text.primary,
-				backgroundColor: props.theme.palette.grey.light,
-				boxShadow: props.theme.elevation[2],
-				':active': {
-					boxShadow: props.theme.elevation[8],
-				},
-				':disabled': {
-					color: props.theme.palette.action.disabled,
-					boxShadow: 'none',
-					backgroundColor: props.theme.palette.action.disabledBg,
-				},
+	switch (variant) {
+		case 'outlined':
+			return {
+				...getColors({
+					color: isBrandColor
+						? `${color}.main`
+						: isDefaultColor
+						? 'text.primary'
+						: 'inherit',
+				}),
+				border: isBrandColor
+					? `1px solid ${fade(palette[color].main, 0.5)}`
+					: `1px solid ${fade(
+							palette.grey[
+								palette.type === 'light' ? 'main' : 'dark'
+							],
+							0.5,
+					  )}`,
+				borderRadius: `${shape.borderRadius.round}`,
 				':hover': {
-					backgroundColor: props.theme.palette.grey.light,
+					backgroundColor: fade(
+						isBrandColor
+							? palette[color].main
+							: palette.text.primary,
+						palette.action.hoverOpacity,
+					),
+					border: isBrandColor
+						? `1px solid ${palette[color].main}`
+						: `1px solid ${
+								palette.grey[
+									palette.type === 'light' ? 'main' : 'dark'
+								]
+						  }`,
 				},
-			},
-		});
-
-		if (props.color === 'primary' || props.color === 'secondary') {
-			next = merge(next, {
-				rootStyles: {
-					color: props.theme.palette[props.color].contrastText,
-					backgroundColor: props.theme.palette[props.color].main,
-					':hover': {
-						backgroundColor: props.theme.palette[props.color].dark,
-					},
-				},
-			});
-		}
-	} else if (props.variant === 'outlined') {
-		next = merge(next, {
-			rootStyles: {
 				':disabled': {
-					color: props.theme.palette.action.disabled,
-					backgroundColor: 'transparent',
-					border: `1px solid ${props.theme.palette.action.disabled}`,
+					border: `1px solid ${palette.action.disabled}`,
 				},
-			},
-		});
-		if (props.color === 'primary' || props.color === 'secondary') {
-			next = merge(next, {
-				rootStyles: {
-					border: `1px solid ${fade(
-						props.theme.palette[props.color].main,
-						0.5,
-					)}`,
-					':hover': {
-						border: `1px solid ${
-							props.theme.palette[props.color].main
-						}`,
-					},
-				},
-			});
-		} else {
-			next = merge(next, {
-				rootStyles: {
-					border: `1px solid ${
-						props.theme.palette.type === 'light'
-							? props.theme.palette.grey.main
-							: props.theme.palette.divider.dark.light
-					}`,
-					':hover': {
-						border: `1px solid ${
-							props.theme.palette.type === 'light'
-								? props.theme.palette.grey.dark
-								: props.theme.palette.divider.dark.primary
-						}`,
-					},
-				},
-			});
-		}
-	} else if (props.variant === 'extendedFab') {
-		next = merge(next, {
-			rootStyles: {
-				borderRadius: `${48 / 2}px`,
-				padding: `0 ${props.theme.space[3]}`,
-				width: 'auto',
-				minWidth: '48px',
-				height: '48px',
-			},
-		});
-	}
-	return next;
-};
+			};
 
-const getBaseStyles = props => ({
-	rootStyles: {
-		boxSizing: 'border-box',
-		minWidth: '64px',
-		minHeight: '36px',
-		padding: `${props.theme.space[2]}px ${props.theme.space[3]}px`,
-		fontFamily: props.theme.typography.fontFamily,
-		fontSize: `${props.theme.typography.fontSizes[2]}${
-			props.theme.typography.fontUnit
-		}`,
-		fontWeight: props.theme.typography.fontWeights.medium,
-		lineHeight: `${props.theme.typography.lineHeights[1]}${
-			props.theme.typography.fontUnit
-		}`,
-		borderRadius: `${props.theme.shape.borderRadius.round}`,
-		color: `${props.theme.palette.text.primary}`,
-		textTransform: 'uppercase',
-		transition: props.theme.transition(
-			['background-color', 'color', 'box-shadow', 'border'],
-			'short',
-		),
-		':hover': {
-			textDecoration: 'none',
-			backgroundColor: props.theme.palette.grey.light,
+		case 'contained':
+			return {
+				...getColors({
+					bg: isBrandColor ? `${color}.main` : `grey.light`,
+					color: isBrandColor
+						? `${color}.contrastText`
+						: 'text.primary',
+				}),
+				...getElevation({ elevation: 2 }),
+				borderRadius: `${shape.borderRadius.round}`,
+				':active': getElevation({ elevation: 8 }),
+				':hover': getColors({
+					bg: isBrandColor ? `${color}.dark` : 'grey.light',
+				}),
+				':disabled': {
+					...getColors({
+						bg: 'action.disabledBackground',
+						color: 'action.disabled',
+					}),
+					boxShadow: 'none',
+				},
+			};
+
+		case 'fab':
+			return {
+				...getColors({
+					bg: isBrandColor ? `${color}.main` : `grey.light`,
+					color: isBrandColor
+						? `${color}.contrastText`
+						: 'text.primary',
+				}),
+				...getElevation({ elevation: 6 }),
+				width: '56px',
+				minWidth: '0px',
+				height: '56px',
+				padding: '0px',
+				borderRadius: '50%',
+				':active': getElevation({ elevation: 12 }),
+				':hover': getColors({
+					bg: isBrandColor ? `${color}.dark` : 'grey.light',
+				}),
+			};
+
+		default:
+			// 'text'
+			return {
+				...getColors({
+					color: isBrandColor
+						? `${color}.main`
+						: isDefaultColor
+						? 'text.primary'
+						: 'inherit',
+				}),
+				...getSpacing({ py: 1.5, px: 2 }),
+				borderRadius: `${shape.borderRadius.round}`,
+				':hover': {
+					backgroundColor: fade(
+						isBrandColor
+							? palette[color].main
+							: palette.text.primary,
+						palette.action.hoverOpacity,
+					),
+				},
+			};
+	}
+}
+
+const getRootStyles = combine(getSizeStyles, getVariantStyles, getSpacing);
+
+const getStyles = props => ({
+	root: {
+		...{
+			boxSizing: 'border-box',
+			textTransform: 'uppercase',
+			transition: props.theme.getTransition(
+				['background-color', 'color', 'box-shadow', 'border'],
+				'short',
+			),
+			':hover': {
+				textDecoration: 'none',
+			},
 		},
-		':disabled': {
-			color: props.theme.palette.action.disabled,
-			backgroundColor: props.theme.palette.action.disabledBg,
-		},
-		...space(props),
+		...getRootStyles(props),
 	},
-	labelStyles: {
+	label: {
 		display: 'inherit',
 		alignItems: 'inherit',
 		justifyContent: 'inherit',
 	},
 });
+getStyles.propTypes = {
+	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
+	fullWidth: PropTypes.bool,
+	mini: PropTypes.bool,
+	size: PropTypes.oneOf(['small', 'medium', 'large']),
+	variant: PropTypes.oneOf([
+		'text',
+		'outlined',
+		'contained',
+		'fab',
+		'extendedFab',
+	]),
+};
 
 const Button = React.forwardRef((props, ref) => {
-	ref = ref ? ref : useRef(null);
-	const {
-		children,
-		color,
-		className,
-		disabled,
-		disableFocusRipple,
-		disableRipple,
-		fab,
-		fullWidth,
-		mini,
-		m,
-		ml,
-		mr,
-		mt,
-		mb,
-		mx,
-		my,
-		p,
-		pl,
-		pr,
-		pt,
-		pb,
-		px,
-		py,
-		size,
+	const [
+		{ children, disabled, disableFocusRipple, ...passThru },
 		styles,
-		type,
-		variant,
-		...passThru
-	} = props;
-	const { rootStyles, labelStyles } = useStyles(
-		[
-			getBaseStyles,
-			getColorStyles,
-			getFabStyles,
-			getMiniStyles,
-			getFullWidthStyles,
-			getVariantStyles,
-			getSizeStyles,
-		],
-		{
-			color,
-			disabled,
-			disableFocusRipple,
-			disableRipple,
-			fab,
-			fullWidth,
-			mini,
-			m,
-			ml,
-			mr,
-			mt,
-			mb,
-			mx,
-			my,
-			p,
-			pl,
-			pr,
-			pt,
-			pb,
-			px,
-			py,
-			size,
-			styles,
-			type,
-			variant,
-		},
-	);
-	const labelClassName = useMemo(() => cn(labelStyles), [labelStyles]);
+		classes,
+	] = useStyles(props, getStyles);
 
 	return (
 		<ButtonBase
 			ref={ref}
-			styles={{ rootStyles }}
-			className={className}
+			styles={styles.root}
 			disabled={disabled}
 			focusRipple={!disableFocusRipple}
 			{...passThru}
 		>
-			<span className={labelClassName}>{children}</span>
+			<span className={classes.label}>{children}</span>
 		</ButtonBase>
 	);
 });
@@ -305,30 +223,20 @@ Button.displayName = 'Button';
 Button.propTypes = {
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
-	labelClassName: PropTypes.string,
-	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
+	classes: PropTypes.object,
 	disabled: PropTypes.bool,
 	disableFocusRipple: PropTypes.bool,
 	disableRipple: PropTypes.bool,
-	fullWidth: PropTypes.bool,
 	href: PropTypes.string,
-	mini: PropTypes.bool,
-	size: PropTypes.oneOf(['small', 'medium', 'large']),
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	type: PropTypes.string,
-	variant: PropTypes.oneOf([
-		'text',
-		'outlined',
-		'contained',
-		'fab',
-		'extendedFab',
-	]),
-	...space.propTypes,
+	...componentPropType,
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 Button.defaultProps = {
+	as: 'button',
 	color: 'default',
-	component: 'button',
 	disabled: false,
 	disableFocusRipple: false,
 	fullWidth: false,

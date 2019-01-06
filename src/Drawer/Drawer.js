@@ -1,11 +1,12 @@
-import React, { useContext, useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import ThemeContext from './../theme/ThemeContext';
 import Modal from './../Modal';
 import Paper from './../Paper';
 import Slide from './../Slide';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
+import useStyles from './../system/useStyles';
+import combine from './../utils/combine';
+import { capitalize, isEq } from './../utils/helpers';
+import { stylesPropType } from './../utils/propTypes';
 
 const oppositeDirection = {
 	left: 'right',
@@ -14,8 +15,20 @@ const oppositeDirection = {
 	bottom: 'up',
 };
 
-const getContainerPositionStyles = props => {
-	switch (props.anchor) {
+function getPositionStyles(props) {
+	const {
+		anchor,
+		variant,
+		theme: { palette },
+	} = props;
+	const getBorderStyle = side =>
+		!isEq(variant, 'temporary') && {
+			[`border${capitalize(oppositeDirection[side])}`]: `1px solid ${
+				palette.divider
+			}`,
+		};
+
+	switch (anchor) {
 		case 'top':
 			return {
 				top: '0px',
@@ -24,18 +37,14 @@ const getContainerPositionStyles = props => {
 				left: '0px',
 				height: 'auto',
 				maxHeight: '100%',
-				...(props.variant !== 'temporary' && {
-					borderBottom: `1px solid ${props.theme.palette.divider}`,
-				}),
+				...getBorderStyle('top'),
 			};
 
 		case 'right':
 			return {
 				right: '0px',
 				left: 'auto',
-				...(props.variant !== 'temporary' && {
-					borderLeft: `1px solid ${props.theme.palette.divider}`,
-				}),
+				...getBorderStyle('right'),
 			};
 
 		case 'bottom':
@@ -46,122 +55,122 @@ const getContainerPositionStyles = props => {
 				left: '0px',
 				height: 'auto',
 				maxHeight: '100%',
-				...(props.variant !== 'temporary' && {
-					borderTop: `1px solid ${props.theme.palette.divider}`,
-				}),
+				...getBorderStyle('bottom'),
 			};
 
 		default:
+			// 'left'
 			return {
 				right: 'auto',
 				left: '0px',
-				...(props.variant !== 'temporary' && {
-					borderRight: `1px solid ${props.theme.palette.divider}`,
-				}),
+				...getBorderStyle('left'),
 			};
 	}
-};
+}
 
-const getPositionStyles = props => {
-	const containerStyles = getContainerPositionStyles(props);
+function getVariantStyles(props) {
+	const { variant } = props;
+
+	switch (variant) {
+		case 'permanent':
+			return {
+				paper: {
+					zIndex: 1200,
+					position: 'fixed',
+					top: '0px',
+					height: '100%',
+					overflowY: 'auto',
+					outline: 'none', // Add iOS momentum scrolling.
+				},
+				root: {
+					flex: '0 0 auto',
+				},
+			};
+
+		case 'persistent':
+			return {
+				root: {
+					flex: '0 0 auto',
+				},
+			};
+
+		default:
+			return null;
+	}
+}
+
+function getBaseStyles(props) {
+	const { variant } = props;
 
 	return {
-		paperStyles: {
-			rootStyles:
-				props.variant === 'persistent' || props.variant === 'temporary'
-					? { height: '100%' }
-					: containerStyles,
-		},
-		slideStyles: containerStyles,
-	};
-};
-
-const getBaseStyles = props => {
-	const containerStyles = {
-		zIndex: 1200,
-		position: 'fixed',
-		top: '0px',
-		height: '100%',
-		overflowY: 'auto',
-		outline: 'none', // Add iOS momentum scrolling.
-	};
-
-	return {
-		modalStyles: {},
-		paperStyles: {
-			rootStyles: {
+		modal: {},
+		paper: {
+			...{
 				position: 'relative',
 				height: '100%',
 				display: 'flex',
 				flex: '1 0 auto',
 				flexDirection: 'column',
-				...(props.variant !== 'persistent' &&
-					props.variant !== 'temporary' &&
-					containerStyles),
 			},
+			...(isEq(variant, 'persistant') || isEq(variant, 'temporary')
+				? { height: '100%' }
+				: getPositionStyles(props)),
 		},
-		rootStyles: (props.variant === 'permanent' ||
-			props.variant === 'persistent') && {
-			flex: '0 0 auto',
+		root: {},
+		slide: {
+			...{
+				zIndex: 1200,
+				position: 'fixed',
+				top: '0px',
+				height: '100%',
+				overflowY: 'auto',
+				outline: 'none', // Add iOS momentum scrolling.
+			},
+			...getPositionStyles(props),
 		},
-		slideStyles: containerStyles,
 	};
+}
+
+const getStyles = combine(getBaseStyles, getVariantStyles);
+getStyles.propTypes = {
+	variant: PropTypes.oneOf(['permanent', 'persistent', 'temporary']),
 };
 
 function Drawer(props) {
-	const {
-		anchor,
-		BackdropProps = {},
-		children,
-		className: classNameProp,
-		elevation,
-		ModalProps,
-		onClose,
-		open,
-		PaperProps,
-		SlideProps,
-		styles,
-		variant,
-		...passThru
-	} = props;
-	const { theme } = useContext(ThemeContext);
-	const { modalStyles, paperStyles, rootStyles, slideStyles } = useStyles(
-		[getBaseStyles, getPositionStyles],
+	const [
 		{
 			anchor,
-			styles,
-			theme,
+			BackdropProps = {},
+			children,
+			className,
+			containerRef,
+			elevation,
+			ModalProps,
+			onClose,
+			open,
+			PaperProps,
+			SlideProps,
 			variant,
+			...passThru
 		},
-	);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-	]);
-	const slideClassName = useMemo(() => cn(slideStyles), [slideStyles]);
+		styles,
+		classes,
+	] = useStyles(props, getStyles, { whitelist: ['variant'] });
 
 	const DrawerBase = (
 		<Paper
 			elevation={variant === 'temporary' ? elevation : 0}
-			square
-			styles={paperStyles}
+			radius="square"
+			styles={styles.paper}
 			{...passThru}
 		>
 			{children}
 		</Paper>
 	);
 
-	if (variant === 'permanent') {
-		return (
-			<div className={className} {...passThru}>
-				{DrawerBase}
-			</div>
-		);
-	}
-
 	const SlidingDrawer = (
 		<Slide
-			className={slideClassName}
+			className={classes.slide}
 			direction={oppositeDirection[anchor]}
 			enter="short"
 			exit="shorter"
@@ -173,27 +182,36 @@ function Drawer(props) {
 		</Slide>
 	);
 
-	if (variant === 'persistent') {
-		return (
-			<div className={className} {...passThru}>
-				{SlidingDrawer}
-			</div>
-		);
-	}
+	switch (variant) {
+		case 'permanent':
+			return (
+				<div className={classes.root} {...passThru}>
+					{DrawerBase}
+				</div>
+			);
 
-	// variant === temporary
-	return (
-		<Modal
-			className={className}
-			onClose={onClose}
-			open={open}
-			styles={modalStyles}
-			{...passThru}
-			{...ModalProps}
-		>
-			{SlidingDrawer}
-		</Modal>
-	);
+		case 'persistent':
+			return (
+				<div className={classes.root} {...passThru}>
+					{SlidingDrawer}
+				</div>
+			);
+
+		default:
+			// 'temporary'
+			return (
+				<Modal
+					className={classes.root}
+					onClose={onClose}
+					open={open}
+					styles={styles.modal}
+					{...passThru}
+					{...ModalProps}
+				>
+					{SlidingDrawer}
+				</Modal>
+			);
+	}
 }
 
 Drawer.displayName = 'Drawer';
@@ -211,6 +229,7 @@ Drawer.propTypes = {
 	 * @ignore
 	 */
 	className: PropTypes.string,
+	containerRef: PropTypes.any,
 	/**
 	 * The elevation of the drawer.
 	 */
@@ -237,7 +256,7 @@ Drawer.propTypes = {
 	 * Properties applied to the [`Slide`](/api/slide/) element.
 	 */
 	SlideProps: PropTypes.object,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 	/**
 	 * The variant to use.
 	 */

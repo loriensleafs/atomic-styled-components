@@ -1,66 +1,59 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
-import { minHeight } from 'styled-system';
-import { space } from './../styles/space';
+import combine from './../utils/combine';
+import { getHeight, getSpacing, useStyles } from './../system';
+import { stylesPropType } from './../utils/propTypes';
 
-const getGutterStyles = ({theme, ...props}) =>
-	!props.disableGutters && {
-		rootStyles: space({
-			px: [3, 3.5],
-			theme
-		}),
-	};
+function getGutterStyles({ disableGutters }) {
+	return getSpacing({
+		px: !disableGutters ? [3, 3.5] : null,
+	});
+}
 
-const getVariantStyles = ({theme, ...props}) => {
-	switch (props.variant) {
+function getVariantStyles({ variant }) {
+	switch (variant) {
 		case 'dense':
-			return {
-				rootStyles: {
-					minHeight: '48px',
-				},
-			};
-
-		case 'regular':
-			return {
-				rootStyles: minHeight({
-					minHeight: ['48px', '56px', '64px'],
-					theme
-				}),
-			};
+			return getHeight({
+				hMin: 48,
+			});
 
 		default:
-			return null;
+			// 'regular'
+			return getHeight({
+				hMin: [48, 56, 64],
+			});
 	}
+}
+
+const getStyles = combine(getVariantStyles, getGutterStyles);
+getStyles.propTypes = {
+	/**
+	 * If `true`, disables gutter padding.
+	 */
+	disableGutters: PropTypes.bool,
+	/**
+	 * The variant to use.
+	 */
+	variant: PropTypes.oneOf(['regular', 'dense']),
 };
 
-const getBaseStyles = {
-	rootStyles: {
-		position: 'relative',
-		display: 'flex',
-		alignItems: 'center',
-	},
+const baseStyles = {
+	position: 'relative',
+	display: 'flex',
+	alignItems: 'center',
 };
 
 function Toolbar(props) {
-	const {
-		children,
-		className: classNameProp,
-		disableGutters,
-		styles,
-		variant,
-		...passThru
-	} = props;
-	const { rootStyles } = useStyles([getBaseStyles, getVariantStyles, getGutterStyles], {
-		disableGutters,
-		styles,
-		variant,
-	});
-	const className = useMemo(() => cn(classNameProp, rootStyles), [classNameProp, rootStyles]);
+	const [{ children, className, ...passThru }, styles, classes] = useStyles(
+		props,
+		getStyles,
+		{ baseStyles },
+	);
 
 	return (
-		<div className={className} {...passThru}>{children}</div>
+		<div className={classes} {...passThru}>
+			{children}
+		</div>
 	);
 }
 
@@ -75,15 +68,8 @@ Toolbar.propTypes = {
 	 * @ignore
 	 */
 	className: PropTypes.string,
-	/**
-	 * If `true`, disables gutter padding.
-	 */
-	disableGutters: PropTypes.bool,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/**
-	 * The variant to use.
-	 */
-	variant: PropTypes.oneOf(['regular', 'dense']),
+	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 Toolbar.defaultProps = {

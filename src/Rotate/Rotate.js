@@ -1,6 +1,6 @@
-import React, { cloneElement, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import cn from './../theme/className';
+import cn from './../system/className';
 import useTransition from './../hooks/useTransition';
 import { animated as a, useSpring } from 'react-spring/hooks';
 

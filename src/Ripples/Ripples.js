@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../hooks/useStyles';
-import cn from './../theme/className';
+import merge from './../utils/merge';
+import cn from './../system/className';
 import { animated, useTransition } from 'react-spring/hooks';
+import { isFn } from './../utils/helpers';
 
-export const getBaseStyles = {
+const baseStyles = {
 	rootStyles: {
 		contain: 'strict',
 		zIndex: 0,
@@ -30,8 +31,12 @@ export const getBaseStyles = {
 };
 
 function Ripples(props) {
+	const { styles, ...passThru } = props;
 	const [ripples, setRipples] = useState(props.ripples);
-	const { rootStyles, inkStyles } = useStyles([getBaseStyles], props);
+	const { rootStyles, inkStyles } = useMemo(
+		() => merge(baseStyles, isFn(styles) ? styles(props) : styles || {}),
+		[styles],
+	);
 	const className = useMemo(() => cn(rootStyles), [rootStyles]);
 	const inkClassName = useMemo(() => cn(inkStyles), [inkStyles]);
 

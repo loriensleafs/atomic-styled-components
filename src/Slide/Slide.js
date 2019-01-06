@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import useTransition from './../hooks/useTransition';
 import useSlideManager from './useSlideManager';
 import { animated as a, useSpring } from 'react-spring/hooks';
+import { componentPropType } from './../utils/propTypes';
 
 function Slide(props) {
 	const {
+		as,
 		children,
 		className,
-		component: componentProp,
 		ease,
 		enter,
 		exit,
@@ -23,7 +24,7 @@ function Slide(props) {
 	} = props;
 	const [slideIn, slideOut, ref] = useSlideManager(direction);
 	const [easing, duration] = useTransition(ease, enter, exit, inProp);
-	const Component = a[componentProp];
+	const Component = a[as];
 	const transition = useSpring({
 		native: true,
 		transform: inProp ? slideIn : slideOut,
@@ -55,10 +56,7 @@ Slide.propTypes = {
 	 */
 	children: PropTypes.node,
 	className: PropTypes.string,
-	/**
-	 * The tag type the animated wrapper component should be.
-	 */
-	component: PropTypes.string,
+	containerRef: PropTypes.any,
 	/**
 	 * The duration type the animation should use to transition in.
 	 */
@@ -92,10 +90,11 @@ Slide.propTypes = {
 	 * component.
 	 */
 	style: PropTypes.object,
+	...componentPropType,
 };
 
 Slide.defaultProps = {
-	component: 'div',
+	as: 'div',
 	direction: 'down',
 	enter: 'entering',
 	exit: 'leaving',

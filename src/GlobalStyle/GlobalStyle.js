@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import ThemeContext from './../theme/ThemeContext';
-import { isFunc, isString } from './../utils/helpers';
+import { isFn, isStr } from './../utils/helpers';
 
 function GlobalStyle({ styles }) {
 	const { theme } = useContext(ThemeContext);
-	const GlobalStyles = isFunc(styles)
+	const GlobalStyles = isFn(styles)
 		? createGlobalStyle([styles({ theme })])
-		: isString(styles)
-			? createGlobalStyle([styles])
-			: createGlobalStyle([]);
+		: isStr(styles)
+		? createGlobalStyle([styles])
+		: createGlobalStyle([]);
 
 	return <GlobalStyles />;
 }

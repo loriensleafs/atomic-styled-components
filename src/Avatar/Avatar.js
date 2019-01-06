@@ -1,131 +1,69 @@
-import React, { cloneElement, isValidElement, useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import cn from './../theme/className';
-import useStyles from './../hooks/useStyles';
-import {
-	backgroundColor,
-	color as colorParser,
-	fontFamily,
-	fontSize,
-	fontWeight,
-	lineHeight,
-	space,
-} from './../styles';
+import AvatarImage from './AvatarImage';
+import combine from './../utils/combine';
+import { getColors, getSpacing, getText, useStyles } from './../system';
+import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-export const getColorStyles = props =>
-	props.color === 'default'
-		? {
-				rootStyles: {
-					color: props.theme.palette.bg.default,
-					backgroundColor:
-						props.theme.palette.grey[
-							props.theme.palette.type === 'light'
-								? 'light'
-								: 'dark'
-						],
-				},
-		  }
-		: {};
-
-export const getBaseStyles = props => ({
-	rootStyles: {
-		position: 'relative',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		flexShrink: 0,
-		width: '40px',
-		height: '40px',
-		fontFamily: props.theme.typography.fontFamily,
-		borderRadius: '50%',
-		overflow: 'hidden',
-		userSelect: 'none',
-		...backgroundColor(props),
-		...colorParser(props),
-		...fontSize(props),
-		...fontWeight(props),
-		...lineHeight(props),
-		...space(props),
-	},
-	imageStyles: {
-		width: '100%',
-		height: '100%',
-		textAlign: 'center',
-		objectFit: 'cover',
-	},
-});
-
-function AvatarImage(props) {
-	const { alt, src, srcSet, sizes, className, ...passThru } = props;
-
+function getColorStyles({ color, theme }) {
 	return (
-		<img
-			alt={alt}
-			src={src}
-			srcSet={srcSet}
-			sizes={sizes}
-			className={className}
-			{...passThru}
-		/>
+		color === 'default' &&
+		getColors({
+			bg: `grey.${theme.palette.type}`,
+			color: 'bg.default',
+		})
 	);
 }
 
+const getStyles = combine(getColors, getColorStyles, getSpacing, getText);
+getStyles.propTypes = {
+	...getColors.propTypes,
+	...getSpacing.propTypes,
+	...getText.propTypes,
+};
+
+const baseStyles = {
+	position: 'relative',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	flexShrink: 0,
+	width: '40px',
+	height: '40px',
+	borderRadius: '50%',
+	overflow: 'hidden',
+	userSelect: 'none',
+};
+
 function Avatar(props) {
-	const {
-		alt,
-		bg,
-		children,
-		className: classNameProp,
-		color,
-		component: Component,
-		font,
-		imageProps,
-		lineHeight,
-		m,
-		mb,
-		ml,
-		mr,
-		mt,
-		mx,
-		my,
-		p,
-		pb,
-		pl,
-		pr,
-		pt,
-		px,
-		py,
-		size,
-		sizes,
-		src,
-		srcSet,
+	const [
+		{
+			alt,
+			as: Component,
+			children,
+			className: cn = '',
+			imgProps,
+			imgStyles,
+			sizes,
+			src,
+			srcSet,
+			...passThru
+		},
 		styles,
-		weight,
-		...passThru
-	} = props;
-	const { rootStyles, imageStyles } = useStyles(
-		[getBaseStyles, getColorStyles],
-		props,
-	);
-	const className = useMemo(() => cn(classNameProp, rootStyles), [
-		classNameProp,
-		rootStyles,
-	]);
-	const imageClassName = useMemo(() => cn(imageStyles), [imageStyles]);
+		classes,
+	] = useStyles(props, getStyles, { baseStyles });
 
 	return (
-		<Component className={className} {...passThru}>
+		<Component className={cn.concat(classes)} {...passThru}>
 			{src || srcSet ? (
 				<AvatarImage
 					alt={alt}
 					src={src}
 					srcSet={srcSet}
 					sizes={sizes}
-					className={imageClassName}
-					{...imageProps}
+					styles={imgStyles}
+					{...imgProps}
 				/>
-			) : isValidElement(children) ? (
-				cloneElement(children, { className: imageClassName })
 			) : (
 				children
 			)}
@@ -136,13 +74,6 @@ function Avatar(props) {
 Avatar.displayName = 'Avatar';
 
 Avatar.propTypes = {
-	...backgroundColor.propTypes,
-	...colorParser.propTypes,
-	...fontFamily.propTypes,
-	...fontSize.propTypes,
-	...fontWeight.propTypes,
-	...lineHeight.propTypes,
-	...space.propTypes,
 	/**
 	 * Used in combination with `src` or `srcSet` to
 	 * provide an alt attribute for the rendered `img` element.
@@ -189,11 +120,16 @@ Avatar.propTypes = {
 	 * The `srcSet` attribute for the `img` element.
 	 */
 	srcSet: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...componentPropType,
+	...stylesPropType,
+	...getColors.propTypes,
+	...getSpacing.propTypes,
+	...getText.propTypes,
 };
 
 Avatar.defaultProps = {
-	component: 'div',
+	as: 'div',
+	fontFamily: 'ui',
 };
 
 export default Avatar;

@@ -1,19 +1,16 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import useDidUpdate from './../hooks/useDidUpdate';
-import useStyles from './../hooks/useStyles';
 import IconButton from './../IconButton';
-import cn from './../theme/className';
-import { animated, useSpring } from 'react-spring';
-import { isNil } from './../utils/helpers';
+import useDidUpdate from './../hooks/useDidUpdate';
+import merge from './../utils/merge';
+import cn from './../system/className';
+import { isFn, isNil } from './../utils/helpers';
 
-const getBaseStyles = {
+const baseStyles = {
 	buttonStyles: {
-		rootStyles: {
-			display: 'inline-flex',
-			alignItems: 'center',
-			transition: 'none',
-		},
+		display: 'inline-flex',
+		alignItems: 'center',
+		transition: 'none',
 	},
 	inputStyles: {
 		zIndex: 2,
@@ -53,39 +50,38 @@ function SelectionControl(props) {
 		...passThru
 	} = props;
 	const [checked, setChecked] = useState(checkedProp || false);
-	const { buttonStyles, inputStyles } = useStyles([getBaseStyles], {
-		...props,
-		checked
-	});
+	const { buttonStyles, inputStyles } = useMemo(
+		() => merge(baseStyles, isFn(styles) ? styles(props) : styles),
+		[props],
+	);
 	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
 
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
 
 	const handleChange = useCallback(event => {
-		if (isNil(checkedProp)) {
-			setChecked(event.target.checked);
-		}
-		if (onChange) {
-			onChange(event, event.target.checked);
-		}
+		if (isNil(checkedProp)) setChecked(event.target.checked);
+		if (onChange) onChange(event, event.target.checked);
 	}, []);
 
 	const handleFocus = useCallback(event => onFocus && onFocus(event), []);
 
 	const handleBlur = useCallback(event => onBlur && onBlur(event), []);
 
-	useDidUpdate(() => !isNil(checkedProp) && setChecked(() => checkedProp), [checkedProp]);
+	useDidUpdate(() => !isNil(checkedProp) && setChecked(() => checkedProp), [
+		checkedProp,
+	]);
 
 	return (
 		<IconButton
 			component="span"
-			styles={buttonStyles}
+			styles={{ root: buttonStyles }}
 			disabled={disabled}
 			tabIndex={null}
 			role={undefined}
 			onFocus={handleFocus}
 			onBlur={handleBlur}
-			{...passThru}>
+			{...passThru}
+		>
 			{checked ? (checkedIcon ? checkedIcon : icon) : icon}
 			<input
 				autoFocus={autoFocus}

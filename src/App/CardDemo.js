@@ -6,8 +6,10 @@ import Card from './../Card';
 import CardActionArea from './../CardActionArea';
 import CardActions from './../CardActions';
 import CardContent from './../CardContent';
+import CardHeader from '../CardHeader/CardHeader';
 import CardMedia from './../CardMedia';
 import Collapse from './../Collapse';
+import DemoBox from './DemoBox';
 import ExpandMoreIcon from './../svgIcons/ExpandMore';
 import FavoriteIcon from './../svgIcons/Favorite';
 import Flex from './../Flex';
@@ -19,11 +21,9 @@ import MoreVertIcon from './../svgIcons/MoreVert';
 import Rotate from './../Rotate';
 import ShareIcon from './../svgIcons/Share';
 import Typography from './../Typography';
-import cn from './../theme/className';
-import DemoBox from './DemoBox';
+import cn from './../system/className';
 import { PlayArrowIcon, SkipNextIcon, SkipPreviousIcon } from './DemoIcons';
 import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
-import CardHeader from '../CardHeader/CardHeader';
 
 const Bullet = () => (
 	<span
@@ -38,16 +38,12 @@ const Bullet = () => (
 );
 
 const Navigation = () => (
-	<Box
-		w={200}
-		display={['none', null, null, null, 'block']}
-		style={{ fontSize: '12px' }}
-	>
-		<List dense style={{ position: 'sticky', top: 0 }}>
+	<Box w={200} display={['none', null, null, null, 'block']} fontSize="12px">
+		<List dense style={{ position: 'sticky', top: '64px' }}>
 			<ListItem button>
 				<ListItemText secondary="Contents" />
 			</ListItem>
-			<ListItem button component="a" href="#contained-buttons">
+			<ListItem button as="a" href="#contained-buttons">
 				<ListItemText secondary="Simple Card" />
 			</ListItem>
 			<ListItem button>
@@ -282,9 +278,9 @@ const UIControlsCard = () => (
 		<DemoBox justifyContent="center">
 			<Card>
 				<Flex>
-					<Flex dir="col">
+					<Flex direction="column">
 						<CardContent>
-							<Flex dir="col" flex="1 0 auto">
+							<Flex direction="column" flex="1 0 auto">
 								<Typography variant="h5">
 									Live From Space
 								</Typography>
