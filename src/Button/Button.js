@@ -21,8 +21,8 @@ import { componentPropType, stylesPropType } from './../utils/propTypes';
 const FONT_SIZE_SHIFT = 0.0625;
 
 function getSizeStyles(props) {
-	const { fullWidth, mini, size, theme } = props;
-	const { fontSizes } = theme.typography;
+	const { fullWidth, mini, size } = props;
+	const { fontSizes } = props.theme.typography;
 	const w = mini ? 40 : fullWidth ? 1 : null;
 	const h = mini ? 40 : null;
 	const text = {
@@ -56,11 +56,11 @@ function getSizeStyles(props) {
 }
 
 function getVariantStyles(props) {
-	const { color, variant } = props;
-	const { palette, shape } = props.theme;
+	const { color, variant, theme } = props;
+	const { action, grey, text, type, ...palette } = theme.palette;
 	const isBrand = color === 'primary' || color === 'secondary';
 	const isDefault = color === 'default';
-	const isLight = palette.type === 'light';
+	const isLight = type === 'light';
 
 	switch (variant) {
 		case 'outlined':
@@ -74,25 +74,20 @@ function getVariantStyles(props) {
 				}),
 				border: isBrand
 					? `1px solid ${fade(palette[color].main, 0.5)}`
-					: `1px solid ${fade(
-							palette.grey[isLight ? 'main' : 'dark'],
-							0.5,
-					  )}`,
-				borderRadius: shape.borderRadius.round,
+					: `1px solid ${fade(grey[isLight ? 'main' : 'dark'], 0.5)}`,
+				borderRadius: theme.shape.borderRadius.round,
 				':hover': {
 					backgroundColor: fade(
-						isBrand ? palette[color].main : palette.text.primary,
-						palette.action.hoverOpacity,
+						isBrand ? palette[color].main : text.primary,
+						action.hoverOpacity,
 					),
 					border: isBrand
 						? `1px solid ${palette[color].main}`
-						: `1px solid ${
-								palette.grey[isLight ? 'main' : 'dark']
-						  }`,
+						: `1px solid ${grey[isLight ? 'main' : 'dark']}`,
 				},
 				':disabled': {
 					...getColor({ color: 'action.disabled' }),
-					border: `1px solid ${palette.action.disabled}`,
+					border: `1px solid ${action.disabled}`,
 				},
 			};
 
@@ -103,7 +98,7 @@ function getVariantStyles(props) {
 					color: isBrand ? `${color}.contrastText` : 'text.primary',
 				}),
 				...getElevation({ elevation: 2 }),
-				borderRadius: shape.borderRadius.round,
+				borderRadius: theme.shape.borderRadius.round,
 				':active': getElevation({ elevation: 8 }),
 				':hover': getBg({
 					bg: isBrand ? `${color}.dark` : 'grey.light',
@@ -144,11 +139,11 @@ function getVariantStyles(props) {
 						: 'inherit',
 				}),
 				...getSpacing({ py: 1.5, px: 2 }),
-				borderRadius: `${shape.borderRadius.round}`,
+				borderRadius: theme.shape.borderRadius.round,
 				':hover': {
 					backgroundColor: fade(
-						isBrand ? palette[color].main : palette.text.primary,
-						palette.action.hoverOpacity,
+						isBrand ? palette[color].main : text.primary,
+						action.hoverOpacity,
 					),
 				},
 				':disabled': getColor({ color: 'action.disabled' }),

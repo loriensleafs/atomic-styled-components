@@ -10,10 +10,11 @@ import keycode from 'keycode';
 import Ripples, { useRippleManager } from './../Ripples';
 import cn from './../system/className';
 import merge from './../utils/merge';
+import { isEq, isFn } from './../utils/helpers';
 import { useDidUpdate, usePrevious } from './../hooks';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-export const baseStyles = {
+const baseStyles = {
 	position: 'relative',
 	display: 'inline-flex',
 	alignItems: 'center',
@@ -59,7 +60,7 @@ const ButtonBase = forwardRef((props, ref) => {
 		action,
 		centerRipple,
 		children,
-		className: classNameProp,
+		className: cnProp,
 		disabled,
 		disableRipple,
 		disableTouchRipple,
@@ -75,44 +76,31 @@ const ButtonBase = forwardRef((props, ref) => {
 		onTouchEnd,
 		onTouchMove,
 		onTouchStart,
-		styles: stylesProp,
+		styles = {},
 		tabIndex,
 		RippleProps,
-		type,
+		type = 'button',
 		...passThru
 	} = props;
-	ref = ref ? ref : useRef(null);
 	const [ripples, rippleHandler, startRipple] = useRippleManager(ref);
 	const [focused, setFocused] = useState(false);
 	const prevFocused = usePrevious(focused);
 	const keyDown = useRef(false);
-	const isButton = as === 'button';
-	const Component = isButton && props.href ? 'a' : as || 'button';
-	const buttonProps = useMemo(
+	const Component = props.href ? 'a' : as ? as : 'button';
+	const buttonProps = isEq(as, 'button')
+		? { disabled, type }
+		: { role: 'button' };
+	const className = useMemo(
 		() =>
-			isButton
-				? {
-						disabled,
-						type: type || 'button',
-				  }
-				: {
-						role: 'button',
-				  },
-		[Component, disabled, type],
+			cn(
+				cnProp,
+				merge(baseStyles, isFn(styles) ? styles(props) : styles),
+			),
+		[cnProp, styles],
 	);
-	const styles = useMemo(() => merge(baseStyles, stylesProp || {}), [
-		stylesProp,
-	]);
-	const className = useMemo(() => cn(classNameProp, styles), [
-		classNameProp,
-		styles,
-	]);
 
 	const handleMouseDown = rippleHandler(
-		{
-			type: 'start',
-			center: centerRipple,
-		},
+		{ type: 'start', center: centerRipple },
 		useCallback(() => focused && setFocused(() => false), []),
 	);
 
@@ -154,15 +142,14 @@ const ButtonBase = forwardRef((props, ref) => {
 
 		if (focusRipple && !keyDown.current && focused && key === 'space') {
 			keyDown.current = true;
-
 			if (onKeyDown) onKeyDown(event);
 
 			if (
-				event.target === event.currentTarget &&
 				as &&
-				!isButton &&
-				(key === 'space' || key === 'enter') &&
-				!(ref.current.tagName === 'A' && ref.current.href)
+				isEq(event.target, event.currentTarget) &&
+				!isEq(as, 'button') &&
+				(isEq(key, 'space') || isEq(key, 'enter')) &&
+				!(isEq(ref.current.tagName, 'A') && ref.current.href)
 			) {
 				event.preventDefault();
 			}
