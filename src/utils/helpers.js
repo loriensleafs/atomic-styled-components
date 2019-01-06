@@ -1,28 +1,79 @@
-export const capitalize = string =>
-	typeof string === 'string' ? string.charAt(0).toUpperCase() + string.slice(1) : string;
+/**
+ * Validation methods.
+ */
+const is = n => n !== undefined && n !== null;
 
-export const clamp = (val, min, max) => Math.min(Math.max(min, val), max);
+const isArr = n => Array.isArray(n);
 
-export const num = n => typeof n === 'number' && !isNaN(n);
+const isEq = (a, b) => a === b;
 
-export const px = n => (num(n) ? n + 'px' : n);
+const isFn = n => typeof n === 'function';
 
-export const isNil = n => n === null || typeof n === 'undefined';
+const isNeg = n => n < 0;
 
-export const is = n => !isNil(n);
+const isNil = n => !is(n);
 
-export const isFunc = n => typeof n === 'function';
+const isNum = n => typeof n === 'number';
 
-export const isArray = n => Array.isArray(n);
+const isObj = n => !isNil(n) && !isArr(n) && typeof n === 'object';
 
-export const isString = n => typeof n === 'string';
+const isPartial = n => n % 1 == 0.5;
 
-export const isNum = n => !isNaN(parseFloat(n));
+const isStr = n => typeof n === 'string';
 
-export const isObject = n => !isNil(n) && !isArray(n) && typeof n === 'object';
+/**
+ * Conversion Methods.
+ */
+const toArr = n => (isArr(n) ? n : [n]);
 
-export const arr = n => (isArray(n) ? n : [n]);
+const toMs = milliseconds => `${Math.round(milliseconds)}ms`;
 
-export const toArray = n => (isArray(n) ? n : [n]);
+const toPx = n => (isNum(n) ? n + 'px' : n);
 
-export const formatMs = milliseconds => `${Math.round(milliseconds)}ms`;
+const toRem = n => (isNum(n) ? n + 'rem' : n);
+
+const capitalize = str =>
+	isStr(str) ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+
+const clamp = (val, min, max) => Math.min(Math.max(min, val), max);
+
+/**
+ * Getter methods.
+ */
+const getKeys = n => Object.keys(n);
+
+const getPath = (obj, ...paths) =>
+	paths
+		.join('.')
+		.split('.')
+		.reduce((a, b) => (a && a[b] ? a[b] : null), obj);
+
+const getVals = n => Object.values(n);
+
+/**
+ * Misc methods.
+ */
+const noop = n => n;
+
+export {
+	is,
+	isArr,
+	isEq,
+	isFn,
+	isNeg,
+	isNil,
+	isNum,
+	isObj,
+	isPartial,
+	isStr,
+	toArr,
+	toMs,
+	toPx,
+	toRem,
+	capitalize,
+	clamp,
+	getKeys,
+	getPath,
+	getVals,
+	noop,
+};
