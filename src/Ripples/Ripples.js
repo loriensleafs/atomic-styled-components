@@ -6,7 +6,7 @@ import { animated, useTransition } from 'react-spring/hooks';
 import { isFn } from './../utils/helpers';
 
 const baseStyles = {
-	rootStyles: {
+	root: {
 		contain: 'strict',
 		zIndex: 0,
 		position: 'absolute',
@@ -22,7 +22,7 @@ const baseStyles = {
 		perspective: 1000,
 		willChange: 'transform',
 	},
-	inkStyles: {
+	ink: {
 		position: 'absolute',
 		display: 'block',
 		borderRadius: '50%',
@@ -31,14 +31,21 @@ const baseStyles = {
 };
 
 function Ripples(props) {
-	const { styles, ...passThru } = props;
+	const { className, styles: stylesProp = {} } = props;
 	const [ripples, setRipples] = useState(props.ripples);
-	const { rootStyles, inkStyles } = useMemo(
-		() => merge(baseStyles, isFn(styles) ? styles(props) : styles || {}),
-		[styles],
+	const classes = useMemo(
+		() => {
+			const styles = merge(
+				baseStyles,
+				isFn(stylesProp) ? stylesProp(props) : stylesProp,
+			);
+			return {
+				root: cn(className, styles.root),
+				ink: cn(styles.ink),
+			};
+		},
+		[className, stylesProp],
 	);
-	const className = useMemo(() => cn(rootStyles), [rootStyles]);
-	const inkClassName = useMemo(() => cn(inkStyles), [inkStyles]);
 
 	useEffect(() => setRipples(() => props.ripples), [props.ripples]);
 
@@ -66,13 +73,9 @@ function Ripples(props) {
 	});
 
 	return (
-		<div className={className}>
+		<div className={classes.root}>
 			{transitions.map(({ key, props }) => (
-				<animated.div
-					key={key}
-					style={props}
-					className={inkClassName}
-				/>
+				<animated.div key={key} style={props} className={classes.ink} />
 			))}
 		</div>
 	);
