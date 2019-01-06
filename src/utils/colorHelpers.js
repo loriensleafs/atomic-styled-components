@@ -1,6 +1,6 @@
 import warning from 'warning';
 
-export function clamp(value, min = 0, max = 1) {
+function clamp(value, min = 0, max = 1) {
 	warning(
 		value >= min && value <= max,
 		`Material-UI: the value provided ${value} is out of range [${min}, ${max}].`,
@@ -12,19 +12,19 @@ export function clamp(value, min = 0, max = 1) {
 	return value;
 }
 
-export function convertHexToRGB(color) {
+function convertHexToRGB(color) {
 	color = color.substr(1);
 	const re = new RegExp(`.{1,${color.length / 3}}`, 'g');
 	let colors = color.match(re);
 
 	if (colors && colors[0].length === 1) {
-		colors = colors.map((n) => n + n);
+		colors = colors.map(n => n + n);
 	}
 
-	return colors ? `rgb(${colors.map((n) => parseInt(n, 16)).join(', ')})` : '';
+	return colors ? `rgb(${colors.map(n => parseInt(n, 16)).join(', ')})` : '';
 }
 
-export function rgbToHex(color) {
+function rgbToHex(color) {
 	// Pass hex straight through
 	if (color.indexOf('#') === 0) {
 		return color;
@@ -36,12 +36,12 @@ export function rgbToHex(color) {
 	}
 
 	let { values } = decomposeColor(color);
-	values = values.map((n) => intToHex(n));
+	values = values.map(n => intToHex(n));
 
 	return `#${values.join('')}`;
 }
 
-export function decomposeColor(color) {
+function decomposeColor(color) {
 	if (color.charAt(0) === '#') {
 		return decomposeColor(convertHexToRGB(color));
 	}
@@ -49,10 +49,10 @@ export function decomposeColor(color) {
 	const marker = color.indexOf('(');
 	const type = color.substring(0, marker);
 	let values = color.substring(marker + 1, color.length - 1).split(',');
-	values = values.map((value) => parseFloat(value));
+	values = values.map(value => parseFloat(value));
 
 	if (process.env.NODE_ENV !== 'production') {
-		if ([ 'rgb', 'rgba', 'hsl', 'hsla' ].indexOf(type) === -1) {
+		if (['rgb', 'rgba', 'hsl', 'hsla'].indexOf(type) === -1) {
 			throw new Error(
 				[
 					`Material-UI: unsupported \`${color}\` color.`,
@@ -65,7 +65,7 @@ export function decomposeColor(color) {
 	return { type, values };
 }
 
-export function recomposeColor(color) {
+function recomposeColor(color) {
 	const { type } = color;
 	let { values } = color;
 
@@ -82,33 +82,42 @@ export function recomposeColor(color) {
 	return `${color.type}(${values.join(', ')})`;
 }
 
-export function getContrastRatio(foreground, background) {
+function getContrastRatio(foreground, background) {
 	const lumA = getLuminance(foreground);
 	const lumB = getLuminance(background);
 	return (Math.max(lumA, lumB) + 0.05) / (Math.min(lumA, lumB) + 0.05);
 }
 
-export function getLuminance(color) {
+function getLuminance(color) {
 	const decomposedColor = decomposeColor(color);
 
 	if (decomposedColor.type.indexOf('rgb') !== -1) {
-		const rgb = decomposedColor.values.map((val) => {
+		const rgb = decomposedColor.values.map(val => {
 			val /= 255; // normalized
-			return val <= 0.03928 ? val / 12.92 : ((val + 0.055) / 1.055) ** 2.4;
+			return val <= 0.03928
+				? val / 12.92
+				: ((val + 0.055) / 1.055) ** 2.4;
 		});
 		// Truncate at 3 digits
-		return Number((0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]).toFixed(3));
+		return Number(
+			(0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]).toFixed(3),
+		);
 	}
 
 	// else if (decomposedColor.type.indexOf('hsl') !== -1)
 	return decomposedColor.values[2] / 100;
 }
 
-export const emphasize = (color, coefficient = 0.15) =>
-	getLuminance(color) > 0.5 ? darken(color, coefficient) : lighten(color, coefficient);
+const emphasize = (color, coefficient = 0.15) =>
+	getLuminance(color) > 0.5
+		? darken(color, coefficient)
+		: lighten(color, coefficient);
 
-export function fade(color, value) {
-	warning(color, `Material-UI: missing color argument in fade(${color}, ${value}).`);
+function fade(color, value) {
+	warning(
+		color,
+		`Material-UI: missing color argument in fade(${color}, ${value}).`,
+	);
 
 	if (!color) return color;
 
@@ -123,8 +132,11 @@ export function fade(color, value) {
 	return recomposeColor(color);
 }
 
-export function darken(color, coefficient) {
-	warning(color, `Material-UI: missing color argument in darken(${color}, ${coefficient}).`);
+function darken(color, coefficient) {
+	warning(
+		color,
+		`Material-UI: missing color argument in darken(${color}, ${coefficient}).`,
+	);
 
 	if (!color) return color;
 
@@ -142,8 +154,11 @@ export function darken(color, coefficient) {
 	return recomposeColor(color);
 }
 
-export function lighten(color, coefficient) {
-	warning(color, `Material-UI: missing color argument in lighten(${color}, ${coefficient}).`);
+function lighten(color, coefficient) {
+	warning(
+		color,
+		`Material-UI: missing color argument in lighten(${color}, ${coefficient}).`,
+	);
 
 	if (!color) return color;
 
@@ -161,7 +176,7 @@ export function lighten(color, coefficient) {
 	return recomposeColor(color);
 }
 
-export function addLightOrDark(intent, direction, shade, tonalOffset) {
+function addLightOrDark(intent, direction, shade, tonalOffset) {
 	//if (!intent[direction]) {
 	if (intent.hasOwnProperty(shade)) {
 		intent[direction] = intent[shade];
@@ -172,3 +187,16 @@ export function addLightOrDark(intent, direction, shade, tonalOffset) {
 	}
 	//}
 }
+
+export {
+	addLightOrDark,
+	clamp,
+	convertHexToRGB,
+	darken,
+	emphasize,
+	fade,
+	getContrastRatio,
+	getLuminance,
+	lighten,
+	rgbToHex,
+};
