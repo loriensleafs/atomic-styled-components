@@ -31,7 +31,7 @@ function useStyles(props, reducers, options = {}) {
 		() =>
 			reducers.reduce(
 				(acc, prop) =>
-					prop.propTypes
+					prop && prop.propTypes
 						? [
 								...acc,
 								...getKeys(prop.propTypes).filter(
