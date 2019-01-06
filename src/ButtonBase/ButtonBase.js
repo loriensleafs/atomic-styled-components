@@ -10,7 +10,7 @@ import keycode from 'keycode';
 import Ripples, { useRippleManager } from './../Ripples';
 import cn from './../system/className';
 import merge from './../utils/merge';
-import { isEq, isFn } from './../utils/helpers';
+import { isFn } from './../utils/helpers';
 import { useDidUpdate, usePrevious } from './../hooks';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
@@ -87,9 +87,8 @@ const ButtonBase = forwardRef((props, ref) => {
 	const prevFocused = usePrevious(focused);
 	const keyDown = useRef(false);
 	const Component = props.href ? 'a' : as ? as : 'button';
-	const buttonProps = isEq(as, 'button')
-		? { disabled, type }
-		: { role: 'button' };
+	const buttonProps =
+		as === 'button' ? { disabled, type } : { role: 'button' };
 	const className = useMemo(
 		() =>
 			cn(
@@ -146,10 +145,10 @@ const ButtonBase = forwardRef((props, ref) => {
 
 			if (
 				as &&
-				isEq(event.target, event.currentTarget) &&
-				!isEq(as, 'button') &&
-				(isEq(key, 'space') || isEq(key, 'enter')) &&
-				!(isEq(ref.current.tagName, 'A') && ref.current.href)
+				event.target === event.currentTarget &&
+				as === 'button' &&
+				(key === 'space' || key === 'enter') &&
+				!(ref.current.tagName === 'A' && ref.current.href)
 			) {
 				event.preventDefault();
 			}
