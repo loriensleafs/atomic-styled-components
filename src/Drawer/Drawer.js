@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Modal from './../Modal';
 import Paper from './../Paper';
 import Slide from './../Slide';
+import useDidMount from './../hooks/useDidMount';
 import useStyles from './../system/useStyles';
 import combine from './../utils/combine';
 import { capitalize, isEq } from './../utils/helpers';
 import { stylesPropType } from './../utils/propTypes';
 
-const oppositeDirection = {
+const oppDir = {
 	left: 'right',
 	right: 'left',
 	top: 'down',
@@ -23,7 +24,7 @@ function getPositionStyles(props) {
 	} = props;
 	const getBorderStyle = side =>
 		!isEq(variant, 'temporary') && {
-			[`border${capitalize(oppositeDirection[side])}`]: `1px solid ${
+			[`border${capitalize(oppDir[side])}`]: `1px solid ${
 				palette.divider
 			}`,
 		};
@@ -79,7 +80,6 @@ function getVariantStyles(props) {
 					position: 'fixed',
 					top: '0px',
 					height: '100%',
-					overflowY: 'auto',
 					outline: 'none', // Add iOS momentum scrolling.
 				},
 				root: {
@@ -123,7 +123,6 @@ function getBaseStyles(props) {
 				position: 'fixed',
 				top: '0px',
 				height: '100%',
-				overflowY: 'auto',
 				outline: 'none', // Add iOS momentum scrolling.
 			},
 			...getPositionStyles(props),
@@ -156,6 +155,7 @@ function Drawer(props) {
 		styles,
 		classes,
 	] = useStyles(props, getStyles, { whitelist: ['variant'] });
+	const mounted = useRef(false);
 
 	const DrawerBase = (
 		<Paper
@@ -170,17 +170,22 @@ function Drawer(props) {
 
 	const SlidingDrawer = (
 		<Slide
+			appear={mounted.current}
 			className={classes.slide}
-			direction={oppositeDirection[anchor]}
-			enter="short"
-			exit="shorter"
+			direction={oppDir[anchor]}
 			ease="sharp"
-			in={open}
+			enterDuration="short"
+			exitDuration="shorter"
+			show={open}
 			{...SlideProps}
 		>
 			{DrawerBase}
 		</Slide>
 	);
+
+	useDidMount(() => {
+		mounted.current = true;
+	});
 
 	switch (variant) {
 		case 'permanent':

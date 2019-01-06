@@ -47,7 +47,7 @@ function getHasTransition(props) {
 	if (props.children) {
 		const children = React.Children.toArray(props.children);
 		return children.some(
-			child => isValidElement(child) && child.props.in !== undefined,
+			child => isValidElement(child) && child.props.show !== undefined,
 		);
 	}
 	return false;
@@ -291,12 +291,12 @@ function Modal(props) {
 		if (open) handleOpen();
 	});
 
-	const handleExit = useCallback(() => {
+	const handleExit = () => {
 		if (!open && exiting.current) {
 			exiting.current = false;
 			setExited(() => true);
 		}
-	}, []);
+	};
 
 	useDidUpdate(
 		() => {
@@ -479,7 +479,7 @@ Modal.defaultProps = {
 	disablePortal: false,
 	disableRestoreFocus: false,
 	hideBackdrop: false,
-	keepMounted: true,
+	keepMounted: false,
 };
 
 export default Modal;

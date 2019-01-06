@@ -1,62 +1,58 @@
 import { useCallback, useMemo, useRef, useReducer } from 'react';
-import { useDidMount, useDidUpdate } from './../hooks';
-import debounce from 'debounce';
-import { capitalize } from './../utils/helpers';
+import { useDidMount } from './../hooks';
+import throttle from './../utils/throttle';
 
-const GUTTER = 24;
-
-function getAxis(direction) {
-	return direction === 'left' || direction === 'right' ? 'x' : 'y';
+function getSlideIn(direction) {
+	const isX = direction === 'left' || direction === 'right';
+	return `translate${isX ? 'X' : 'Y'}(0px)`;
 }
 
-function initialState(isX) {
-	const axis = isX ? 'X' : 'Y';
-	const method = `inner${isX ? 'Width' : 'Height'}`;
-
-	return `translate${axis}(-${window[method]}px)`;
-}
-
-function slideOutReducer(state = {}, { direction, ref }) {
-	const { top, left, width, height } = ref.current
-		? ref.current.getBoundingClientRect()
-		: window.getBoundingClientRect();
+function slideOutStyle(state, { direction, ref }) {
+	const {
+		top,
+		right,
+		bottom,
+		left,
+		width,
+		height,
+	} = ref.current.getBoundingClientRect();
 
 	switch (direction) {
 		case 'left':
-			return `translateX(${window.innerWidth - left}px)`;
+			return `translateX(${Math.abs(left) + width}px)`;
 
 		case 'right':
-			return `translateX(-${left + width + GUTTER}px)`;
+			return `translateX(-${Math.abs(right) + width}px)`;
 
 		case 'up':
-			return `translateY(${window.innerHeight - top}px)`;
+			return `translateY(${Math.abs(bottom) + height}px)`;
 
 		case 'down':
-			return `translateY(-${top + height + GUTTER}px)`;
+			return `translateY(-${Math.abs(top) + height}px)`;
 
 		default:
 			return state;
 	}
 }
 
-export default function useSlideManager(direction) {
+export default function useSlideManager(direction, appear) {
 	const ref = useRef(null);
-	const isX = useMemo(() => getAxis(direction) === 'x', [direction]);
-	const slideIn = useMemo(() => `translate${isX ? 'X' : 'Y'}(0px)`, [isX]);
-	const [slideOut, dispatch] = useReducer(slideOutReducer, initialState(isX));
+	const slideIn = useMemo(() => getSlideIn(direction), [direction]);
+	const [slideOut, dispatch] = useReducer(
+		slideOutStyle,
+		appear ? undefined : slideIn,
+	);
 
 	const handleResize = useCallback(
-		debounce(() => isX && dispatch({ ref, direction }), 166),
+		throttle(() => dispatch({ ref, direction })),
 		[],
 	);
 
 	useDidMount(() => {
-		if (isX) dispatch({ ref, direction });
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
+		dispatch({ ref, direction });
+		window.addEventListener('resize', handleResize, false);
+		return () => window.removeEventListener('resize', handleResize, false);
 	});
-
-	useDidUpdate(() => dispatch({ ref, direction }), [direction, ref.current]);
 
 	return [slideIn, slideOut, ref];
 }

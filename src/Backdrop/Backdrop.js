@@ -6,7 +6,6 @@ import { stylesPropType } from './../utils/propTypes';
 
 function getStyles(props) {
 	const { invisible } = props;
-
 	return {
 		position: 'fixed',
 		right: 0,
@@ -21,14 +20,10 @@ function getStyles(props) {
 	};
 }
 getStyles.propTypes = {
-	/**
-	 * If `true`, the backdrop is invisible.
-	 * It can be used when rendering a popover or a custom select component.
-	 */
+	// If `true`, the backdrop is invisible.
+	// It can be used when rendering a popover or a custom select component.
 	invisible: PropTypes.bool,
-	/**
-	 * If `true`, the backdrop is open.
-	 */
+	// If `true`, the backdrop is open.
 	open: PropTypes.bool.isRequired,
 };
 
@@ -41,12 +36,13 @@ function Backdrop(props) {
 
 	return (
 		<Fade
+			appear
 			aria-hidden="true"
 			className={cn.concat(classes)}
-			enter="short"
-			exit="shorter"
 			ease="sharp"
-			in={open}
+			enterDuration="short"
+			exitDuration="shorter"
+			show={open}
 			{...passThru}
 		/>
 	);
@@ -55,9 +51,6 @@ function Backdrop(props) {
 Backdrop.displayName = 'Backdrop';
 
 Backdrop.propTypes = {
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	...stylesPropType,
 	...getStyles.propTypes,
