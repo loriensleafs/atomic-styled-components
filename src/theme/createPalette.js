@@ -1,4 +1,4 @@
-import merge from './../utils/pureRecursiveMerge';
+import merge from './../utils/merge';
 import { addLightOrDark, getContrastRatio } from './../utils/colorHelpers';
 
 export const greys = [
@@ -75,7 +75,12 @@ const getContrastText = background =>
 		? dark.text.primary
 		: light.text.primary;
 
-const augmentColor = (color, mainShade = 500, lightShade = 300, darkShade = 700) => {
+const augmentColor = (
+	color,
+	mainShade = 500,
+	lightShade = 300,
+	darkShade = 700,
+) => {
 	if (!color.main && color[mainShade]) {
 		color.main = color[mainShade];
 	}
