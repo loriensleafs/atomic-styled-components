@@ -1,36 +1,36 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import cn from './../system/className';
-import useTransition from './../hooks/useTransition';
-import { animated as a, useSpring } from 'react-spring/hooks';
+import useMotion from './../hooks/useMotion';
+import { animated, useSpring } from 'react-spring/hooks';
+import { componentPropType } from './../utils/propTypes';
 
 function Rotate(props) {
 	const {
+		as,
 		children,
-		className: classNameProp,
-		component: componentProp,
-		ease,
-		duration: durationProp,
+		className,
 		deg,
+		duration: durationProp,
+		ease,
 		onEnd,
 		onStart,
 		onUpdate,
 		style = {},
 		...passThru
 	} = props;
-	const [easing, duration] = useTransition(ease, durationProp);
-	const className = useMemo(() => cn(classNameProp, { display: 'inherit' }), [
-		classNameProp,
-	]);
-	const Component = a[componentProp];
+	const [easing, duration] = useMotion(ease, durationProp);
 	const transition = useSpring({
 		native: true,
-		transform: `rotate(${deg}deg)`,
+		config: { duration, easing },
+		to: {
+			display: 'inherit',
+			transform: `rotate(${deg}deg)`,
+		},
 		onStart: () => onStart && onStart(),
 		onFrame: val => onUpdate && onUpdate(val),
 		onRest: () => onEnd && onEnd(),
-		config: { duration, easing },
 	});
+	const Component = animated[as];
 
 	return (
 		<Component
@@ -45,48 +45,28 @@ function Rotate(props) {
 Rotate.displayName = 'Rotate';
 
 Rotate.propTypes = {
-	/**
-	 * A single child content element.
-	 */
-	children: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+	// The content node to be rotated.
+	children: PropTypes.node,
 	className: PropTypes.string,
-	/**
-	 * The tag type the animated wrapper component should be.
-	 */
-	component: PropTypes.string,
-	/**
-	 * The duration type the animation should use.
-	 */
+	// The duration type the animation should use.
 	duration: PropTypes.string,
-	/**
-	 * The easing type the animation should use.
-	 */
+	// The easing type the animation should use.
 	ease: PropTypes.string,
-	/**
-	 * The degree to animate to.
-	 */
+	// The degree to animate to.
 	deg: PropTypes.number,
-	/**
-	 * Callback that is triggered at the end of the animation.
-	 */
+	// Callback that is triggered at the end of the animation.
 	onEnd: PropTypes.func,
-	/**
-	 * Callback that is triggered at the start of the animation.
-	 */
+	// Callback that is triggered at the start of the animation.
 	onStart: PropTypes.func,
-	/**
-	 * Callback that is triggered while the animation is entering.
-	 */
+	// Callback that is triggered while the animation is entering.
 	onUpdate: PropTypes.func,
-	/**
-	 * Inline styles that will be applied to the animated wrapper
-	 * component.
-	 */
+	// Inline styles to apply to the animated wrapper.
 	style: PropTypes.object,
+	...componentPropType,
 };
 
 Rotate.defaultProps = {
-	component: 'div',
+	as: 'div',
 	deg: 0,
 	duration: 'shorter',
 	ease: 'inOut',

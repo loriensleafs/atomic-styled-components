@@ -1,42 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import useTransition from './../hooks/useTransition';
-import { animated as a, useSpring } from 'react-spring/hooks';
+import { useDidMount, useMotion } from './../hooks';
+import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 
 function Fade(props) {
 	const {
+		appear,
 		as,
 		className,
 		children,
+		duration: { enter, exit },
 		ease,
-		enter,
-		exit,
-		in: inProp,
 		onEnd,
 		onStart,
 		onEntering,
 		onExiting,
+		show,
 		style = {},
 		...passThru
 	} = props;
-	const [easing, duration] = useTransition(ease, enter, exit, inProp);
-	const Component = a[as];
+	const [mounted, setMounted] = useState(false);
+	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const transition = useSpring({
 		native: true,
-		opacity: inProp ? 1 : 0,
+		config: { duration, easing },
+		opacity: (appear && !mounted) || !show ? 0 : 1,
 		onStart: () => onStart && onStart(),
 		onFrame: val =>
-			inProp
-				? onEntering && onEntering(val)
-				: onExiting && onExiting(val),
+			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
-		config: { duration, easing },
 	});
+	const Component = animated[as];
+
+	useDidMount(() => setMounted(() => true));
 
 	return (
 		<Component
-			children={children}
+			chilren={children}
 			className={className}
 			style={{ ...style, ...transition }}
 			{...passThru}
@@ -47,47 +48,37 @@ function Fade(props) {
 Fade.displayName = 'Fade';
 
 Fade.propTypes = {
-	/**
-	 * The content node to be collapsed.
-	 */
+	// If a child component shown on mount should be transitioned in.
+	appear: PropTypes.bool,
+	// The content node to be collapsed.
 	children: PropTypes.node,
 	className: PropTypes.string,
-	/**
-	 * The duration type the animation should use to transition in.
-	 */
-	enter: PropTypes.string,
-	/**
-	 * The duration type the animation should use to transition out.
-	 */
-	exit: PropTypes.string,
-	/**
-	 * The easing type the animation should use.
-	 */
+	duration: PropTypes.shape({
+		// The duration type the animation should use to transition in.
+		enter: PropTypes.string,
+		// The duration type the animation should use to transition out.
+		exit: PropTypes.string,
+	}),
+	// The easing type the animation should use.
 	ease: PropTypes.string,
-	/**
-	 * If `true`, the component will transition in.
-	 */
-	in: PropTypes.bool,
-	/**
-	 * Callback that is triggered at the end of the animation.
-	 */
+	// Callback that is triggered at the end of the animation.
 	onEnd: PropTypes.func,
-	/**
-	 * Callback that is triggered at the start of the animation.
-	 */
+	// Callback that is triggered at the start of the animation.
 	onStart: PropTypes.func,
-	/**
-	 * Inline styles that will be applied to the animated wrapper
-	 * component.
-	 */
+	// If `true`, the component will transition in.
+	show: PropTypes.bool,
+	// Inline styles to apply to the animated wrapper.
 	style: PropTypes.object,
 	...componentPropType,
 };
 
 Fade.defaultProps = {
+	appear: false,
 	as: 'div',
-	enter: 'entering',
-	exit: 'leaving',
+	duration: {
+		enter: 'entering',
+		exit: 'leaving',
+	},
 	ease: 'inOut',
 };
 

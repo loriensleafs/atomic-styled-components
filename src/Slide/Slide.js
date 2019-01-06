@@ -1,41 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import useTransition from './../hooks/useTransition';
 import useSlideManager from './useSlideManager';
-import { animated as a, useSpring } from 'react-spring/hooks';
+import { useDidUpdate, useMotion } from './../hooks';
+import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 
 function Slide(props) {
 	const {
+		appear,
 		as,
 		children,
 		className,
-		ease,
-		enter,
-		exit,
 		direction,
-		in: inProp,
+		duration: { enter, exit },
+		ease,
 		onEnd,
 		onStart,
 		onEntering,
 		onExiting,
+		show,
 		style = {},
 		...passThru
 	} = props;
-	const [slideIn, slideOut, ref] = useSlideManager(direction);
-	const [easing, duration] = useTransition(ease, enter, exit, inProp);
-	const Component = a[as];
+	const [mounted, setMounted] = useState(false);
+	const [slideIn, slideOut, ref] = useSlideManager(direction, appear);
+	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const transition = useSpring({
 		native: true,
-		transform: inProp ? slideIn : slideOut,
+		config: { duration, easing },
+		immediate: !mounted,
+		to: {
+			transform: (appear && !mounted) || !show ? slideOut : slideIn,
+			visibility: (!appear && show) || mounted ? 'visible' : 'hidden',
+		},
 		onStart: () => onStart && onStart(),
 		onFrame: val =>
-			inProp
-				? onEntering && onEntering(val)
-				: onExiting && onExiting(val),
+			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
-		config: { duration, easing },
 	});
+	const Component = animated[as];
+
+	useDidUpdate(() => ref.current && setMounted(() => true), [ref.current]);
 
 	return (
 		<Component
@@ -51,53 +56,41 @@ function Slide(props) {
 Slide.displayName = 'Slide';
 
 Slide.propTypes = {
-	/**
-	 * A single child content element.
-	 */
+	// If a child component shown on mount should be transitioned in.
+	appear: PropTypes.bool,
 	children: PropTypes.node,
 	className: PropTypes.string,
-	containerRef: PropTypes.any,
-	/**
-	 * The duration type the animation should use to transition in.
-	 */
-	enter: PropTypes.string,
-	/**
-	 * The duration type the animation should use to transition out.
-	 */
-	exit: PropTypes.string,
-	/**
-	 * The easing type the animation should use.
-	 */
+	// The direction the children component(s) enter/exit from.
+	direction: PropTypes.oneOf(['down', 'right', 'up', 'left']),
+	duration: PropTypes.shape({
+		// The duration type the animation should use to transition in.
+		enter: PropTypes.string,
+		// The duration type the animation should use to transition out.
+		exit: PropTypes.string,
+	}),
+	// The easing type the animation should use.
 	ease: PropTypes.string,
-	/**
-	 * Callback that is triggered at the end of the animation.
-	 */
+	// Callback that is triggered at the end of the animation.
 	onEnd: PropTypes.func,
-	/**
-	 * Callback that is triggered at the start of the animation.
-	 */
+	// Callback that is triggered at the start of the animation.
 	onStart: PropTypes.func,
-	/**
-	 * Callback that is triggered while the animation is entering.
-	 */
+	// Callback that is triggered while the animation is entering.
 	onEntering: PropTypes.func,
-	/**
-	 * Callback that is triggered while the animation is exiting.
-	 */
+	// Callback that is triggered while the animation is exiting.
 	onExiting: PropTypes.func,
-	/**
-	 * Inline styles that will be applied to the animated wrapper
-	 * component.
-	 */
+	// Inline styles to apply to the animated wrapper.
 	style: PropTypes.object,
 	...componentPropType,
 };
 
 Slide.defaultProps = {
+	appear: false,
 	as: 'div',
 	direction: 'down',
-	enter: 'entering',
-	exit: 'leaving',
+	duration: {
+		enter: 'entering',
+		exit: 'leaving',
+	},
 	ease: 'inOut',
 };
 
