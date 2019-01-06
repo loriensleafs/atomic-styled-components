@@ -12,6 +12,7 @@ DemoBox.defaultProps = {
 	alignItems: 'center',
 	wrap: 'wrap',
 	bg: 'grey.light',
+	radius: 'round',
 };
 
 export default DemoBox;
