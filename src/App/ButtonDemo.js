@@ -247,6 +247,70 @@ const IconButtons = () => (
 	</Fragment>
 );
 
+const ButtonSizes = () => (
+	<Fragment>
+		<SectionHeader>Sizes</SectionHeader>
+		<Paragraph>
+			To change the size of a button use the 'size' property.
+		</Paragraph>
+		<DemoBox>
+			<Box>
+				<Flex alignItems="center">
+					<Button size="small" m={2}>
+						small
+					</Button>
+					<Button m={2}>medium</Button>
+					<Button size="large" m={2}>
+						large
+					</Button>
+				</Flex>
+				<Flex alignItems="center">
+					<Button
+						size="small"
+						variant="outlined"
+						color="primary"
+						m={2}
+					>
+						small
+					</Button>
+					<Button variant="outlined" color="primary" m={2}>
+						medium
+					</Button>
+					<Button
+						size="large"
+						variant="outlined"
+						color="primary"
+						m={2}
+					>
+						large
+					</Button>
+				</Flex>
+				<Flex alignItems="center">
+					<Button
+						size="small"
+						variant="contained"
+						color="primary"
+						m={2}
+					>
+						small
+					</Button>
+					<Button variant="contained" color="primary" m={2}>
+						medium
+					</Button>
+					<Button
+						size="large"
+						variant="contained"
+						color="primary"
+						m={2}
+					>
+						large
+					</Button>
+				</Flex>
+			</Box>
+		</DemoBox>
+	</Fragment>
+);
+
 export default () => (
 	<Flex w={1}>
 		<Box w={1} mt={5.5}>
@@ -256,6 +320,7 @@ export default () => (
 			<OutlinedButtons />
 			<ButtonsWithIconsAndLabels />
 			<IconButtons />
+			<ButtonSizes />
 		</Box>
 		<Navigation />
 	</Flex>

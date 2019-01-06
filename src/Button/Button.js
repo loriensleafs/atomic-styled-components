@@ -28,20 +28,19 @@ function getSizeStyles(props) {
 	const text = {
 		fontFamily: 'ui',
 		fontWeight: 'medium',
-		lineHeight: 1,
 	};
 
 	switch (size) {
 		case 'small':
 			return {
-				fontSize: `${fontSizes[3] - FONT_SIZE_SHIFT}rem`,
+				fontSize: `${fontSizes[2] - FONT_SIZE_SHIFT}rem`,
 				...getSizing({ hMin: 31, wMin: 64, h, w }),
 				...getSpacing({ py: 1, px: 2 }),
 				...getText(text),
 			};
 		case 'large':
 			return {
-				fontSize: `${fontSizes[3] + FONT_SIZE_SHIFT}rem`,
+				fontSize: `${fontSizes[2] + FONT_SIZE_SHIFT}rem`,
 				...getSizing({ hMin: 42, h, w }),
 				...getSpacing({ py: 2, px: 3.5 }),
 				...getText(text),
