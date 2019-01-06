@@ -1,5 +1,5 @@
 import toCubicBezierFn from 'bezier-easing';
-import { capitalize, formatMs, isString, toArray } from './../utils/helpers';
+import { capitalize, isStr, toArr, toMs } from './../utils/helpers';
 
 /**
  * Easing options.
@@ -42,13 +42,12 @@ export let duration = {
 
 /**
  * Motion properties that are added to the theme object.
- * @export
  * @param {Object} overrides
  * @param {object} overrides.duration
  * @param {object} overrides.easing
- * @returns {object}
+ * @return {[type]}
  */
-export default function(overrides) {
+function createMotion(overrides) {
 	const { inOut, in: easeIn, out: easeOut, sharp } = {
 		...easing,
 		...overrides.easing,
@@ -68,26 +67,28 @@ export default function(overrides) {
 	return {
 		easing,
 		duration,
-		transition: (
+		getTransition: (
 			props = ['all'],
 			dur = 'standard',
 			ease = 'inOut',
 			delay = 0,
 		) =>
-			toArray(props)
+			toArr(props)
 				.map(
 					prop =>
 						`${prop} ${
-							isString(dur)
+							isStr(dur)
 								? duration[dur]
 									? `${duration[dur]}ms`
 									: dur
-								: formatMs(dur)
+								: toMs(dur)
 						} ${easing[ease]} ${
-							isString(delay) ? delay : formatMs(delay)
+							isStr(delay) ? delay : toMs(delay)
 						}`,
 				)
 				.join(', '),
-		getEasingFn: type => easing[`get${capitalize(type)}`],
+		getEasing: type => easing[`get${capitalize(type)}`],
 	};
 }
+
+export default createMotion;

@@ -1,4 +1,4 @@
-import merge from './../utils/pureRecursiveMerge';
+import merge from './../utils/merge';
 import createMotion from './createMotion';
 import createPalette from './createPalette';
 import createResponsive from './createResponsive';
@@ -7,7 +7,7 @@ import elevation from './elevation';
 import shape from './shape';
 import space from './space';
 
-export default (overrides = {}) => {
+function createTheme(overrides = {}) {
 	const {
 		breakpoints: breakpointOverrides = [],
 		duration: durationOverrides = {},
@@ -15,24 +15,35 @@ export default (overrides = {}) => {
 		elevation: elevationOverrides,
 		palette: paletteOverrides = {},
 		typography: typographyOverrides = {},
-		...passThru
 	} = overrides;
-	const motion = createMotion(durationOverrides, easingOverrides);
-	const palette = createPalette(paletteOverrides);
-	const responsive = createResponsive(breakpointOverrides);
-	const { pxToRem, ...typography } = createTypography(palette, typographyOverrides);
-	return merge(
-		{
-			elevation: elevationOverrides || elevation,
-			maxWidth: '1200px',
-			...motion,
-			palette,
-			pxToRem,
-			shape,
-			space,
-			...responsive,
-			typography,
-		},
-		passThru,
+	const { easing, duration, getTransition, getEasing } = createMotion(
+		durationOverrides,
+		easingOverrides,
 	);
-};
+	const palette = createPalette(paletteOverrides);
+	const { breakpoints, mediaQueries, getMediaQuery } = createResponsive(
+		breakpointOverrides,
+	);
+	const { pxToRem, typography } = createTypography(
+		palette,
+		typographyOverrides,
+	);
+	return {
+		breakpoints,
+		duration,
+		easing,
+		elevation: elevationOverrides || elevation,
+		getEasing,
+		getMediaQuery,
+		getTransition,
+		maxWidth: '1200px',
+		mediaQueries,
+		palette,
+		pxToRem,
+		shape,
+		space,
+		typography,
+	};
+}
+
+export default createTheme;
