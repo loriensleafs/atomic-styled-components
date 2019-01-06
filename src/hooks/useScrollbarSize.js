@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import useThrottle from './useThrottle';
+import throttle from './../utils/throttle';
 
 /**
  * Measures the height and width values of the browser scrollbars.
@@ -8,23 +8,28 @@ import useThrottle from './useThrottle';
  * the scrollbar.
  */
 export default function useScrollbarSize(ref = { current: window }) {
-	const [{ height, width }, setSize] = useState({ height: null, width: null });
+	const [{ height, width }, setSize] = useState({
+		height: null,
+		width: null,
+	});
 
-	const handleScrollbarSizeChange = useCallback(event => {
-		if (ref.current) {
-			setSize(() => ({
-				height: (ref.current.offsetHeight = ref.current.clientHeight),
-				width: (ref.current.offsetWidth = ref.current.clientWidth),
-			}));
-		}
-	}, []);
-
-	const throttledHandler = useThrottle(handleScrollbarSizeChange);
+	const handleResize = useCallback(
+		throttle(event => {
+			if (ref.current) {
+				setSize(() => ({
+					height: (ref.current.offsetHeight =
+						ref.current.clientHeight),
+					width: (ref.current.offsetWidth = ref.current.clientWidth),
+				}));
+			}
+		}),
+		[],
+	);
 
 	useEffect(() => {
-		handleScrollbarSizeChange();
-		window.addEventListener('resize', throttledHandler);
-		return () => window.removeEventListener('resize', throttledHandler);
+		handleResize();
+		window.addEventListener('resize', handleResize, false);
+		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
 	return [height, width];
