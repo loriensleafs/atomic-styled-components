@@ -589,7 +589,7 @@ getPersistentStyles.propTypes = {
 
 const PersistentDrawer = () => {
 	const containerRef = useRef();
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(true);
 	const [nextProps, styles, classes] = useStyles(
 		{ open },
 		getPersistentStyles,

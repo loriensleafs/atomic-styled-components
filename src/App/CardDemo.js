@@ -180,7 +180,7 @@ const ComplexInteractiveCard = () => {
 							</IconButton>
 						</Flex>
 					</CardActions>
-					<Collapse in={expanded}>
+					<Collapse show={expanded}>
 						<CardContent>
 							<Typography>
 								Method:
