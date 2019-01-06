@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
 import ButtonBase from './../ButtonBase/ButtonBase';
 import combine from './../utils/combine';
 import {
-	getColors,
+	getBg,
+	getColor,
 	getElevation,
 	getSizing,
 	getSpacing,
@@ -17,7 +18,11 @@ import {
 import { fade } from './../utils/colorHelpers';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-function getSizeStyles({ fullWidth, mini, size }) {
+const FONT_SIZE_SHIFT = 0.0625;
+
+function getSizeStyles(props) {
+	const { fullWidth, mini, size, theme } = props;
+	const { fontSizes } = theme.typography;
 	const w = mini ? 40 : fullWidth ? 1 : null;
 	const h = mini ? 40 : null;
 	const text = {
@@ -29,101 +34,93 @@ function getSizeStyles({ fullWidth, mini, size }) {
 	switch (size) {
 		case 'small':
 			return {
-				...getSizing({ h, hMin: 31, w, wMin: 64 }),
+				fontSize: `${fontSizes[3] - FONT_SIZE_SHIFT}rem`,
+				...getSizing({ hMin: 31, wMin: 64, h, w }),
 				...getSpacing({ py: 1, px: 2 }),
-				...getText({ ...text, fontSize: '0.8125rem' }),
+				...getText(text),
 			};
 		case 'large':
 			return {
-				...getSizing({ h, hMin: 42, w }),
+				fontSize: `${fontSizes[3] + FONT_SIZE_SHIFT}rem`,
+				...getSizing({ hMin: 42, h, w }),
 				...getSpacing({ py: 2, px: 3.5 }),
-				...getText({ ...text, fontSize: '0.9375rem' }),
+				...getText(text),
 			};
 		default:
 			// 'medium'
 			return {
-				...getSizing({ h, hMin: 36, w, wMin: 64 }),
+				...getSizing({ hMin: 36, wMin: 64, h, w }),
 				...getSpacing({ py: 2, px: 3 }),
-				...getText({ ...text, fontSize: 2 }),
+				...getText({ fontSize: 2, ...text }),
 			};
 	}
 }
 
 function getVariantStyles(props) {
-	const { color, variant, theme } = props;
-	const { palette, shape } = theme;
-	const isBrandColor = color === 'primary' || color === 'secondary';
-	const isDefaultColor = color === 'default';
+	const { color, variant } = props;
+	const { palette, shape } = props.theme;
+	const isBrand = color === 'primary' || color === 'secondary';
+	const isDefault = color === 'default';
+	const isLight = palette.type === 'light';
 
 	switch (variant) {
 		case 'outlined':
 			return {
-				...getColors({
-					color: isBrandColor
+				...getColor({
+					color: isBrand
 						? `${color}.main`
-						: isDefaultColor
+						: isDefault
 						? 'text.primary'
 						: 'inherit',
 				}),
-				border: isBrandColor
+				border: isBrand
 					? `1px solid ${fade(palette[color].main, 0.5)}`
 					: `1px solid ${fade(
-							palette.grey[
-								palette.type === 'light' ? 'main' : 'dark'
-							],
+							palette.grey[isLight ? 'main' : 'dark'],
 							0.5,
 					  )}`,
-				borderRadius: `${shape.borderRadius.round}`,
+				borderRadius: shape.borderRadius.round,
 				':hover': {
 					backgroundColor: fade(
-						isBrandColor
-							? palette[color].main
-							: palette.text.primary,
+						isBrand ? palette[color].main : palette.text.primary,
 						palette.action.hoverOpacity,
 					),
-					border: isBrandColor
+					border: isBrand
 						? `1px solid ${palette[color].main}`
 						: `1px solid ${
-								palette.grey[
-									palette.type === 'light' ? 'main' : 'dark'
-								]
+								palette.grey[isLight ? 'main' : 'dark']
 						  }`,
 				},
 				':disabled': {
+					...getColor({ color: 'action.disabled' }),
 					border: `1px solid ${palette.action.disabled}`,
 				},
 			};
 
 		case 'contained':
 			return {
-				...getColors({
-					bg: isBrandColor ? `${color}.main` : `grey.light`,
-					color: isBrandColor
-						? `${color}.contrastText`
-						: 'text.primary',
+				...getBg({ bg: isBrand ? `${color}.main` : `grey.light` }),
+				...getColor({
+					color: isBrand ? `${color}.contrastText` : 'text.primary',
 				}),
 				...getElevation({ elevation: 2 }),
-				borderRadius: `${shape.borderRadius.round}`,
+				borderRadius: shape.borderRadius.round,
 				':active': getElevation({ elevation: 8 }),
-				':hover': getColors({
-					bg: isBrandColor ? `${color}.dark` : 'grey.light',
+				':hover': getBg({
+					bg: isBrand ? `${color}.dark` : 'grey.light',
 				}),
 				':disabled': {
-					...getColors({
-						bg: 'action.disabledBackground',
-						color: 'action.disabled',
-					}),
+					...getBg({ bg: 'action.disabledBg' }),
+					...getColor({ color: 'action.disabled' }),
 					boxShadow: 'none',
 				},
 			};
 
 		case 'fab':
 			return {
-				...getColors({
-					bg: isBrandColor ? `${color}.main` : `grey.light`,
-					color: isBrandColor
-						? `${color}.contrastText`
-						: 'text.primary',
+				...getBg({ bg: isBrand ? `${color}.main` : `grey.light` }),
+				...getColor({
+					color: isBrand ? `${color}.contrastText` : 'text.primary',
 				}),
 				...getElevation({ elevation: 6 }),
 				width: '56px',
@@ -132,18 +129,18 @@ function getVariantStyles(props) {
 				padding: '0px',
 				borderRadius: '50%',
 				':active': getElevation({ elevation: 12 }),
-				':hover': getColors({
-					bg: isBrandColor ? `${color}.dark` : 'grey.light',
+				':hover': getBg({
+					bg: isBrand ? `${color}.dark` : 'grey.light',
 				}),
 			};
 
 		default:
 			// 'text'
 			return {
-				...getColors({
-					color: isBrandColor
+				...getColor({
+					color: isBrand
 						? `${color}.main`
-						: isDefaultColor
+						: isDefault
 						? 'text.primary'
 						: 'inherit',
 				}),
@@ -151,39 +148,42 @@ function getVariantStyles(props) {
 				borderRadius: `${shape.borderRadius.round}`,
 				':hover': {
 					backgroundColor: fade(
-						isBrandColor
-							? palette[color].main
-							: palette.text.primary,
+						isBrand ? palette[color].main : palette.text.primary,
 						palette.action.hoverOpacity,
 					),
 				},
+				':disabled': getColor({ color: 'action.disabled' }),
 			};
 	}
 }
 
 const getRootStyles = combine(getSizeStyles, getVariantStyles, getSpacing);
 
-const getStyles = props => ({
-	root: {
-		...{
-			boxSizing: 'border-box',
-			textTransform: 'uppercase',
-			transition: props.theme.getTransition(
-				['background-color', 'color', 'box-shadow', 'border'],
-				'short',
-			),
-			':hover': {
-				textDecoration: 'none',
+function getStyles(props) {
+	const { getTransition } = props.theme;
+
+	return {
+		root: {
+			...{
+				boxSizing: 'border-box',
+				textTransform: 'uppercase',
+				transition: getTransition(
+					['background-color', 'color', 'box-shadow', 'border'],
+					'short',
+				),
+				':hover': {
+					textDecoration: 'none',
+				},
 			},
+			...getRootStyles(props),
 		},
-		...getRootStyles(props),
-	},
-	label: {
-		display: 'inherit',
-		alignItems: 'inherit',
-		justifyContent: 'inherit',
-	},
-});
+		label: {
+			display: 'inherit',
+			alignItems: 'inherit',
+			justifyContent: 'inherit',
+		},
+	};
+}
 getStyles.propTypes = {
 	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
 	fullWidth: PropTypes.bool,
@@ -200,16 +200,15 @@ getStyles.propTypes = {
 
 const Button = React.forwardRef((props, ref) => {
 	const [
-		{ children, disabled, disableFocusRipple, ...passThru },
+		{ children, disableFocusRipple, ...passThru },
 		styles,
 		classes,
-	] = useStyles(props, getStyles);
+	] = useStyles(props, getStyles, { whitelist: ['disabled'] });
 
 	return (
 		<ButtonBase
 			ref={ref}
 			styles={styles.root}
-			disabled={disabled}
 			focusRipple={!disableFocusRipple}
 			{...passThru}
 		>
