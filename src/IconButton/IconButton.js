@@ -103,7 +103,7 @@ getStyles.propTypes = {
 };
 
 function IconButton(props) {
-	const [{ children, ...passThru }, styles, classes] = useStyles(
+	const [{ styles, classes }, { children, ...passThru }] = useStyles(
 		props,
 		getStyles,
 	);

@@ -52,6 +52,7 @@ getStyles.propTypes = {
 function ListItemText(props) {
 	const { dense } = useContext(ListContext);
 	const [
+		{ styles, classes },
 		{
 			children,
 			className,
@@ -62,8 +63,6 @@ function ListItemText(props) {
 			secondaryTextProps,
 			...passThru
 		},
-		styles,
-		classes,
 	] = useStyles({ ...props, dense }, getStyles);
 
 	return (

@@ -51,8 +51,8 @@ getStyles.propTypes = {
 
 function Typography(props) {
 	const [
+		{ styles },
 		{ as, children, paragraph, variant, ...passThru },
-		styles,
 	] = useStyles(props, getStyles, {
 		whitelist: ['variant'],
 	});

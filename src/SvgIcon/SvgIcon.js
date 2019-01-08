@@ -77,6 +77,7 @@ getStyles.propTypes = {
 
 function SvgIcon(props) {
 	const [
+		{ classes },
 		{
 			children,
 			className,
@@ -86,8 +87,6 @@ function SvgIcon(props) {
 			viewBox,
 			...passThru
 		},
-		styles,
-		classes,
 	] = useStyles(props, getStyles);
 
 	return (

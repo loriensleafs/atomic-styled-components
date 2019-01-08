@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useMemo, useState, useRef } from 'react';
+import React, { Fragment, useCallback, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from './../AppBar';
 import Box from './../Box';
@@ -18,7 +18,7 @@ import SwipeableDrawer from './../SwipeableDrawer';
 import Toolbar from './../Toolbar';
 import Typography from './../Typography';
 import merge from './../utils/merge';
-import { cn, getBg, getSpacing, getWidth, useStyles } from './../system';
+import { getBg, getSpacing, getWidth, useStyles } from './../system';
 import { ChevronLeftIcon, InboxIcon, MailIcon } from './DemoIcons';
 import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
 
@@ -590,10 +590,7 @@ getPersistentStyles.propTypes = {
 const PersistentDrawer = () => {
 	const containerRef = useRef();
 	const [open, setOpen] = useState(true);
-	const [nextProps, styles, classes] = useStyles(
-		{ open },
-		getPersistentStyles,
-	);
+	const [{ styles, classes }] = useStyles({ open }, getPersistentStyles);
 
 	const handleToggle = useCallback(() => setOpen(state => !state), []);
 
@@ -680,12 +677,8 @@ const PersistentDrawer = () => {
 };
 
 const PersistentMiniVariant = () => {
-	const containerRef = useRef();
 	const [open, setOpen] = useState(true);
-	const [nextProps, styles, classes] = useStyles(
-		{ open },
-		getPersistentStyles,
-	);
+	const [{ styles, classes }] = useStyles({ open }, getPersistentStyles);
 
 	const handleToggle = useCallback(() => setOpen(state => !state), []);
 
@@ -707,7 +700,6 @@ const PersistentMiniVariant = () => {
 			<DemoBox>
 				<Paper elevation={2}>
 					<Flex
-						ref={containerRef}
 						style={{
 							transform: 'translateZ(0)',
 							overflow: 'hidden',

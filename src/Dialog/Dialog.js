@@ -139,6 +139,7 @@ const baseStyles = {
 
 function Dialog(props) {
 	const [
+		{ styles, classes },
 		{
 			BackdropProps,
 			children,
@@ -156,8 +157,6 @@ function Dialog(props) {
 			TransitionProps,
 			...passThru
 		},
-		styles,
-		classes,
 	] = useStyles(props, getStyles, { baseStyles });
 
 	const handleBackdropClick = useCallback(event => {

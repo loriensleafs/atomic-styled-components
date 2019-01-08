@@ -64,9 +64,13 @@ const baseStyles = {
 };
 
 function AppBar(props) {
-	const [{ children, ...passThru }, styles] = useStyles(props, getStyles, {
-		baseStyles,
-	});
+	const [{ styles }, { children, ...passThru }] = useStyles(
+		props,
+		getStyles,
+		{
+			baseStyles,
+		},
+	);
 
 	return (
 		<Paper

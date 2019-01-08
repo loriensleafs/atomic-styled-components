@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import useSlideManager from './useSlideManager';
 import { useDidUpdate, useMotion } from './../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 
-function Slide(props) {
+const Slide = forwardRef((props, ref) => {
 	const {
 		appear,
 		as,
@@ -23,7 +23,7 @@ function Slide(props) {
 		...passThru
 	} = props;
 	const [mounted, setMounted] = useState(false);
-	const [slideIn, slideOut, ref] = useSlideManager(direction, appear);
+	const [slideIn, slideOut, _ref] = useSlideManager(direction, appear, ref);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const transition = useSpring({
 		native: true,
@@ -40,18 +40,18 @@ function Slide(props) {
 	});
 	const Component = animated[as];
 
-	useDidUpdate(() => ref.current && setMounted(() => true), [ref.current]);
+	useDidUpdate(() => _ref.current && setMounted(() => true), [_ref.current]);
 
 	return (
 		<Component
 			children={children}
 			className={className}
-			ref={ref}
+			ref={_ref}
 			style={{ ...style, ...transition }}
 			{...passThru}
 		/>
 	);
-}
+});
 
 Slide.displayName = 'Slide';
 

@@ -33,7 +33,7 @@ getStyles.propTypes = {
 
 function ListItemAvatar(props) {
 	const { alignItems, dense } = useContext(ListContext);
-	const [{ children, className, ...passThru }, styles, classes] = useStyles(
+	const [{ classes }, { children, className, ...passThru }] = useStyles(
 		{ ...props, alignItems, dense },
 		getStyles,
 	);

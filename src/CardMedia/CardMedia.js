@@ -26,9 +26,8 @@ getStyles.propTypes = {
 function CardMedia(props) {
 	const isMedia = MEDIA_COMPONENTS.indexOf(props.component) !== -1;
 	const [
+		{ classes },
 		{ className, as: Component, image, src, style, ...passThru },
-		styles,
-		classes,
 	] = useStyles({ ...props, isMedia }, getStyles);
 
 	return (

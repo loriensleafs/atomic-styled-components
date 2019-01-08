@@ -35,8 +35,8 @@ function slideOutStyle(state, { direction, ref }) {
 	}
 }
 
-export default function useSlideManager(direction, appear) {
-	const ref = useRef(null);
+export default function useSlideManager(direction, appear, ref) {
+	ref = ref ? ref : useRef(null);
 	const slideIn = useMemo(() => getSlideIn(direction), [direction]);
 	const [slideOut, dispatch] = useReducer(
 		slideOutStyle,

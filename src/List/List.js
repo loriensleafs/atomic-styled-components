@@ -28,6 +28,7 @@ const baseStyles = {
 
 function List(props) {
 	const [
+		{classes},
 		{
 			as: Component,
 			children,
@@ -36,8 +37,6 @@ function List(props) {
 			subheader,
 			...passThru,
 		},
-		styles,
-		classes,
 	] = useStyles(props, getSpacingStyles, { baseStyles });
 
 	return (

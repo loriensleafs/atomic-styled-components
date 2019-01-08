@@ -152,9 +152,8 @@ getStyles.propTypes = {
 function Switch(props) {
 	const [checked, setChecked] = useState(props.checked || false);
 	const [
+		{ styles, classes },
 		{ className, icon, onChange, ...passThru },
-		styles,
-		classes,
 	] = useStyles({ ...props, checked }, getStyles);
 	const iconTransition = useSpring({
 		...(checked ? styles.iconChecked : styles.iconUnchecked),

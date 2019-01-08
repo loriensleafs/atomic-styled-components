@@ -71,6 +71,7 @@ const CardSubHeader = (
 
 function CardHeader(props) {
 	const [
+		{ classes },
 		{
 			action,
 			avatar,
@@ -83,8 +84,6 @@ function CardHeader(props) {
 			titleTypographyProps,
 			...passThru
 		},
-		styles,
-		classes,
 	] = useStyles(props, getStyles);
 
 	return (

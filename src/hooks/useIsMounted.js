@@ -3,8 +3,12 @@ import { useEffect, useRef } from 'react';
 /**
  * Stores the 'mounted' state of a ref.
  */
-export default function useMounted() {
+export default function useIsMounted() {
 	const mounted = useRef(false);
-	useEffect(() => (mounted.current = true), () => (mounted.current = false), []);
+	useEffect(
+		() => (mounted.current = true),
+		() => (mounted.current = false),
+		[],
+	);
 	return mounted.current;
 }

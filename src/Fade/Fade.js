@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDidMount, useMotion } from './../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 
-function Fade(props) {
+const Fade = forwardRef((props, ref) => {
 	const {
 		appear,
 		as,
@@ -39,11 +39,12 @@ function Fade(props) {
 		<Component
 			chilren={children}
 			className={className}
+			ref={ref}
 			style={{ ...style, ...transition }}
 			{...passThru}
 		/>
 	);
-}
+});
 
 Fade.displayName = 'Fade';
 

@@ -131,6 +131,7 @@ function ListItem(props) {
 		children[children.length - 1].type.displayName ===
 			'ListItemSecondaryAction';
 	const [
+		{ styles, classes },
 		{
 			button,
 			children: childrenProp,
@@ -143,8 +144,6 @@ function ListItem(props) {
 			divider,
 			...passThru
 		},
-		styles,
-		classes,
 	] = useStyles(
 		{
 			...props,

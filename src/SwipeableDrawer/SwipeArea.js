@@ -47,7 +47,7 @@ const baseStyles = {
 };
 
 function SwipeArea(props) {
-	const [{ className, width, ...passThru }, styles, classes] = useStyles(
+	const [{ classes }, { className, width, ...passThru }] = useStyles(
 		props,
 		getPositionStyles,
 		{ baseStyles },

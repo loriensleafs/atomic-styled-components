@@ -128,9 +128,8 @@ const baseStyles = {
 
 function CircularProgress(props) {
 	const [
+		{ classes },
 		{ className, size, style, thickness, value, variant, ...passThru },
-		styles,
-		classes,
 	] = useStyles(props, getStyles, { baseStyles });
 	const circleStyle = {};
 	const rootProps = {};

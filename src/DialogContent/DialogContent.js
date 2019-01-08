@@ -14,7 +14,7 @@ function getStyles(props) {
 }
 
 function DialogContent(props) {
-	const [{ children, className, ...passThru }, styles, classes] = useStyles(
+	const [{ classes }, { children, className, ...passThru }] = useStyles(
 		props,
 		getStyles,
 	);

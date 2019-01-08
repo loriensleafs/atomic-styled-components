@@ -4,7 +4,7 @@ import Box from '../Box';
 import { getGrid, useStyles } from './../system';
 
 const Grid = forwardRef((props, ref) => {
-	const [{ children, ...passThru }, styles] = useStyles(props, getGrid);
+	const [{ styles }, { children, ...passThru }] = useStyles(props, getGrid);
 
 	return (
 		<Box ref={ref} styles={styles} {...passThru}>

@@ -37,6 +37,7 @@ const baseStyles = {
 
 function Avatar(props) {
 	const [
+		{ classes },
 		{
 			alt,
 			as: Component,
@@ -49,8 +50,6 @@ function Avatar(props) {
 			srcSet,
 			...passThru
 		},
-		styles,
-		classes,
 	] = useStyles(props, getStyles, { baseStyles });
 
 	return (

@@ -21,9 +21,8 @@ getStyles.propTypes = getSpacing.propTypes;
 
 function CardContent(props) {
 	const [
+		{ classes },
 		{ className, component: Component, ...passThru },
-		styles,
-		classes,
 	] = useStyles(props, getStyles);
 
 	return <Component className={classes} {...passThru} />;

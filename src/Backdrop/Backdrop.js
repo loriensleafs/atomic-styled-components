@@ -28,11 +28,11 @@ getStyles.propTypes = {
 };
 
 function Backdrop(props) {
-	const [
-		{ className: cn = '', open, ...passThru },
-		styles,
-		classes,
-	] = useStyles(props, getStyles, { whitelist: ['open'] });
+	const [{ classes }, { className: cn = '', open, ...passThru }] = useStyles(
+		props,
+		getStyles,
+		{ whitelist: ['open'] },
+	);
 
 	return (
 		<Fade
@@ -40,8 +40,10 @@ function Backdrop(props) {
 			aria-hidden="true"
 			className={cn.concat(classes)}
 			ease="sharp"
-			enterDuration="short"
-			exitDuration="shorter"
+			duration={{
+				enter: 'short',
+				exit: 'shorter',
+			}}
 			show={open}
 			{...passThru}
 		/>

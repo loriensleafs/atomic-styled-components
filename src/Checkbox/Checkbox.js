@@ -77,6 +77,7 @@ getStyles.propTypes = {
 function Checkbox(props) {
 	const [checked, setChecked] = useState(props.checked || false);
 	const [
+		{ styles },
 		{
 			checkedIcon,
 			icon,
@@ -86,7 +87,6 @@ function Checkbox(props) {
 			onChange,
 			...passThru
 		},
-		buttonStyles,
 	] = useStyles({ ...props, checked }, getStyles, { whitelist: ['checked'] });
 
 	const handleChange = useCallback((event, isChecked) => {
@@ -105,7 +105,7 @@ function Checkbox(props) {
 			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			icon={indeterminate ? indeterminateIcon : icon}
 			onChange={handleChange}
-			styles={{ buttonStyles }}
+			styles={{ buttonStyles: styles }}
 			type="checkbox"
 			{...passThru}
 		/>

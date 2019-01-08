@@ -76,8 +76,8 @@ getStyles.propTypes = {
 function Radio(props) {
 	const [checked, setChecked] = useState(props.checked || false);
 	const [
+		{ styles },
 		{ checkedIcon, icon, indeterminate, inputProps, onChange, ...passThru },
-		buttonStyles,
 	] = useStyles({ ...props, checked }, getStyles, { whitelist: ['checked'] });
 
 	const handleChange = useCallback((event, isChecked) => {
@@ -96,7 +96,7 @@ function Radio(props) {
 			icon={icon}
 			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			onChange={handleChange}
-			styles={{ buttonStyles }}
+			styles={{ buttonStyles: styles }}
 			type="radio"
 			{...passThru}
 		/>

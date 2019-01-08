@@ -22,9 +22,8 @@ function getStyles() {
 
 function CardActions(props) {
 	const [
+		{ classes },
 		{ children, className, disableActionSpacing, ...passThru },
-		styles,
-		classes,
 	] = useStyles(props, getStyles);
 
 	return (

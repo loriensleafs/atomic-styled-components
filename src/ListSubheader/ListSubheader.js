@@ -58,8 +58,7 @@ getStyles.propTypes = {
 function ListSubheader(props) {
 	const [
 		{ className, component: Component, ...passThru },
-		styles,
-		classes,
+		{ classes },
 	] = useStyles(props, getStyles);
 
 	return <Component className={classes} {...passThru} />;

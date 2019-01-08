@@ -3,11 +3,10 @@ import { getBox, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 const Box = forwardRef((props, ref) => {
-	const [
-		{ children, className, as, ...passThru },
-		styles,
-		classes,
-	] = useStyles(props, getBox);
+	const [{ classes }, { children, className, as, ...passThru }] = useStyles(
+		props,
+		getBox,
+	);
 	const Component = as;
 
 	return (

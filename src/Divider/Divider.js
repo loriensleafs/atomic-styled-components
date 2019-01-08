@@ -52,9 +52,8 @@ const baseStyles = {
 
 function Divider(props) {
 	const [
+		{ classes },
 		{ children, className, as: C, ...passThru },
-		styles,
-		classes,
 	] = useStyles(props, getStyles, { baseStyles });
 
 	return <C className={classes}>{children}</C>;

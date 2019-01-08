@@ -96,7 +96,7 @@ function useStyles(props, reducers, options = {}) {
 		[nextStyles],
 	);
 
-	return [nextProps, nextStyles, nextClasses];
+	return [{ styles: nextStyles, classes: nextClasses }, nextProps];
 }
 
 export default useStyles;
