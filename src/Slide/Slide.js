@@ -1,7 +1,7 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import useSlideManager from './useSlideManager';
-import { useDidUpdate, useMotion } from './../hooks';
+import { useIsMounted, useMotion, usePrevious } from './../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 
@@ -22,34 +22,50 @@ const Slide = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
-	const [mounted, setMounted] = useState(false);
-	const [slideIn, slideOut, _ref] = useSlideManager(direction, appear, ref);
+	const [isMeasured, setIsMeasured] = useState(false);
+	const [slideIn, slideOut, _ref] = useSlideManager(direction, ref);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
+	const isMounted = useIsMounted();
+	const Component = animated(as);
 	const transition = useSpring({
 		native: true,
 		config: { duration, easing },
-		immediate: !mounted,
+		immediate: !isMounted,
 		to: {
-			transform: (appear && !mounted) || !show ? slideOut : slideIn,
-			visibility: (!appear && show) || mounted ? 'visible' : 'hidden',
+			transform:
+				(appear && isMounted && isMeasured && show) ||
+				(!appear && isMounted && show)
+					? slideIn
+					: slideOut,
+			visibility:
+				(appear && isMounted && isMeasured) || !appear
+					? 'visible'
+					: 'hidden',
 		},
 		onStart: () => onStart && onStart(),
 		onFrame: val =>
 			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
 	});
-	const Component = animated[as];
 
-	useDidUpdate(() => _ref.current && setMounted(() => true), [_ref.current]);
+	useEffect(
+		() => {
+			if (isMounted && !isMeasured) {
+				setIsMeasured(() => true);
+			}
+		},
+		[isMeasured, isMounted],
+	);
 
 	return (
 		<Component
-			children={children}
 			className={className}
 			ref={_ref}
 			style={{ ...style, ...transition }}
 			{...passThru}
-		/>
+		>
+			{children}
+		</Component>
 	);
 });
 

@@ -541,6 +541,7 @@ export default [
 	'voiceVolume',
 	'volume',
 	'WebkitTapHighlightColor',
+	'WebkitOverflowScrolling',
 	'whiteSpace',
 	'widows',
 	'width',

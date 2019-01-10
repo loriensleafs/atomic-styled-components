@@ -31,7 +31,7 @@ const Fade = forwardRef((props, ref) => {
 			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
 	});
-	const Component = animated[as];
+	const Component = animated(as);
 
 	useDidMount(() => setMounted(() => true));
 

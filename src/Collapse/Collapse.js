@@ -36,12 +36,14 @@ function Collapse(props) {
 			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
 	});
-	const Component = animated[as];
+	const Component = animated(as);
 
-	useEffect(() => setExpandTo(() => ref.current.scrollHeight), [
-		ref.current,
-		show,
-	]);
+	useEffect(
+		() => {
+			setExpandTo(() => ref.current.scrollHeight);
+		},
+		[expandTo, show],
+	);
 
 	return (
 		<Component

@@ -1,11 +1,10 @@
-import React, { useRef } from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Modal from './../Modal';
 import Paper from './../Paper';
 import Slide from './../Slide';
-import useDidMount from './../hooks/useDidMount';
+import useIsMounted from './../hooks/useIsMounted';
 import useStyles from './../system/useStyles';
-import combine from './../utils/combine';
 import { capitalize as toCap } from './../utils/helpers';
 import { stylesPropType } from './../utils/propTypes';
 
@@ -63,70 +62,68 @@ function getPositionStyles(props) {
 	}
 }
 
-function getVariantStyles(props) {
-	const { variant } = props;
-
-	switch (variant) {
-		case 'permanent':
-			return {
-				paper: {
-					zIndex: 1200,
-					position: 'fixed',
-					top: '0px',
-					height: '100%',
-					outline: 'none', // Add iOS momentum scrolling.
-				},
-				root: {
-					flex: '0 0 auto',
-				},
-			};
-		case 'persistent':
-			return {
-				root: {
-					flex: '0 0 auto',
-				},
-			};
-		default:
-			return null;
-	}
-}
-
-function getBaseStyles(props) {
+function getStyles(props) {
 	const isTemporary = props.variant === 'temporary';
 	const isPersistent = props.variant === 'persistent';
+	const isPermanent = props.variant === 'persistent';
 
 	return {
 		modal: {},
 		paper: {
-			...{
-				position: 'relative',
-				height: '100%',
-				display: 'flex',
-				flex: '1 0 auto',
-				flexDirection: 'column',
-			},
-			...(isPersistent || isTemporary
-				? { height: '100%' }
-				: getPositionStyles(props)),
-		},
-		root: {},
-		slide: {
-			...{
-				zIndex: 1200,
-				position: 'fixed',
-				top: '0px',
-				height: '100%',
-				outline: 'none', // Add iOS momentum scrolling.
-			},
+			zIndex: 1200,
+			position: 'fixed',
+			top: '0px',
+			height: '100%',
+			display: 'flex',
+			flex: '1 0 auto',
+			flexDirection: 'column',
+			overflowY: 'auto',
+			outline: 'none',
+			WebkitOverflowScrolling: 'touch', // Add iOS momentum scrolling.
 			...getPositionStyles(props),
 		},
+		root: isPermanent || isPersistent ? { flex: '0 0 auto' } : {},
 	};
 }
-
-const getStyles = combine(getBaseStyles, getVariantStyles);
 getStyles.propTypes = {
 	variant: PropTypes.oneOf(['permanent', 'persistent', 'temporary']),
 };
+
+const DrawerBase = forwardRef((props, ref) => {
+	const { children, elevation, variant, ...passThru } = props;
+
+	return (
+		<Paper
+			elevation={variant === 'temporary' ? elevation : 0}
+			radius="square"
+			ref={ref}
+			{...passThru}
+		>
+			{children}
+		</Paper>
+	);
+});
+
+function SlidingDrawer(props) {
+	const isTemporary = props.variant === 'temporary';
+	const { anchor, children, ...passThru } = props;
+
+	return (
+		<Slide
+			as={DrawerBase}
+			appear={isTemporary}
+			direction={oppDir[anchor]}
+			ease="sharp"
+			duration={{
+				enter: 'short',
+				exit: 'shorter',
+			}}
+			{...passThru}
+		>
+			{children}
+		</Slide>
+	);
+}
 
 function Drawer(props) {
 	const [
@@ -146,70 +143,48 @@ function Drawer(props) {
 			...passThru
 		},
 	] = useStyles(props, getStyles, { whitelist: ['variant'] });
-	const mounted = useRef(false);
 	const isTemporary = variant === 'temporary';
+	const isPermanent = variant === 'permanent';
 
-	const DrawerBase = (
-		<Paper
-			elevation={isTemporary ? elevation : 0}
-			radius="square"
+	const DrawerComponent = isPermanent ? (
+		<DrawerBase
+			elevation={elevation}
 			styles={styles.paper}
+			variant={variant}
 			{...passThru}
-			{...PaperProps}
 		>
 			{children}
-		</Paper>
-	);
-
-	const SlidingDrawer = (
-		<Slide
-			appear={mounted.current}
-			className={classes.slide}
-			direction={oppDir[anchor]}
-			ease="sharp"
-			duration={{
-				enter: 'short',
-				exit: 'shorter',
-			}}
+		</DrawerBase>
+	) : (
+		<SlidingDrawer
+			anchor={anchor}
+			elevation={elevation}
 			show={open}
+			styles={styles.paper}
+			variant={variant}
 			{...SlideProps}
+			{...passThru}
 		>
-			{DrawerBase}
-		</Slide>
+			{children}
+		</SlidingDrawer>
 	);
 
-	useDidMount(() => {
-		mounted.current = true;
-	});
-
-	switch (variant) {
-		case 'permanent':
-			return (
-				<div className={classes.root} {...passThru}>
-					{DrawerBase}
-				</div>
-			);
-		case 'persistent':
-			return (
-				<div className={classes.root} {...passThru}>
-					{SlidingDrawer}
-				</div>
-			);
-		default:
-			// 'temporary'
-			return (
-				<Modal
-					className={classes.root}
-					onClose={onClose}
-					open={open}
-					styles={styles.modal}
-					{...passThru}
-					{...ModalProps}
-				>
-					{SlidingDrawer}
-				</Modal>
-			);
-	}
+	return isTemporary ? (
+		<Modal
+			className={classes.root}
+			onClose={onClose}
+			open={open}
+			styles={styles.modal}
+			{...passThru}
+			{...ModalProps}
+		>
+			{DrawerComponent}
+		</Modal>
+	) : (
+		<div className={classes.root} {...passThru}>
+			{DrawerComponent}
+		</div>
+	);
 }
 
 Drawer.displayName = 'Drawer';
