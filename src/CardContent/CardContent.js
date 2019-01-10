@@ -20,10 +20,10 @@ const getStyles = combine(getBaseStyles, getSpacing);
 getStyles.propTypes = getSpacing.propTypes;
 
 function CardContent(props) {
-	const [
-		{ classes },
-		{ className, component: Component, ...passThru },
-	] = useStyles(props, getStyles);
+	const [{ classes }, { className, as: Component, ...passThru }] = useStyles(
+		props,
+		getStyles,
+	);
 
 	return <Component className={classes} {...passThru} />;
 }
@@ -39,7 +39,7 @@ CardContent.propTypes = {
 	 * The component used for the root node.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([
+	as: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
 		PropTypes.object,
@@ -49,7 +49,7 @@ CardContent.propTypes = {
 };
 
 CardContent.defaultProps = {
-	component: 'div',
+	as: 'div',
 };
 
 export default CardContent;

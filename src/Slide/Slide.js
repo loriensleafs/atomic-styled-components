@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import useSlideManager from './useSlideManager';
-import { useIsMounted, useMotion, usePrevious } from './../hooks';
+import { useIsMounted, useMotion } from './../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 

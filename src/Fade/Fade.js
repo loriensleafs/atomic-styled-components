@@ -22,6 +22,7 @@ const Fade = forwardRef((props, ref) => {
 	} = props;
 	const [mounted, setMounted] = useState(false);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
+	const Component = animated(as);
 	const transition = useSpring({
 		native: true,
 		config: { duration, easing },
@@ -31,7 +32,6 @@ const Fade = forwardRef((props, ref) => {
 			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
 	});
-	const Component = animated(as);
 
 	useDidMount(() => setMounted(() => true));
 

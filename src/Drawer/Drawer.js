@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Modal from './../Modal';
 import Paper from './../Paper';
 import Slide from './../Slide';
-import useIsMounted from './../hooks/useIsMounted';
 import useStyles from './../system/useStyles';
 import { capitalize as toCap } from './../utils/helpers';
 import { stylesPropType } from './../utils/propTypes';
@@ -63,7 +62,6 @@ function getPositionStyles(props) {
 }
 
 function getStyles(props) {
-	const isTemporary = props.variant === 'temporary';
 	const isPersistent = props.variant === 'persistent';
 	const isPermanent = props.variant === 'persistent';
 
@@ -113,11 +111,11 @@ function SlidingDrawer(props) {
 			as={DrawerBase}
 			appear={isTemporary}
 			direction={oppDir[anchor]}
-			ease="sharp"
 			duration={{
 				enter: 'short',
 				exit: 'shorter',
 			}}
+			ease="sharp"
 			{...passThru}
 		>
 			{children}
@@ -151,6 +149,7 @@ function Drawer(props) {
 			elevation={elevation}
 			styles={styles.paper}
 			variant={variant}
+			{...PaperProps}
 			{...passThru}
 		>
 			{children}

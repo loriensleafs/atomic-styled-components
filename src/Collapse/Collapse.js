@@ -24,6 +24,7 @@ function Collapse(props) {
 	const ref = useRef(null);
 	const [expandTo, setExpandTo] = useState('auto');
 	const [easing, duration] = useMotion(ease, enter, exit, show);
+	const Component = animated(as);
 	const transition = useSpring({
 		native: true,
 		config: { duration, easing },
@@ -36,7 +37,6 @@ function Collapse(props) {
 			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
 	});
-	const Component = animated(as);
 
 	useEffect(
 		() => {
