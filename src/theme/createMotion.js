@@ -52,21 +52,24 @@ function createMotion(overrides) {
 		...easing,
 		...overrides.easing,
 	};
-	easing = {
-		inOut: `cubic-bezier(${inOut.join()})`,
-		in: `cubic-bezier(${easeIn.join()})`,
-		out: `cubic-bezier(${easeOut.join()})`,
-		sharp: `cubic-bezier(${sharp.join()})`,
-		getInOut: toCubicBezierFn(inOut[0], inOut[1], inOut[2], inOut[3]),
-		getOut: toCubicBezierFn(easeOut[0], easeOut[1], easeOut[2], easeOut[3]),
-		getIn: toCubicBezierFn(easeIn[0], easeIn[1], easeIn[2], easeIn[3]),
-		getSharp: toCubicBezierFn(sharp[0], sharp[1], sharp[2], sharp[3]),
-	};
-	duration = { ...duration, ...overrides.duration };
 
 	return {
-		easing,
-		duration,
+		easing: {
+			inOut: `cubic-bezier(${inOut.toString()})`,
+			in: `cubic-bezier(${easeIn.toString()})`,
+			out: `cubic-bezier(${easeOut.toString()})`,
+			sharp: `cubic-bezier(${sharp.toString()})`,
+			getInOut: toCubicBezierFn(inOut[0], inOut[1], inOut[2], inOut[3]),
+			getOut: toCubicBezierFn(
+				easeOut[0],
+				easeOut[1],
+				easeOut[2],
+				easeOut[3],
+			),
+			getIn: toCubicBezierFn(easeIn[0], easeIn[1], easeIn[2], easeIn[3]),
+			getSharp: toCubicBezierFn(sharp[0], sharp[1], sharp[2], sharp[3]),
+		},
+		duration: { ...duration, ...overrides.duration },
 		getTransition: (
 			props = ['all'],
 			dur = 'standard',

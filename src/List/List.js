@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import PropTypes from 'prop-types';
 import ListContext from './ListContext';
 import { getSpacing, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-function getSpacingStyles(props) {
+function getStyles(props) {
 	const { dense, disablePadding, subheader } = props;
 
 	return getSpacing({
@@ -12,11 +12,18 @@ function getSpacingStyles(props) {
 		pb: disablePadding ? null : dense ? 1 : 2,
 	});
 }
-getSpacingStyles.propTypes = {
+getStyles.propTypes = {
 	/**
-	 * If `true`, vertical padding will be removed from the list.
+	 * If `true`, compact vertical padding designed for keyboard and mouse
+	 * input will be used for the list and list items. The property is
+	 * available to descendant components as the
+	 * `dense` context.
 	 */
+	dense: PropTypes.bool,
+	// If `true`, vertical padding will be removed from the list.
 	disablePadding: PropTypes.bool,
+	// The content of the subheader, normally `ListSubheader`.
+	subheader: PropTypes.node,
 };
 
 const baseStyles = {
@@ -31,13 +38,13 @@ function List(props) {
 		{classes},
 		{
 			as: Component,
-			children,
 			className,
+			children,
 			dense,
 			subheader,
 			...passThru,
 		},
-	] = useStyles(props, getSpacingStyles, { baseStyles });
+	] = useStyles(props, getStyles, { baseStyles, whitelist: ['dense','subheader'] });
 
 	return (
 		<Component className={classes} {...passThru}>
@@ -52,26 +59,11 @@ function List(props) {
 List.displayName = 'List';
 
 List.propTypes = {
-	/**
-	 * The content of the component.
-	 */
 	children: PropTypes.node,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
-	/**
-	 * If `true`, compact vertical padding designed for keyboard and mouse input will be used for
-	 * the list and list items. The property is available to descendant components as the
-	 * `dense` context.
-	 */
-	dense: PropTypes.bool,
-	/**
-	 * The content of the subheader, normally `ListSubheader`.
-	 */
-	subheader: PropTypes.node,
 	...componentPropType,
 	...stylesPropType,
+	...getStyles.propTypes
 };
 
 List.defaultProps = {

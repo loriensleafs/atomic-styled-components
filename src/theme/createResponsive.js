@@ -1,33 +1,24 @@
-function addAliases(arr, aliases) {
-	return aliases.forEach((key, i) =>
-		Object.defineProperty(arr, key, {
-			enumerable: false,
-			get() {
-				return this[i];
-			},
-		}),
-	);
+let breakpoints = [480, 765, 960, 1200, 1600];
+
+const aliases = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+
+function getMediaQuery(mq = 'sm', max = false) {
+	const aliasIdx = aliases.indexOf(mq);
+	const bp = aliasIdx > -1 ? breakpoints[aliasIdx] : mq;
+
+	return `@media screen and (${max ? 'max' : 'min'}-width: ${bp}px)`;
 }
-
-export let breakpoints = [480, 765, 960, 1200, 1600];
-
-export const aliases = ['sm', 'md', 'lg', 'xl', 'xxl'];
 
 function createResponsive(overrides) {
 	breakpoints = [...breakpoints, ...overrides];
-	const mediaQueries = breakpoints.map(
-		bp => `@media screen and (min-width: ${bp}px)`,
-	);
-
-	function getMediaQuery(mq) {
-		return mediaQueries[mq.indexOf(aliases)];
-	}
 
 	return {
 		breakpoints,
-		mediaQueries,
-		getMediaQuery,
+		getMq: getMediaQuery,
+		mediaQueries: aliases.map(alias => getMediaQuery(alias)),
 	};
 }
+
+export { aliases, breakpoints, getMediaQuery };
 
 export default createResponsive;

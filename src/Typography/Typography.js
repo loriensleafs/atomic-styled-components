@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from './../Box';
 import combine from './../utils/combine';
-import { getColor, getText, useStyles } from './../system';
+import { getColor, getSpacing, getText, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 const TAGS = {
@@ -43,25 +42,26 @@ function getColorStyles(props) {
 	}
 }
 
-const getStyles = combine(getColorStyles, getText, getColor);
+const getStyles = combine(getColorStyles, getText, getColor, getSpacing);
 getStyles.propTypes = {
 	...getColor.propTypes,
+	...getSpacing.propTypes,
 	...getText.propTypes,
 };
 
 function Typography(props) {
 	const [
-		{ styles },
+		{ classes },
 		{ as, children, paragraph, variant, ...passThru },
 	] = useStyles(props, getStyles, {
 		whitelist: ['variant'],
 	});
-	const component = as ? as : paragraph ? 'p' : TAGS[variant] || 'span';
+	const Component = as ? as : paragraph ? 'p' : TAGS[variant] || 'span';
 
 	return (
-		<Box styles={styles} as={component} {...passThru}>
+		<Component className={classes} {...passThru}>
 			{children}
-		</Box>
+		</Component>
 	);
 }
 
@@ -72,6 +72,7 @@ Typography.propTypes = {
 		PropTypes.arrayOf(PropTypes.node),
 		PropTypes.node,
 	]),
+	className: PropTypes.string,
 	paragraph: PropTypes.bool,
 	...componentPropType,
 	...stylesPropType,

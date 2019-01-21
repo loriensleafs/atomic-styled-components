@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Paper from './../Paper';
 
-function Card(props) {
-	const { children, raised, styles: stylesProp = {}, ...passThru } = props;
-	const styles = {
-		...stylesProp,
-		overflow: 'hidden',
-	};
-
-	return (
-		<Paper styles={styles} elevation={raised ? 8 : 1} {...passThru}>
-			{children}
-		</Paper>
-	);
-}
+const Card = forwardRef(({ raised, styles, ...props }, ref) => (
+	<Paper
+		styles={{ ...styles, overflow: 'hidden' }}
+		elevation={raised ? 8 : 1}
+		ref={ref}
+		{...props}
+	/>
+));
 
 Card.displayName = 'Card';
 
 Card.propTypes = {
+	// The border radius of the Card.
+	radius: PropTypes.oneOf(['round', 'square']),
+	// The amount of elevation the Card has.
 	raised: PropTypes.bool,
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { forwardRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import SelectionControl from './../SelectionControl';
 import useDidUpdate from './../hooks/useDidUpdate';
@@ -149,7 +149,7 @@ getStyles.propTypes = {
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
 
-function Switch(props) {
+const Switch = forwardRef((props, ref) => {
 	const [checked, setChecked] = useState(props.checked || false);
 	const [
 		{ styles, classes },
@@ -188,6 +188,7 @@ function Switch(props) {
 			>
 				<SelectionControl
 					onChange={handleChange}
+					ref={ref}
 					type="checkbox"
 					icon={
 						<animated.div
@@ -201,7 +202,7 @@ function Switch(props) {
 			</animated.div>
 		</span>
 	);
-}
+});
 
 Switch.displayName = 'Switch';
 

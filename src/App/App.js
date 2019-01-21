@@ -13,6 +13,7 @@ const history = createBrowserHistory();
 
 const ButtonDemo = lazy(() => import('./ButtonDemo'));
 const CardDemo = lazy(() => import('./CardDemo'));
+const DialogDemo = lazy(() => import('./DialogDemo'));
 const DrawerDemo = lazy(() => import('./DrawerDemo'));
 const SelectionControlDemo = React.lazy(() => import('./SelectionControlDemo'));
 
@@ -72,6 +73,10 @@ export default function App() {
 									<Route
 										path={`/cards`}
 										render={() => <CardDemo />}
+									/>
+									<Route
+										path={`/dialogs`}
+										render={() => <DialogDemo />}
 									/>
 									<Route
 										path={`/drawers`}

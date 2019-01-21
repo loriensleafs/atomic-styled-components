@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { forwardRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import SelectionControl from './../SelectionControl';
 import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
@@ -73,7 +73,7 @@ getStyles.propTypes = {
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
 
-function Radio(props) {
+const Radio = forwardRef((props, ref) => {
 	const [checked, setChecked] = useState(props.checked || false);
 	const [
 		{ styles },
@@ -96,12 +96,13 @@ function Radio(props) {
 			icon={icon}
 			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			onChange={handleChange}
+			ref={ref}
 			styles={{ buttonStyles: styles }}
 			type="radio"
 			{...passThru}
 		/>
 	);
-}
+});
 
 Radio.displayName = 'Radio';
 

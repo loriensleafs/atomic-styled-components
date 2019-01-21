@@ -1,25 +1,22 @@
 import { Client } from 'styletron-engine-atomic';
-import { isObj } from './../utils/helpers';
+import { isObj, isStr } from './../utils/helpers';
 
 const engine = window.styletronClient || new Client();
 
-function className() {
-	let classes = [];
+function className(...args) {
+	if (args.length < 1) return;
 
-	for (let i = 0; i < arguments.length; i++) {
-		const arg = arguments[i];
-		if (!arg) continue;
-
-		const argType = typeof arg;
-
-		if (argType === 'string' || argType === 'number') {
-			classes.push(arg);
-		} else if (isObj(arg)) {
-			classes.push(engine.renderStyle(arg));
-		}
-	}
-
-	return classes.join('');
+	return args
+		.reduce((acc, arg) => {
+			if (isStr(arg)) {
+				return [...acc, arg];
+			} else if (isObj(arg)) {
+				return [...acc, ...engine.renderStyle(arg).split(' ')];
+			} else {
+				return acc;
+			}
+		}, [])
+		.join(' ');
 }
 
 export { engine };

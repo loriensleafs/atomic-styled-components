@@ -11,7 +11,7 @@ function createTheme(overrides = {}) {
 	const {
 		breakpoints: breakpointOverrides = [],
 		duration: durationOverrides = {},
-		easing: easingOverrides = {},
+		easing: easingOverrides,
 		elevation: elevationOverrides,
 		palette: paletteOverrides = {},
 		typography: typographyOverrides = {},
@@ -21,7 +21,7 @@ function createTheme(overrides = {}) {
 		easingOverrides,
 	);
 	const palette = createPalette(paletteOverrides);
-	const { breakpoints, mediaQueries, getMediaQuery } = createResponsive(
+	const { breakpoints, getMq, mediaQueries } = createResponsive(
 		breakpointOverrides,
 	);
 	const { pxToRem, typography } = createTypography(
@@ -32,9 +32,9 @@ function createTheme(overrides = {}) {
 		breakpoints,
 		duration,
 		easing,
-		elevation: elevationOverrides || elevation,
+		elevation: elevationOverrides ? elevationOverrides : elevation,
 		getEasing,
-		getMediaQuery,
+		getMq,
 		getTransition,
 		maxWidth: '1200px',
 		mediaQueries,

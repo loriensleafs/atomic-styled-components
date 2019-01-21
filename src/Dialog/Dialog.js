@@ -1,34 +1,64 @@
-import React, { useCallback } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Modal from './../Modal';
 import Fade from './../Fade';
 import Paper from './../Paper';
 import combine from './../utils/combine';
-import { getSizing, getSpacing, useStyles } from '../system';
-import { stylesPropType } from './../utils/propTypes';
+import { getSpacing, useStyles } from '../system';
+import {
+	easingPropType,
+	durationPropType,
+	stylesPropType,
+} from './../utils/propTypes';
 
-function getScrollStyles({ scroll }) {
+function getFullWidthStyles({ fullWidth }) {
+	return (
+		fullWidth && {
+			paper: {
+				width: '100%',
+			},
+		}
+	);
+}
+
+function getFullScreenStyles({ fullScreen }) {
+	return (
+		fullScreen && {
+			container: {
+				width: '100%',
+			},
+			paper: {
+				width: '100%',
+				maxWidth: '100%',
+				height: '100%',
+				maxHeight: 'none',
+				margin: '0px',
+				borderRadius: '0px',
+			},
+		}
+	);
+}
+
+function getScrollStyles({ fullScreen, scroll }) {
 	switch (scroll) {
 		case 'body':
 			return {
-				containerStyles: {
+				container: {
 					overflowY: 'auto',
 					overflowX: 'hidden',
 				},
-				paperStyles: {
-					margin: '48px auto',
+				paper: {
+					margin: fullScreen ? '0px' : '48px auto',
 				},
 			};
-
-		default:
-			// 'paper'
+		case 'paper':
 			return {
-				containerStyles: {
+				container: {
 					display: 'flex',
 					justifyContent: 'center',
 					alignItems: 'center',
 				},
-				paperStyles: {
+				paper: {
 					flex: '0 1 auto',
 					maxHeight: 'calc(100% - 96px)',
 				},
@@ -36,119 +66,106 @@ function getScrollStyles({ scroll }) {
 	}
 }
 
-function getSizeStyles(props) {
-	const { fullScreen, fullWidth, maxWidth } = props;
-	const w = fullWidth ? 1 : null;
-	const container = getSizing({
-		h: fullScreen ? 1 : null,
-		w: fullScreen ? 1 : null,
-	});
-	const paper = {
-		...getSizing({
-			w: fullScreen ? 1 : null,
-			wMax: fullScreen ? 1 : null,
-			h: fullScreen ? 1 : null,
-			hMax: fullScreen ? 1 : null,
-		}),
-		margin: '0px',
-		borderRadius: '0px',
-	};
+function getMaxWidthStyles(props) {
+	const {
+		fullScreen,
+		maxWidth,
+		theme: { breakpoints: bps, getMq },
+	} = props;
+
+	function getBp(bp) {
+		return getMq(bps[bp] + 48 * 2, true);
+	}
 
 	switch (maxWidth) {
 		case 'xs':
 			return {
-				container,
 				paper: {
-					...paper,
-					...getSizing({ w, wMax: 360 }),
-					...getSpacing({ m: 5.5 }),
+					maxWidth: `${bps[0]}px`,
+					[`${getBp(0)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 		case 'sm':
 			return {
-				container,
 				paper: {
-					...paper,
-					...getSizing({ w, wMax: 360 }),
-					...getSpacing({ m: 5.5 }),
+					maxWidth: `${bps[1]}px`,
+					[`${getBp(1)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 		case 'md':
 			return {
-				container,
 				paper: {
-					...paper,
-					...getSizing({ w, wMax: 360 }),
-					...getSpacing({ m: 5.5 }),
+					maxWidth: `${bps[2]}px`,
+					[`${getBp(2)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 		case 'lg':
 			return {
-				container,
 				paper: {
-					...paper,
-					...getSizing({ w, wMax: 360 }),
-					...getSpacing({ m: 5.5 }),
+					maxWidth: `${bps[3]}px`,
+					[`${getBp(3)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
-		default:
+		case 'xl':
 			return {
-				container,
-				paper,
+				paper: {
+					maxWidth: `${bps[4]}px`,
+					[`${getBp(4)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
+				},
 			};
 	}
 }
 
-const getStyles = combine(getScrollStyles, getSizeStyles);
+function getBaseStyles() {
+	return {
+		container: {
+			height: '100%',
+			outline: 'none',
+		},
+		paper: {
+			position: 'relative',
+			display: 'flex',
+			flexDirection: 'column',
+			overflowY: 'auto',
+			...getSpacing({ m: 4.5 }),
+		},
+		root: {},
+	};
+}
+
+const getStyles = combine(
+	getBaseStyles,
+	getMaxWidthStyles,
+	getScrollStyles,
+	getFullScreenStyles,
+	getFullWidthStyles,
+);
 getStyles.propTypes = {
-	/**
-	 * If `true`, the dialog will be full-screen
-	 */
+	// If `true`, the dialog will be full-screen
 	fullScreen: PropTypes.bool,
-	/**
-	 * If `true`, the dialog stretches to `maxWidth`.
-	 */
+	// If `true`, the dialog stretches to `maxWidth`.
 	fullWidth: PropTypes.bool,
 	/**
 	 * Determine the max width of the dialog.
-	 * The dialog width grows with the size of the screen, this property is useful
-	 * on the desktop where you might need some coherent different width size across your
-	 * application. Set to `false` to disable `maxWidth`.
+	 * The dialog width grows with the size of the screen, this property is
+	 * useful on desktop when you might need different width sizes across your
+	 * application.
+	 * Set to `false` to disable `maxWidth`.
 	 */
-	maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', false]),
-	/**
-	 * Determine the container for scrolling the dialog.
-	 */
+	maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl', false]),
+	// Determine the container for scrolling the dialog.
 	scroll: PropTypes.oneOf(['body', 'paper']),
 };
 
-const baseStyles = {
-	container: {
-		height: '100%',
-		outline: 'none',
-	},
-	paper: {
-		position: 'relative',
-		margin: '48px',
-		display: 'flex',
-		flexDirection: 'column',
-		overflowY: 'auto',
-	},
-	root: {},
-};
-
-function Dialog(props) {
+const Dialog = forwardRef((props, ref) => {
 	const [
 		{ styles, classes },
 		{
-			BackdropProps,
 			children,
 			className,
 			disableBackdropClick,
-			disableEscapeKeyDown,
 			onBackdropClick,
 			onClose,
-			onEscapeKeyDown,
 			onEnd,
 			onStart,
 			open,
@@ -157,7 +174,7 @@ function Dialog(props) {
 			TransitionProps,
 			...passThru
 		},
-	] = useStyles(props, getStyles, { baseStyles });
+	] = useStyles(props, getStyles);
 
 	const handleBackdropClick = useCallback(event => {
 		if (event.target !== event.currentTarget) return;
@@ -167,12 +184,9 @@ function Dialog(props) {
 
 	return (
 		<Modal
-			BackdropProps={BackdropProps}
 			className={className}
 			disableBackdropClick={disableBackdropClick}
-			disableEscapeKeyDown={disableEscapeKeyDown}
 			onBackdropClick={handleBackdropClick}
-			onEscapeKeyDown={onEscapeKeyDown}
 			onClose={onClose}
 			open={open}
 			role="dialog"
@@ -181,112 +195,75 @@ function Dialog(props) {
 		>
 			<TransitionComponent
 				className={classes.container}
-				in={open}
+				onEnd={onEnd}
+				onStart={onStart}
+				role="document"
+				show={open}
 				{...TransitionProps}
 			>
-				<div className={classes.container} role="document">
-					<Paper elevation={24} styles={styles.paper} {...PaperProps}>
-						{children}
-					</Paper>
-				</div>
+				<Paper
+					elevation={23}
+					ref={ref}
+					styles={styles.paper}
+					{...PaperProps}
+				>
+					{children}
+				</Paper>
 			</TransitionComponent>
 		</Modal>
 	);
-}
+});
 
 Dialog.displayName = 'Dialog';
 
 Dialog.propTypes = {
-	/**
-	 * @ignore
-	 */
 	BackdropProps: PropTypes.object,
-	/**
-	 * Dialog children, usually the included sub-components.
-	 */
+	//  Dialog children, usually the included sub-components.
 	children: PropTypes.node.isRequired,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
-	/**
-	 * If `true`, clicking the backdrop will not fire the `onClose` callback.
-	 */
+	// If `true`, clicking the backdrop will not fire the `onClose` callback.
 	disableBackdropClick: PropTypes.bool,
-	/**
-	 * If `true`, hitting escape will not fire the `onClose` callback.
-	 */
+	// If `true`, hitting escape will not fire the `onClose` callback.
 	disableEscapeKeyDown: PropTypes.bool,
-	/**
-	 * Callback fired when the backdrop is clicked.
-	 */
+	// Callback fired when the backdrop is clicked.
 	onBackdropClick: PropTypes.func,
-	/**
-	 * Callback fired when the component requests to be closed.
-	 *
-	 * @param {object} event The event source of the callback
-	 */
+	// Callback fired when the component requests to be closed.
+	// @param {object} event The event source of the callback
 	onClose: PropTypes.func,
-	/**
-	 * Callback fired before the dialog enters.
-	 */
+	// Callback fired before the dialog enters.
 	onEnter: PropTypes.func,
-	/**
-	 * Callback fired when the dialog has entered.
-	 */
+	// Callback fired when the dialog has entered.
 	onEntered: PropTypes.func,
-	/**
-	 * Callback fired when the dialog is entering.
-	 */
+	// Callback fired when the dialog is entering.
 	onEntering: PropTypes.func,
-	/**
-	 * Callback fired when the escape key is pressed,
-	 * `disableKeyboard` is false and the modal is in focus.
-	 */
+	// Callback fired when the escape key is pressed,
+	// `disableKeyboard` is false and the modal is in focus.
 	onEscapeKeyDown: PropTypes.func,
-	/**
-	 * Callback fired before the dialog exits.
-	 */
+	// Callback fired before the dialog exits.
 	onExit: PropTypes.func,
-	/**
-	 * Callback fired when the dialog has exited.
-	 */
+	// Callback fired when the dialog has exited.
 	onExited: PropTypes.func,
-	/**
-	 * Callback fired when the dialog is exiting.
-	 */
+	// Callback fired when the dialog is exiting.
 	onExiting: PropTypes.func,
-	/**
-	 * If `true`, the Dialog is open.
-	 */
+	// If `true`, the Dialog is open.
 	open: PropTypes.bool.isRequired,
-	/**
-	 * Properties applied to the [`Paper`](/api/paper/) element.
-	 */
+	// Properties applied to the [`Paper`](/api/paper/) element.
 	PaperProps: PropTypes.object,
 	...stylesPropType,
-	/**
-	 * Transition component.
-	 */
+	// Transition component.
 	TransitionComponent: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
 		PropTypes.object,
 	]),
-	/**
-	 * The duration for the transition, in milliseconds.
-	 * You may specify a single timeout for all transitions, or individually with an object.
-	 */
-	transitionDuration: PropTypes.oneOfType([
-		PropTypes.number,
-		PropTypes.shape({ enter: PropTypes.number, exit: PropTypes.number }),
-	]),
-	/**
-	 * Properties applied to the `Transition` element.
-	 */
+	// The duration for the transition.
+	transitionDuration: durationPropType,
+	// The easing for the transition.
+	transitionEase: easingPropType,
+	// Properties applied to the `Transition` element.
 	TransitionProps: PropTypes.object,
-	...getScrollStyles.propTypes,
-	...getSizeStyles.propTypes,
+	...getStyles.propTypes,
+	...stylesPropType,
 };
 
 Dialog.defaultProps = {
@@ -296,7 +273,6 @@ Dialog.defaultProps = {
 	fullWidth: false,
 	maxWidth: 'sm',
 	scroll: 'paper',
-	styles: {},
 	TransitionComponent: Fade,
 };
 

@@ -7,8 +7,8 @@ import { getSpacing, useStyles } from './../system';
 import { stylesPropType } from './../utils/propTypes';
 
 function getDenseStyles(props) {
-	if (props.dense) {
-		return {
+	return (
+		props.dense && {
 			primaryText: {
 				fontSize: 'inherit',
 			},
@@ -18,9 +18,8 @@ function getDenseStyles(props) {
 			secondaryText: {
 				fontSize: 'inherit',
 			},
-		};
-	}
-	return null;
+		}
+	);
 }
 
 function getBaseStyles(props) {
@@ -71,7 +70,7 @@ function ListItemText(props) {
 				<Typography
 					variant="subtitle1"
 					styles={styles.primaryText}
-					component="span"
+					as="span"
 					{...primaryTextProps}
 				>
 					{primary}
@@ -99,26 +98,17 @@ function ListItemText(props) {
 ListItemText.displayName = 'ListItemText';
 
 ListItemText.propTypes = {
-	/**
-	 * Alias for the `primary` property.
-	 */
+	// Alias for the `primary` property.
 	children: PropTypes.node,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
-	/**
-	 * The main content element.
-	 */
+	// The main content element.
 	primary: PropTypes.node,
 	/**
 	 * These props will be forwarded to the primary typography component
 	 * (as long as disableTypography is not `true`).
 	 */
 	primaryTextProps: PropTypes.object,
-	/**
-	 * The secondary content element.
-	 */
+	// The secondary content element.
 	secondary: PropTypes.node,
 	/**
 	 * These props will be forwarded to the secondary typography component

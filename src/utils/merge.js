@@ -1,54 +1,76 @@
-import cloneArray from './cloneArray';
-import { getKeys, isArr, isObj } from './helpers';
+import isMergeable from 'is-mergeable-object';
+import { getKeys, is, isArr, isObj } from './helpers';
 
-function safeGetProperty(object, property) {
-	return property === '__proto__' ? undefined : object[property];
+function getEmptyOfType(val) {
+	return isArr(val) ? [] : {};
 }
 
-function pureRecursiveMerge(...args) {
-	if (args.length < 1 || typeof args[0] !== 'object') return false;
-	if (args.length < 2) {
-		if (isObj(args[0])) return { ...args[0] };
-		if (isArr(args[0])) return cloneArray(args[0]);
-		return args[0];
+function cloneUnlessOtherwiseSpecified(value) {
+	return isMergeable(value) ? deepmerge(getEmptyOfType(value), value) : value;
+}
+
+function mergeArray(target, source) {
+	return [...target, ...source].map(el => {
+		return cloneUnlessOtherwiseSpecified(el);
+	});
+}
+
+function mergeObject(target, source) {
+	var destination = {};
+	if (isMergeable(target)) {
+		getKeys(target).forEach(key => {
+			destination[key] = cloneUnlessOtherwiseSpecified(target[key]);
+		});
 	}
 
-	return args.slice(1).reduce(
-		(merged, obj, idx) =>
-			!isObj(obj)
-				? { ...merged }
-				: getKeys(obj).reduce(
-						(prevMerge, key) => {
-							const src = safeGetProperty(merged, key);
-							const val = safeGetProperty(obj, key);
+	if (is(source)) {
+		getKeys(source).forEach(key => {
+			if (!isMergeable(source[key]) || !target[key]) {
+				destination[key] = cloneUnlessOtherwiseSpecified(source[key]);
+			} else {
+				destination[key] = deepmerge(target[key], source[key]);
+			}
+		});
+	}
+	return destination;
+}
 
-							// Value is not an object/array, overwrite don't extend
-							if (
-								typeof val !== 'object' &&
-								typeof val !== 'undefined'
-							) {
-								prevMerge[key] = val;
-								// Clone arrays (and recursive clone objects inside)
-							} else if (isArr(val)) {
-								prevMerge[key] = cloneArray(val);
-								// If both src and new value are objects then merge them
-							} else if (isObj(src) && isObj(val)) {
-								prevMerge[key] = pureRecursiveMerge(src, val);
-								// Src is not an object/array or is null then extend val
-							} else if (
-								typeof src !== 'object' ||
-								src === null ||
-								isArr(src)
-							) {
-								prevMerge[key] = pureRecursiveMerge({}, val);
-							}
+function deepmerge(target, src) {
+	const srcIsArray = isArr(src);
+	const srcIsObj = isObj(src);
+	const targetIsArray = isArr(target);
+	const targetIsObj = isObj(target);
+	const srcAndTargetTypesMatch =
+		srcIsArray === targetIsArray || (srcIsObj && targetIsObj);
 
-							return prevMerge;
-						},
-						{ ...merged },
-				  ),
-		isObj(args[0]) ? args[0] : {},
+	if (!srcAndTargetTypesMatch) {
+		return cloneUnlessOtherwiseSpecified(src);
+	} else if (srcIsArray) {
+		return mergeArray(src);
+	} else {
+		return mergeObject(target, src);
+	}
+}
+
+function merge(...args) {
+	if (args.length < 2) {
+		if (args.length < 2) {
+			if (isObj(args[0])) return { ...args[0] };
+			if (isArr(args[0])) return [...args[0]];
+			return args[0];
+		}
+	}
+
+	return args.reduce(
+		(acc, next) => {
+			if (isArr(next) && !isArr(acc)) {
+				return deepmerge(acc, ...next);
+			} else {
+				return deepmerge(acc, next);
+			}
+		},
+		isArr(args[0]) ? [] : {},
 	);
 }
 
-export default pureRecursiveMerge;
+export default merge;

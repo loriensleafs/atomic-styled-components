@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { cloneElement, forwardRef, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import AvatarImage from './AvatarImage';
 import combine from './../utils/combine';
+import cn from './../system/className';
 import { getColors, getSpacing, getText, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-function getColorStyles({ color, theme }) {
+function getColorStyles(props) {
+	const {
+		color,
+		theme: { palette },
+	} = props;
+
 	return (
 		color === 'default' &&
 		getColors({
-			bg: `grey.${theme.palette.type}`,
+			bg: `grey.${palette.type}`,
 			color: 'bg.default',
 		})
 	);
@@ -35,14 +41,15 @@ const baseStyles = {
 	userSelect: 'none',
 };
 
-function Avatar(props) {
+const Avatar = forwardRef((props, ref) => {
 	const [
 		{ classes },
 		{
 			alt,
 			as: Component,
 			children,
-			className: cn = '',
+			className,
+			childrenClassName,
 			imgProps,
 			imgStyles,
 			sizes,
@@ -53,7 +60,7 @@ function Avatar(props) {
 	] = useStyles(props, getStyles, { baseStyles });
 
 	return (
-		<Component className={cn.concat(classes)} {...passThru}>
+		<Component className={classes} ref={ref} {...passThru}>
 			{src || srcSet ? (
 				<AvatarImage
 					alt={alt}
@@ -63,12 +70,16 @@ function Avatar(props) {
 					styles={imgStyles}
 					{...imgProps}
 				/>
+			) : childrenClassName && isValidElement(children) ? (
+				cloneElement(children, {
+					className: cn(childrenClassName, children.props.className),
+				})
 			) : (
 				children
 			)}
 		</Component>
 	);
-}
+});
 
 Avatar.displayName = 'Avatar';
 
@@ -89,41 +100,20 @@ Avatar.propTypes = {
 		PropTypes.arrayOf(PropTypes.node),
 		PropTypes.node,
 	]),
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
-	/**
-	 * The component used for the root node.
-	 * Either a string to use a DOM element or a component.
-	 */
-	component: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-		PropTypes.object,
-	]),
-	/**
-	 * Attributes applied to the `img` element if the component
-	 * is used to display an image.
-	 */
+	childrenClassName: PropTypes.string,
+	classes: PropTypes.object,
+	// If an image, attributes applied to the 'img' element.
 	imgProps: PropTypes.object,
-	/**
-	 * The `sizes` attribute for the `img` element.
-	 */
+	// The `sizes` attribute for the `img` element.
 	sizes: PropTypes.string,
-	/**
-	 * The `src` attribute for the `img` element.
-	 */
+	// The `src` attribute for the `img` element.
 	src: PropTypes.string,
-	/**
-	 * The `srcSet` attribute for the `img` element.
-	 */
+	// The `srcSet` attribute for the `img` element.
 	srcSet: PropTypes.string,
 	...componentPropType,
 	...stylesPropType,
-	...getColors.propTypes,
-	...getSpacing.propTypes,
-	...getText.propTypes,
+	...getStyles.propTypes,
 };
 
 Avatar.defaultProps = {

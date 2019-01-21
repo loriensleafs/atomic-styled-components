@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import combine from './../utils/combine';
 import { getSpacing, getText, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 function getColorStyles(props) {
 	if (props.disabled) {
@@ -75,13 +75,13 @@ getStyles.propTypes = {
 	...getText.propTypes,
 };
 
-function SvgIcon(props) {
+const SvgIcon = forwardRef((props, ref) => {
 	const [
 		{ classes },
 		{
+			as: Component,
 			children,
 			className,
-			component: Component,
 			nativeColor,
 			titleAccess,
 			viewBox,
@@ -91,60 +91,51 @@ function SvgIcon(props) {
 
 	return (
 		<Component
-			className={classes}
-			focusable="false"
-			viewBox={viewBox}
-			color={nativeColor}
 			aria-hidden={titleAccess ? 'false' : 'true'}
+			className={classes}
+			color={nativeColor}
+			focusable="false"
+			ref={ref}
+			viewBox={viewBox}
 			{...passThru}
 		>
 			{children}
 			{titleAccess ? <title>{titleAccess}</title> : null}
 		</Component>
 	);
-}
+});
 
 SvgIcon.displayName = 'SvgIcon';
 
 SvgIcon.propTypes = {
-	/**
-	 * Node passed into the SVG element.
-	 */
+	// Node passed into the SVG element.
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
-	/**
-	 * The component used for the root node.
-	 * Either a string to use a DOM element or a component.
-	 */
-	component: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-		PropTypes.object,
-	]),
-	/**
-	 * Applies a color attribute to the SVG element.
-	 */
+	// Applies a color attribute to the SVG element.
 	nativeColor: PropTypes.string,
 	/**
 	 * Provides a human-readable title for the element that contains it.
 	 * https://www.w3.org/TR/SVG-access/#Equivalent
 	 */
-	...stylesPropType,
 	titleAccess: PropTypes.string,
 	/**
-	 * Allows you to redefine what the coordinates without units mean inside an SVG element.
+	 * Allows you to redefine what the coordinates without units mean inside an
+	 * SVG element.
 	 * For example, if the SVG element is 500 (width) by 200 (height),
 	 * and you pass viewBox="0 0 50 20",
-	 * this means that the coordinates inside the SVG will go from the top left corner (0,0)
+	 * this means that the coordinates inside the SVG will go from the top left
+	 * corner (0,0)
 	 * to bottom right (50,20) and each unit will be worth 10px.
 	 */
 	viewBox: PropTypes.string,
+	...componentPropType,
+	...stylesPropType,
 	...getStyles.propTypes,
 };
 
 SvgIcon.defaultProps = {
+	as: 'svg',
 	color: 'inherit',
-	component: 'svg',
 	fontSize: '24px',
 	viewBox: '0 0 24 24',
 };

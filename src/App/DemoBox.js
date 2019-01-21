@@ -1,12 +1,14 @@
 import React from 'react';
 import Flex from './../Flex';
 
-const DemoBox = ({ children, ...props }) => <Flex {...props}>{children}</Flex>;
+function DemoBox(props) {
+	return <Flex {...props}>{props.children}</Flex>;
+}
 
 DemoBox.defaultProps = {
 	position: 'relative',
 	mb: 4,
-	mx: 'auto',
+	mx: 32,
 	p: [3, 4],
 	justifyContent: ['flex-start', null, 'center'],
 	alignItems: 'center',

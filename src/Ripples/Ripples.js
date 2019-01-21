@@ -50,6 +50,7 @@ function Ripples(props) {
 	useEffect(() => setRipples(() => props.ripples), [props.ripples]);
 
 	const transitions = useTransition({
+		native: true,
 		items: ripples,
 		keys: item => item.id,
 		from: ({ key, ...style }) => ({

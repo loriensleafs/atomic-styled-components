@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import IconButton from './../IconButton';
 import useDidUpdate from './../hooks/useDidUpdate';
@@ -26,7 +26,7 @@ const baseStyles = {
 	},
 };
 
-function SelectionControl(props) {
+const SelectionControl = forwardRef((props, ref) => {
 	const {
 		autoFocus,
 		checked: checkedProp,
@@ -92,7 +92,7 @@ function SelectionControl(props) {
 				name={name}
 				onChange={handleChange}
 				readOnly={readOnly}
-				ref={inputRef}
+				ref={ref}
 				required={required}
 				tabIndex={tabIndex}
 				type={type}
@@ -101,7 +101,7 @@ function SelectionControl(props) {
 			/>
 		</IconButton>
 	);
-}
+});
 
 SelectionControl.displayName = 'SelectionControl';
 

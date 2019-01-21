@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import cn from './../system/className';
 import merge from './../utils/merge';
 import { isFn } from './../utils/helpers';
+import { stylesPropType } from './../utils/propTypes';
 
 const baseStyles = {
-	rootStyles: {
-		position: 'absolute',
-		top: '50%',
-		right: '4px',
-		transform: 'translate(-50%)',
-	},
+	position: 'absolute',
+	top: '50%',
+	right: '4px',
+	transform: 'translate(-50%)',
 };
 
 function ListItemSecondaryAction(props) {
@@ -43,15 +42,10 @@ function ListItemSecondaryAction(props) {
 ListItemSecondaryAction.displayName = 'ListItemSecondaryAction';
 
 ListItemSecondaryAction.propTypes = {
-	/**
-	 * The content of the component, normally an `IconButton` or selection control.
-	 */
+	// Content of the component, normally an `IconButton` or selection control.
 	children: PropTypes.node,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+	...stylesPropType,
 };
 
 export default ListItemSecondaryAction;

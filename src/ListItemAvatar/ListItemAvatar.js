@@ -4,28 +4,28 @@ import ListContext from './../List/ListContext';
 import { getFontSize, getSpacing, useStyles } from './../system';
 import { stylesPropType } from './../utils/propTypes';
 
-const getStyles = ({ theme, ...props }) => ({
-	root: {
-		width: '36px',
-		height: '36px',
-		...getFontSize({
-			fontSize: 4,
-		}),
-		...getSpacing({
-			mt: props.alignItems === 'flex-start' ? 1 : null,
-			mr: 1,
-		}),
-	},
-	icon: props.dense
-		? {
-				width: '20px',
-				height: '20px',
-				...getFontSize({
-					fontSize: 4,
-				}),
-		  }
-		: null,
-});
+function getStyles(props) {
+	const { alignItems, dense } = props;
+	const isFlexStart = alignItems === 'flex-start';
+	const styles = {
+		root: {
+			width: '36px',
+			height: '36px',
+			...getSpacing({ mt: isFlexStart ? 1 : null, mr: 1 }),
+			...getFontSize({ fontSize: 4 }),
+		},
+	};
+
+	if (dense) {
+		styles.icon = {
+			width: '20px',
+			height: '20px',
+			...getFontSize({ fontSize: 4 }),
+		};
+	}
+
+	return styles;
+}
 getStyles.propTypes = {
 	alignItems: PropTypes.string,
 	dense: PropTypes.bool,
@@ -41,7 +41,7 @@ function ListItemAvatar(props) {
 	return cloneElement(children, {
 		className: classes.root,
 		childrenClassName:
-			classes.icon + ' ' + children.props.childrenClassName,
+			classes.icon + ' ' + children.props.childrenClassName || '',
 		...passThru,
 	});
 }
@@ -49,13 +49,8 @@ function ListItemAvatar(props) {
 ListItemAvatar.displayName = 'ListItemAvatar';
 
 ListItemAvatar.propTypes = {
-	/**
-	 * The content of the component – normally `Avatar`.
-	 */
+	// The content of the component – normally `Avatar`.
 	children: PropTypes.element.isRequired,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	...stylesPropType,
 	...getStyles.propTypes,

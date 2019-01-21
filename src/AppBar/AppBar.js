@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Paper from './../Paper';
 import combine from './../utils/combine';
@@ -63,7 +63,7 @@ const baseStyles = {
 	flexShrink: 0,
 };
 
-function AppBar(props) {
+const AppBar = forwardRef((props, ref) => {
 	const [{ styles }, { children, ...passThru }] = useStyles(
 		props,
 		getStyles,
@@ -74,16 +74,17 @@ function AppBar(props) {
 
 	return (
 		<Paper
-			radius="square"
 			as="header"
 			elevation={4}
 			styles={styles}
+			radius="square"
+			ref={ref}
 			{...passThru}
 		>
 			{children}
 		</Paper>
 	);
-}
+});
 
 AppBar.displayName = 'AppBar';
 

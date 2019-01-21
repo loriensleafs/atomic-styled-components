@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import ButtonBase from './../ButtonBase';
 import combine from './../utils/combine';
@@ -102,18 +102,18 @@ getStyles.propTypes = {
 	...getSpacing.propTypes,
 };
 
-function IconButton(props) {
+const IconButton = forwardRef((props, ref) => {
 	const [{ styles, classes }, { children, ...passThru }] = useStyles(
 		props,
 		getStyles,
 	);
 
 	return (
-		<ButtonBase styles={styles.root} {...passThru}>
+		<ButtonBase styles={styles.root} ref={ref} {...passThru}>
 			<span className={classes.label}>{children}</span>
 		</ButtonBase>
 	);
-}
+});
 
 IconButton.displayName = 'IconButton';
 

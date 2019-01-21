@@ -37,7 +37,7 @@ const Fade = forwardRef((props, ref) => {
 
 	return (
 		<Component
-			chilren={children}
+			children={children}
 			className={className}
 			ref={ref}
 			style={{ ...style, ...transition }}

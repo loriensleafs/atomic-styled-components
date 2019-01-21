@@ -2,25 +2,29 @@ import { useContext, useMemo } from 'react';
 import ThemeContext from './../theme/ThemeContext';
 import cn from './../system/className';
 import merge from './../utils/merge';
-import cssProperties from './../utils/cssProperties';
-import { getKeys, isFn, isObj, isStr, toArr } from './../utils/helpers';
+import cssProps from './../utils/cssProperties';
+import { getKeys, isEq, isFn, isObj, isStr, toArr } from './../utils/helpers';
 
-const DEFAULT_OPTIONS = {
-	classes: true,
-	baseStyles: {},
-	whiltelist: [],
-};
-
-function useStyles(props, reducers, options = {}) {
-	const { theme } = useContext(ThemeContext);
-	const { baseStyles = {}, whitelist = [] } = {
-		...DEFAULT_OPTIONS,
-		...options,
-	};
-	const { classes = [], styles, ..._props } = useMemo(
-		() => ({ ...props, theme }),
-		[props, theme],
+function hasChildStyles(styles) {
+	return styles.every(
+		style =>
+			isStr(style) &&
+			(cssProps.includes(style) || style.startsWith('@media')),
 	);
+}
+
+function useStyles(allProps, reducers, options = {}) {
+	const { theme } = useContext(ThemeContext);
+	const { classes = [], className = '', styles, ...props } = useMemo(
+		() => ({ ...allProps, theme }),
+		[allProps, theme],
+	);
+	const {
+		baseStyles = {},
+		cnPrefix = 'root',
+		getClasses = true,
+		whitelist = [],
+	} = options;
 	reducers = isFn(styles) ? [...toArr(reducers), styles] : toArr(reducers);
 
 	if (!reducers || reducers.length === 0) {
@@ -30,70 +34,66 @@ function useStyles(props, reducers, options = {}) {
 	const styleProps = useMemo(
 		() =>
 			reducers.reduce(
-				(acc, prop) =>
-					prop && prop.propTypes
+				(acc, { propTypes }) =>
+					propTypes
 						? [
 								...acc,
-								...getKeys(prop.propTypes).filter(
+								...getKeys(propTypes).filter(
 									key => !acc.includes(key),
 								),
 						  ]
 						: acc,
-				['classes', 'styles', 'theme'],
+				['classes', 'className', 'styles', 'theme'],
 			),
 		[],
 	);
 
 	const dependancies = useMemo(
-		() => styleProps.map(key => key && _props[key]),
-		[_props],
+		() => styleProps.map(key => key && props[key]),
+		[props],
 	);
 
 	const nextProps = useMemo(
 		() =>
-			getKeys(_props)
+			getKeys(props)
 				.filter(
 					key => !styleProps.includes(key) || whitelist.includes(key),
 				)
-				.reduce((acc, key) => ({ ...acc, [key]: _props[key] }), {}),
-		[_props],
+				.reduce((acc, key) => ({ ...acc, [key]: props[key] }), {}),
+		[props],
 	);
 
 	const nextStyles = useMemo(
-		() => {
-			let style = reducers.reduce(
-				(acc, reducer) =>
-					isFn(reducer) ? merge(acc, reducer(_props)) : acc,
-				baseStyles,
-			);
-
-			return isObj(styles) ? merge(style, styles) : style;
-		},
+		() =>
+			merge(
+				reducers.reduce(
+					(acc, reducer) =>
+						isFn(reducer) ? merge(acc, reducer(props)) : acc,
+					baseStyles,
+				),
+				isObj(styles) ? styles : {},
+			),
 		[dependancies],
 	);
 
 	const nextClasses = useMemo(
-		() =>
-			classes &&
-			getKeys(nextStyles).every(
-				style =>
-					isStr(style) &&
-					(cssProperties.includes(style) ||
-						style.startsWith('@media')),
-			)
-				? _props.className
-					? cn(_props.className, nextStyles)
-					: cn(nextStyles)
-				: getKeys(nextStyles).reduce(
-						(acc, style) => ({
-							...acc,
-							[style]: classes[style]
-								? cn(classes[style], nextStyles[style])
-								: cn(nextStyles[style]),
-						}),
-						{},
-				  ),
-		[nextStyles],
+		() => {
+			const styleKeys = getKeys(nextStyles);
+
+			if (getClasses && hasChildStyles(styleKeys)) {
+				return cn(className, nextStyles);
+			} else if (getClasses) {
+				return styleKeys.reduce((acc, style) => {
+					let prefix = '';
+
+					if (classes[style]) prefix.concat(classes[style]);
+					if (cnPrefix === style) prefix.concat(className);
+
+					return { ...acc, [style]: cn(prefix, nextStyles[style]) };
+				}, {});
+			}
+		},
+		[className, nextStyles],
 	);
 
 	return [{ styles: nextStyles, classes: nextClasses }, nextProps];

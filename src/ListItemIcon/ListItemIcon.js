@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { getColor, getSpacing, useStyles } from './../system';
 import { stylesPropType } from './../utils/propTypes';
 
-function getStyles(props) {
+function getStyles() {
 	return {
-		display: 'inline-flex',
+		display: 'flex',
 		flexShrink: 0,
 		alignItems: 'center',
 		...getColor({ color: 'action.active' }),
@@ -34,9 +34,6 @@ ListItemIcon.propTypes = {
 	 * or a `@material-ui/icons` SVG icon element.
 	 */
 	children: PropTypes.element.isRequired,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	...stylesPropType,
 };

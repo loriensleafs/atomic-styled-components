@@ -4438,6 +4438,16 @@ deep-is@~0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.3.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
   integrity sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
 
+deepmerge@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-3.0.0.tgz#ca7903b34bfa1f8c2eab6779280775a411bfc6ba"
+  integrity sha512-a8z8bkgHsAML+uHLqmMS83HHlpy3PvZOOuiTQqaa3wu8ZVg3h0hqHk6aCsGdOnZV2XMM/FRimNGjUh0KCcmHBw==
+
+deeps@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/deeps/-/deeps-1.4.5.tgz#bac1b0ccc0a7485a6191fe82778313c181a07862"
+  integrity sha512-sLkOeUZJX5Zj9aILXUWyUn2YLrKDJLgRmm5tZVTmIdh43L/6UknpzaRAFItKg9LMS+3hu6y8QAxEYavBLTzEuQ==
+
 default-require-extensions@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/default-require-extensions/-/default-require-extensions-1.0.0.tgz#f37ea15d3e13ffd9b437d33e1a75b5fb97874cb8"
@@ -5615,6 +5625,11 @@ fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
+
+fastextend@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fastextend/-/fastextend-1.0.0.tgz#a0d8ccc7cbb9df76b2fb6f719c5af0c54d1c7585"
+  integrity sha1-oNjMx8u533ay+29xnFrwxU0cdYU=
 
 fastparse@^1.1.1:
   version "1.1.2"
@@ -6971,6 +6986,11 @@ is-installed-globally@^0.1.0:
   dependencies:
     global-dirs "^0.1.0"
     is-path-inside "^1.0.0"
+
+is-mergeable-object@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-mergeable-object/-/is-mergeable-object-1.1.0.tgz#a846e8cf0e2bad6a8cf8b243b63b4c43b9907990"
+  integrity sha512-JfyDDwUdtS4yHCgUpxOyKB9dnfZ0gecufxB0eytX6BmSXSE+8dbxDGt+V7CNRIRJ9sYFV/WQt2KJG6hNob2sBw==
 
 is-npm@^1.0.0:
   version "1.0.0"
@@ -10320,10 +10340,10 @@ react-scripts@1.1.4:
   optionalDependencies:
     fsevents "^1.1.3"
 
-react-spring@^7.2.4:
-  version "7.2.4"
-  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-7.2.4.tgz#88d2d97f018a3684528dc0cbf7c4511aab15a407"
-  integrity sha512-+h5CXhxpoeA5phIzNFLKjWq8rfViN52SEjGpflwgbGOF7EO9mPyvCUOEx9EcNbf2vOacbwezIYaPtacnJAW6lw==
+react-spring@^7.2.8:
+  version "7.2.8"
+  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-7.2.8.tgz#a1f49653393332bf84431a898993eda2f3212e42"
+  integrity sha512-wgK0eXjWR5yT12kAd0b6CXF73qcoisTJF7vt8qw/IZmeYcPm/GA3zGV5MQ8R2hicbVwc5oV6FGFPSbkAFJ6pdA==
   dependencies:
     "@babel/runtime" "^7.0.0"
 

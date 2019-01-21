@@ -216,31 +216,18 @@ ButtonBase.propTypes = {
 	 * that can be triggered programmatically.
 	 */
 	action: PropTypes.func,
-	/**
-	 * Use that property to pass a ref callback to the native button component.
-	 */
+	// Use that property to pass a ref callback to the native button component.
 	ref: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/**
-	 * If `true`, the ripples will be centered.
-	 * They won't start at the cursor interaction position.
-	 */
+	// If `true`, the ripples will be centered (not at cursor position).
 	centerRipple: PropTypes.bool,
-	/**
-	 * The content of the component.
-	 */
+	// The content of the component.
 	children: PropTypes.node,
 	className: PropTypes.string,
-	/**
-	 * If `true`, the base button will be disabled.
-	 */
+	// If `true`, the base button will be disabled.
 	disabled: PropTypes.bool,
-	/**
-	 * If `true`, the ripple effect will be disabled.
-	 */
+	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
-	/**
-	 * If `true`, the touch ripple effect will be disabled.
-	 */
+	// If `true`, the touch ripple effect will be disabled.
 	disableTouchRipple: PropTypes.bool,
 	/**
 	 * If `true`, the base button will have a keyboard focus ripple.
@@ -265,13 +252,12 @@ ButtonBase.propTypes = {
 	onTouchStart: PropTypes.func,
 	role: PropTypes.string,
 	tabIndex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-	/**
-	 * Properties applied to the `TouchRipple` element.
-	 */
+	// Properties applied to the `TouchRipple` element.
 	RippleProps: PropTypes.object,
 	/**
 	 * Used to control the button's purpose.
-	 * This property passes the value to the `type` attribute of the native button component.
+	 * This property passes the value to the `type` attribute of the native
+	 * button component.
 	 * Valid property values include `button`, `submit`, and `reset`.
 	 */
 	type: PropTypes.string,
@@ -280,8 +266,8 @@ ButtonBase.propTypes = {
 };
 
 ButtonBase.defaultProps = {
+	as: 'button',
 	centerRipple: false,
-	component: 'button',
 	disableRipple: false,
 	disableTouchRipple: false,
 	focusRipple: false,

@@ -1,10 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import useMotion from './../hooks/useMotion';
+import cn from './../system/className';
+import { useIsMounted, useMotion, useSize } from './../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 
-function Collapse(props) {
+const baseStyles = { overflow: 'hidden' };
+
+const Collapse = forwardRef((props, ref) => {
+	ref = ref ? ref : useRef(null);
 	const {
 		appear,
 		as,
@@ -21,40 +25,45 @@ function Collapse(props) {
 		style = {},
 		...passThru
 	} = props;
-	const ref = useRef(null);
-	const [expandTo, setExpandTo] = useState('auto');
-	const [easing, duration] = useMotion(ease, enter, exit, show);
+	const classes = useMemo(() => cn(className, baseStyles), [className]);
 	const Component = animated(as);
+	const isMounted = useIsMounted();
+	const { scrollHeight } = useSize(ref, 'scrollHeight');
+	const [height, setHeight] = useState(show ? 'auto' : collapseTo);
+	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const transition = useSpring({
-		native: true,
 		config: { duration, easing },
-		to: {
-			overflow: 'hidden',
-			height: (appear && !ref.current) || !show ? collapseTo : expandTo,
-		},
-		onStart: () => onStart && onStart(),
+		immediate: !appear && !isMounted,
+		native: true,
+		to: { height },
 		onFrame: val =>
 			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
 		onRest: () => onEnd && onEnd(),
+		onStart: () => onStart && onStart(),
 	});
 
 	useEffect(
-		() => {
-			setExpandTo(() => ref.current.scrollHeight);
-		},
-		[expandTo, show],
+		() =>
+			setHeight(() =>
+				show
+					? height === 'auto'
+						? scrollHeight + 1
+						: scrollHeight
+					: collapseTo,
+			),
+		[scrollHeight, show],
 	);
 
 	return (
 		<Component
 			children={children}
-			className={className}
+			className={classes}
 			ref={ref}
 			style={{ ...style, ...transition }}
 			{...passThru}
 		/>
 	);
-}
+});
 
 Collapse.displayName = 'Collapse';
 
@@ -91,8 +100,8 @@ Collapse.defaultProps = {
 	as: 'div',
 	collapseTo: 0,
 	duration: {
-		enter: 'entering',
-		exit: 'leaving',
+		enter: 'standard',
+		exit: 'standard',
 	},
 	ease: 'inOut',
 };

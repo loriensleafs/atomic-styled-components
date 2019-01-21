@@ -7,6 +7,18 @@ const componentPropType = {
 	as: PropTypes.any,
 };
 
+const durationPropType = PropTypes.oneOf([
+	'shortest',
+	'shorter',
+	'short',
+	'standard',
+	'complex',
+	'entering',
+	'leaving',
+]);
+
+const easingPropType = PropTypes.oneOf(['in', 'inOut', 'out', 'sharp']);
+
 const numOrStrPropType = PropTypes.oneOfType([
 	PropTypes.number,
 	PropTypes.string,
@@ -49,6 +61,8 @@ const responsiveNumOrStrPropType = PropTypes.oneOf([
 export {
 	boolPropType,
 	componentPropType,
+	durationPropType,
+	easingPropType,
 	numOrStrPropType,
 	tagPropType,
 	stylesPropType,

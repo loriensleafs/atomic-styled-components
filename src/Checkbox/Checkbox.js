@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { forwardRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import SelectionControl from './../SelectionControl';
 import CheckBoxIcon from './../svgIcons/CheckBox';
@@ -74,7 +74,7 @@ getStyles.propTypes = {
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
 
-function Checkbox(props) {
+const Checkbox = forwardRef((props, ref) => {
 	const [checked, setChecked] = useState(props.checked || false);
 	const [
 		{ styles },
@@ -105,12 +105,13 @@ function Checkbox(props) {
 			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			icon={indeterminate ? indeterminateIcon : icon}
 			onChange={handleChange}
+			ref={ref}
 			styles={{ buttonStyles: styles }}
 			type="checkbox"
 			{...passThru}
 		/>
 	);
-}
+});
 
 Checkbox.displayName = 'Checkbox';
 
