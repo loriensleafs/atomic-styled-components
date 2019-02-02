@@ -32,7 +32,7 @@ export {
 	getGridColumnGap,
 	getGridRowGap,
 	getGridColumn,
-	getGridRows,
+	getGridRow,
 	getGridAutoFlow,
 	getGridAutoColumns,
 	getGridAutoRows,

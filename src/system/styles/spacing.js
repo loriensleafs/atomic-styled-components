@@ -1,5 +1,5 @@
-import merge from './../../utils/merge';
-import { theme } from './../../theme';
+import merge from '../../utils/merge';
+import { theme } from '../../theme';
 import {
 	getKeys,
 	is,
@@ -8,8 +8,8 @@ import {
 	isNum,
 	isPartial,
 	toPx,
-} from './../../utils/helpers';
-import { responsivePropType } from './../../utils/propTypes';
+} from '../../utils/helpers';
+import { responsivePropType } from '../../utils/propTypes';
 
 const cloneFunc = fn => (...args) => fn(...args);
 const REG = /^[mp][trblxy]?$/;

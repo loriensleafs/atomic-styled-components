@@ -8,17 +8,17 @@ import React, {
 } from 'react';
 import { createPortal, findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
-import Backdrop from './../Backdrop';
+import Backdrop from '../Backdrop';
 import isWindow from 'dom-helpers/query/isWindow';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 import css from 'dom-helpers/style';
 import keycode from 'keycode';
 import useModals from './useModals';
-import ownerDocument from './../utils/ownerDocument';
+import ownerDocument from '../utils/ownerDocument';
 import ownerWindow from '../utils/ownerWindow';
-import useStyles from './../system/useStyles';
-import { useIsMounted, usePrevious, useWillUnmount } from './../hooks';
-import { getKeys, isFn } from './../utils/helpers';
+import useStyles from '../system/useStyles';
+import { useIsMounted, usePrevious, useWillUnmount } from '../hooks';
+import { getKeys, isFn } from '../utils/helpers';
 
 function getContainer(container) {
 	container = isFn(container)

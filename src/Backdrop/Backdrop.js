@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../system/useStyles';
-import Fade from './../Fade';
-import { stylesPropType } from './../utils/propTypes';
+import useStyles from '../system/useStyles';
+import Fade from '../Fade';
+import { stylesPropType } from '../utils/propTypes';
 
 function getStyles({ invisible }) {
 	return {

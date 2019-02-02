@@ -99,7 +99,7 @@ function radioReducer(state, selected) {
 		case true:
 			return { ...state, [selected]: true };
 		default:
-			state;
+			return state;
 	}
 }
 const RadioButtons = () => {

@@ -10,11 +10,11 @@ const baseStyles = {
 	objectFit: 'cover',
 };
 
-function AvatarImage({ styles: stylesProp = {}, ...props }) {
+function AvatarImage({ alt, styles: stylesProp = {}, ...props }) {
 	const styles = useMemo(() => merge(baseStyles, stylesProp), [stylesProp]);
 	const className = useMemo(() => cn(styles), [styles]);
 
-	return <img className={className} {...props} />;
+	return <img alt={alt} className={className} {...props} />;
 }
 
 AvatarImage.displayName = 'AvatarImage';

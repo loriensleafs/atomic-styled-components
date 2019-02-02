@@ -133,8 +133,6 @@ SelectionControl.propTypes = {
 	indeterminate: PropTypes.bool,
 	// The icon to display when the component is indeterminate.
 	indeterminateIcon: PropTypes.node,
-	// Attributes applied to the `input` element.
-	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	name: PropTypes.string,

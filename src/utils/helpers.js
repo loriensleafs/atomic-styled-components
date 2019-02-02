@@ -17,7 +17,7 @@ const isNum = n => typeof n === 'number';
 
 const isObj = n => !isNil(n) && !isArr(n) && typeof n === 'object';
 
-const isPartial = n => n % 1 == 0.5;
+const isPartial = n => n % 1 === 0.5;
 
 const isStr = n => typeof n === 'string';
 

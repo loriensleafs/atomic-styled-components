@@ -1,5 +1,5 @@
-import merge from './../utils/merge';
-import { addLightOrDark, getContrastRatio } from './../utils/colorHelpers';
+import merge from '../utils/merge';
+import { addLightOrDark, getContrastRatio } from '../utils/colorHelpers';
 
 export const greys = [
 	'#ffffff',

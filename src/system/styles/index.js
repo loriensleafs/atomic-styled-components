@@ -5,13 +5,13 @@ export {
 	getBorderSize,
 } from './borders';
 
-export {default as getBox} from './box';
+export { default as getBox } from './box';
 
-export {default as getColors, getBg, getColor} from './colors';
+export { default as getColors, getBg, getColor } from './colors';
 
-export {default as getDisplay} from './display';
+export { default as getDisplay } from './display';
 
-export {default as getElevation} from './elevation';
+export { default as getElevation } from './elevation';
 
 export {
 	default as getFlexbox,
@@ -37,7 +37,7 @@ export {
 	getGridColumnGap,
 	getGridRowGap,
 	getGridColumn,
-	getGridRows,
+	getGridRow,
 	getGridAutoFlow,
 	getGridAutoColumns,
 	getGridAutoRows,
@@ -47,15 +47,15 @@ export {
 	getGridArea,
 } from './grid';
 
-export {default as getOpacity} from './opacity';
+export { default as getOpacity } from './opacity';
 
 export {
-	default as getPosition,
+	default as getPositions,
 	getTop,
 	getRight,
 	getBottom,
 	getLeft,
-	getPositionType,
+	getPosition,
 	getZIndex,
 } from './positions';
 
@@ -71,7 +71,7 @@ export {
 	getWidth,
 } from './sizing';
 
-export {default as getSpacing} from './spacing';
+export { default as getSpacing } from './spacing';
 
 export {
 	default as getText,

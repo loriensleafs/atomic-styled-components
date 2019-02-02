@@ -8,12 +8,12 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
-import Ripples, { useRippleManager } from './../Ripples';
-import usePrevious from './../hooks/usePrevious';
-import cn from './../system/className';
-import merge from './../utils/merge';
-import { isFn } from './../utils/helpers';
-import { componentPropType, stylesPropType } from './../utils/propTypes';
+import Ripples, { useRippleManager } from '../Ripples';
+import usePrevious from '../hooks/usePrevious';
+import cn from '../system/className';
+import merge from '../utils/merge';
+import { isFn } from '../utils/helpers';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 function getStyles(props) {
 	const { className, styles: stylesProp } = props;

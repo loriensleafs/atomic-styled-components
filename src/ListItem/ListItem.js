@@ -7,10 +7,10 @@ import React, {
 	useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import ButtonBase from './../ButtonBase';
-import ListContext from './../List/ListContext';
-import { getBg, getSpacing, useStyles } from './../system';
-import { componentPropType, stylesPropType } from './../utils/propTypes';
+import ButtonBase from '../ButtonBase';
+import ListContext from '../List/ListContext';
+import { getBg, getSpacing, useStyles } from '../system';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 function checkForAvatar(props) {
 	return Children.toArray(props.children).some(

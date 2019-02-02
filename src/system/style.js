@@ -53,9 +53,9 @@ function style(options) {
 		return styles;
 	}
 	fn.propTypes = {
-		[prop]: cloneFunc(propTypes.responsive),
+		responsive: cloneFunc(propTypes.responsive),
 	};
-	fn.propTypes[prop].meta = {
+	fn.propTypes.meta = {
 		prop,
 		themeKey,
 		styleType: 'responsive',

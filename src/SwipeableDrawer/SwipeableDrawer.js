@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import Drawer from './../Drawer';
 import SwipeArea from './SwipeArea';
 import ThemeContext from './../theme/ThemeContext';
-import nanoid from 'nanoid';
 import {
 	useDidMount,
 	useDidUpdate,
@@ -71,7 +70,6 @@ function SwipeableDrawer(props) {
 	const previousVariant = usePrevious(variant);
 	const { theme } = useContext(ThemeContext);
 	const [maybeSwiping, setMaybeSwiping] = useState(false);
-	const { current: id } = useRef(nanoid());
 	const backdropRef = useRef();
 	const paperRef = useRef();
 	const isSwiping = useRef();
@@ -143,10 +141,7 @@ function SwipeableDrawer(props) {
 
 	const handleBodyTouchStart = useCallback(event => {
 		// We are not supposed to handle this touch move.
-		if (
-			nodeThatClaimedTheSwipe !== null &&
-			nodeThatClaimedTheSwipe !== id
-		) {
+		if (nodeThatClaimedTheSwipe !== null) {
 			return;
 		}
 
