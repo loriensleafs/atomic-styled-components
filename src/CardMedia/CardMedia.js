@@ -12,7 +12,9 @@ function getBaseStyles({ isMedia }) {
 		backgroundSize: 'cover',
 		backgroundRepeat: 'no-repeat',
 		backgroundPosition: 'center',
-		...getSizing({ w: isMedia ? 1 : null }),
+		...getSizing({
+			w: isMedia ? 1 : null,
+		}),
 	};
 }
 
@@ -27,7 +29,7 @@ function CardMedia(props) {
 	const isMedia = MEDIA_COMPONENTS.indexOf(props.component) !== -1;
 	const [
 		{ classes },
-		{ className, as: Component, image, src, style, ...passThru },
+		{ as: Component, className, image, src, style, ...passThru },
 	] = useStyles({ ...props, isMedia }, getStyles);
 
 	return (
@@ -47,9 +49,6 @@ function CardMedia(props) {
 CardMedia.displayName = 'CardMedia';
 
 CardMedia.propTypes = {
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	/**
 	 * Image to be displayed as a background image.
@@ -63,9 +62,6 @@ CardMedia.propTypes = {
 	 * Media components: `video`, `audio`, `picture`, `iframe`, `img`.
 	 */
 	src: PropTypes.string,
-	/**
-	 * @ignore
-	 */
 	style: PropTypes.object,
 	...componentPropType,
 	...stylesPropType,

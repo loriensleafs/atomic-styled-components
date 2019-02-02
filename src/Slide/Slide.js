@@ -14,10 +14,12 @@ const Slide = forwardRef((props, ref) => {
 		direction,
 		duration: { enter, exit },
 		ease,
-		onEnd,
-		onStart,
+		onEnter,
 		onEntering,
+		onEntered,
+		onExit,
 		onExiting,
+		onExited,
 		show,
 		style = {},
 		...passThru
@@ -42,20 +44,37 @@ const Slide = forwardRef((props, ref) => {
 					? 'visible'
 					: 'hidden',
 		},
-		onStart: () => onStart && onStart(),
-		onFrame: val =>
-			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
-		onRest: () => onEnd && onEnd(),
-	});
-
-	useEffect(
-		() => {
-			if (isMounted && !isMeasured) {
-				setIsMeasured(() => true);
+		onStart: () => {
+			if (show && onEnter) {
+				onEnter();
+			}
+			if (!show && onExit) {
+				onExit();
 			}
 		},
-		[isMeasured, isMounted],
-	);
+		onFrame: val => {
+			if (show && onEntering) {
+				onEntering(val);
+			}
+			if (!show && onExiting) {
+				onExiting(val);
+			}
+		},
+		onRest: () => {
+			if (show && onEntered) {
+				onEntered();
+			}
+			if (!show && onExited) {
+				onExited();
+			}
+		},
+	});
+
+	useEffect(() => {
+		if (isMounted && !isMeasured) {
+			setIsMeasured(() => true);
+		}
+	}, [isMeasured, isMounted]);
 
 	return (
 		<Component
@@ -86,14 +105,18 @@ Slide.propTypes = {
 	}),
 	// The easing type the animation should use.
 	ease: PropTypes.string,
-	// Callback that is triggered at the end of the animation.
-	onEnd: PropTypes.func,
-	// Callback that is triggered at the start of the animation.
-	onStart: PropTypes.func,
+	// Callback that is triggered when enter animation starts.
+	onEnter: PropTypes.func,
 	// Callback that is triggered while the animation is entering.
 	onEntering: PropTypes.func,
+	// Callback that is triggered at the start of the animation.
+	onEntered: PropTypes.func,
+	// Callback that is trigged when exit animation starts.
+	onExit: PropTypes.func,
 	// Callback that is triggered while the animation is exiting.
 	onExiting: PropTypes.func,
+	// Callback that is triggered at the end of the animation.
+	onExited: PropTypes.func,
 	// Inline styles to apply to the animated wrapper.
 	style: PropTypes.object,
 	...componentPropType,

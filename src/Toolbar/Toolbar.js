@@ -13,27 +13,19 @@ function getGutterStyles({ disableGutters }) {
 function getVariantStyles({ variant }) {
 	switch (variant) {
 		case 'dense':
-			return getHeight({
-				hMin: 48,
-			});
+			return getHeight({ hMin: 48 });
 
 		default:
 			// 'regular'
-			return getHeight({
-				hMin: [48, 56, 64],
-			});
+			return getHeight({ hMin: [48, 56, 64] });
 	}
 }
 
 const getStyles = combine(getVariantStyles, getGutterStyles);
 getStyles.propTypes = {
-	/**
-	 * If `true`, disables gutter padding.
-	 */
+	// If `true`, disables gutter padding.
 	disableGutters: PropTypes.bool,
-	/**
-	 * The variant to use.
-	 */
+	// The variant to use.
 	variant: PropTypes.oneOf(['regular', 'dense']),
 };
 
@@ -60,13 +52,8 @@ function Toolbar(props) {
 Toolbar.displayName = 'Toolbar';
 
 Toolbar.propTypes = {
-	/**
-	 * Toolbar children, usually a mixture of `IconButton`, `Button` and `Typography`.
-	 */
+	// Children, usually a mixture of `IconButton`, `Button` and `Typography`.
 	children: PropTypes.node,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	...stylesPropType,
 	...getStyles.propTypes,

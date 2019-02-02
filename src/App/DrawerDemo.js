@@ -224,7 +224,7 @@ const TemporaryDrawer = () => {
 						Open Left
 					</Button>
 				</Flex>
-				<Drawer anchor="top" open={top} onClose={handleClose('top')}>
+				<Drawer anchor="top" isOpen={top} onClose={handleClose('top')}>
 					<div
 						tabIndex={0}
 						role="button"
@@ -236,7 +236,7 @@ const TemporaryDrawer = () => {
 				</Drawer>
 				<Drawer
 					anchor="right"
-					open={right}
+					isOpen={right}
 					onClose={handleClose('right')}
 				>
 					<div
@@ -250,7 +250,7 @@ const TemporaryDrawer = () => {
 				</Drawer>
 				<Drawer
 					anchor="bottom"
-					open={bottom}
+					isOpen={bottom}
 					onClose={handleClose('bottom')}
 				>
 					<div
@@ -262,7 +262,11 @@ const TemporaryDrawer = () => {
 						<FullList />
 					</div>
 				</Drawer>
-				<Drawer anchor="left" open={left} onClose={handleClose('left')}>
+				<Drawer
+					anchor="left"
+					isOpen={left}
+					onClose={handleClose('left')}
+				>
 					<div
 						tabIndex={0}
 						role="button"
@@ -346,7 +350,7 @@ const SwipeableTemporaryDrawer = () => {
 				</Flex>
 				<SwipeableDrawer
 					anchor="top"
-					open={top}
+					isOpen={top}
 					onClose={handleClose('top')}
 				>
 					<div
@@ -360,7 +364,7 @@ const SwipeableTemporaryDrawer = () => {
 				</SwipeableDrawer>
 				<SwipeableDrawer
 					anchor="right"
-					open={right}
+					isOpen={right}
 					onClose={handleClose('right')}
 				>
 					<div
@@ -374,7 +378,7 @@ const SwipeableTemporaryDrawer = () => {
 				</SwipeableDrawer>
 				<SwipeableDrawer
 					anchor="bottom"
-					open={bottom}
+					isOpen={bottom}
 					onClose={handleClose('bottom')}
 				>
 					<div
@@ -388,7 +392,7 @@ const SwipeableTemporaryDrawer = () => {
 				</SwipeableDrawer>
 				<SwipeableDrawer
 					anchor="left"
-					open={left}
+					isOpen={left}
 					onClose={handleClose('left')}
 				>
 					<div
@@ -465,7 +469,7 @@ const MainContent = () => (
 );
 
 const ResponsiveDrawer = () => {
-	const [open, setOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef();
 	const paperStyles = merge(
 		getWidth({
@@ -474,9 +478,9 @@ const ResponsiveDrawer = () => {
 		getSpacing({ ml: [0, 250] }),
 	);
 
-	const handleToggle = useCallback(() => setOpen(state => !state), []);
+	const handleToggle = useCallback(() => setIsOpen(state => !state), []);
 
-	const handleClose = useCallback(() => setOpen(() => false), []);
+	const handleClose = useCallback(() => setIsOpen(() => false), []);
 
 	return (
 		<Fragment>
@@ -518,7 +522,7 @@ const ResponsiveDrawer = () => {
 							</Toolbar>
 						</AppBar>
 						<Drawer
-							open={open}
+							isOpen={isOpen}
 							onClose={handleClose}
 							ModalProps={{
 								keepMounted: true,
@@ -529,7 +533,7 @@ const ResponsiveDrawer = () => {
 						</Drawer>
 						<Box as="nav" w={[null, 250]}>
 							<Box display={['none', 'block']}>
-								<Drawer variant="permanent" open>
+								<Drawer variant="permanent" isOpen>
 									<Box px={[3, 3.5]} hMin={[48, 56, 64]} />
 									<Divider />
 									<SideList />
@@ -548,21 +552,21 @@ const ResponsiveDrawer = () => {
 
 function getPersistentStyles(props) {
 	const {
-		open,
+		isOpen,
 		theme: { getTransition },
 	} = props;
 
 	return {
 		paper: {
 			...getWidth({
-				w: open ? 'calc(100% - 250px)' : 1,
+				w: isOpen ? 'calc(100% - 250px)' : 1,
 			}),
 			...getSpacing({
-				ml: open ? 250 : 0,
+				ml: isOpen ? 250 : 0,
 			}),
 			transition: getTransition(
 				['margin', 'width'],
-				open ? 'entering' : 'leaving',
+				isOpen ? 'entering' : 'leaving',
 				'sharp',
 			),
 		},
@@ -570,14 +574,14 @@ function getPersistentStyles(props) {
 			flexGrow: 1,
 			transition: getTransition(
 				'margin',
-				open ? 'entering' : 'leaving',
+				isOpen ? 'entering' : 'leaving',
 				'sharp',
 			),
 			...getBg({
 				bg: 'bg.default',
 			}),
 			...getSpacing({
-				ml: open ? 250 : 0,
+				ml: isOpen ? 250 : 0,
 				p: 3.5,
 			}),
 		},
@@ -589,12 +593,12 @@ getPersistentStyles.propTypes = {
 
 const PersistentDrawer = () => {
 	const containerRef = useRef();
-	const [open, setOpen] = useState(true);
-	const [{ styles, classes }] = useStyles({ open }, getPersistentStyles);
+	const [isOpen, setIsOpen] = useState(true);
+	const [{ styles, classes }] = useStyles({ isOpen }, getPersistentStyles);
 
-	const handleToggle = useCallback(() => setOpen(state => !state), []);
+	const handleToggle = useCallback(() => setIsOpen(state => !state), []);
 
-	const handleClose = useCallback(() => setOpen(() => false), []);
+	const handleClose = useCallback(() => setIsOpen(() => false), []);
 
 	return (
 		<Fragment>
@@ -627,11 +631,11 @@ const PersistentDrawer = () => {
 						}}
 					>
 						<AppBar position="fixed" styles={styles.paper}>
-							<Toolbar disableGutters={!open}>
+							<Toolbar disableGutters={!isOpen}>
 								<Box
 									ml={2.5}
 									mr={3.5}
-									display={open ? 'none' : 'block'}
+									display={isOpen ? 'none' : 'block'}
 								>
 									<IconButton
 										color="inherit"
@@ -650,7 +654,7 @@ const PersistentDrawer = () => {
 								</Typography>
 							</Toolbar>
 						</AppBar>
-						<Drawer open={open} variant="persistent">
+						<Drawer isOpen={isOpen} variant="persistent">
 							<Flex
 								hMin={[48, 56, 64]}
 								alignItems="center"
@@ -677,12 +681,12 @@ const PersistentDrawer = () => {
 };
 
 const PersistentMiniVariant = () => {
-	const [open, setOpen] = useState(true);
-	const [{ styles, classes }] = useStyles({ open }, getPersistentStyles);
+	const [isOpen, setIsOpen] = useState(true);
+	const [{ styles, classes }] = useStyles({ isOpen }, getPersistentStyles);
 
-	const handleToggle = useCallback(() => setOpen(state => !state), []);
+	const handleToggle = useCallback(() => setIsOpen(state => !state), []);
 
-	const handleClose = useCallback(() => setOpen(() => false), []);
+	const handleClose = useCallback(() => setIsOpen(() => false), []);
 
 	return (
 		<Fragment>
@@ -706,11 +710,11 @@ const PersistentMiniVariant = () => {
 						}}
 					>
 						<AppBar position="fixed" styles={styles.paper}>
-							<Toolbar disableGutters={!open}>
+							<Toolbar disableGutters={!isOpen}>
 								<Box
 									ml={2.5}
 									mr={3.5}
-									display={open ? 'none' : 'block'}
+									display={isOpen ? 'none' : 'block'}
 								>
 									<IconButton
 										color="inherit"
@@ -729,7 +733,7 @@ const PersistentMiniVariant = () => {
 								</Typography>
 							</Toolbar>
 						</AppBar>
-						<Drawer variant="permanent" open={open}>
+						<Drawer variant="permanent" isOpen={isOpen}>
 							<Flex
 								hMin={[48, 56, 64]}
 								alignItems="center"

@@ -60,8 +60,8 @@ function Modal(props) {
 	const modalRef = useRef(null);
 	// The component children, rendered in modalRef.
 	const dialogRef = useRef(null);
-	const [hasExited, setHasExited] = useState(!props.open);
-	const prevOpen = usePrevious(props.open);
+	const [hasExited, setHasExited] = useState(!props.isOpen);
+	const prevIsOpen = usePrevious(props.isOpen);
 	const isExiting = useRef(false);
 	const isMounted = useIsMounted();
 	const lastFocus = useRef();
@@ -85,20 +85,20 @@ function Modal(props) {
 			disablePortal,
 			disableRestoreFocus,
 			hideBackdrop,
+			isOpen,
 			keepMounted,
 			onBackdropClick,
 			onClose,
 			onEscapeKeyDown,
-			onRendered,
-			open,
-
 			...passThru
 		},
 	] = useStyles({ ...props, hasExited }, getStyles);
 
 	const handleBackdropClick = useCallback(event => {
 		if (event.target === event.currentTarget) {
-			if (onBackdropClick) onBackdropClick(event);
+			if (onBackdropClick) {
+				onBackdropClick(event);
+			}
 			if (!disableBackdropClick && onClose) {
 				onClose(event, 'backdropClick');
 			}
@@ -111,14 +111,16 @@ function Modal(props) {
 			isTopModal.current &&
 			!event.defaultPrevented
 		) {
-			if (onEscapeKeyDown) onEscapeKeyDown(event);
+			if (onEscapeKeyDown) {
+				onEscapeKeyDown(event);
+			}
 			if (!disableEscapeKeyDown && onClose) {
 				onClose(event, 'escapeKeyDown');
 			}
 		}
 	}, []);
 
-	const handleFocus = useCallback(event => {
+	const handleFocus = useCallback(() => {
 		const container = containerRef.current;
 		const dialog = dialogRef.current;
 
@@ -149,87 +151,82 @@ function Modal(props) {
 		}
 	}, []);
 
-	useEffect(
-		() => {
-			const container = containerRef.current;
-			const dialog = dialogRef.current;
-			const modal = modalRef.current;
-			const doc = ownerDocument(container);
+	useEffect(() => {
+		const container = containerRef.current;
+		const dialog = dialogRef.current;
+		const modal = modalRef.current;
+		const doc = ownerDocument(container);
 
-			if (!prevOpen && open) {
-				addModal();
-				setHasExited(() => false);
-				lastFocus.current = doc.activeElement;
+		if (!prevIsOpen && isOpen) {
+			addModal();
+			setHasExited(() => false);
+			lastFocus.current = doc.activeElement;
 
-				doc.addEventListener('keydown', handleDocumentKeyDown);
-				doc.addEventListener('focus', handleFocus, true);
+			doc.addEventListener('keydown', handleDocumentKeyDown);
+			doc.addEventListener('focus', handleFocus, true);
 
-				if (container && modal) {
-					modal.scrollTop = 0;
+			if (container && modal) {
+				modal.scrollTop = 0;
 
-					if (isTopModal.current) {
-						modal.removeAttribute('aria-hidden');
-					}
-
-					if (dialog && !dialog.contains(doc.activeElement)) {
-						if (
-							(!disableAutoFocus || !dialog) &&
-							!dialog.hasAttribute('tabIndex')
-						) {
-							dialog.setAttribute('tabIndex', -1);
-							dialog.focus();
-						}
-
-						lastFocus.current = doc.activeElement;
+				if (isTopModal.current) {
+					modal.removeAttribute('aria-hidden');
+				}
+				if (dialog && !dialog.contains(doc.activeElement)) {
+					if (
+						(!disableAutoFocus || !dialog) &&
+						!dialog.hasAttribute('tabIndex')
+					) {
+						dialog.setAttribute('tabIndex', -1);
 						dialog.focus();
 					}
-				}
-			} else if (!open) {
-				if (!isTopModal.current && modal) {
-					modal.setAttribute('aria-hidden', true);
-				}
 
-				if (prevOpen) {
-					if (!hasTransition) {
-						setHasExited(() => true);
-					}
-
-					if (hasTransition) {
-						isExiting.current = true;
-					}
-
-					handleClose();
+					lastFocus.current = doc.activeElement;
+					dialog.focus();
 				}
 			}
-		},
-		[hasExited, open],
-	);
+		} else if (!isOpen) {
+			if (!isTopModal.current && modal) {
+				modal.setAttribute('aria-hidden', true);
+			}
+			if (prevIsOpen) {
+				if (!hasTransition) {
+					setHasExited(() => true);
+				}
+				if (hasTransition) {
+					isExiting.current = true;
+				}
+				handleClose();
+			}
+		}
+	}, [hasExited, isOpen]);
 
 	useWillUnmount(() => {
-		if (open || (hasTransition && !hasExited)) {
+		if (isOpen || (hasTransition && !hasExited)) {
 			handleClose();
 		}
 	});
 
-	if (!keepMounted && !open && (!hasTransition || hasExited)) {
+	if (!keepMounted && !isOpen && (!hasTransition || hasExited)) {
 		return null;
 	}
 
 	const childProps = {};
 	if (hasTransition) {
-		childProps.onEnd = () => {
-			if (!open && isExiting.current) {
+		childProps.onExited = () => {
+			if (!isOpen && isExiting.current) {
 				isExiting.current = false;
 				setHasExited(() => true);
 			}
 		};
 	}
+
 	// For accessibility.
 	// Adding document role && tabIndex=0 enables focus, keyboard and
 	// form controls in this node's context.
 	if (children.props.role === undefined) {
 		childProps.role = children.props.role || 'document';
 	}
+
 	// For accessibility.
 	// Setting tabIndex to 0 in conjunction with document role
 	// allows screen readers to tab into the children contents
@@ -242,7 +239,7 @@ function Modal(props) {
 		<div ref={modalRef} className={classes} {...passThru}>
 			{hideBackdrop ? null : (
 				<BackdropComponent
-					open={open}
+					isOpen={isOpen}
 					onClick={handleBackdropClick}
 					{...BackdropProps}
 				/>
@@ -255,7 +252,9 @@ function Modal(props) {
 		</div>
 	);
 
-	if (disablePortal) return ModalComponent;
+	if (disablePortal) {
+		return ModalComponent;
+	}
 
 	return createPortal(ModalComponent, containerRef.current);
 }
@@ -319,6 +318,8 @@ Modal.propTypes = {
 	 * This property can be useful in SEO situation or
 	 * when you want to maximize the responsiveness of the Modal.
 	 */
+	// If `true`, the modal is open.
+	isOpen: PropTypes.bool.isRequired,
 	keepMounted: PropTypes.bool,
 	// Callback fired when the backdrop is clicked.
 	onBackdropClick: PropTypes.func,
@@ -336,13 +337,6 @@ Modal.propTypes = {
 	 * `disableEscapeKeyDown` is false and the modal is in focus.
 	 */
 	onEscapeKeyDown: PropTypes.func,
-	/**
-	 * Callback fired once the children has been isMounted into the `container`.
-	 * It signals that the `open={true}` property took effect.
-	 */
-	onRendered: PropTypes.func,
-	// If `true`, the modal is open.
-	open: PropTypes.bool.isRequired,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 

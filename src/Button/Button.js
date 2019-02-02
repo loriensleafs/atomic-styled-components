@@ -21,9 +21,9 @@ import { componentPropType, stylesPropType } from './../utils/propTypes';
 const FONT_SIZE_SHIFT = 0.0625;
 
 function getSizeStyles(props) {
-	const { fullWidth, mini, size } = props;
-	const { fontSizes } = props.theme.typography;
-	const w = mini ? 40 : fullWidth ? 1 : null;
+	const { isFullWidth, mini, size, theme } = props;
+	const { fontSizes } = theme.typography;
+	const w = mini ? 40 : isFullWidth ? 1 : null;
 	const h = mini ? 40 : null;
 	const text = {
 		fontFamily: 'ui',
@@ -56,11 +56,14 @@ function getSizeStyles(props) {
 }
 
 function getVariantStyles(props) {
-	const { color, variant, theme } = props;
-	const { action, grey, text, type, ...palette } = theme.palette;
+	const {
+		color,
+		variant,
+		theme: { palette, shape },
+	} = props;
 	const isBrand = color === 'primary' || color === 'secondary';
 	const isDefault = color === 'default';
-	const isLight = type === 'light';
+	const isLight = palette.type === 'light';
 
 	switch (variant) {
 		case 'outlined':
@@ -74,20 +77,25 @@ function getVariantStyles(props) {
 				}),
 				border: isBrand
 					? `1px solid ${fade(palette[color].main, 0.5)}`
-					: `1px solid ${fade(grey[isLight ? 'main' : 'dark'], 0.5)}`,
-				borderRadius: theme.shape.borderRadius.round,
+					: `1px solid ${fade(
+							palette.grey[isLight ? 'main' : 'dark'],
+							0.5,
+					  )}`,
+				borderRadius: shape.borderRadius.round,
 				':hover': {
 					backgroundColor: fade(
-						isBrand ? palette[color].main : text.primary,
-						action.hoverOpacity,
+						isBrand ? palette[color].main : palette.text.primary,
+						palette.action.hoverOpacity,
 					),
 					border: isBrand
 						? `1px solid ${palette[color].main}`
-						: `1px solid ${grey[isLight ? 'main' : 'dark']}`,
+						: `1px solid ${
+								palette.grey[isLight ? 'main' : 'dark']
+						  }`,
 				},
 				':disabled': {
 					...getColor({ color: 'action.disabled' }),
-					border: `1px solid ${action.disabled}`,
+					border: `1px solid ${palette.action.disabled}`,
 				},
 			};
 
@@ -98,7 +106,7 @@ function getVariantStyles(props) {
 					color: isBrand ? `${color}.contrastText` : 'text.primary',
 				}),
 				...getElevation({ elevation: 2 }),
-				borderRadius: theme.shape.borderRadius.round,
+				borderRadius: shape.borderRadius.round,
 				':active': getElevation({ elevation: 8 }),
 				':hover': getBg({
 					bg: isBrand ? `${color}.dark` : 'grey.light',
@@ -139,11 +147,11 @@ function getVariantStyles(props) {
 						: 'inherit',
 				}),
 				...getSpacing({ py: 1.5, px: 2 }),
-				borderRadius: theme.shape.borderRadius.round,
+				borderRadius: shape.borderRadius.round,
 				':hover': {
 					backgroundColor: fade(
-						isBrand ? palette[color].main : text.primary,
-						action.hoverOpacity,
+						isBrand ? palette[color].main : palette.text.primary,
+						palette.action.hoverOpacity,
 					),
 				},
 				':disabled': getColor({ color: 'action.disabled' }),
@@ -163,7 +171,7 @@ function getStyles(props) {
 				textTransform: 'uppercase',
 				transition: getTransition(
 					['background-color', 'color', 'box-shadow', 'border'],
-					'short',
+					{ duration: 'short' },
 				),
 				':hover': {
 					textDecoration: 'none',
@@ -180,7 +188,7 @@ function getStyles(props) {
 }
 getStyles.propTypes = {
 	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
-	fullWidth: PropTypes.bool,
+	isFullWidth: PropTypes.bool,
 	mini: PropTypes.bool,
 	size: PropTypes.oneOf(['small', 'medium', 'large']),
 	variant: PropTypes.oneOf([
@@ -196,7 +204,7 @@ const Button = React.forwardRef((props, ref) => {
 	const [
 		{ styles, classes },
 		{ children, disableFocusRipple, ...passThru },
-	] = useStyles(props, getStyles, { whitelist: ['disabled'] });
+	] = useStyles(props, getStyles, { whitelist: ['isDisabled'] });
 
 	return (
 		<ButtonBase
@@ -216,9 +224,9 @@ Button.propTypes = {
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
 	classes: PropTypes.object,
-	disabled: PropTypes.bool,
 	disableFocusRipple: PropTypes.bool,
 	disableRipple: PropTypes.bool,
+	isDisabled: PropTypes.bool,
 	href: PropTypes.string,
 	type: PropTypes.string,
 	...componentPropType,
@@ -229,9 +237,9 @@ Button.propTypes = {
 Button.defaultProps = {
 	as: 'button',
 	color: 'default',
-	disabled: false,
 	disableFocusRipple: false,
-	fullWidth: false,
+	isDisabled: false,
+	isFullWidth: false,
 	mini: false,
 	size: 'medium',
 	type: 'button',

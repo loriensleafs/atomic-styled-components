@@ -25,17 +25,11 @@ AvatarImage.propTypes = {
 	 * provide an alt attribute for the rendered `img` element.
 	 */
 	alt: PropTypes.bool,
-	/**
-	 * The `sizes` attribute for the `img` element.
-	 */
+	// The `sizes` attribute for the `img` element.
 	sizes: PropTypes.string,
-	/**
-	 * The `src` attribute for the `img` element.
-	 */
+	// The `src` attribute for the `img` element.
 	src: PropTypes.string,
-	/**
-	 * The `srcSet` attribute for the `img` element.
-	 */
+	// The `srcSet` attribute for the `img` element.
 	srcSet: PropTypes.string,
 };
 

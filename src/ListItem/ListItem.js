@@ -1,6 +1,5 @@
 import React, {
 	Children,
-	forwardRef,
 	isValidElement,
 	useCallback,
 	useContext,
@@ -40,7 +39,9 @@ function getButtonStyles(props) {
 
 	return (
 		button && {
-			transition: getTransition('background-color', 'shortest'),
+			transition: getTransition('background-color', {
+				duration: 'shortest',
+			}),
 			':hover': {
 				...getBg({ bg: 'action.hover' }),
 				textDecoration: 'none',
@@ -57,9 +58,9 @@ function getFocusVisibleStyles({ isFocused }) {
 	return isFocused ? getBg({ bg: 'action.hover' }) : null;
 }
 
-function getSelectedStyles({ selected }) {
+function getSelectedStyles({ isSelected }) {
 	return (
-		selected && {
+		isSelected && {
 			...getBg({ bg: 'action.selected' }),
 			':hover': getBg({ bg: 'action.selected' }),
 		}
@@ -109,10 +110,10 @@ getStyles.propTypes = {
 	dense: PropTypes.bool,
 	disableGutters: PropTypes.bool,
 	isFocused: PropTypes.bool,
+	// Use to apply selected styling.
+	isSelected: PropTypes.bool,
 	hasAvatar: PropTypes.bool,
 	hasSecondaryAction: PropTypes.bool,
-	// Use to apply selected styling.
-	selected: PropTypes.bool,
 	...getSpacing.propTypes,
 };
 
@@ -151,7 +152,7 @@ function ListItem(props) {
 		},
 		getStyles,
 	);
-	const componentProps = {
+	let componentProps = {
 		...passThru,
 		as: as,
 	};
@@ -159,16 +160,13 @@ function ListItem(props) {
 
 	if (button) {
 		Component = ButtonBase;
-		componentProps.as = as || 'div';
-		componentProps.styles = styles.root;
-		componentProps.onBlur = useCallback(
-			() => setIsFocused(() => false),
-			[],
-		);
-		componentProps.onFocusVisible = useCallback(
-			() => setIsFocused(() => true),
-			[],
-		);
+		componentProps = {
+			...componentProps,
+			as: as || 'div',
+			styles: styles.root,
+			onBlur: useCallback(() => setIsFocused(() => false), []),
+			onFocusVisible: useCallback(() => setIsFocused(() => true), []),
+		};
 	} else {
 		componentProps.className = classes.root;
 	}
@@ -235,7 +233,7 @@ ListItem.defaultProps = {
 	disabled: false,
 	disableGutters: false,
 	divider: false,
-	selected: false,
+	isSelected: false,
 };
 
 export default ListItem;

@@ -4,8 +4,7 @@ import useStyles from './../system/useStyles';
 import Fade from './../Fade';
 import { stylesPropType } from './../utils/propTypes';
 
-function getStyles(props) {
-	const { invisible } = props;
+function getStyles({ invisible }) {
 	return {
 		position: 'fixed',
 		right: 0,
@@ -24,14 +23,16 @@ getStyles.propTypes = {
 	// It can be used when rendering a popover or a custom select component.
 	invisible: PropTypes.bool,
 	// If `true`, the backdrop is open.
-	open: PropTypes.bool.isRequired,
+	isOpen: PropTypes.bool.isRequired,
 };
 
 function Backdrop(props) {
-	const [{ classes }, { className, open, ...passThru }] = useStyles(
+	const [{ classes }, { className, isOpen, ...passThru }] = useStyles(
 		props,
 		getStyles,
-		{ whitelist: ['open'] },
+		{
+			whitelist: ['isOpen'],
+		},
 	);
 
 	return (
@@ -44,7 +45,7 @@ function Backdrop(props) {
 				enter: 'short',
 				exit: 'shorter',
 			}}
-			show={open}
+			show={isOpen}
 			{...passThru}
 		/>
 	);

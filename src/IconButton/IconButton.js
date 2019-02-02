@@ -9,7 +9,7 @@ import { stylesPropType } from '../utils/propTypes';
 function getColorStyles(props) {
 	const {
 		color,
-		disabled,
+		isDisabled,
 		theme: { palette },
 	} = props;
 	const backgroundColor = {
@@ -27,7 +27,7 @@ function getColorStyles(props) {
 		},
 	};
 
-	if (disabled) {
+	if (isDisabled) {
 		return {
 			root: {
 				...getColors({ color: 'action.disabled' }),
@@ -46,7 +46,6 @@ function getColorStyles(props) {
 					...backgroundColor,
 				},
 			};
-
 		case 'inherit':
 			return {
 				root: {
@@ -54,7 +53,6 @@ function getColorStyles(props) {
 					...backgroundColor,
 				},
 			};
-
 		default:
 			return {
 				root: {
@@ -66,6 +64,8 @@ function getColorStyles(props) {
 }
 
 function getBaseStyles(props) {
+	const { getTransition } = props.theme;
+
 	return {
 		root: {
 			position: 'relative',
@@ -76,11 +76,10 @@ function getBaseStyles(props) {
 			height: '48px',
 			padding: 0,
 			borderRadius: '50%',
-			transition: props.theme.getTransition(
-				'background-color',
-				'shortest',
-				'in',
-			),
+			transition: getTransition('background-color', {
+				duration: 'shortest',
+				easing: 'in',
+			}),
 			...getSpacing(props),
 		},
 		label: {
@@ -96,7 +95,8 @@ function getBaseStyles(props) {
 const getStyles = combine(getBaseStyles, getColorStyles);
 getStyles.propTypes = {
 	/**
-	 * The color of the component. It supports those theme palette that make sense for this component.
+	 * The color of the component. It supports those theme palette that make
+	 * sense for this component.
 	 */
 	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
 	...getSpacing.propTypes,
@@ -118,14 +118,10 @@ const IconButton = forwardRef((props, ref) => {
 IconButton.displayName = 'IconButton';
 
 IconButton.propTypes = {
-	/**
-	 * The icon element.
-	 */
+	// The icon element.
 	children: PropTypes.node,
 	className: PropTypes.string,
-	/**
-	 * If `true`, the ripple will be disabled.
-	 */
+	// If `true`, the ripple will be disabled.
 	disableRipple: PropTypes.bool,
 	...stylesPropType,
 	...getStyles.propTypes,
@@ -133,7 +129,7 @@ IconButton.propTypes = {
 
 IconButton.defaultProps = {
 	color: 'default',
-	disabled: false,
+	isDisabled: false,
 };
 
 export default IconButton;

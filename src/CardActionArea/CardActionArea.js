@@ -4,21 +4,27 @@ import ButtonBase from './../ButtonBase';
 import useStyles from './../system/useStyles';
 import { stylesPropType } from './../utils/propTypes';
 
-function getFocusVisibleStyles({ focusVisible, theme }) {
-	if (focusVisible) {
-		return {
+function getFocusVisibleStyles(props) {
+	const {
+		focusVisible,
+		theme: { palette },
+	} = props;
+
+	return (
+		focusVisible && {
 			focusHighlight: {
 				opacity: 0.12,
 				':hover': {
-					opacity: theme.palette.action.hoverOpacity,
+					opacity: palette.action.hoverOpacity,
 				},
 			},
-		};
-	}
-	return null;
+		}
+	);
 }
 
 function getStyles(props) {
+	const { getTransition } = props.theme;
+
 	return {
 		root: {
 			display: 'block',
@@ -35,11 +41,10 @@ function getStyles(props) {
 				opacity: 0,
 				backgroundColor: 'currentcolor',
 				pointerEvents: 'none',
-				transition: props.theme.getTransition(
-					'opacity',
-					'shortest',
-					'in',
-				),
+				transition: getTransition('opacity', {
+					duration: 'shortest',
+					easing: 'in',
+				}),
 			},
 			...getFocusVisibleStyles(props),
 		},

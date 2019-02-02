@@ -1,6 +1,7 @@
 import React, {
 	forwardRef,
 	useCallback,
+	useEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -8,50 +9,58 @@ import React, {
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Ripples, { useRippleManager } from './../Ripples';
+import usePrevious from './../hooks/usePrevious';
 import cn from './../system/className';
 import merge from './../utils/merge';
 import { isFn } from './../utils/helpers';
-import { useDidUpdate, usePrevious } from './../hooks';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-const baseStyles = {
-	position: 'relative',
-	display: 'inline-flex',
-	alignItems: 'center',
-	justifyContent: 'center',
-	// Removes the grey highlight.
-	WebkitTapHighlightColor: 'transparent',
-	// Reset default value
-	backgroundColor: 'transparent',
-	// Disable the focus ring for mouse, touch and keyboard users.
-	outline: 'none',
-	border: 0,
-	// Remove the margin in Safari.
-	marginTop: '0px',
-	marginRight: '0px',
-	marginBottom: '0px',
-	marginLeft: '0px',
-	// Remove the padding in Firefox.
-	paddingTop: '0px',
-	paddingRight: '0px',
-	paddingBottom: '0px',
-	paddingLeft: '0px',
-	borderRadius: 0,
-	cursor: 'pointer',
-	userSelect: 'none',
-	verticalAlign: 'middle',
-	// Reset
-	'-moz-appearance': 'none',
-	'-webkit-appearance': 'none',
-	textDecoration: 'none',
-	// So we take precedent over the style of a native <a /> element.
-	color: 'inherit',
-	':disabled': {
-		// Disable the link interactions.
-		pointerEvents: 'none',
-		cursor: 'default',
-	},
-};
+function getStyles(props) {
+	const { className, styles: stylesProp } = props;
+	const styles = merge(
+		{
+			position: 'relative',
+			display: 'inline-flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+			// Removes the grey highlight.
+			WebkitTapHighlightColor: 'transparent',
+			// Reset default value
+			backgroundColor: 'transparent',
+			// Disable the focus ring for mouse, touch and keyboard users.
+			outline: 'none',
+			border: 0,
+			// Remove the margin in Safari.
+			marginTop: '0px',
+			marginRight: '0px',
+			marginBottom: '0px',
+			marginLeft: '0px',
+			// Remove the padding in Firefox.
+			paddingTop: '0px',
+			paddingRight: '0px',
+			paddingBottom: '0px',
+			paddingLeft: '0px',
+			borderRadius: 0,
+			cursor: 'pointer',
+			userSelect: 'none',
+			verticalAlign: 'middle',
+			// Reset
+			'-moz-appearance': 'none',
+			'-webkit-appearance': 'none',
+			textDecoration: 'none',
+			// So we take precedent over the style of a native <a /> element.
+			color: 'inherit',
+			':disabled': {
+				// Disable the link interactions.
+				pointerEvents: 'none',
+				cursor: 'default',
+			},
+		},
+		isFn(stylesProp) ? stylesProp(props) : stylesProp || {},
+	);
+
+	return cn(className, styles);
+}
 
 const ButtonBase = forwardRef((props, ref) => {
 	ref = ref ? ref : useRef(null);
@@ -60,11 +69,11 @@ const ButtonBase = forwardRef((props, ref) => {
 		action,
 		centerRipple,
 		children,
-		className: cnProp,
-		disabled,
+		className,
 		disableRipple,
 		disableTouchRipple,
 		focusRipple,
+		isDisabled,
 		onBlur,
 		onFocus,
 		onFocusVisible,
@@ -78,36 +87,36 @@ const ButtonBase = forwardRef((props, ref) => {
 		onTouchStart,
 		styles = {},
 		tabIndex,
-		RippleProps,
 		type = 'button',
 		...passThru
 	} = props;
-	const [ripples, rippleHandler, startRipple] = useRippleManager(ref);
-	const [focused, setFocused] = useState(false);
-	const prevFocused = usePrevious(focused);
+	const [rippleProps, rippleHandler, addRipple] = useRippleManager(ref);
+	const [isFocused, setIsFocused] = useState(false);
+	const prevIsFocused = usePrevious(isFocused);
 	const keyDown = useRef(false);
 	const Component = props.href ? 'a' : as ? as : 'button';
 	const buttonProps =
-		as === 'button' ? { disabled, type } : { role: 'button' };
-	const className = useMemo(
-		() =>
-			cn(
-				cnProp,
-				merge(baseStyles, isFn(styles) ? styles(props) : styles),
-			),
-		[cnProp, styles],
-	);
+		as === 'button' ? { disabled: isDisabled, type } : { role: 'button' };
+	const classes = useMemo(() => getStyles(props), [className, styles]);
 
 	const handleMouseDown = rippleHandler(
 		{ type: 'start', center: centerRipple },
-		useCallback(() => focused && setFocused(() => false), []),
+		useCallback(() => {
+			if (isFocused) {
+				setIsFocused(false);
+			}
+		}, []),
 	);
 
 	const handleMouseUp = rippleHandler({ type: 'end' });
 
 	const handleMouseLeave = rippleHandler(
 		{ type: 'end' },
-		useCallback(event => focused && event.preventDefault(), []),
+		useCallback(event => {
+			if (isFocused) {
+				event.preventDefault();
+			}
+		}, []),
 	);
 
 	const handleTouchStart = rippleHandler({
@@ -124,29 +133,40 @@ const ButtonBase = forwardRef((props, ref) => {
 	const handleBlur = rippleHandler(
 		{ type: 'end' },
 		useCallback(event => {
-			setFocused(() => false);
-			if (onBlur) onBlur(event);
+			setIsFocused(false);
+			if (onBlur) {
+				onBlur(event);
+			}
 		}, []),
 	);
 
 	const handleFocus = useCallback(event => {
 		keyDown.current = false;
-		setFocused(() => true);
-		if (onFocusVisible) onFocusVisible(event);
-		if (onFocus) onFocus(event);
+		setIsFocused(true);
+
+		if (onFocusVisible) {
+			onFocusVisible(event);
+		}
+
+		if (onFocus) {
+			onFocus(event);
+		}
 	}, []);
 
 	const handleKeyDown = useCallback(event => {
 		const key = keycode(event);
 
-		if (focusRipple && !keyDown.current && focused && key === 'space') {
+		if (focusRipple && !keyDown.current && isFocused && key === 'space') {
 			keyDown.current = true;
-			if (onKeyDown) onKeyDown(event);
+
+			if (onKeyDown) {
+				onKeyDown(event);
+			}
 
 			if (
 				as &&
-				event.target === event.currentTarget &&
 				as === 'button' &&
+				event.target === event.currentTarget &&
 				(key === 'space' || key === 'enter') &&
 				!(ref.current.tagName === 'A' && ref.current.href)
 			) {
@@ -156,30 +176,31 @@ const ButtonBase = forwardRef((props, ref) => {
 	}, []);
 
 	const handleKeyUp = useCallback(event => {
-		if (focusRipple && keycode(event) === 'space' && focused) {
+		if (focusRipple && keycode(event) === 'space' && isFocused) {
 			keyDown.current = false;
-			if (onKeyUp) onKeyUp(event);
+			if (onKeyUp) {
+				onKeyUp(event);
+			}
 		}
 	}, []);
 
-	useDidUpdate(
-		() => {
-			if (
-				focusRipple &&
-				!disableRipple &&
-				!prevFocused &&
-				focused &&
-				ripples.length < 1
-			) {
-				startRipple({ center: true, pulsate: true });
-			}
-		},
-		[disabled, focused],
-	);
+	useEffect(() => {
+		if (
+			isFocused &&
+			focusRipple &&
+			!isDisabled &&
+			!disableRipple &&
+			!prevIsFocused &&
+			keyDown.current
+		) {
+			addRipple({ center: true, pulsate: true });
+		}
+	}, [isDisabled, isFocused, keyDown]);
 
 	return (
 		<Component
-			className={className}
+			className={classes}
+			disabled={isDisabled}
 			onBlur={handleBlur}
 			onContextMenu={handleContextMenu}
 			onFocus={handleFocus}
@@ -192,14 +213,12 @@ const ButtonBase = forwardRef((props, ref) => {
 			onTouchMove={handleTouchMove}
 			onTouchStart={handleTouchStart}
 			ref={ref}
-			tabIndex={disabled ? '-1' : tabIndex}
+			tabIndex={isDisabled ? '-1' : tabIndex}
 			{...buttonProps}
 			{...passThru}
 		>
 			{children}
-			{!disableRipple && !disabled && (
-				<Ripples ripples={ripples} {...RippleProps} />
-			)}
+			{!disableRipple && !isDisabled && <Ripples {...rippleProps} />}
 		</Component>
 	);
 });
@@ -216,15 +235,11 @@ ButtonBase.propTypes = {
 	 * that can be triggered programmatically.
 	 */
 	action: PropTypes.func,
-	// Use that property to pass a ref callback to the native button component.
-	ref: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	// If `true`, the ripples will be centered (not at cursor position).
 	centerRipple: PropTypes.bool,
 	// The content of the component.
 	children: PropTypes.node,
 	className: PropTypes.string,
-	// If `true`, the base button will be disabled.
-	disabled: PropTypes.bool,
 	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
 	// If `true`, the touch ripple effect will be disabled.
@@ -234,6 +249,8 @@ ButtonBase.propTypes = {
 	 * `disableRipple` must also be `false`.
 	 */
 	focusRipple: PropTypes.bool,
+	// If `true`, the base button will be disabled.
+	isDisabled: PropTypes.bool,
 	onBlur: PropTypes.func,
 	onClick: PropTypes.func,
 	onFocus: PropTypes.func,
@@ -251,9 +268,11 @@ ButtonBase.propTypes = {
 	onTouchMove: PropTypes.func,
 	onTouchStart: PropTypes.func,
 	role: PropTypes.string,
-	tabIndex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+	// Use that property to pass a ref callback to the native button component.
+	ref: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	// Properties applied to the `TouchRipple` element.
 	RippleProps: PropTypes.object,
+	tabIndex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	/**
 	 * Used to control the button's purpose.
 	 * This property passes the value to the `type` attribute of the native

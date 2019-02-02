@@ -1,21 +1,19 @@
 import { useContext, useMemo } from 'react';
 import ThemeContext from './../theme/ThemeContext';
 
-export default function useMotion(
-	ease = 'inOut',
-	enter = 'standard',
-	exit,
-	state = 'show',
-) {
-	const { theme: t } = useContext(ThemeContext);
-	const easing = useMemo(() => t.getEasing(ease), [ease]);
-	const duration = useMemo(
-		() =>
-			enter && exit && state
-				? t.duration[state === 'show' ? enter : exit]
-				: t.duration[enter],
-		[enter, exit, state],
-	);
+function useMotion(easing = 'inOut', enter = 'standard', exit, state = 'show') {
+	const { durations, getEasing } = useContext(ThemeContext).theme;
 
-	return [easing, duration];
+	return [
+		useMemo(() => getEasing(easing), [easing]),
+		useMemo(
+			() =>
+				enter && exit && state
+					? durations[state === 'show' ? enter : exit]
+					: durations[enter],
+			[enter, exit, state],
+		),
+	];
 }
+
+export default useMotion;

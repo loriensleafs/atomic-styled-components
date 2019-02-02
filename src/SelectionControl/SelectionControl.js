@@ -55,21 +55,26 @@ const SelectionControl = forwardRef((props, ref) => {
 		[props],
 	);
 	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
-
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
 
 	const handleChange = useCallback(event => {
-		if (isNil(checkedProp)) setChecked(event.target.checked);
-		if (onChange) onChange(event, event.target.checked);
+		if (isNil(checkedProp)) {
+			setChecked(event.target.checked);
+		}
+		if (onChange) {
+			onChange(event, event.target.checked);
+		}
 	}, []);
 
 	const handleFocus = useCallback(event => onFocus && onFocus(event), []);
 
 	const handleBlur = useCallback(event => onBlur && onBlur(event), []);
 
-	useDidUpdate(() => !isNil(checkedProp) && setChecked(() => checkedProp), [
-		checkedProp,
-	]);
+	useDidUpdate(() => {
+		if (!isNil(checkedProp)) {
+			setChecked(() => checkedProp);
+		}
+	}, [checkedProp]);
 
 	return (
 		<IconButton
@@ -106,59 +111,32 @@ const SelectionControl = forwardRef((props, ref) => {
 SelectionControl.displayName = 'SelectionControl';
 
 SelectionControl.propTypes = {
-	/**
-	 * If `true`, the input will be focused during the first mount.
-	 */
+	// If `true`, the input will be focused during the first mount.
 	autoFocus: PropTypes.bool,
-	/**
-	 * If `true`, the component is checked.
-	 */
+	// If `true`, the component is checked.
 	checked: PropTypes.bool,
-	/**
-	 * The icon to display when the component is checked.
-	 */
+	// The icon to display when the component is checked.
 	checkedIcon: PropTypes.node,
 	className: PropTypes.string,
 	defaultChecked: PropTypes.bool,
-	/**
-	 * If `true`, the switch will be disabled.
-	 */
+	// If `true`, the switch will be disabled.
 	disabled: PropTypes.bool,
-	/**
-	 * If `true`, the ripple effect will be disabled.
-	 */
+	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
-	/**
-	 * The icon to display when the component is unchecked.
-	 */
+	// The icon to display when the component is unchecked.
 	icon: PropTypes.node.isRequired,
-	/**
-	 * The id of the `input` element.
-	 */
+	// The id of the `input` element.
 	id: PropTypes.string,
-	/**
-	 * Attributes applied to the `input` element.
-	 */
+	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	/**
-	 * If `true`, the component appears indeterminate.
-	 */
+	// If `true`, the component appears indeterminate.
 	indeterminate: PropTypes.bool,
-	/**
-	 * The icon to display when the component is indeterminate.
-	 */
+	// The icon to display when the component is indeterminate.
 	indeterminateIcon: PropTypes.node,
-	/**
-	 * Attributes applied to the `input` element.
-	 */
+	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	/**
-	 * Use that property to pass a ref callback to the native input component.
-	 */
+	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/*
-	 * @ignore
-	 */
 	name: PropTypes.string,
 	onBlur: PropTypes.func,
 	/**
@@ -175,19 +153,13 @@ SelectionControl.propTypes = {
 	 * (not from interacting with the field).
 	 */
 	readOnly: PropTypes.bool,
-	/**
-	 * If `true`, the input will be required.
-	 */
+	// If `true`, the input will be required.
 	required: PropTypes.bool,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	tabIndex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-	/**
-	 * The input component property `type`.
-	 */
+	// The input component property `type`.
 	type: PropTypes.string.isRequired,
-	/**
-	 * The value of the component.
-	 */
+	// The value of the component.
 	value: PropTypes.string,
 };
 

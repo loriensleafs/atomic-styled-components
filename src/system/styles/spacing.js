@@ -51,7 +51,7 @@ const getSpacing = props => {
 		.filter(key => REG.test(key))
 		.sort();
 	const breakpoints = [null, ...theme.mediaQueries];
-	const scale = theme.space;
+	const scale = theme.spacing;
 	const getStyle = getValue(scale);
 
 	return keys

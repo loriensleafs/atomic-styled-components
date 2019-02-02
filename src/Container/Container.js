@@ -3,9 +3,11 @@ import ThemeContext from './../theme/ThemeContext';
 import Box from './../Box';
 
 function Container(props) {
-	const { theme } = useContext(ThemeContext);
+	const {
+		theme: { maxWidth },
+	} = useContext(ThemeContext);
 	return (
-		<Box styles={{ maxWidth: theme.maxWidth }} {...props}>
+		<Box styles={{ maxWidth }} {...props}>
 			{props.children}
 		</Box>
 	);

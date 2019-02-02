@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react';
+import React, {forwardRef, useRef} from 'react';
 import PropTypes from 'prop-types';
 import ListContext from './ListContext';
 import { getSpacing, useStyles } from './../system';
@@ -33,7 +33,8 @@ const baseStyles = {
 	listStyle: 'none',
 };
 
-function List(props) {
+const List = forwardRef((props, ref) => {
+	ref = ref ? ref : useRef(null)
 	const [
 		{classes},
 		{
@@ -47,14 +48,14 @@ function List(props) {
 	] = useStyles(props, getStyles, { baseStyles, whitelist: ['dense','subheader'] });
 
 	return (
-		<Component className={classes} {...passThru}>
+		<Component className={classes} ref={ref} {...passThru}>
 			<ListContext.Provider value={{ dense }}>
 				{subheader}
 				{children}
 			</ListContext.Provider>
 		</Component>
 	);
-}
+})
 
 List.displayName = 'List';
 

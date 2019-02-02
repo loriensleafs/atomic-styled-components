@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useReducer, useState } from 'react';
 import Box from './../Box';
 import Checkbox from './../Checkbox';
 import CheckBoxIcon from './../svgIcons/CheckBox';
@@ -47,7 +47,7 @@ const Intro = () => (
 		<SectionHeader>
 			Selection controls allow the user to select options.
 		</SectionHeader>
-		<Paragraph>
+		<Paragraph mb={0}>
 			<a href="https://material.io/design/components/selection-controls.html">
 				Selection Controls
 			</a>{' '}
@@ -58,43 +58,62 @@ const Intro = () => (
 			<br />
 			<br />
 			Three types of selection controls are covered in this section:
-			<ul>
-				<li>
+		</Paragraph>
+		<Box as="ul" px={[3.5, 4, 5]}>
+			<li>
+				<Paragraph mb={0} px={0}>
 					<b>
 						<a href="https://material-ui.com/demos/selection-controls/#radio-buttons">
 							Radio Buttons
 						</a>
 					</b>
 					allow the selection of a single option from a set.
-				</li>
-				<li>
+				</Paragraph>
+			</li>
+			<li>
+				<Paragraph mb={0} px={0}>
 					<b>
 						<a href="https://material-ui.com/demos/selection-controls/#checkboxes">
 							Checkboxes
 						</a>
 					</b>
 					allow the selection of multiple options from a set.
-				</li>
-				<li>
+				</Paragraph>
+			</li>
+			<li>
+				<Paragraph mb={0} px={0}>
 					<b>
 						<a href="https://material-ui.com/demos/selection-controls/#switches">
 							Switches
 						</a>
 					</b>
 					allow a selection to be turned on or off.
-				</li>
-			</ul>
-		</Paragraph>
+				</Paragraph>
+			</li>
+		</Box>
 	</Fragment>
 );
 
+function radioReducer(state, selected) {
+	switch (['a', 'b', 'c', 'd', 'e'].includes(selected)) {
+		case true:
+			return { ...state, [selected]: true };
+		default:
+			state;
+	}
+}
 const RadioButtons = () => {
-	const [checked, setChecked] = useState('a');
+	const [isChecked, dispatch] = useReducer(radioReducer, {
+		a: true,
+		b: false,
+		c: false,
+		d: false,
+		e: false,
+	});
 
-	const handleChange = useCallback(
-		event => setChecked(event.target.value),
-		[],
-	);
+	const handleChange = useCallback(event => {
+		dispatch(event.target.value);
+	}, []);
 
 	return (
 		<Fragment>
@@ -109,7 +128,7 @@ const RadioButtons = () => {
 					wrap="wrap"
 				>
 					<Radio
-						checked={checked === 'a'}
+						checked={isChecked.a}
 						onChange={handleChange}
 						value="a"
 						name="radio-button-demo"
@@ -117,7 +136,7 @@ const RadioButtons = () => {
 						color="secondary"
 					/>
 					<Radio
-						checked={checked === 'b'}
+						checked={isChecked.b}
 						onChange={handleChange}
 						value="b"
 						name="radio-button-demo"
@@ -125,14 +144,14 @@ const RadioButtons = () => {
 						color="primary"
 					/>
 					<Radio
-						checked={checked === 'c'}
+						checked={isChecked.c}
 						onChange={handleChange}
 						value="c"
 						name="radio-button-demo"
 						aria-label="C"
 					/>
 					<Radio
-						checked={checked === 'd'}
+						checked={isChecked.d}
 						onChange={handleChange}
 						value="d"
 						color="default"
@@ -140,7 +159,7 @@ const RadioButtons = () => {
 						aria-label="D"
 					/>
 					<Radio
-						checked={checked === 'e'}
+						checked={isChecked.e}
 						onChange={handleChange}
 						value="e"
 						color="default"
@@ -156,12 +175,16 @@ const RadioButtons = () => {
 };
 
 const Checkboxes = () => {
-	const [{ a, b, f }, setChecked] = useState({ a: true, b: true, f: true });
+	const [checked, setChecked] = useState({ a: true, b: true, f: true });
 
-	const handleChange = useCallback((event, isChecked) => {
-		const next = { [event.target.value]: isChecked };
-		setChecked(state => ({ ...state, ...next }));
-	}, []);
+	const handleChange = useCallback(
+		(event, isChecked) =>
+			setChecked(state => ({
+				...state,
+				[event.target.value]: isChecked,
+			})),
+		[],
+	);
 
 	return (
 		<Fragment>
@@ -185,9 +208,13 @@ const Checkboxes = () => {
 					alignItems="center"
 					wrap="wrap"
 				>
-					<Checkbox checked={a} onChange={handleChange} value="a" />
 					<Checkbox
-						checked={b}
+						checked={checked.a}
+						onChange={handleChange}
+						value="a"
+					/>
+					<Checkbox
+						checked={checked.b}
 						onChange={handleChange}
 						value="b"
 						color="primary"
@@ -196,7 +223,7 @@ const Checkboxes = () => {
 					<Checkbox disabled value="d" />
 					<Checkbox disabled checked value="e" />
 					<Checkbox
-						checked={f}
+						checked={checked.f}
 						onChange={handleChange}
 						value="f"
 						indeterminate

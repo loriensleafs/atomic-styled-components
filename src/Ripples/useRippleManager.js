@@ -1,5 +1,6 @@
-import { useCallback, useReducer } from 'react';
-import nanoid from 'nanoid';
+import { useCallback, useRef } from 'react';
+
+let key = 0;
 
 /**
  * Get the size and position properties for a ripple DOM node.
@@ -10,18 +11,19 @@ import nanoid from 'nanoid';
  * @param {number} [y=0]
  * @returns {object}
  */
-function getRect(
-	center = false,
-	pulsate = false,
-	rect = {
-		top: 0,
-		left: 0,
-		width: 0,
-		height: 0,
-	},
-	x = 0,
-	y = 0,
-) {
+function getRect(props) {
+	const {
+		center = false,
+		pulsate = false,
+		rect = {
+			top: 0,
+			left: 0,
+			width: 0,
+			height: 0,
+		},
+		x = 0,
+		y = 0,
+	} = props;
 	const { width = 0, height = 0, left = 0, top = 0 } = rect;
 	const centered = pulsate || center;
 	let rippleX;
@@ -38,7 +40,9 @@ function getRect(
 
 	if (centered) {
 		rippleSize = Math.sqrt((2 * width ** 2 + height ** 2) / 3);
-		if (rippleSize % 2 === 0) rippleSize += 1;
+		if (rippleSize % 2 === 0) {
+			rippleSize += 1;
+		}
 	} else {
 		const sizeX = Math.max(Math.abs(width - rippleX), rippleX) * 2 + 2;
 		const sizeY = Math.max(Math.abs(height - rippleY), rippleY) * 2 + 2;
@@ -46,7 +50,7 @@ function getRect(
 	}
 
 	return {
-		id: nanoid(),
+		key: key++,
 		top: -(rippleSize / 2) + rippleY + 'px',
 		left: -(rippleSize / 2) + rippleX + 'px',
 		width: rippleSize + 'px',
@@ -54,22 +58,6 @@ function getRect(
 		in: pulsate,
 		pulsate,
 	};
-}
-
-function ripplesReducer(
-	ripples = [],
-	{ type, id, center, pulsate, rect, x, y },
-) {
-	switch (type) {
-		case 'start':
-			return [...ripples, getRect(center, pulsate, rect, x, y)];
-
-		case 'end':
-			return ripples.filter(r => (r.id !== id ? id : ripples[0].id));
-
-		default:
-			return ripples;
-	}
 }
 
 /**
@@ -80,7 +68,11 @@ function ripplesReducer(
  * @public
  */
 export default function useRippleManager(ref) {
-	const [ripples, dispatch] = useReducer(ripplesReducer, []);
+	const actions = useRef(null);
+
+	const dispatcher = useCallback(dispatch => (actions.current = dispatch), [
+		actions.current,
+	]);
 
 	/**
 	 * Create an event handle to start/end a ripple lifecycle.
@@ -94,37 +86,44 @@ export default function useRippleManager(ref) {
 	 */
 	const eventHandler = useCallback(
 		(props, cb) => event => {
-			if (cb) cb(event);
-			if (event.defaultPrevented) return;
-			const { type, center, pulsate, id } = props;
+			const { type, center, pulsate } = props;
+
+			if (event.defaultPrevented || !actions.current) {
+				return;
+			}
+
+			if (cb) {
+				cb(event);
+			}
 
 			if (type === 'start') {
-				dispatch({
-					center,
-					pulsate,
-					rect: event.currentTarget.getBoundingClientRect(),
-					type,
-					x:
-						event && event.clientX
-							? event.clientX
-							: event && event.touches
-							? event.touches[0].clientX
-							: 0,
-					y:
-						event && event.clientY
-							? event.clientY
-							: event && event.touches
-							? event.touches[0].clientY
-							: 0,
+				actions.current({
+					type: 'add',
+					ripple: getRect({
+						center,
+						pulsate,
+						rect: event.currentTarget
+							.getBoundingClientRect()
+							.toJSON(),
+						x:
+							event && event.clientX
+								? event.clientX
+								: event && event.touches
+								? event.touches[0].clientX
+								: 0,
+						y:
+							event && event.clientY
+								? event.clientY
+								: event && event.touches
+								? event.touches[0].clientY
+								: 0,
+					}),
 				});
 			} else if (type === 'end') {
-				dispatch({
-					id,
-					type,
-				});
+				actions.current({ type: 'remove' });
 			}
 		},
-		[],
+		[actions],
 	);
 
 	/**
@@ -137,28 +136,28 @@ export default function useRippleManager(ref) {
 	 * @param {number} [props.y] The coordinate of the vertical center point.
 	 * @public
 	 */
-	const start = useCallback(props => {
-		const { center, pulsate, rect, x, y } = props;
+	const add = useCallback(
+		({ center, pulsate, rect, x, y }) =>
+			actions.current({
+				type: 'add',
+				ripple: getRect({
+					center,
+					pulsate,
+					rect: rect
+						? rect
+						: ref &&
+						  ref.current &&
+						  ref.current.getBoundingClientRect().toJSON(),
+					x,
+					y,
+				}),
+			}),
+		[actions],
+	);
 
-		dispatch({
-			type: 'start',
-			center,
-			pulsate,
-			rect: rect
-				? rect
-				: ref && ref.current && ref.current.getBoundingClientRect(),
-			x,
-			y,
-		});
-	}, []);
+	const remove = useCallback(() => actions.current({ type: 'remove' }), [
+		actions,
+	]);
 
-	/**
-	 * End a ripple.
-	 * By default ends the first ripple (oldest) in ripples array.
-	 * @param {string} [id] A specific ripple to end.
-	 * @public
-	 */
-	const end = useCallback(id => dispatch({ type: 'end', id }), []);
-
-	return [ripples, eventHandler, start, end];
+	return [{ children: dispatcher }, eventHandler, add, remove];
 }

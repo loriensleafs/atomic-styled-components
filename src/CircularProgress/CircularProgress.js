@@ -105,7 +105,8 @@ function getColorStyles({ color }) {
 const getStyles = combine(getColorStyles, getVariantStyles);
 getStyles.propTypes = {
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
 	 */
 	color: PropTypes.oneOf(['primary', 'secondary', 'inherit']),
 	/**
@@ -185,25 +186,16 @@ function CircularProgress(props) {
 CircularProgress.displayName = 'CircularProgress';
 
 CircularProgress.propTypes = {
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
-	/**
-	 * The size of the circle.
-	 */
+	// The size of the circle.
 	size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-	/**
-	 * @ignore
-	 */
 	style: PropTypes.object,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/**
-	 * The thickness of the circle.
-	 */
+	// The thickness of the circle.
 	thickness: PropTypes.number,
 	/**
-	 * The value of the progress indicator for the determinate and static variants.
+	 * The value of the progress indicator for the determinate and static
+	 * variants.
 	 * Value between 0 and 100.
 	 */
 	value: PropTypes.number,

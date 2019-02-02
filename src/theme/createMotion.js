@@ -1,6 +1,12 @@
 import toCubicBezierFn from 'bezier-easing';
 import { capitalize, isStr, toArr, toMs } from './../utils/helpers';
 
+const TRANSITION_OPTIONS = {
+	duration: 'standard',
+	easing: 'inOut',
+	delay: 0,
+};
+
 /**
  * Easing options.
  * The rate at which an animation changes. https://material.google.com/motion/duration-easing.html#duration-easing-natural-easing-curves
@@ -11,7 +17,7 @@ import { capitalize, isStr, toArr, toMs } from './../utils/helpers';
  * @property {array} sharp Elements that have temporarily let the screen
  * but can return at any time.
  */
-export let easing = {
+export let easings = {
 	inOut: [0.4, 0, 0.2, 1],
 	in: [0.4, 0, 1, 1],
 	out: [0.0, 0, 0.2, 1],
@@ -30,7 +36,7 @@ export let easing = {
  * @property {number} [entering=225] For elements leaving the screen.
  * @property {number} [leaving=195]
  */
-export let duration = {
+export let durations = {
 	shortest: 150,
 	shorter: 200,
 	short: 250,
@@ -39,6 +45,16 @@ export let duration = {
 	entering: 225,
 	leaving: 195,
 };
+
+function getDuration(duration) {
+	return isStr(duration) && durations[duration]
+		? toMs(durations[duration])
+		: toMs(duration);
+}
+
+function getDelay(delay) {
+	return isStr(delay) ? delay : toMs(delay);
+}
 
 /**
  * Motion properties that are added to the theme object.
@@ -49,12 +65,12 @@ export let duration = {
  */
 function createMotion(overrides) {
 	const { inOut, in: easeIn, out: easeOut, sharp } = {
-		...easing,
-		...overrides.easing,
+		...easings,
+		...overrides.easings,
 	};
 
 	return {
-		easing: {
+		easings: {
 			inOut: `cubic-bezier(${inOut.toString()})`,
 			in: `cubic-bezier(${easeIn.toString()})`,
 			out: `cubic-bezier(${easeOut.toString()})`,
@@ -69,28 +85,23 @@ function createMotion(overrides) {
 			getIn: toCubicBezierFn(easeIn[0], easeIn[1], easeIn[2], easeIn[3]),
 			getSharp: toCubicBezierFn(sharp[0], sharp[1], sharp[2], sharp[3]),
 		},
-		duration: { ...duration, ...overrides.duration },
-		getTransition: (
-			props = ['all'],
-			dur = 'standard',
-			ease = 'inOut',
-			delay = 0,
-		) =>
-			toArr(props)
+		durations: { ...durations, ...overrides.durations },
+		getTransition: (props = ['all'], options) => {
+			const { duration, easing, delay } = {
+				...TRANSITION_OPTIONS,
+				...options,
+			};
+
+			return toArr(props)
 				.map(
 					prop =>
-						`${prop} ${
-							isStr(dur)
-								? duration[dur]
-									? `${duration[dur]}ms`
-									: dur
-								: toMs(dur)
-						} ${easing[ease]} ${
-							isStr(delay) ? delay : toMs(delay)
-						}`,
+						`${prop} ${getDuration(duration)} cubic-bezier(${
+							easings[easing]
+						}) ${getDelay(delay)}`,
 				)
-				.join(', '),
-		getEasing: type => easing[`get${capitalize(type)}`],
+				.join(', ');
+		},
+		getEasing: type => easings[`get${capitalize(type)}`],
 	};
 }
 

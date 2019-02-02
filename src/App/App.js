@@ -32,9 +32,59 @@ const getGlobalStyles = ({ theme }) => `
 	}
 `;
 
+function AppContent(props) {
+	return (
+		<Flex ml={[null, null, null, 250]}>
+			<Box w={1} wMax={1200} h={1} ml="auto" mr="auto" pt={3}>
+				<Suspense
+					fallback={
+						<Flex
+							w={1}
+							h={1}
+							justifyContent="center"
+							alignItems="center"
+						>
+							<CircularProgress color="primary" />
+						</Flex>
+					}
+				>
+					<Switch>
+						<Route
+							exact
+							path="/"
+							render={() => (
+								<Box w={1} mt={5.5}>
+									<div>HOME PAGE BITCHES</div>
+								</Box>
+							)}
+						/>
+						<Route
+							path={`/buttons`}
+							render={() => <ButtonDemo />}
+						/>
+						<Route path={`/cards`} render={() => <CardDemo />} />
+						<Route
+							path={`/dialogs`}
+							render={() => <DialogDemo />}
+						/>
+						<Route
+							path={`/drawers`}
+							render={() => <DrawerDemo />}
+						/>
+						<Route
+							path={`/selectioncontrols`}
+							render={() => <SelectionControlDemo />}
+						/>
+					</Switch>
+				</Suspense>
+			</Box>
+		</Flex>
+	);
+}
+
 export default function App() {
 	const { theme } = useContext(ThemeContext);
-	console.log(theme);
+	window.theme = theme;
 
 	return (
 		<ErrorBoundry>
@@ -42,54 +92,7 @@ export default function App() {
 			<Router history={history}>
 				<Fragment>
 					<AppNav />
-					<Flex ml={[null, null, null, 250]}>
-						<Box w={1} wMax={1200} h={1} ml="auto" mr="auto" pt={3}>
-							<Suspense
-								fallback={
-									<Flex
-										w={1}
-										h={1}
-										justifyContent="center"
-										alignItems="center"
-									>
-										<CircularProgress color="primary" />
-									</Flex>
-								}
-							>
-								<Switch>
-									<Route
-										exact
-										path="/"
-										render={() => (
-											<Box w={1} mt={5.5}>
-												<div>HOME PAGE BITCHES</div>
-											</Box>
-										)}
-									/>
-									<Route
-										path={`/buttons`}
-										render={() => <ButtonDemo />}
-									/>
-									<Route
-										path={`/cards`}
-										render={() => <CardDemo />}
-									/>
-									<Route
-										path={`/dialogs`}
-										render={() => <DialogDemo />}
-									/>
-									<Route
-										path={`/drawers`}
-										render={() => <DrawerDemo />}
-									/>
-									<Route
-										path={`/selectioncontrols`}
-										render={() => <SelectionControlDemo />}
-									/>
-								</Switch>
-							</Suspense>
-						</Box>
-					</Flex>
+					<AppContent />
 				</Fragment>
 			</Router>
 		</ErrorBoundry>

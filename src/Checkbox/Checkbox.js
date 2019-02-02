@@ -17,7 +17,8 @@ function getColorStyles(props) {
 		disabled = false,
 		theme: { palette },
 	} = props;
-	const isBrandColor = color === 'primary' || color === 'secondary';
+	const isBrand = color === 'primary' || color === 'secondary';
+	const isLight = palette.type === 'light';
 	const state = disabled ? 'disabled' : checked ? 'checked' : null;
 
 	switch (state) {
@@ -32,13 +33,13 @@ function getColorStyles(props) {
 		case 'checked':
 			return {
 				...getColor({
-					color: isBrandColor ? `${color}.main` : 'text.secondary',
+					color: isBrand ? `${color}.main` : 'text.secondary',
 				}),
 				':hover': {
 					backgroundColor: fade(
-						isBrandColor
+						isBrand
 							? palette[color].main
-							: palette.type === 'light'
+							: isLight
 							? palette.common.black
 							: palette.common.white,
 						palette.action.hoverOpacity,
@@ -58,18 +59,20 @@ function getBaseStyles(props) {
 	const { getTransition } = props.theme;
 
 	return {
-		transition: getTransition('background-color', 'shortest', 'in'),
+		transition: getTransition('background-color', {
+			duration: 'shortest',
+			easing: 'in',
+		}),
 	};
 }
 
 const getStyles = combine(getBaseStyles, getColorStyles);
 getStyles.propTypes = {
-	/**
-	 * If `true`, the component is checked.
-	 */
+	// If `true`, the component is checked.
 	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
 	 */
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
@@ -90,19 +93,27 @@ const Checkbox = forwardRef((props, ref) => {
 	] = useStyles({ ...props, checked }, getStyles, { whitelist: ['checked'] });
 
 	const handleChange = useCallback((event, isChecked) => {
-		if (isNil(props.checked)) setChecked(() => isChecked);
-		if (onChange) onChange(event, isChecked);
+		if (isNil(props.checked)) {
+			setChecked(() => isChecked);
+		}
+		if (onChange) {
+			onChange(event, isChecked);
+		}
 	}, []);
 
-	useDidUpdate(
-		() => !isNil(props.checked) && setChecked(() => props.checked),
-		[props.checked, checked],
-	);
+	useDidUpdate(() => {
+		if (!isNil(props.checked)) {
+			setChecked(() => props.checked);
+		}
+	}, [props.checked, checked]);
 
 	return (
 		<SelectionControl
 			checkedIcon={indeterminate ? indeterminateIcon : checkedIcon}
-			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
+			inputProps={{
+				'data-indeterminate': indeterminate,
+				...inputProps,
+			}}
 			icon={indeterminate ? indeterminateIcon : icon}
 			onChange={handleChange}
 			ref={ref}
@@ -116,13 +127,9 @@ const Checkbox = forwardRef((props, ref) => {
 Checkbox.displayName = 'Checkbox';
 
 Checkbox.propTypes = {
-	/**
-	 * If `true`, the component is checked.
-	 */
+	// If `true`, the component is checked.
 	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-	/**
-	 * The icon to display when the component is checked.
-	 */
+	// The icon to display when the component is checked.
 	checkedIcon: PropTypes.node,
 	/**
 	 * Override or extend the styles applied to the component.
@@ -130,24 +137,17 @@ Checkbox.propTypes = {
 	 */
 	className: PropTypes.string,
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
 	 */
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
-	/**
-	 * If `true`, the switch will be disabled.
-	 */
+	// If `true`, the switch will be disabled.
 	disabled: PropTypes.bool,
-	/**
-	 * If `true`, the ripple effect will be disabled.
-	 */
+	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
-	/**
-	 * The icon to display when the component is unchecked.
-	 */
+	// The icon to display when the component is unchecked.
 	icon: PropTypes.node,
-	/**
-	 * The id of the `input` element.
-	 */
+	// The id of the `input` element.
 	id: PropTypes.string,
 	/**
 	 * If `true`, the component appears indeterminate.
@@ -156,17 +156,11 @@ Checkbox.propTypes = {
 	 * However, we set a `data-indeterminate` attribute on the input.
 	 */
 	indeterminate: PropTypes.bool,
-	/**
-	 * The icon to display when the component is indeterminate.
-	 */
+	// The icon to display when the component is indeterminate.
 	indeterminateIcon: PropTypes.node,
-	/**
-	 * Properties applied to the `input` element.
-	 */
+	// Properties applied to the `input` element.
 	inputProps: PropTypes.object,
-	/**
-	 * Use that property to pass a ref callback to the native input component.
-	 */
+	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/**
 	 * Callback fired when the state is changed.
@@ -177,13 +171,9 @@ Checkbox.propTypes = {
 	 */
 	onChange: PropTypes.func,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/**
-	 * The input component property `type`.
-	 */
+	// The input component property `type`.
 	type: PropTypes.string,
-	/**
-	 * The value of the component.
-	 */
+	// The value of the component.
 	value: PropTypes.string,
 };
 

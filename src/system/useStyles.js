@@ -53,50 +53,37 @@ function useStyles(allProps, reducers, options = {}) {
 		[props],
 	);
 
-	const nextProps = useMemo(
-		() =>
-			getKeys(props)
-				.filter(
-					key => !styleProps.includes(key) || whitelist.includes(key),
-				)
-				.reduce((acc, key) => ({ ...acc, [key]: props[key] }), {}),
-		[props],
-	);
+	return useMemo(() => {
+		let nextProps = getKeys(props)
+			.filter(key => !styleProps.includes(key) || whitelist.includes(key))
+			.reduce((acc, key) => ({ ...acc, [key]: props[key] }), {});
 
-	const nextStyles = useMemo(
-		() =>
-			merge(
-				reducers.reduce(
-					(acc, reducer) =>
-						isFn(reducer) ? merge(acc, reducer(props)) : acc,
-					baseStyles,
-				),
-				isObj(styles) ? styles : {},
+		let nextStyles = merge(
+			reducers.reduce(
+				(acc, reducer) =>
+					isFn(reducer) ? merge(acc, reducer(props)) : acc,
+				baseStyles,
 			),
-		[dependancies],
-	);
+			isObj(styles) ? styles : {},
+		);
 
-	const nextClasses = useMemo(
-		() => {
-			const styleKeys = getKeys(nextStyles);
+		let styleKeys = getKeys(nextStyles);
+		let nextClasses;
+		if (getClasses && hasChildStyles(styleKeys)) {
+			nextClasses = cn(className, nextStyles);
+		} else if (getClasses) {
+			nextClasses = styleKeys.reduce((acc, style) => {
+				let prefix = '';
 
-			if (getClasses && hasChildStyles(styleKeys)) {
-				return cn(className, nextStyles);
-			} else if (getClasses) {
-				return styleKeys.reduce((acc, style) => {
-					let prefix = '';
+				if (classes[style]) prefix.concat(classes[style]);
+				if (cnPrefix === style) prefix.concat(className);
 
-					if (classes[style]) prefix.concat(classes[style]);
-					if (cnPrefix === style) prefix.concat(className);
+				return { ...acc, [style]: cn(prefix, nextStyles[style]) };
+			}, {});
+		}
 
-					return { ...acc, [style]: cn(prefix, nextStyles[style]) };
-				}, {});
-			}
-		},
-		[className, nextStyles],
-	);
-
-	return [{ styles: nextStyles, classes: nextClasses }, nextProps];
+		return [{ classes: nextClasses, styles: nextStyles }, nextProps];
+	}, [dependancies]);
 }
 
 export default useStyles;

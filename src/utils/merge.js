@@ -45,8 +45,8 @@ function deepmerge(target, src) {
 
 	if (!srcAndTargetTypesMatch) {
 		return cloneUnlessOtherwiseSpecified(src);
-	} else if (srcIsArray) {
-		return mergeArray(src);
+	} else if (srcIsArray && targetIsArray) {
+		return mergeArray(target, src);
 	} else {
 		return mergeObject(target, src);
 	}

@@ -1,65 +1,72 @@
 import ResizeObserver from 'resize-observer-polyfill';
-import { useCallback, useEffect, useRef } from 'react';
-import { toArr } from './../utils/helpers';
+import { useCallback, useEffect, useMemo, useReducer } from 'react';
+import { isArr, isFn, isObj, getKeys, toArr } from './../utils/helpers';
 
-const SIZE_PROPS = [
-	'bottom',
+const CLIENT = [
+	'clientHeight',
 	'clientWidth',
-	'height',
-	'left',
-	'right',
+	'offsetHeight',
+	'offsetTop',
+	'offsetLeft',
+	'offsetParent',
+	'offsetWidth',
 	'scrollHeight',
 	'scrollLeft',
+	'scrollTop',
 	'scrollWidth',
-	'top',
-	'width',
 ];
 
-function getSize(ref) {
-	const size = {
-		...ref.getBoundingClientRect().toJSON(),
-		clientWidth: ref.clientWidth,
-		scrollLeft: ref.scrollLeft,
-		scrollHeight: ref.scrollHeight,
-		scrollWidth: ref.scrollWidth,
-	};
+const RECT = ['bottom', 'height', 'left', 'right', 'top', 'width'];
 
-	return SIZE_PROPS.reduce(
-		(acc, prop) => ({ ...acc, [prop]: size[prop] }),
-		{},
-	);
-}
+const contains = (src, target) => {
+	target = isObj(target) ? getKeys(target) : target;
+	return isArr(src) && src.some(n => target.includes(n));
+};
 
-export default function useSize(ref, watch = SIZE_PROPS) {
-	const size = useRef({});
+const getRef = ref => ref.current;
 
-	const handleResize = useCallback(
-		() => {
-			if (ref.current) {
-				const { current } = size;
-				const next = getSize(ref.current);
+const getRect = ref => ref.current.getBoundingClientRect().toJSON();
 
-				if (!toArr(watch).every(prop => current[prop] === next[prop])) {
-					size.current = next;
-				}
-			}
-		},
-		[ref],
-	);
+const getProps = (src, target, props) => ref => {
+	const deps = src.filter(prop => target.includes(prop));
+	props = isFn(props) ? props(ref) : props;
+	return deps.reduce((a, p) => ({ ...a, [p]: props[p] }), {});
+};
 
-	useEffect(
-		() => {
-			handleResize();
-			let observer = new ResizeObserver(() => handleResize());
+const reducer = props => () => (state, ref) => {
+	const reducers = [];
+
+	if (contains(CLIENT, props)) {
+		reducers.push(getProps(CLIENT, props, getRef));
+	}
+
+	if (contains(RECT, props)) {
+		reducers.push(getProps(RECT, props, getRect));
+	}
+
+	return reducers.reduce((a, r) => ({ ...a, ...r(ref) }), state);
+};
+
+function useSize(ref, props = RECT) {
+	const [size, dispatch] = useReducer(useMemo(reducer(toArr(props)), []), {});
+
+	const handleResize = useCallback(() => dispatch(ref), [ref]);
+
+	useEffect(() => {
+		if (ref.current) {
+			let observer = new ResizeObserver(handleResize);
 			observer.observe(ref.current);
+
+			dispatch(ref);
 
 			return () => {
 				observer.disconnect(ref.current);
 				observer = null;
 			};
-		},
-		[ref.current],
-	);
+		}
+	}, [ref]);
 
-	return size.current;
+	return size;
 }
+
+export default useSize;

@@ -5,36 +5,43 @@ import { getSpacing, getText, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 function getColorStyles(props) {
+	const {
+		disabled,
+		color,
+		theme: { palette },
+	} = props;
+
 	if (props.disabled) {
 		return {
-			color: props.theme.palette.action.disabled,
+			color: palette.action.disabled,
 		};
 	} else if (
-		props.color === 'primary' ||
-		props.color === 'secondary' ||
-		props.color === 'error'
+		color === 'primary' ||
+		color === 'secondary' ||
+		color === 'error'
 	) {
 		return {
-			color: props.theme.palette[props.color].main,
+			color: palette[color].main,
 		};
-	} else if (props.color === 'active') {
+	} else if (color === 'active') {
 		return {
-			color: props.theme.palette.action.active,
+			color: palette.action.active,
 		};
 	}
-	return null;
 }
 
-function getTextStyles(props) {
-	if (props.fontSize && props.fontSize === 'inherit') {
-		return {
+function getTextStyles({ fontSize }) {
+	return (
+		fontSize &&
+		fontSize === 'inherit' && {
 			fontSize: 'inherit',
-		};
-	}
-	return null;
+		}
+	);
 }
 
 function getBaseStyles(props) {
+	const { getTransition } = props.theme;
+
 	return {
 		width: '1em',
 		height: '1em',
@@ -43,7 +50,10 @@ function getBaseStyles(props) {
 		display: 'inline-block',
 		flexShrink: 0,
 		fill: 'currentColor',
-		transition: props.theme.getTransition('fill', 'shorter', 'in'),
+		transition: getTransition('fill', {
+			duration: 'shorter',
+			easing: 'in',
+		}),
 	};
 }
 
@@ -56,8 +66,10 @@ const getStyles = combine(
 );
 getStyles.propTypes = {
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
-	 * You can use the `nativeColor` property to apply a color attribute to the SVG element.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
+	 * You can use the `nativeColor` property to apply a color attribute to the
+	 * SVG element.
 	 */
 	color: PropTypes.oneOf([
 		'inherit',
@@ -68,7 +80,8 @@ getStyles.propTypes = {
 		'disabled',
 	]),
 	/**
-	 * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
+	 * The fontSize applied to the icon. Defaults to 24px, but can be configure
+	 * to inherit font size.
 	 */
 	fontSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	...getSpacing.propTypes,

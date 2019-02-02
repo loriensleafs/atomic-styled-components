@@ -1,11 +1,10 @@
-import merge from './../utils/merge';
 import createMotion from './createMotion';
 import createPalette from './createPalette';
 import createResponsive from './createResponsive';
 import createTypography from './createTypography';
 import elevation from './elevation';
 import shape from './shape';
-import space from './space';
+import spacing from './spacing';
 
 function createTheme(overrides = {}) {
 	const {
@@ -16,7 +15,7 @@ function createTheme(overrides = {}) {
 		palette: paletteOverrides = {},
 		typography: typographyOverrides = {},
 	} = overrides;
-	const { easing, duration, getTransition, getEasing } = createMotion(
+	const { easings, durations, getTransition, getEasing } = createMotion(
 		durationOverrides,
 		easingOverrides,
 	);
@@ -28,10 +27,11 @@ function createTheme(overrides = {}) {
 		palette,
 		typographyOverrides,
 	);
+
 	return {
 		breakpoints,
-		duration,
-		easing,
+		durations,
+		easings,
 		elevation: elevationOverrides ? elevationOverrides : elevation,
 		getEasing,
 		getMq,
@@ -41,7 +41,7 @@ function createTheme(overrides = {}) {
 		palette,
 		pxToRem,
 		shape,
-		space,
+		spacing,
 		typography,
 	};
 }

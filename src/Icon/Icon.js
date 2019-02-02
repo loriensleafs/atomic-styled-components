@@ -17,27 +17,20 @@ function getColorStyles(props) {
 		case 'primary':
 		case 'secondary':
 		case 'error':
-			return getColors({
-				color: `${color}.main`,
-			});
-
+			return getColors({ color: `${color}.main` });
 		case 'active':
-			return getColors({
-				color: 'action.active',
-			});
-
+			return getColors({ color: 'action.active' });
 		default:
 			// 'inherit'
-			return {
-				color: 'inherit',
-			};
+			return { color: 'inherit' };
 	}
 }
 
 const getStyles = combine(getColorStyles, getFontSize, getSpacing);
 getStyles.propTypes = {
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
 	 */
 	color: PropTypes.oneOf([
 		'inherit',
@@ -82,16 +75,12 @@ function Icon(props) {
 Icon.displayName = 'Icon';
 
 Icon.propTypes = {
-	/**
-	 * The name of the icon font ligature.
-	 */
+	// The name of the icon font ligature.
 	children: PropTypes.node,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	/**
-	 * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
+	 * The fontSize applied to the icon. Defaults to 24px, but can be configure
+	 * to inherit font size.
 	 */
 	fontSize: PropTypes.oneOf(['inherit', 'default']),
 	...stylesPropType,

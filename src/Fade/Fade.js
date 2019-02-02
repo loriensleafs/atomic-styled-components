@@ -12,10 +12,12 @@ const Fade = forwardRef((props, ref) => {
 		children,
 		duration: { enter, exit },
 		ease,
-		onEnd,
-		onStart,
+		onEnter,
 		onEntering,
+		onEntered,
+		onExit,
 		onExiting,
+		onExited,
 		show,
 		style = {},
 		...passThru
@@ -27,10 +29,30 @@ const Fade = forwardRef((props, ref) => {
 		native: true,
 		config: { duration, easing },
 		opacity: (appear && !mounted) || !show ? 0 : 1,
-		onStart: () => onStart && onStart(),
-		onFrame: val =>
-			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
-		onRest: () => onEnd && onEnd(),
+		onStart: () => {
+			if (show && onEnter) {
+				onEnter();
+			}
+			if (!show && onExit) {
+				onExit();
+			}
+		},
+		onFrame: val => {
+			if (show && onEntering) {
+				onEntering(val);
+			}
+			if (!show && onExiting) {
+				onExiting(val);
+			}
+		},
+		onRest: () => {
+			if (show && onEntered) {
+				onEntered();
+			}
+			if (!show && onExited) {
+				onExited();
+			}
+		},
 	});
 
 	useDidMount(() => setMounted(() => true));
@@ -62,10 +84,18 @@ Fade.propTypes = {
 	}),
 	// The easing type the animation should use.
 	ease: PropTypes.string,
-	// Callback that is triggered at the end of the animation.
-	onEnd: PropTypes.func,
+	// Callback that is triggered when enter animation starts.
+	onEnter: PropTypes.func,
+	// Callback that is triggered while the animation is entering.
+	onEntering: PropTypes.func,
 	// Callback that is triggered at the start of the animation.
-	onStart: PropTypes.func,
+	onEntered: PropTypes.func,
+	// Callback that is trigged when exit animation starts.
+	onExit: PropTypes.func,
+	// Callback that is triggered while the animation is exiting.
+	onExiting: PropTypes.func,
+	// Callback that is triggered at the end of the animation.
+	onExited: PropTypes.func,
 	// If `true`, the component will transition in.
 	show: PropTypes.bool,
 	// Inline styles to apply to the animated wrapper.

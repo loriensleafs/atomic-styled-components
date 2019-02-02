@@ -7,11 +7,12 @@ import { useEffect, useRef } from 'react';
  * @param {*} value The value to store.
  * @returns {*} The stored value.
  */
-export default function usePrevious(value) {
+function usePrevious(value) {
 	const ref = useRef();
 	useEffect(() => {
 		ref.current = value;
-		return;
 	});
 	return ref.current;
 }
+
+export default usePrevious;

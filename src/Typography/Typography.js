@@ -36,9 +36,6 @@ function getColorStyles(props) {
 			return {
 				color: 'inherit',
 			};
-
-		default:
-			return null;
 	}
 }
 

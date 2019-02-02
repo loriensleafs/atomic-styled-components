@@ -57,18 +57,20 @@ function getBaseStyles(props) {
 	const { getTransition } = props.theme;
 
 	return {
-		transition: getTransition('background-color', 'shortest', 'in'),
+		transition: getTransition('background-color', {
+			duration: 'shortest',
+			easing: 'in',
+		}),
 	};
 }
 
 const getStyles = combine(getBaseStyles, getColorStyles);
 getStyles.propTypes = {
-	/**
-	 * If `true`, the component is checked.
-	 */
+	//  If `true`, the component is checked.
 	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
 	 */
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
@@ -107,37 +109,21 @@ const Radio = forwardRef((props, ref) => {
 Radio.displayName = 'Radio';
 
 Radio.propTypes = {
-	/**
-	 * If `true`, the component is checked.
-	 */
+	// If `true`, the component is checked.
 	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-	/**
-	 * The icon to display when the component is checked.
-	 */
+	// The icon to display when the component is checked.
 	checkedIcon: PropTypes.node,
-	/**
-	 * If `true`, the switch will be disabled.
-	 */
+	// If `true`, the switch will be disabled.
 	disabled: PropTypes.bool,
-	/**
-	 * If `true`, the ripple effect will be disabled.
-	 */
+	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
-	/**
-	 * The icon to display when the component is unchecked.
-	 */
+	// The icon to display when the component is unchecked.
 	icon: PropTypes.node,
-	/**
-	 * The id of the `input` element.
-	 */
+	// The id of the `input` element.
 	id: PropTypes.string,
-	/**
-	 * Attributes applied to the `input` element.
-	 */
+	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	/**
-	 * Use that property to pass a ref callback to the native input component.
-	 */
+	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/**
 	 * Callback fired when the state is changed.
@@ -148,13 +134,9 @@ Radio.propTypes = {
 	 */
 	onChange: PropTypes.func,
 	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/**
-	 * The input component property `type`.
-	 */
+	// The input component property `type`.
 	type: PropTypes.string,
-	/**
-	 * The value of the component.
-	 */
+	// The value of the component.
 	value: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.number,

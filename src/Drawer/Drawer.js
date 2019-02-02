@@ -132,9 +132,9 @@ function Drawer(props) {
 			children,
 			className,
 			elevation,
+			isOpen,
 			ModalProps,
 			onClose,
-			open,
 			PaperProps,
 			SlideProps,
 			variant,
@@ -158,7 +158,7 @@ function Drawer(props) {
 		<SlidingDrawer
 			anchor={anchor}
 			elevation={elevation}
-			show={open}
+			show={isOpen}
 			styles={styles.paper}
 			variant={variant}
 			{...SlideProps}
@@ -172,7 +172,7 @@ function Drawer(props) {
 		<Modal
 			className={classes.root}
 			onClose={onClose}
-			open={open}
+			isOpen={isOpen}
 			styles={styles.modal}
 			{...passThru}
 			{...ModalProps}
@@ -196,13 +196,13 @@ Drawer.propTypes = {
 	className: PropTypes.string,
 	// Elevation of the drawer.
 	elevation: PropTypes.number,
+	// If `true`, the drawer is open.
+	isOpen: PropTypes.bool,
 	// Properties applied to the [`Modal`](/api/modal/) element.
 	ModalProps: PropTypes.object,
 	// Callback fired when the component requests to be closed.
 	// @param {object} event The event source of the callback
 	onClose: PropTypes.func,
-	// If `true`, the drawer is open.
-	open: PropTypes.bool,
 	// Properties applied to the [`Paper`](/api/paper/) element.
 	PaperProps: PropTypes.object,
 	// Properties applied to the [`Slide`](/api/slide/) element.
@@ -215,7 +215,7 @@ Drawer.propTypes = {
 Drawer.defaultProps = {
 	anchor: 'left',
 	elevation: 16,
-	open: false,
+	isOpen: false,
 	variant: 'temporary', // Mobile first.
 };
 

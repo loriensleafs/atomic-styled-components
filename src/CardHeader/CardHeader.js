@@ -4,21 +4,29 @@ import Typography from './../Typography';
 import { getSpacing, useStyles } from './../system';
 import { stylesPropType } from './../utils/propTypes';
 
-function getStyles(props) {
+function getStyles() {
 	return {
 		root: {
 			display: 'flex',
 			alignItems: 'center',
-			...getSpacing({ py: 3, px: [3, 4] }),
+			...getSpacing({
+				py: 3,
+				px: [3, 4],
+			}),
 		},
 		avatar: {
 			flex: '0 0 auto',
-			...getSpacing({ mr: 3 }),
+			...getSpacing({
+				mr: 3,
+			}),
 		},
 		action: {
 			flex: '0 0 auto',
 			alignSelf: 'flex-start',
-			...getSpacing({ mt: -2, mr: [-3, -4] }),
+			...getSpacing({
+				mt: -2,
+				mr: [-3, -4],
+			}),
 		},
 		content: {
 			flex: '1 1 auto',
@@ -29,54 +37,69 @@ function getStyles(props) {
 }
 getStyles.propTypes = getSpacing.propTypes;
 
-const CardTitle = (avatar, className, disableTypography, title, ...passThru) =>
-	(title &&
-		(!title.type || (title.type && title.type !== Typography)) &&
-		!disableTypography && (
+function CardTitle(props) {
+	const { avatar, className, disableTypography, title, ...passThru } = props;
+
+	if (
+		title &&
+		!disableTypography &&
+		(!title.type || (title.type && title.type !== Typography))
+	) {
+		return (
 			<Typography
-				variant={avatar ? 'body2' : 'headline'}
+				as="span"
 				className={className}
-				component="span"
+				variant={avatar ? 'body2' : 'headline'}
 				{...passThru}
 			>
 				{title}
 			</Typography>
-		)) ||
-	title ||
-	null;
+		);
+	} else if (title) {
+		return title;
+	}
+	return null;
+}
 
-const CardSubHeader = (
-	avatar,
-	className,
-	disableTypography,
-	subheader,
-	...passThru
-) =>
-	(subheader &&
-		(!subheader.type ||
-			(subheader.type && subheader.type !== Typography)) &&
-		!disableTypography && (
+function CardSubHeader(props) {
+	const {
+		avatar,
+		className,
+		disableTypography,
+		subheader,
+		...passThru
+	} = props;
+
+	if (
+		subheader &&
+		!disableTypography &&
+		(subheader.type && subheader.type !== Typography)
+	) {
+		return (
 			<Typography
-				variant={avatar ? 'body2' : 'body1'}
+				as="span"
 				className={className}
 				color="text.secondary"
-				component="span"
+				variant={avatar ? 'body2' : 'body1'}
 				{...passThru}
 			>
 				{subheader}
 			</Typography>
-		)) ||
-	subheader ||
-	null;
+		);
+	} else if (subheader) {
+		return subheader;
+	}
+	return null;
+}
 
 function CardHeader(props) {
 	const [
 		{ classes },
 		{
 			action,
+			as: Component,
 			avatar,
 			className,
-			component: Component,
 			disableTypography,
 			subheader,
 			subheaderTypographyProps,
@@ -113,46 +136,36 @@ function CardHeader(props) {
 CardHeader.displayName = 'CardHeader';
 
 CardHeader.propTypes = {
-	/**
-	 * The action to display in the card header.
-	 */
+	// The action to display in the card header.
 	action: PropTypes.node,
-	/**
-	 * The Avatar for the Card Header.
-	 */
-	avatar: PropTypes.node,
-	/**
-	 * @ignore
-	 */
-	className: PropTypes.string,
 	/**
 	 * The component used for the root node.
 	 * Either a string to use a DOM element or a component.
 	 */
-	component: PropTypes.oneOfType([
+	as: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
 		PropTypes.object,
 	]),
+	// The Avatar for the Card Header.
+	avatar: PropTypes.node,
+	className: PropTypes.string,
 	/**
 	 * If `true`, the children won't be wrapped by a Typography component.
-	 * This can be useful to render an alternative Typography variant by wrapping
+	 * This can be useful to render an alternative Typography variant by
+	 * wrapping
 	 * the `title` text, and optional `subheader` text
 	 * with the Typography component.
 	 */
 	disableTypography: PropTypes.bool,
-	/**
-	 * The content of the component.
-	 */
+	// The content of the component.
 	subheader: PropTypes.node,
 	/**
 	 * These props will be forwarded to the subheader
 	 * (as long as disableTypography is not `true`).
 	 */
 	subheaderTypographyProps: PropTypes.object,
-	/**
-	 * The content of the Card Title.
-	 */
+	// The content of the Card Title.
 	title: PropTypes.node,
 	/**
 	 * These props will be forwarded to the title
@@ -163,7 +176,7 @@ CardHeader.propTypes = {
 };
 
 CardHeader.defaultProps = {
-	component: 'div',
+	as: 'div',
 	disableTypography: false,
 };
 

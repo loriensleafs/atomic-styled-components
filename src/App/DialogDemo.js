@@ -156,13 +156,13 @@ const SimpleDialog = props => {
 };
 
 const SimpleDialogs = () => {
-	const [open, setOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 	const [selectedValue, setSelectedValue] = useState(emails[1]);
 
-	const handleOpen = useCallback(() => setOpen(() => true), []);
+	const handleOpen = useCallback(() => setIsOpen(() => true), []);
 
 	const handleClose = useCallback(value => {
-		setOpen(() => false);
+		setIsOpen(() => false);
 		setSelectedValue(() => value);
 	}, []);
 
@@ -198,7 +198,7 @@ const SimpleDialogs = () => {
 				</Button>
 				<SimpleDialog
 					selectedValue={selectedValue}
-					open={open}
+					isOpen={isOpen}
 					onClose={handleClose}
 				/>
 			</DemoBox>
@@ -209,11 +209,11 @@ const SimpleDialogs = () => {
 const Transition = props => <Slide direction="up" appear {...props} />;
 
 const FullScreenDialogs = () => {
-	const [open, setOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 
-	const handleOpen = useCallback(() => setOpen(() => true), []);
+	const handleOpen = useCallback(() => setIsOpen(() => true), []);
 
-	const handleClose = useCallback(() => setOpen(() => false), []);
+	const handleClose = useCallback(() => setIsOpen(() => false), []);
 
 	return (
 		<Fragment>
@@ -223,10 +223,10 @@ const FullScreenDialogs = () => {
 					Open full-screen dialog
 				</Button>
 				<Dialog
-					open={open}
+					isOpen={isOpen}
 					onClose={handleClose}
 					TransitionComponent={Transition}
-					fullScreen
+					isFullScreen
 				>
 					<AppBar styles={{ position: 'relative' }}>
 						<Toolbar>
@@ -305,18 +305,20 @@ const AlertDialog = props => (
 );
 
 const AlertDialogs = props => {
-	const [open, setOpen] = useState({
+	const [isOpen, setIsOpen] = useState({
 		fadeInAlert: false,
 		slideInAlert: false,
 	});
 
 	const handleOpen = useCallback(
-		alertType => () => setOpen(state => ({ ...state, [alertType]: true })),
+		alertType => () =>
+			setIsOpen(state => ({ ...state, [alertType]: true })),
 		[],
 	);
 
 	const handleClose = useCallback(
-		alertType => () => setOpen(state => ({ ...state, [alertType]: false })),
+		alertType => () =>
+			setIsOpen(state => ({ ...state, [alertType]: false })),
 		[],
 	);
 
@@ -362,7 +364,7 @@ const AlertDialogs = props => {
 					Open alert dialog
 				</Button>
 				<AlertDialog
-					open={open.fadeInAlert}
+					isOpen={isOpen.fadeInAlert}
 					onClose={handleClose('fadeInAlert')}
 				/>
 			</DemoBox>
@@ -379,7 +381,7 @@ const AlertDialogs = props => {
 					slide in alert dialog
 				</Button>
 				<AlertDialog
-					open={open.slideInAlert}
+					isOpen={isOpen.slideInAlert}
 					onClose={handleClose('slideInAlert')}
 					TransitionComponent={Transition}
 				/>
@@ -404,18 +406,18 @@ const OptionalDialogSizes = () => {
 };
 
 const ScrollableDialogs = () => {
-	const [open, setOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 	const [scroll, setScroll] = useState('paper');
 
 	const handleOpen = useCallback(
 		scrollType => () => {
-			setOpen(() => true);
+			setIsOpen(() => true);
 			setScroll(() => scrollType);
 		},
 		[],
 	);
 
-	const handleClose = useCallback(() => setOpen(() => false), []);
+	const handleClose = useCallback(() => setIsOpen(() => false), []);
 
 	return (
 		<Fragment>
@@ -452,7 +454,7 @@ const ScrollableDialogs = () => {
 					scroll=body
 				</Button>
 				<Dialog
-					open={open}
+					isOpen={isOpen}
 					onClose={handleClose}
 					scroll={scroll}
 					aria-labelledby="scroll-dialog-title"

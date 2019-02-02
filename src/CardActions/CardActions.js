@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { getSpacing, useStyles } from './../system';
 import { stylesPropType } from './../utils/propTypes';
@@ -36,13 +36,8 @@ function CardActions(props) {
 CardActions.displayName = 'CardActions';
 
 CardActions.propTypes = {
-	/**
-	 * The content of the component.
-	 */
+	// The content of the component.\
 	children: PropTypes.node,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	...stylesPropType,
 };

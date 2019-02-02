@@ -10,45 +10,49 @@ import { fade } from './../utils/colorHelpers';
 import { stylesPropType } from './../utils/propTypes';
 
 function getDisabledStyles(props) {
-	if (props.disabled) {
-		return {
+	const {
+		disabled,
+		theme: { palette },
+	} = props;
+	const isLight = palette.type === 'light';
+
+	return (
+		disabled && {
 			bar: {
-				backgroundColor:
-					props.theme.palette.type === 'light'
-						? props.theme.palette.common.black
-						: props.theme.palette.common.white,
-				opacity: props.theme.palette.type === 'light' ? 0.12 : 0.1,
+				backgroundColor: isLight
+					? palette.common.black
+					: palette.common.white,
+				opacity: isLight ? 0.12 : 0.1,
 			},
 			button: {
 				pointerEvents: 'none',
 			},
 			iconChecked: {
-				color:
-					props.theme.palette.type === 'light'
-						? props.theme.palette.grey.main
-						: props.theme.palette.grey.dark,
+				color: isLight ? palette.grey.main : palette.grey.dark,
 			},
 			iconUnchecked: {
-				color:
-					props.theme.palette.type === 'light'
-						? props.theme.palette.grey.main
-						: props.theme.palette.grey.dark,
+				color: isLight ? palette.grey.main : palette.grey.dark,
 			},
-		};
-	}
-	return null;
+		}
+	);
 }
 
 function getCheckedStyles(props) {
-	if (props.checked) {
-		const backgroundColor =
-			props.color === 'primary' || props.color === 'secondary'
-				? props.theme.palette[props.color].main
-				: props.theme.palette.type === 'light'
-				? props.theme.palette.common.black
-				: props.theme.palette.common.white;
+	const {
+		checked,
+		color,
+		theme: { palette },
+	} = props;
+	const isBrand = color === 'primary' || color === 'secondary';
+	const isLight = palette.type === 'light';
+	const backgroundColor = isBrand
+		? palette[color].main
+		: isLight
+		? palette.common.black
+		: palette.common.white;
 
-		return {
+	return (
+		checked && {
 			bar: {
 				backgroundColor,
 				opacity: 0.5,
@@ -58,20 +62,21 @@ function getCheckedStyles(props) {
 				':hover': {
 					backgroundColor: fade(
 						backgroundColor,
-						props.theme.palette.action.hoverOpacity,
+						palette.action.hoverOpacity,
 					),
 				},
 			},
-		};
-	}
-	return null;
+		}
+	);
 }
 
 function getBaseStyles(props) {
-	const backgroundColor =
-		props.theme.palette.type === 'light'
-			? props.theme.palette.common.black
-			: props.theme.palette.common.white;
+	const { color, elevation, getTransition, palette } = props.theme;
+	const isBrand = color === 'primary' || color === 'secondary';
+	const isLight = palette.type === 'light';
+	const backgroundColor = isLight
+		? palette.common.black
+		: palette.common.white;
 
 	return {
 		root: {
@@ -93,7 +98,7 @@ function getBaseStyles(props) {
 			display: 'block',
 			backgroundColor,
 			borderRadius: `${14 / 2}px`,
-			opacity: props.theme.palette.type === 'light' ? 0.38 : 0.3,
+			opacity: isLight ? 0.38 : 0.3,
 		},
 		button: {
 			zIndex: 1,
@@ -101,15 +106,14 @@ function getBaseStyles(props) {
 			padding: '0px',
 			height: '48px',
 			width: '48px',
-			transition: props.theme.getTransition(
-				'background-color',
-				'shortest',
-				'in',
-			),
+			transition: getTransition('background-color', {
+				duration: 'shortest',
+				easing: 'in',
+			}),
 			':hover': {
 				backgroundColor: fade(
 					backgroundColor,
-					props.theme.palette.action.hoverOpacity,
+					palette.action.hoverOpacity,
 				),
 			},
 		},
@@ -120,17 +124,16 @@ function getBaseStyles(props) {
 			borderRadius: '50%',
 		},
 		iconUnchecked: {
-			color: props.theme.palette.common.white,
-			boxShadow: props.theme.elevation[1],
+			color: palette.common.white,
+			boxShadow: elevation[1],
 		},
 		iconChecked: {
-			color:
-				props.color === 'primary' || props.color === 'secondary'
-					? props.theme.palette[props.color].main
-					: props.theme.palette.type === 'light'
-					? props.theme.palette.common.white
-					: props.theme.palette.grey.main,
-			boxShadow: props.theme.elevation[2],
+			color: isBrand
+				? palette[color].main
+				: isLight
+				? palette.common.white
+				: palette.grey.main,
+			boxShadow: elevation[2],
 		},
 		selectControlUnchecked: {
 			transform: 'translate3d(0px, 0px, 0px)',
@@ -144,7 +147,8 @@ function getBaseStyles(props) {
 const getStyles = combine(getBaseStyles, getCheckedStyles, getDisabledStyles);
 getStyles.propTypes = {
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
 	 */
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
@@ -171,8 +175,12 @@ const Switch = forwardRef((props, ref) => {
 	});
 
 	const handleChange = useCallback(event => {
-		if (isNil(props.checked)) setChecked(event.target.checked);
-		if (onChange) onChange(event, event.target.checked);
+		if (isNil(props.checked)) {
+			setChecked(event.target.checked);
+		}
+		if (onChange) {
+			onChange(event, event.target.checked);
+		}
 	}, []);
 
 	useDidUpdate(() => !isNil(props.checked) && setChecked(props.checked), [
@@ -207,39 +215,22 @@ const Switch = forwardRef((props, ref) => {
 Switch.displayName = 'Switch';
 
 Switch.propTypes = {
-	/**
-	 * If `true`, the component is checked.
-	 */
+	// If `true`, the component is checked.
 	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-	/**
-	 * The icon to display when the component is checked.
-	 */
+	// The icon to display when the component is checked.
 	checkedIcon: PropTypes.node,
 	className: PropTypes.string,
 	defaultChecked: PropTypes.bool,
-	/**
-	 * If `true`, the switch will be disabled.
-	 */
+	// If `true`, the switch will be disabled.
 	disabled: PropTypes.bool,
-	/**
-	 * If `true`, the ripple effect will be disabled.
-	 */
+	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
-	/**
-	 * The icon to display when the component is unchecked.
-	 */
-	// icon: PropTypes.node,
-	/**
-	 * The id of the `input` element.
-	 */
+	// The icon to display when the component is unchecked.
+	icon: PropTypes.node,
 	id: PropTypes.string,
-	/**
-	 * Attributes applied to the `input` element.
-	 */
+	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	/**
-	 * Use that property to pass a ref callback to the native input component.
-	 */
+	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	/**
 	 * Callback fired when the state is changed.
@@ -250,13 +241,9 @@ Switch.propTypes = {
 	 */
 	onChange: PropTypes.func,
 	...stylesPropType,
-	/**
-	 * The input component property `type`.
-	 */
+	// The input component property `type`.
 	type: PropTypes.string,
-	/**
-	 * The value of the component.
-	 */
+	// The value of the component.
 	value: PropTypes.string,
 	...getStyles.propTypes,
 };

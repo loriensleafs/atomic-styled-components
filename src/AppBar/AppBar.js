@@ -5,7 +5,12 @@ import combine from './../utils/combine';
 import { getColors, useStyles } from './../system';
 import { stylesPropType } from './../utils/propTypes';
 
-function getColorStyles({ color, theme }) {
+function getColorStyles(props) {
+	const {
+		color,
+		theme: { palette },
+	} = props;
+
 	switch (color) {
 		case 'primary':
 		case 'secondary':
@@ -15,11 +20,8 @@ function getColorStyles({ color, theme }) {
 			});
 		case 'default':
 			return getColors({
-				bg: `grey.${theme.palette.type}`,
+				bg: `grey.${palette.type}`,
 			});
-		default:
-			// 'inherit'
-			return null;
 	}
 }
 
@@ -89,13 +91,12 @@ const AppBar = forwardRef((props, ref) => {
 AppBar.displayName = 'AppBar';
 
 AppBar.propTypes = {
-	/**
-	 * The content of the component.
-	 */
+	// The content of the component.
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
 	/**
-	 * The color of the component. It supports those theme colors that make sense for this component.
+	 * The color of the component. It supports those theme colors that make
+	 * sense for this component.
 	 */
 	...getColorStyles.propTypes,
 	/**

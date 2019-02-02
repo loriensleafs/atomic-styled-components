@@ -17,10 +17,12 @@ const Collapse = forwardRef((props, ref) => {
 		collapseTo,
 		duration: { enter, exit },
 		ease,
-		onEnd,
-		onStart,
+		onEnter,
 		onEntering,
+		onEntered,
+		onExit,
 		onExiting,
+		onExited,
 		show,
 		style = {},
 		...passThru
@@ -36,15 +38,35 @@ const Collapse = forwardRef((props, ref) => {
 		immediate: !appear && !isMounted,
 		native: true,
 		to: { height },
-		onFrame: val =>
-			show ? onEntering && onEntering(val) : onExiting && onExiting(val),
-		onRest: () => onEnd && onEnd(),
-		onStart: () => onStart && onStart(),
+		onStart: () => {
+			if (show && onEnter) {
+				onEnter();
+			}
+			if (!show && onExit) {
+				onExit();
+			}
+		},
+		onFrame: val => {
+			if (show && onEntering) {
+				onEntering(val);
+			}
+			if (!show && onExiting) {
+				onExiting(val);
+			}
+		},
+		onRest: () => {
+			if (show && onEntered) {
+				onEntered();
+			}
+			if (!show && onExited) {
+				onExited();
+			}
+		},
 	});
 
 	useEffect(
 		() =>
-			setHeight(() =>
+			setHeight(
 				show
 					? height === 'auto'
 						? scrollHeight + 1
@@ -82,14 +104,18 @@ Collapse.propTypes = {
 	}),
 	// The easing type the animation should use.
 	ease: PropTypes.string,
-	// Callback that is triggered at the end of the animation.
-	onEnd: PropTypes.func,
-	// Callback that is triggered at the start of the animation.
-	onStart: PropTypes.func,
+	// Callback that is triggered when enter animation starts.
+	onEnter: PropTypes.func,
 	// Callback that is triggered while the animation is entering.
 	onEntering: PropTypes.func,
+	// Callback that is triggered at the start of the animation.
+	onEntered: PropTypes.func,
+	// Callback that is trigged when exit animation starts.
+	onExit: PropTypes.func,
 	// Callback that is triggered while the animation is exiting.
 	onExiting: PropTypes.func,
+	// Callback that is triggered at the end of the animation.
+	onExited: PropTypes.func,
 	// Inline styles to apply to the animated wrapper.
 	style: PropTypes.object,
 	...componentPropType,

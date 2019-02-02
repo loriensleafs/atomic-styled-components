@@ -4,9 +4,9 @@ import combine from './../utils/combine';
 import { getSpacing, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-function getStickyStyles(props) {
+function getStickyStyles({ disableSticky }) {
 	return (
-		!props.disableSticky && {
+		!disableSticky && {
 			zIndex: 1,
 			position: 'sticky',
 			top: '0px',
@@ -16,13 +16,15 @@ function getStickyStyles(props) {
 }
 
 function getColorStyles(props) {
+	const {
+		color,
+		theme: { palette },
+	} = props;
+
 	return (
-		props.color === 'primary' ||
-		(props.color === 'inherit' && {
-			color:
-				props.color === 'inherit'
-					? 'inherit'
-					: props.theme.palette.primary.main,
+		color === 'primary' ||
+		(color === 'inherit' && {
+			color: color === 'inherit' ? 'inherit' : palette.primary.main,
 		})
 	);
 }
@@ -62,7 +64,7 @@ getStyles.propTypes = {
 };
 
 function ListSubheader(props) {
-	const [{ classes }, { className, as: Component, ...passThru }] = useStyles(
+	const [{ classes }, { as: Component, className, ...passThru }] = useStyles(
 		props,
 		getStyles,
 	);

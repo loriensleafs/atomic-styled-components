@@ -10,9 +10,7 @@ function getBaseStyles() {
 			py: 3,
 			px: [3, 3.5],
 		}),
-		':last-child': getSpacing({
-			pb: 3.5,
-		}),
+		':last-child': getSpacing({ pb: 3.5 }),
 	};
 }
 
@@ -31,9 +29,6 @@ function CardContent(props) {
 CardContent.displayName = 'CardContent';
 
 CardContent.propTypes = {
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	/**
 	 * The component used for the root node.
