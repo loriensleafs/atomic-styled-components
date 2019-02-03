@@ -1,47 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../system/useStyles';
-import { stylesPropType } from './../utils/propTypes';
+import useStyles from '../system/useStyles';
+import { stylesPropType } from '../utils/propTypes';
 
-function getStyles(props) {
-	const { getTransition, shape } = props.theme;
-
-	return {
-		root: {
-			position: 'absolute',
-			bottom: 0,
-			right: 0,
-			top: -5,
-			left: 0,
-			margin: 0,
-			padding: 0,
-			pointerEvents: 'none',
-			borderRadius: shape.borderRadius.round,
-			borderStyle: 'solid',
-			borderWidth: '1px',
-			transition: getTransition(
-				['padding-right', 'border-color', 'border-width'],
-				{
-					duration: 'shorter',
-					easing: 'out',
-				},
-			),
-		},
-		legend: {
-			padding: '0px',
-			lineHeight: '11px',
-			textAlign: 'left',
-			transition: getTransition('width', {
+const getStyles = ({ theme: { getTransition, shape } }) => ({
+	root: {
+		position: 'absolute',
+		bottom: 0,
+		right: 0,
+		top: -5,
+		left: 0,
+		margin: 0,
+		padding: 0,
+		pointerEvents: 'none',
+		borderRadius: shape.borderRadius.round,
+		borderStyle: 'solid',
+		borderWidth: '1px',
+		transition: getTransition(
+			['padding-right', 'border-color', 'border-width'],
+			{
 				duration: 'shorter',
 				easing: 'out',
-			}),
-		},
-	};
-}
+			},
+		),
+	},
+	legend: {
+		padding: '0px',
+		lineHeight: '11px',
+		textAlign: 'left',
+		transition: getTransition('width', {
+			duration: 'shorter',
+			easing: 'out',
+		}),
+	},
+});
 
 function NotchedOutline(props) {
 	const [
-		{ classes, styles },
+		{ classes },
 		{
 			children,
 			className,

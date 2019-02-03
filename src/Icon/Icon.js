@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import combine from './../utils/combine';
-import { getColors, getFontSize, getSpacing, useStyles } from './../styles';
-import { stylesPropType } from './../utils/propTypes';
+import combine from '../utils/combine';
+import { getColors, getFontSize, getSpacing, useStyles } from '../styles';
+import { stylesPropType } from '../utils/propTypes';
 
-function getColorStyles(props) {
-	const { color, disabled } = props;
-
+const getColorStyles = ({ color, disabled }) => {
 	if (disabled) {
 		return getColors({
 			color: 'action.disabled',
@@ -24,7 +22,7 @@ function getColorStyles(props) {
 			// 'inherit'
 			return { color: 'inherit' };
 	}
-}
+};
 
 const getStyles = combine(getColorStyles, getFontSize, getSpacing);
 getStyles.propTypes = {

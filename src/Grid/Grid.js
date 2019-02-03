@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Box from '../Box';
-import { getGrid, useStyles } from './../system';
+import { getGrid, useStyles } from '../system';
 
 const Grid = forwardRef((props, ref) => {
 	const [{ styles }, { children, ...passThru }] = useStyles(props, getGrid);

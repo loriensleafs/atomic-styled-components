@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
-import { getBox, useStyles } from './../system';
-import { componentPropType, stylesPropType } from './../utils/propTypes';
+import { getBox, useStyles } from '../system';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 const Box = forwardRef((props, ref) => {
 	const [{ classes }, { children, className, as, ...passThru }] = useStyles(

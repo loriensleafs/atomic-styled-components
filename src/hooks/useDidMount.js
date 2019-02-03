@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isFn } from './../utils/helpers';
+import { isFn } from '../utils/helpers';
 
 /**
  * Triggers the function when the initial rendering occurs.

@@ -1,31 +1,29 @@
 import React, { cloneElement, useContext } from 'react';
 import PropTypes from 'prop-types';
-import ListContext from './../List/ListContext';
-import { getFontSize, getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import ListContext from '../List/ListContext';
+import combine from '../utils/combine';
+import { getFontSize, getSpacing, useStyles } from '../system';
+import { stylesPropType } from '../utils/propTypes';
 
-function getStyles(props) {
-	const { alignItems, dense } = props;
-	const isFlexStart = alignItems === 'flex-start';
-	const styles = {
-		root: {
-			width: '36px',
-			height: '36px',
-			...getSpacing({ mt: isFlexStart ? 1 : null, mr: 1 }),
+const getDenseStyles = ({ dense }) =>
+	dense && {
+		icon: {
+			width: '20px',
+			height: '20px',
 			...getFontSize({ fontSize: 4 }),
 		},
 	};
 
-	if (dense) {
-		styles.icon = {
-			width: '20px',
-			height: '20px',
-			...getFontSize({ fontSize: 4 }),
-		};
-	}
+const getBaseStyles = ({ alignItems }) => ({
+	root: {
+		width: '36px',
+		height: '36px',
+		...getSpacing({ mt: alignItems === 'flex-start' ? 1 : null, mr: 1 }),
+		...getFontSize({ fontSize: 4 }),
+	},
+});
 
-	return styles;
-}
+const getStyles = combine(getBaseStyles, getDenseStyles);
 getStyles.propTypes = {
 	alignItems: PropTypes.string,
 	dense: PropTypes.bool,

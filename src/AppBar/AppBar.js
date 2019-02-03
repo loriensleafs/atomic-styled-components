@@ -1,9 +1,9 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import Paper from './../Paper';
-import combine from './../utils/combine';
-import { getColors, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import Paper from '../Paper';
+import combine from '../utils/combine';
+import { getColors, useStyles } from '../system';
+import { stylesPropType } from '../utils/propTypes';
 
 function getColorStyles(props) {
 	const {

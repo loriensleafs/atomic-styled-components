@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import cn from './../system/className';
-import merge from './../utils/merge';
-import { isFn } from './../utils/helpers';
-import { stylesPropType } from './../utils/propTypes';
+import cn from '../system/className';
+import merge from '../utils/merge';
+import { isFn } from '../utils/helpers';
+import { stylesPropType } from '../utils/propTypes';
 
 const baseStyles = {
 	position: 'absolute',

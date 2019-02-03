@@ -1,8 +1,8 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDidMount, useMotion } from './../hooks';
+import useMotion from '../hooks/useMotion';
 import { animated, useSpring } from 'react-spring/hooks';
-import { componentPropType } from './../utils/propTypes';
+import { componentPropType } from '../utils/propTypes';
 
 const Fade = forwardRef((props, ref) => {
 	const {
@@ -55,7 +55,7 @@ const Fade = forwardRef((props, ref) => {
 		},
 	});
 
-	useDidMount(() => setMounted(() => true));
+	useEffect(() => setMounted(true), []);
 
 	return (
 		<Component

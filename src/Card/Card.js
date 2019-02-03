@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import Paper from './../Paper';
+import Paper from '../Paper';
 
 const Card = forwardRef(({ raised, styles, ...props }, ref) => (
 	<Paper

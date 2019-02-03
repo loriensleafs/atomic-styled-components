@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { useIsMounted, useMotion } from './../hooks';
+import { useMounted, useMotion } from '../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
-import { componentPropType } from './../utils/propTypes';
+import { componentPropType } from '../utils/propTypes';
 
 const Grow = forwardRef((props, ref) => {
 	const {
@@ -22,16 +22,15 @@ const Grow = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
-	const isMounted = useIsMounted();
+	const mounted = useMounted();
 	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const Component = animated(as);
 	const transition = useSpring({
 		native: true,
 		config: { duration, easing },
 		to: {
-			opacity: (appear && !isMounted) || !show ? 0 : 1,
-			transform:
-				(appear && !isMounted) || !show ? `scale(0)` : `scale(1)`,
+			opacity: (appear && !mounted) || !show ? 0 : 1,
+			transform: (appear && !mounted) || !show ? `scale(0)` : `scale(1)`,
 		},
 		onStart: () => {
 			if (show && onEnter) {

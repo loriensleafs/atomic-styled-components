@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { aliases, breakpoints } from './../theme/createResponsive';
-import { capitalize } from './../utils/helpers';
+import { aliases, breakpoints } from '../theme/createResponsive';
+import { capitalize } from '../utils/helpers';
 
 const getBps = bps => [0, ...bps].map(bp => `(min-width: ${bp}px)`);
 

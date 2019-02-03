@@ -1,67 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import InputBase from './../InputBase';
-import combine from './../utils/combine';
-import { getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import InputBase from '../InputBase';
+import combine from '../utils/combine';
+import { getSpacing, useStyles } from '../system';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-function getAdornmentStyles(props) {
-	const { hasEndAdornment, hasStartAdornment } = props;
-	const next = {};
+const getAdornmentStyles = ({ endAdornment, startAdornment }) =>
+	(endAdornment && {
+		root: getSpacing({ pl: 14 }),
+		input: getSpacing({ pl: 0 }),
+	}) ||
+	(startAdornment && {
+		root: getSpacing({ pr: 14 }),
+		input: getSpacing({ pr: 0 }),
+	});
 
-	if (hasStartAdornment) {
-		next.root = getSpacing({ pl: 2.5 });
-		next.input = getSpacing({ pl: 0 });
-	}
-	if (hasEndAdornment) {
-		next.root = getSpacing({ pr: 2.5 });
-		next.input = getSpacing({ pr: 0 });
-	}
-
-	return next;
-}
-
-function getErrorStyles(props) {
-	const {
-		hasError,
-		theme: { palette },
-	} = props;
-
-	return (
-		hasError && {
-			root: {
-				':after': {
-					borderBottomColor: palette.error.main,
-					transform: 'scaleX(1)',
-				},
+const getErrorStyles = ({ error, theme: { palette } }) =>
+	error && {
+		root: {
+			':after': {
+				borderBottomColor: palette.error.main,
+				transform: 'scaleX(1)',
 			},
-		}
-	);
-}
+		},
+	};
 
-function getMultilineStyles({ isMultilined }) {
-	return (
-		isMultilined && {
-			root: {
-				// Prevent pading issue with isFullWidth.
-				boxSizing: 'border-box',
-				padding: '27px 12px 10px',
-			},
-			input: {
-				padding: '0px',
-			},
-		}
-	);
-}
+const getMultilineStyles = ({ multilined }) =>
+	multilined && {
+		root: {
+			// Prevent pading issue with isFullWidth.
+			boxSizing: 'border-box',
+			padding: '27px 12px 10px',
+		},
+		input: {
+			padding: '0px',
+		},
+	};
 
-function getUnderlinedStyles(props) {
-	const {
-		disableUnderline,
-		hasError,
-		isDisabled,
-		isFocused,
-		theme: { getTransition, palette },
-	} = props;
+const getUnderlinedStyles = ({
+	disabled,
+	disableUnderline,
+	error,
+	focused,
+	theme: { getTransition, palette },
+}) => {
 	const isLight = palette.type === 'light';
 	const bottomLineColor = isLight
 		? 'rgba(0,0,0,0.42)'
@@ -103,7 +85,7 @@ function getUnderlinedStyles(props) {
 			},
 		};
 
-		if (!hasError && !isDisabled && !isFocused) {
+		if (!error && !disabled && !focused) {
 			next.root[':hover'] = {
 				borderBottom: `1px solid ${palette.text.primary}`,
 			};
@@ -111,51 +93,51 @@ function getUnderlinedStyles(props) {
 	}
 
 	return next;
-}
+};
 
-function getBaseStyles(props) {
-	const { getTransition, palette, shape } = props.theme;
-	const isLight = palette.type === 'light';
-
-	return {
-		root: {
-			position: 'relative',
-			backgroundColor: isLight
+const getBaseStyles = ({ theme: { getTransition, palette, shape } }) => ({
+	root: {
+		position: 'relative',
+		backgroundColor:
+			palette.type === 'light'
 				? 'rgba(0, 0, 0, 0.09)'
 				: 'rgba(255, 255, 255, 0.09)',
-			borderTopLeftRadius: shape.borderRadius.round,
-			borderTopRightRadius: shape.borderRadius.round,
-			transition: getTransition('background-color', {
-				duration: 'shorter',
-				easing: 'out',
-			}),
-			':hover': {
-				backgroundColor: isLight
+		borderTopLeftRadius: shape.borderRadius.round,
+		borderTopRightRadius: shape.borderRadius.round,
+		transition: getTransition('background-color', {
+			duration: 'shorter',
+			easing: 'out',
+		}),
+		':hover': {
+			backgroundColor:
+				palette.type === 'light'
 					? 'rgba(0, 0, 0, 0.13)'
 					: 'rgba(255, 255, 255, 0.13)',
-				// Reset on touch devices so as not to add specificity.
-				'@media (hover: none)': {
-					backgroundColor: isLight
+			// Reset on touch devices so as not to add specificity.
+			'@media (hover: none)': {
+				backgroundColor:
+					palette.type === 'light'
 						? 'rgba(0, 0, 0, 0.09)'
 						: 'rgba(255, 255, 255, 0.09)',
-				},
 			},
-			':focused:after': {
-				backgroundColor: isLight
+		},
+		':focused:after': {
+			backgroundColor:
+				palette.type === 'light'
 					? 'rgba(0, 0, 0, 0.09)'
 					: 'rgba(255, 255, 255, 0.12)',
-			},
-			':disabled': {
-				backgroundColor: isLight
+		},
+		':disabled': {
+			backgroundColor:
+				palette.type === 'light'
 					? 'rgba(0, 0, 0, 0.12)'
 					: 'rgba(255, 255, 255, 0.12)',
-			},
 		},
-		input: {
-			padding: '27px 12px 10px',
-		},
-	};
-}
+	},
+	input: {
+		padding: '27px 12px 10px',
+	},
+});
 
 const getStyles = combine(
 	getBaseStyles,
@@ -167,16 +149,12 @@ const getStyles = combine(
 getStyles.propTypes = {
 	// If `true`, the input will not have an underline.
 	disableUnderline: PropTypes.bool,
-	/**
-	 * If `true`, the input will indicate an error. This is normally obtained
-	 * via context from
-	 * FormControl.
-	 */
-	hasError: PropTypes.bool,
 	// If `true`, the input will be disabled.
-	isDisabled: PropTypes.bool,
+	disabled: PropTypes.bool,
+	// If `true`, the input will indicate an error. From the FormControl.
+	error: PropTypes.bool,
 	// If `true`, a textarea element will be rendered.
-	isMultiline: PropTypes.bool,
+	multiline: PropTypes.bool,
 };
 
 function FilledInput(props) {
@@ -184,7 +162,7 @@ function FilledInput(props) {
 		props,
 		getStyles,
 		{
-			whitelist: ['hasError', 'isDisabled', 'isMultiline'],
+			whitelist: ['error', 'disabled', 'multiline'],
 		},
 	);
 
@@ -228,13 +206,10 @@ FilledInput.propTypes = {
 	]),
 	// End `InputAdornment` for this component.
 	endAdornment: PropTypes.node,
+	// If `true`, the input will take up the full width of its container.
+	fullWidth: PropTypes.bool,
 	// The id of the `input` element.
 	id: PropTypes.string,
-	/**
-	 * The component used for the native input.
-	 * Either a string to use a DOM element or a component.
-	 */
-	inputComponent: componentPropType,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.
@@ -245,10 +220,6 @@ FilledInput.propTypes = {
 	 * FormControl.
 	 */
 	margin: PropTypes.oneOf(['dense', 'none']),
-	// If `true`, the input will take up the full width of its container.
-	isFullWidth: PropTypes.bool,
-	// If `true`, the input will be required.
-	isRequired: PropTypes.bool,
 	// Name attribute of the `input` element.
 	name: PropTypes.string,
 	/**
@@ -269,6 +240,8 @@ FilledInput.propTypes = {
 	rows: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	// Maximum number of rows to display when multiline option is set to true.
 	rowsMax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	// If `true`, the input will be required.
+	required: PropTypes.bool,
 	// Start `InputAdornment` for this component.
 	startAdornment: PropTypes.node,
 	// Type of the input element. It should be a valid HTML5 input type.
@@ -289,13 +262,14 @@ FilledInput.propTypes = {
 		),
 	]),
 	...getStyles.propTypes,
+	...componentPropType,
 	...stylesPropType,
 };
 
 InputBase.defaultProps = {
-	isFullWidth: false,
-	isMultiline: false,
-	inputComponent: 'input',
+	as: 'input',
+	fullWidth: false,
+	multiline: false,
 	type: 'text',
 };
 

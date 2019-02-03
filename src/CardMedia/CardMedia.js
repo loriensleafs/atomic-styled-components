@@ -1,22 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import combine from './../utils/combine';
-import { getSizing, getSpacing, useStyles } from './../system';
-import { componentPropType, stylesPropType } from './../utils/propTypes';
+import combine from '../utils/combine';
+import { getSizing, getSpacing, useStyles } from '../system';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 const MEDIA_COMPONENTS = ['video', 'audio', 'picture', 'iframe', 'img'];
 
-function getBaseStyles({ isMedia }) {
-	return {
-		display: 'block',
-		backgroundSize: 'cover',
-		backgroundRepeat: 'no-repeat',
-		backgroundPosition: 'center',
-		...getSizing({
-			w: isMedia ? 1 : null,
-		}),
-	};
-}
+const getBaseStyles = ({ isMedia }) => ({
+	display: 'block',
+	backgroundSize: 'cover',
+	backgroundRepeat: 'no-repeat',
+	backgroundPosition: 'center',
+	...getSizing({ w: isMedia ? 1 : null }),
+});
 
 const getStyles = combine(getBaseStyles, getSizing, getSpacing);
 getStyles.propTypes = {

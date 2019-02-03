@@ -12,15 +12,14 @@ import ListContext from '../List/ListContext';
 import { getBg, getSpacing, useStyles } from '../system';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-function checkForAvatar(props) {
-	return Children.toArray(props.children).some(
+const checkForAvatar = props =>
+	Children.toArray(props.children).some(
 		child =>
 			isValidElement(child) &&
 			child.type.displayName === 'ListItemAvatar',
 	);
-}
 
-function checkForSecondaryAction(props) {
+const checkForSecondaryAction = props => {
 	const children = Children.toArray(props.children);
 
 	return (
@@ -29,96 +28,76 @@ function checkForSecondaryAction(props) {
 		children[children.length - 1].type.displayName ===
 			'ListItemSecondaryAction'
 	);
-}
+};
 
-function getButtonStyles(props) {
-	const {
-		button,
-		theme: { getTransition },
-	} = props;
-
-	return (
-		button && {
-			transition: getTransition('background-color', {
-				duration: 'shortest',
-			}),
-			':hover': {
-				...getBg({ bg: 'action.hover' }),
-				textDecoration: 'none',
-			},
-		}
-	);
-}
-
-function getDisabledStyles({ disabled }) {
-	return disabled && { opacity: 0.5 };
-}
-
-function getFocusVisibleStyles({ isFocused }) {
-	return isFocused ? getBg({ bg: 'action.hover' }) : null;
-}
-
-function getSelectedStyles({ isSelected }) {
-	return (
-		isSelected && {
-			...getBg({ bg: 'action.selected' }),
-			':hover': getBg({ bg: 'action.selected' }),
-		}
-	);
-}
-
-function getStyles(props) {
-	const {
-		alignItems,
-		dense,
-		disableGutters,
-		hasAvatar,
-		hasSecondaryAction,
-		theme: { palette },
-		...passThru
-	} = {
-		py: dense || hasAvatar ? 1 : 1.5,
-		pl: !disableGutters ? [3, 3.5] : null,
-		pr: hasSecondaryAction ? 3 : !disableGutters ? [3, 3.5] : null,
-		...props,
-	};
-
-	return {
-		divider: {
-			borderBottom: `1px solid ${palette.divider}`,
-			backgroundClip: 'padding-box',
-		},
-		root: {
-			position: 'relative',
-			width: '100%',
-			display: 'flex',
-			justifyContent: 'flex-start',
-			alignItems,
+const getButtonStyles = ({ button, theme: { getTransition } }) =>
+	button && {
+		transition: getTransition('background-color', {
+			duration: 'shortest',
+		}),
+		':hover': {
+			...getBg({ bg: 'action.hover' }),
 			textDecoration: 'none',
-			textAlign: 'left',
-			...getDisabledStyles(props),
-			...getFocusVisibleStyles(props),
-			...getSelectedStyles(props),
-			...getButtonStyles(props),
-			...getSpacing(passThru),
 		},
 	};
-}
+
+const getDisabledStyles = ({ disabled }) => disabled && { opacity: 0.5 };
+
+const getFocusVisibleStyles = ({ focused }) =>
+	focused ? getBg({ bg: 'action.hover' }) : null;
+
+const getSelectedStyles = ({ selected }) =>
+	selected && {
+		...getBg({ bg: 'action.selected' }),
+		':hover': getBg({ bg: 'action.selected' }),
+	};
+
+const getStyles = props => ({
+	divider: {
+		borderBottom: `1px solid ${props.theme.palette.divider}`,
+		backgroundClip: 'padding-box',
+	},
+	root: {
+		position: 'relative',
+		width: '100%',
+		display: 'flex',
+		justifyContent: 'flex-start',
+		alignItems: props.alignItems,
+		textDecoration: 'none',
+		textAlign: 'left',
+		...getDisabledStyles(props),
+		...getFocusVisibleStyles(props),
+		...getSelectedStyles(props),
+		...getButtonStyles(props),
+		...getSpacing({
+			...props,
+			...{
+				py: props.dense || props.hasAvatar ? 1 : 1.5,
+				pl: !props.disableGutters ? [3, 3.5] : null,
+				pr: props.hasSecondaryAction
+					? 3
+					: !props.disableGutters
+					? [3, 3.5]
+					: null,
+			},
+		}),
+	},
+});
 
 getStyles.propTypes = {
 	alignItems: PropTypes.oneOf(['flex-start', 'center']),
 	dense: PropTypes.bool,
 	disableGutters: PropTypes.bool,
-	isFocused: PropTypes.bool,
+	focused: PropTypes.bool,
 	// Use to apply selected styling.
-	isSelected: PropTypes.bool,
+	selected: PropTypes.bool,
 	hasAvatar: PropTypes.bool,
 	hasSecondaryAction: PropTypes.bool,
 	...getSpacing.propTypes,
 };
 
 function ListItem(props) {
-	const [isFocused, setIsFocused] = useState(false);
+	const [focused, setFocused] = useState(false);
 	const { alignItems, dense } = {
 		...{ dense: false },
 		...{ alignItems: props.alignItems, dense: props.dense },
@@ -148,7 +127,7 @@ function ListItem(props) {
 			dense,
 			hasAvatar,
 			hasSecondaryAction,
-			isFocused,
+			focused,
 		},
 		getStyles,
 	);
@@ -164,8 +143,8 @@ function ListItem(props) {
 			...componentProps,
 			as: as || 'div',
 			styles: styles.root,
-			onBlur: useCallback(() => setIsFocused(() => false), []),
-			onFocusVisible: useCallback(() => setIsFocused(() => true), []),
+			onBlur: useCallback(() => setFocused(false), []),
+			onFocusVisible: useCallback(() => setFocused(true), []),
 		};
 	} else {
 		componentProps.className = classes.root;
@@ -233,7 +212,7 @@ ListItem.defaultProps = {
 	disabled: false,
 	disableGutters: false,
 	divider: false,
-	isSelected: false,
+	selected: false,
 };
 
 export default ListItem;

@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import ThemeContext from './../theme/ThemeContext';
+import ThemeContext from '../theme/ThemeContext';
 
 function useMotion(easing = 'inOut', enter = 'standard', exit, state = 'show') {
 	const { durations, getEasing } = useContext(ThemeContext).theme;

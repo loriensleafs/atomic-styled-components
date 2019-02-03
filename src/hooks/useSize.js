@@ -1,6 +1,6 @@
 import ResizeObserver from 'resize-observer-polyfill';
 import { useCallback, useEffect, useMemo, useReducer } from 'react';
-import { isArr, isFn, isObj, getKeys, toArr } from './../utils/helpers';
+import { isArr, isFn, isObj, getKeys, toArr } from '../utils/helpers';
 
 const CLIENT = [
 	'clientHeight',
@@ -47,8 +47,8 @@ const reducer = props => () => (state, ref) => {
 	return reducers.reduce((a, r) => ({ ...a, ...r(ref) }), state);
 };
 
-function useSize(ref, props = RECT) {
-	const [size, dispatch] = useReducer(useMemo(reducer(toArr(props)), []), {});
+function useSize(ref, watch = RECT) {
+	const [size, dispatch] = useReducer(useMemo(reducer(toArr(watch)), []), {});
 
 	const handleResize = useCallback(() => dispatch(ref), [ref]);
 

@@ -1,35 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './../system/useStyles';
-import combine from './../utils/combine';
-import { fade } from './../utils/colorHelpers';
-import { stylesPropType } from './../utils/propTypes';
+import useStyles from '../system/useStyles';
+import combine from '../utils/combine';
+import { fade } from '../utils/colorHelpers';
+import { stylesPropType } from '../utils/propTypes';
 
-function getPositionStyles({ absolute }) {
-	return (
-		absolute && {
-			position: 'absolute',
-			bottom: 0,
-			left: 0,
-			width: '100%',
-		}
-	);
-}
-
-function getColorStyles(props) {
-	const {
-		light,
-		theme: { palette },
-	} = props;
-
-	return {
-		backgroundColor: light ? fade(palette.divider, 0.08) : palette.divider,
+const getPositionStyles = ({ absolute }) =>
+	absolute && {
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		width: '100%',
 	};
-}
 
-function getIndentStyles({ inset }) {
-	return inset && { margin: '72px' };
-}
+const getColorStyles = ({ light, theme: { palette } }) => ({
+	backgroundColor: light ? fade(palette.divider, 0.08) : palette.divider,
+});
+
+const getIndentStyles = ({ inset }) => inset && { margin: '72px' };
 
 const getStyles = combine(getPositionStyles, getColorStyles, getIndentStyles);
 getStyles.propTypes = {
@@ -49,10 +37,11 @@ const baseStyles = {
 };
 
 function Divider(props) {
-	const [
-		{ classes },
-		{ children, className, as: Component, ...passThru },
-	] = useStyles(props, getStyles, { baseStyles });
+	const [{ classes }, { children, as: Component }] = useStyles(
+		props,
+		getStyles,
+		{ baseStyles },
+	);
 
 	return <Component className={classes}>{children}</Component>;
 }

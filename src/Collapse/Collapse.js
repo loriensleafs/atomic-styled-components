@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import cn from './../system/className';
-import { useIsMounted, useMotion, useSize } from './../hooks';
+import cn from '../system/className';
+import { useMounted, useMotion, useSize } from '../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
-import { componentPropType } from './../utils/propTypes';
+import { componentPropType } from '../utils/propTypes';
 
 const baseStyles = { overflow: 'hidden' };
 
@@ -29,13 +29,13 @@ const Collapse = forwardRef((props, ref) => {
 	} = props;
 	const classes = useMemo(() => cn(className, baseStyles), [className]);
 	const Component = animated(as);
-	const isMounted = useIsMounted();
+	const mounted = useMounted();
 	const { scrollHeight } = useSize(ref, 'scrollHeight');
 	const [height, setHeight] = useState(show ? 'auto' : collapseTo);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const transition = useSpring({
 		config: { duration, easing },
-		immediate: !appear && !isMounted,
+		immediate: !appear && !mounted,
 		native: true,
 		to: { height },
 		onStart: () => {
@@ -78,12 +78,13 @@ const Collapse = forwardRef((props, ref) => {
 
 	return (
 		<Component
-			children={children}
 			className={classes}
 			ref={ref}
 			style={{ ...style, ...transition }}
 			{...passThru}
-		/>
+		>
+			{children}
+		</Component>
 	);
 });
 

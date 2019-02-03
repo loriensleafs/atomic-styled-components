@@ -1,18 +1,16 @@
-import React, { forwardRef, useCallback, useMemo, useState } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import IconButton from './../IconButton';
-import useDidUpdate from './../hooks/useDidUpdate';
-import merge from './../utils/merge';
-import cn from './../system/className';
-import { isFn, isNil } from './../utils/helpers';
+import IconButton from '../IconButton';
+import useInput from '../hooks/useInput';
+import useStyles from '../system/useStyles';
 
 const baseStyles = {
-	buttonStyles: {
+	root: {
 		display: 'inline-flex',
 		alignItems: 'center',
 		transition: 'none',
 	},
-	inputStyles: {
+	input: {
 		zIndex: 2,
 		position: 'absolute',
 		top: '0px',
@@ -26,78 +24,58 @@ const baseStyles = {
 	},
 };
 
-const SelectionControl = forwardRef((props, ref) => {
-	const {
-		autoFocus,
-		checked: checkedProp,
-		checkedIcon,
-		className,
-		disabled,
-		icon,
-		id,
-		inputProps,
-		inputRef,
-		name,
-		onBlur,
-		onChange,
-		onFocus,
-		readOnly,
-		required,
-		styles,
-		tabIndex,
-		type,
-		value,
-		...passThru
-	} = props;
-	const [checked, setChecked] = useState(checkedProp || false);
-	const { buttonStyles, inputStyles } = useMemo(
-		() => merge(baseStyles, isFn(styles) ? styles(props) : styles),
-		[props],
-	);
-	const inputClassName = useMemo(() => cn(inputStyles), [inputStyles]);
+function SelectionControl(props) {
+	const [checked, handleChange] = useInput(props);
+	const [
+		{ classes, styles },
+		{
+			autoFocus,
+			checkedIcon,
+			disabled,
+			icon,
+			id,
+			inputProps,
+			inputRef,
+			name,
+			onBlur,
+			onChange,
+			onFocus,
+			readOnly,
+			required,
+			tabIndex,
+			type,
+			value,
+			...passThru
+		},
+	] = useStyles({ ...props, checked }, null, { baseStyles });
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
-
-	const handleChange = useCallback(event => {
-		if (isNil(checkedProp)) {
-			setChecked(event.target.checked);
-		}
-		if (onChange) {
-			onChange(event, event.target.checked);
-		}
-	}, []);
 
 	const handleFocus = useCallback(event => onFocus && onFocus(event), []);
 
 	const handleBlur = useCallback(event => onBlur && onBlur(event), []);
 
-	useDidUpdate(() => {
-		if (!isNil(checkedProp)) {
-			setChecked(() => checkedProp);
-		}
-	}, [checkedProp]);
-
 	return (
 		<IconButton
-			component="span"
-			styles={{ root: buttonStyles }}
+			as="span"
 			disabled={disabled}
-			tabIndex={null}
-			role={undefined}
 			onFocus={handleFocus}
 			onBlur={handleBlur}
+			role={undefined}
+			styles={{ root: styles.root }}
+			tabIndex={null}
 			{...passThru}
 		>
 			{checked ? (checkedIcon ? checkedIcon : icon) : icon}
 			<input
 				autoFocus={autoFocus}
 				checked={checked}
-				className={inputClassName}
+				className={classes.input}
 				disabled={disabled}
 				id={hasLabelFor && id}
 				name={name}
 				onChange={handleChange}
 				readOnly={readOnly}
-				ref={ref}
+				ref={inputRef}
 				required={required}
 				tabIndex={tabIndex}
 				type={type}
@@ -106,7 +84,7 @@ const SelectionControl = forwardRef((props, ref) => {
 			/>
 		</IconButton>
 	);
-});
+}
 
 SelectionControl.displayName = 'SelectionControl';
 

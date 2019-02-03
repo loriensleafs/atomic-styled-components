@@ -27,25 +27,23 @@ function useStyles(allProps, reducers, options = {}) {
 	} = options;
 	reducers = isFn(styles) ? [...toArr(reducers), styles] : toArr(reducers);
 
-	if (!reducers || reducers.length === 0) {
-		return isObj(styles) ? merge(baseStyles, styles) : baseStyles;
-	}
-
 	// We only want to do this one time.
 	const styleProps = useMemo(
 		() =>
-			reducers.reduce(
-				(acc, { propTypes }) =>
-					propTypes
-						? [
-								...acc,
-								...getKeys(propTypes).filter(
-									key => !acc.includes(key),
-								),
-						  ]
-						: acc,
-				['classes', 'className', 'styles', 'theme'],
-			),
+			reducers.length === 0
+				? ['classes', 'className', 'styles', 'theme']
+				: reducers.reduce(
+						(acc, reducer) =>
+							reducer && reducer.hasOwnProperty('propTypes')
+								? [
+										...acc,
+										...getKeys(reducer.propTypes).filter(
+											key => !acc.includes(key),
+										),
+								  ]
+								: acc,
+						['classes', 'className', 'styles', 'theme'],
+				  ),
 		[],
 	);
 
@@ -60,11 +58,13 @@ function useStyles(allProps, reducers, options = {}) {
 			.reduce((acc, key) => ({ ...acc, [key]: props[key] }), {});
 
 		let nextStyles = merge(
-			reducers.reduce(
-				(acc, reducer) =>
-					isFn(reducer) ? merge(acc, reducer(props)) : acc,
-				baseStyles,
-			),
+			reducers.length === 0
+				? baseStyles
+				: reducers.reduce(
+						(acc, reducer) =>
+							isFn(reducer) ? merge(acc, reducer(props)) : acc,
+						baseStyles,
+				  ),
 			isObj(styles) ? styles : {},
 		);
 

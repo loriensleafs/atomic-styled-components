@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
-import ThemeContext from './../theme/ThemeContext';
-import Box from './../Box';
+import ThemeContext from '../theme/ThemeContext';
+import Box from '../Box';
 
 function Container(props) {
 	const {
 		theme: { maxWidth },
 	} = useContext(ThemeContext);
+
 	return (
 		<Box styles={{ maxWidth }} {...props}>
 			{props.children}

@@ -6,59 +6,41 @@ import React, {
 	useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import TextArea from './TextArea';
-import FormControlContext from './../FormControl/FormControlContext';
-import useFormControl from './../FormControl/useFormControl';
-import useStyles from './../system/useStyles';
-import usePrevious from './../hooks/usePrevious';
-import combine from './../utils';
-import { isFilled } from './utils';
+import TextArea from 'TextArea';
+import FormControlContext from '../FormControl/FormControlContext';
+import useFormControl from '../FormControl/useFormControl';
+import useStyles from '../system/useStyles';
+import usePrevious from '../hooks/usePrevious';
+import combine from '../utils';
+import { isFilled } from 'utils';
+import { componentPropType } from '../utils/propTypes';
 
-function getFullWidthStyles({ isFullWidth }) {
-	return (
-		isFullWidth && {
-			root: {
-				width: '100%',
-			},
-		}
-	);
-}
+const getFullWidthStyles = ({ fullWidth }) =>
+	fullWidth && {
+		root: {
+			width: '100%',
+		},
+	};
 
-function getMarginStyles(props) {
-	const {
-		margin,
-		theme: { spacing },
-	} = props;
+const getMarginStyles = ({ margin, theme: { spacing } }) =>
+	margin === 'dense' && {
+		input: {
+			paddingTop: `${spacing[0] - 1}px`,
+		},
+	};
 
-	return (
-		margin === 'dense' && {
-			input: {
-				paddingTop: `${spacing[0] - 1}px`,
-			},
-		}
-	);
-}
+const getMultilineStyles = ({ multiline, theme: { spacing } }) =>
+	multiline && {
+		root: {
+			padding: `${spacing[1] - 2}px 0 ${spacing[1] - 1}px`,
+		},
+		input: {
+			padding: '0px',
+			resize: 'none',
+		},
+	};
 
-function getMultilineStyles(props) {
-	const {
-		isMultiline,
-		theme: { spacing },
-	} = props;
-
-	return (
-		isMultiline && {
-			root: {
-				padding: `${spacing[1] - 2}px 0 ${spacing[1] - 1}px`,
-			},
-			input: {
-				padding: '0px',
-				resize: 'none',
-			},
-		}
-	);
-}
-
-function getTypeStyles({ type }) {
+const getTypeStyles = ({ type }) => {
 	const next = {};
 
 	if (type === 'search') {
@@ -67,19 +49,21 @@ function getTypeStyles({ type }) {
 			'-webkit-appearance': 'textfield',
 		};
 	}
+
 	if (type !== 'text') {
 		next = { ...next, height: '1.1875em' };
 	}
 
 	return { input: next };
-}
+};
 
-function getBaseStyles(props) {
-	const {
+const getBaseStyles = ({
+	theme: {
 		getTransition,
 		typography: { fontFamilies, fontSizes },
 		palette,
-	} = props.theme;
+	},
+}) => {
 	const isLight = palette.type === 'light';
 	const placeholder = {
 		color: 'currentColor',
@@ -131,7 +115,7 @@ function getBaseStyles(props) {
 			},
 		},
 	};
-}
+};
 
 const getStyles = combine(
 	getBaseStyles,
@@ -142,9 +126,10 @@ const getStyles = combine(
 );
 getStyles.propTypes = {
 	// If `true`, the input will take up the full width of its container.
-	isFullWidth: PropTypes.bool,
-	isMultiline: PropTypes.bool,
+	fullWidth: PropTypes.bool,
+	// If `dense`, adjusts vertical spacing. From the FormControl context.
 	margin: PropTypes.oneOf(['dense', 'none']),
+	multiline: PropTypes.bool,
 	// Type of the input element. It should be a valid HTML5 input type.
 	type: PropTypes.string,
 };
@@ -152,27 +137,25 @@ getStyles.propTypes = {
 const InputBase = forwardRef((props, ref) => {
 	ref = ref ? ref : useRef(null);
 	const [mergedProps, context] = useFormControl(props, [
-		'hasError',
-		'isDisabled',
-		'isFilled',
-		'isRequired',
+		'error',
+		'disabled',
+		'filled',
 		'margin',
+		'required',
 	]);
 	const [
 		{ classes },
 		{
+			as,
 			autoComplete,
 			autoFocus,
 			className,
 			defaultValue,
 			endAdornment,
-			hasError,
+			error,
 			id,
-			isDisabled,
-			isFullWidth,
-			isMultiline,
-			isRequired,
-			inputComponent,
+			fullWidth,
+			multiline,
 			inputProps,
 			margin,
 			name,
@@ -195,11 +178,12 @@ const InputBase = forwardRef((props, ref) => {
 			...passThru
 		},
 	] = useStyles(mergedProps, getStyles, {
-		whitelist: ['isFullWidth', 'isMultiline', 'margin', 'type'],
+		whitelist: ['fullWidth', 'multiline', 'margin', 'type'],
 	});
-	const [isFocused, setIsFocused] = useState(false);
-	const prevDisabled = usePrevious(disabled);
+	const mounted = useRef(false);
+	const [focused, setFocused] = useState(false);
 	const isControlled = value !== null;
+	const prevDisabled = usePrevious(disabled);
 
 	const checkDirty = useCallback(obj => {
 		if (isFilled(obj)) {
@@ -220,7 +204,7 @@ const InputBase = forwardRef((props, ref) => {
 	}, []);
 
 	const handleBlur = useCallback(event => {
-		setIsFocused(() => false);
+		setFocused(false);
 
 		if (onBlur) {
 			onBlur(event);
@@ -236,7 +220,7 @@ const InputBase = forwardRef((props, ref) => {
 			return;
 		}
 
-		setIsFocused(() => true);
+		setFocused(true);
 
 		if (onFocus) {
 			onFocus(event);
@@ -264,61 +248,55 @@ const InputBase = forwardRef((props, ref) => {
 		}
 	}, []);
 
-	let InputComponent = inputComponent;
+	let InputComponent = as;
 	let inputProps = { ref };
 
 	if (typeof InputComponent !== 'string') {
 		inputProps = {
 			...inputProps,
-			disabled: isDisabled,
-			required: isRequired,
+			disabled: disabled,
+			required: required,
 			type,
 		};
-	} else if (isMultiline) {
+	} else if (multiline) {
 		if (rows && !rowsMax) {
 			InputComponent = 'textarea';
 			inputProps = {
 				...inputProps,
-				disabled: isDisabled,
-				required: isRequired,
+				disabled: disabled,
+				required: required,
 			};
 		} else {
 			InputComponent = TextArea;
 			inputProps = {
 				...inputProps,
-				isDisabled,
-				isRequired,
+				disabled,
+				required,
 				rowsMax,
 			};
 		}
 	} else {
 		inputProps = {
 			...inputProps,
-			isDisabled,
-			isRequired,
+			disabled,
+			required,
 			type,
 		};
 	}
 
 	useEffect(() => {
-		if (!isControlled) {
-			checkDirty(ref.current);
-		}
-	}, []);
-
-	useEffect(() => {
-		if (isControlled) {
+		if ((!mounted.current && !isControlled) || isControlled) {
+			mounted.current = true;
 			checkDirty(props);
 		}
-		if (!prevDisabled && isDisabled && context && context.onBlur) {
+		if (!prevDisabled && disabled && context && context.onBlur) {
 			context.onBlur();
 		}
-	}, [isDisabled, value]);
+	}, [disabled, mounted, value]);
 
 	return (
 		<div className={classes.root} onClick={handleClick} {...passThru}>
-			{renderPrefix &&
-				renderPrefix({ startAdornment, focused: isFocused })}
+			{renderPrefix && renderPrefix({ startAdornment, focused })}
 			{startAdornment}
 			<FormControlContext.Provider value={null}>
 				<InputComponent
@@ -377,34 +355,18 @@ InputBase.propTypes = {
 			]),
 		),
 	]),
+	// If `true`, the input will be disabled.
+	disabled: PropTypes.bool,
 	// End `InputAdornment` for this component.
 	endAdornment: PropTypes.node,
-	/**
-	 * If `true`, the input will indicate an error. This is normally obtained
-	 * via context from
-	 * FormControl.
-	 */
-	hasError: PropTypes.bool,
+	//  If `true`, the input will indicate an error. From FormControl context.
+	error: PropTypes.bool,
 	// The id of the `input` element.
 	id: PropTypes.string,
-	// If `true`, the input will be disabled.
-	isDisabled: PropTypes.bool,
-	/**
-	 * The component used for the native input.
-	 * Either a string to use a DOM element or a component.
-	 */
-	inputComponent: componentPropType,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/**
-	 * If `dense`, will adjust vertical spacing. This is normally obtained via
-	 * context from
-	 * FormControl.
-	 */
-	// If `true`, the input will be required.
-	isRequired: PropTypes.bool,
 	// Name attribute of the `input` element.
 	name: PropTypes.string,
 	onBlur: PropTypes.func,
@@ -430,6 +392,8 @@ InputBase.propTypes = {
 	rows: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	// Maximum number of rows to display when multiline option is set to true.
 	rowsMax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	// If `true`, the input will be required.
+	required: PropTypes.bool,
 	// Start `InputAdornment` for this component.
 	startAdornment: PropTypes.node,
 	// The input value, required for a controlled component.
@@ -448,6 +412,7 @@ InputBase.propTypes = {
 		),
 	]),
 	...getStyles.propTypes,
+	...componentPropType,
 };
 
 InputBase.defaultProps = {

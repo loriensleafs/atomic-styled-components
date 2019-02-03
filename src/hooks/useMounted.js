@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 /**
  * Stores the 'mounted' state of a ref.
  */
-function useIsMounted(ref) {
+function useMounted(ref) {
 	const mounted = useRef(false);
 
 	useEffect(() => {
@@ -16,4 +16,4 @@ function useIsMounted(ref) {
 	return mounted.current;
 }
 
-export default useIsMounted;
+export default useMounted;

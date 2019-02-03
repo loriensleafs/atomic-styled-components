@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import throttle from './../utils/throttle';
+import throttle from '../utils/throttle';
 
 /**
  * Measures the height and width values of the browser scrollbars.

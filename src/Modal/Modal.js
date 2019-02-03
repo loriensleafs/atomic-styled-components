@@ -17,59 +17,54 @@ import useModals from './useModals';
 import ownerDocument from '../utils/ownerDocument';
 import ownerWindow from '../utils/ownerWindow';
 import useStyles from '../system/useStyles';
-import { useIsMounted, usePrevious, useWillUnmount } from '../hooks';
-import { getKeys, isFn } from '../utils/helpers';
+import { useMounted, usePrevious, useWillUnmount } from '../hooks';
+import { isFn } from '../utils/helpers';
 
-function getContainer(container) {
-	container = isFn(container)
+const getContainer = container =>
+	isFn(container)
 		? container()
 		: container && container.current
 		? container.current
-		: container;
-	return container || ownerDocument().body;
-}
+		: container || ownerDocument().body;
 
-function getHasTransition({ children }) {
-	if (children) {
-		return React.Children.toArray(children).some(
-			child => isValidElement(child) && child.props.show !== undefined,
-		);
-	}
-	return false;
-}
+const getHasTransition = ({ children }) =>
+	children
+		? React.Children.toArray(children).some(
+				child =>
+					isValidElement(child) && child.props.show !== undefined,
+		  )
+		: false;
 
-function getStyles({ hasExited }) {
-	return {
-		zIndex: 1300,
-		position: 'fixed',
-		right: 0,
-		bottom: 0,
-		top: 0,
-		left: 0,
-		visibility: hasExited ? 'hidden' : 'visible',
-	};
-}
+const getStyles = ({ exited }) => ({
+	zIndex: 1300,
+	position: 'fixed',
+	right: 0,
+	bottom: 0,
+	top: 0,
+	left: 0,
+	visibility: exited ? 'hidden' : 'visible',
+});
 getStyles.propTypes = {
-	hasExited: PropTypes.bool,
+	exited: PropTypes.bool,
 };
 
 function Modal(props) {
 	// Renders the modalRef into the DOM via createPortal.
-	const containerRef = useRef(getContainer(containerProp));
-	// Rendered into containerRef via createPortal.
+	const portalRef = useRef(getContainer(containerProp));
+	// Rendered into portalRef via createPortal.
 	const modalRef = useRef(null);
 	// The component children, rendered in modalRef.
 	const dialogRef = useRef(null);
-	const [hasExited, setHasExited] = useState(!props.isOpen);
-	const prevIsOpen = usePrevious(props.isOpen);
-	const isExiting = useRef(false);
-	const isMounted = useIsMounted();
-	const lastFocus = useRef();
-	const hasTransition = getHasTransition(props);
+	// States
+	const [exited, setExited] = useState(!props.open);
 	const [isTopModal, addModal, removeModal] = useModals(
 		modalRef.current,
-		containerRef.current,
+		portalRef.current,
 	);
+	const exiting = useRef(false);
+	const mounted = useMounted();
+	const lastFocus = useRef();
+	const hasTransition = getHasTransition(props);
 	const [
 		{ classes },
 		{
@@ -85,14 +80,15 @@ function Modal(props) {
 			disablePortal,
 			disableRestoreFocus,
 			hideBackdrop,
-			isOpen,
 			keepMounted,
 			onBackdropClick,
 			onClose,
 			onEscapeKeyDown,
+			open,
 			...passThru
 		},
-	] = useStyles({ ...props, hasExited }, getStyles);
+	] = useStyles({ ...props, exited }, getStyles);
+	const prevOpen = usePrevious(open);
 
 	const handleBackdropClick = useCallback(event => {
 		if (event.target === event.currentTarget) {
@@ -121,10 +117,10 @@ function Modal(props) {
 	}, []);
 
 	const handleFocus = useCallback(() => {
-		const container = containerRef.current;
+		const container = portalRef.current;
 		const dialog = dialogRef.current;
 
-		if (dialog && isMounted && isTopModal.current && !disableEnforceFocus) {
+		if (dialog && mounted && isTopModal.current && !disableEnforceFocus) {
 			const { activeElement } = ownerDocument(container);
 
 			if (!dialog.contains(activeElement)) {
@@ -134,7 +130,7 @@ function Modal(props) {
 	}, []);
 
 	const handleClose = useCallback(() => {
-		const container = containerRef.current;
+		const container = portalRef.current;
 		const doc = ownerDocument(container);
 
 		removeModal();
@@ -152,14 +148,14 @@ function Modal(props) {
 	}, []);
 
 	useEffect(() => {
-		const container = containerRef.current;
+		const container = portalRef.current;
 		const dialog = dialogRef.current;
 		const modal = modalRef.current;
 		const doc = ownerDocument(container);
 
-		if (!prevIsOpen && isOpen) {
+		if (!prevOpen && open) {
 			addModal();
-			setHasExited(() => false);
+			setExited(false);
 			lastFocus.current = doc.activeElement;
 
 			doc.addEventListener('keydown', handleDocumentKeyDown);
@@ -184,38 +180,40 @@ function Modal(props) {
 					dialog.focus();
 				}
 			}
-		} else if (!isOpen) {
+		} else if (!open) {
 			if (!isTopModal.current && modal) {
 				modal.setAttribute('aria-hidden', true);
 			}
-			if (prevIsOpen) {
+			if (prevOpen) {
 				if (!hasTransition) {
-					setHasExited(() => true);
+					setExited(true);
 				}
 				if (hasTransition) {
-					isExiting.current = true;
+					exiting.current = true;
 				}
 				handleClose();
 			}
 		}
-	}, [hasExited, isOpen]);
+	}, [exited, open]);
 
-	useWillUnmount(() => {
-		if (isOpen || (hasTransition && !hasExited)) {
-			handleClose();
-		}
-	});
+	useEffect(() => {
+		return () => {
+			if (open || (hasTransition && !exited)) {
+				handleClose();
+			}
+		};
+	}, []);
 
-	if (!keepMounted && !isOpen && (!hasTransition || hasExited)) {
+	if (!keepMounted && !open && (!hasTransition || exited)) {
 		return null;
 	}
 
 	const childProps = {};
 	if (hasTransition) {
 		childProps.onExited = () => {
-			if (!isOpen && isExiting.current) {
-				isExiting.current = false;
-				setHasExited(() => true);
+			if (!open && exiting.current) {
+				exiting.current = false;
+				setExited(true);
 			}
 		};
 	}
@@ -239,7 +237,7 @@ function Modal(props) {
 		<div ref={modalRef} className={classes} {...passThru}>
 			{hideBackdrop ? null : (
 				<BackdropComponent
-					isOpen={isOpen}
+					open={open}
 					onClick={handleBackdropClick}
 					{...BackdropProps}
 				/>
@@ -256,7 +254,7 @@ function Modal(props) {
 		return ModalComponent;
 	}
 
-	return createPortal(ModalComponent, containerRef.current);
+	return createPortal(ModalComponent, portalRef.current);
 }
 
 Modal.displayName = 'Modal';
@@ -319,7 +317,7 @@ Modal.propTypes = {
 	 * when you want to maximize the responsiveness of the Modal.
 	 */
 	// If `true`, the modal is open.
-	isOpen: PropTypes.bool.isRequired,
+	open: PropTypes.bool.isRequired,
 	keepMounted: PropTypes.bool,
 	// Callback fired when the backdrop is clicked.
 	onBackdropClick: PropTypes.func,

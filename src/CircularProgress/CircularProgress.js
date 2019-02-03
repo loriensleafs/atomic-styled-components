@@ -1,33 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import combine from './../utils/combine';
-import { getColors, useStyles } from './../system';
-import { clamp } from './../utils/helpers';
-import { stylesPropType } from './../utils/propTypes';
+import combine from '../utils/combine';
+import { getColors, useStyles } from '../system';
+import { clamp } from '../utils/helpers';
+import { stylesPropType } from '../utils/propTypes';
 
 const SIZE = 44;
 
-function getRelativeValue(val, min, max) {
-	return (clamp(val, min, max) - min) / (max - min);
-}
+const getRelativeValue = (val, min, max) =>
+	(clamp(val, min, max) - min) / (max - min);
 
-function easeOut(t) {
+const easeOut = t => {
 	t = getRelativeValue(t, 0, 1);
 	t = (t -= 1) * t * t + 1;
 	return t;
-}
+};
 
-function easeIn(t) {
-	return t * t;
-}
+const easeIn = t => t * t;
 
-function getVariantStyles(props) {
-	const {
-		disableShrink,
-		theme: { getTransition },
-		variant,
-	} = props;
-
+const getVariantStyles = ({
+	disableShrink,
+	theme: { getTransition },
+	variant,
+}) => {
 	switch (variant) {
 		case 'static':
 			return {
@@ -77,13 +72,10 @@ function getVariantStyles(props) {
 							strokeDashoffset: '0px',
 					  },
 			};
-
-		default:
-			return null;
 	}
-}
+};
 
-function getColorStyles({ color }) {
+const getColorStyles = ({ color }) => {
 	switch (color) {
 		case 'primary':
 		case 'secondary':
@@ -100,7 +92,7 @@ function getColorStyles({ color }) {
 				},
 			};
 	}
-}
+};
 
 const getStyles = combine(getColorStyles, getVariantStyles);
 getStyles.propTypes = {
@@ -205,8 +197,7 @@ CircularProgress.propTypes = {
 	 */
 	variant: PropTypes.oneOf(['determinate', 'indeterminate', 'static']),
 	...stylesPropType,
-	...getColorStyles.propTypes,
-	...getVariantStyles.propTypes,
+	...getStyles.propTypes,
 };
 
 CircularProgress.defaultProps = {

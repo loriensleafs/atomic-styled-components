@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import cn from './../system/className';
-import merge from './../utils/merge';
+import cn from '../system/className';
+import merge from '../utils/merge';
 
 const baseStyles = {
 	width: '100%',

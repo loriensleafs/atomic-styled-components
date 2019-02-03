@@ -1,30 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
 
-function getStyles(props) {
-	const { disableActionSpacing } = props;
-	const styles = {
-		root: {
-			display: 'flex',
-			alignItems: 'center',
-			justifyContent: 'flex-end',
-			flex: '0 0 auto',
-			...getSpacing({ my: 2, mx: 1 }),
-		},
-		action: {},
+const getSpacingStyles = ({ disableActionSpacing }) =>
+	disableActionSpacing && {
+		root: getSpacing({ my: 0, mx: 1 }),
+		action: getSpacing({ my: 0, mx: 1 }),
 	};
 
-	if (disableActionSpacing) {
-		const spacing = getSpacing({ my: 0, mx: 1 });
+const getBaseStyles = props => ({
+	root: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'flex-end',
+		flex: '0 0 auto',
+		...getSpacing({ my: 2, mx: 1 }),
+	},
+	action: {},
+});
 
-		styles.root = { ...styles.root, ...spacing };
-		styles.action = spacing;
-	}
-
-	return styles;
-}
+const getStyles = combine(getBaseStyles, getSpacingStyles);
 getStyles.propTypes = {
+	// If `true`, the dialog actions do not have additional margin.
 	disableActionSpacing: PropTypes.bool,
 };
 
@@ -54,8 +52,7 @@ DialogActions.propTypes = {
 	// The content of the component.
 	children: PropTypes.node,
 	className: PropTypes.string,
-	// If `true`, the dialog actions do not have additional margin.
-	disableActionSpacing: PropTypes.bool,
+	...getStyles.propTypes,
 };
 
 DialogActions.defaultProps = {

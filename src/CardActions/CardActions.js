@@ -1,24 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import { getSpacing, useStyles } from '../system';
+import { stylesPropType } from '../utils/propTypes';
 
-function getStyles() {
-	return {
-		root: {
-			display: 'flex',
-			alignItems: 'center',
-			boxSizing: 'border-box',
-			...getSpacing({
-				py: 2,
-				px: [2, 2.5],
-			}),
-		},
-		action: {
-			margin: '0px 4px',
-		},
-	};
-}
+const getStyles = () => ({
+	root: {
+		display: 'flex',
+		alignItems: 'center',
+		boxSizing: 'border-box',
+		...getSpacing({ py: 2, px: [2, 2.5] }),
+	},
+	action: {
+		margin: '0px 4px',
+	},
+});
 
 function CardActions(props) {
 	const [

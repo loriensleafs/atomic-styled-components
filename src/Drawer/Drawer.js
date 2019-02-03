@@ -1,11 +1,11 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import Modal from './../Modal';
-import Paper from './../Paper';
-import Slide from './../Slide';
-import useStyles from './../system/useStyles';
-import { capitalize as toCap } from './../utils/helpers';
-import { stylesPropType } from './../utils/propTypes';
+import Modal from '../Modal';
+import Paper from '../Paper';
+import Slide from '../Slide';
+import useStyles from '../system/useStyles';
+import { capitalize as toCap } from '../utils/helpers';
+import { stylesPropType } from '../utils/propTypes';
 
 const oppDir = {
 	left: 'right',
@@ -14,12 +14,11 @@ const oppDir = {
 	bottom: 'up',
 };
 
-function getPositionStyles(props) {
-	const {
-		anchor,
-		variant,
-		theme: { palette: divider },
-	} = props;
+const getPositionStyles = ({
+	anchor,
+	variant,
+	theme: { palette: divider },
+}) => {
 	const isTemp = variant === 'temporary';
 	const getBorder = side =>
 		!isTemp && { [`border${toCap(oppDir[side])}`]: `1px solid ${divider}` };
@@ -59,38 +58,34 @@ function getPositionStyles(props) {
 				...getBorder('left'),
 			};
 	}
-}
+};
 
-function getStyles(props) {
-	const isPersistent = props.variant === 'persistent';
-	const isPermanent = props.variant === 'persistent';
-
-	return {
-		modal: {},
-		paper: {
-			zIndex: 1200,
-			position: 'fixed',
-			top: '0px',
-			height: '100%',
-			display: 'flex',
-			flex: '1 0 auto',
-			flexDirection: 'column',
-			overflowY: 'auto',
-			outline: 'none',
-			WebkitOverflowScrolling: 'touch', // Add iOS momentum scrolling.
-			...getPositionStyles(props),
-		},
-		root: isPermanent || isPersistent ? { flex: '0 0 auto' } : {},
-	};
-}
+const getStyles = props => ({
+	modal: {},
+	paper: {
+		zIndex: 1200,
+		position: 'fixed',
+		top: '0px',
+		height: '100%',
+		display: 'flex',
+		flex: '1 0 auto',
+		flexDirection: 'column',
+		overflowY: 'auto',
+		outline: 'none',
+		WebkitOverflowScrolling: 'touch', // Add iOS momentum scrolling.
+		...getPositionStyles(props),
+	},
+	root:
+		props.variant === 'persistent' || props.variant === 'persistent'
+			? { flex: '0 0 auto' }
+			: {},
+});
 getStyles.propTypes = {
 	variant: PropTypes.oneOf(['permanent', 'persistent', 'temporary']),
 };
 
-const DrawerBase = forwardRef((props, ref) => {
-	const { children, elevation, variant, ...passThru } = props;
-
-	return (
+const DrawerBase = forwardRef(
+	({ children, elevation, variant, ...passThru }, ref) => (
 		<Paper
 			elevation={variant === 'temporary' ? elevation : 0}
 			radius="square"
@@ -99,29 +94,24 @@ const DrawerBase = forwardRef((props, ref) => {
 		>
 			{children}
 		</Paper>
-	);
-});
+	),
+);
 
-function SlidingDrawer(props) {
-	const isTemporary = props.variant === 'temporary';
-	const { anchor, children, ...passThru } = props;
-
-	return (
-		<Slide
-			as={DrawerBase}
-			appear={isTemporary}
-			direction={oppDir[anchor]}
-			duration={{
-				enter: 'short',
-				exit: 'shorter',
-			}}
-			ease="sharp"
-			{...passThru}
-		>
-			{children}
-		</Slide>
-	);
-}
+const SlidingDrawer = ({ anchor, children, variant, ...passThru }) => (
+	<Slide
+		as={DrawerBase}
+		appear={variant === 'temporary'}
+		direction={oppDir[anchor]}
+		duration={{
+			enter: 'short',
+			exit: 'shorter',
+		}}
+		ease="sharp"
+		{...passThru}
+	>
+		{children}
+	</Slide>
+);
 
 function Drawer(props) {
 	const [
@@ -132,7 +122,7 @@ function Drawer(props) {
 			children,
 			className,
 			elevation,
-			isOpen,
+			open,
 			ModalProps,
 			onClose,
 			PaperProps,
@@ -158,7 +148,7 @@ function Drawer(props) {
 		<SlidingDrawer
 			anchor={anchor}
 			elevation={elevation}
-			show={isOpen}
+			show={open}
 			styles={styles.paper}
 			variant={variant}
 			{...SlideProps}
@@ -172,7 +162,7 @@ function Drawer(props) {
 		<Modal
 			className={classes.root}
 			onClose={onClose}
-			isOpen={isOpen}
+			open={open}
 			styles={styles.modal}
 			{...passThru}
 			{...ModalProps}
@@ -197,7 +187,7 @@ Drawer.propTypes = {
 	// Elevation of the drawer.
 	elevation: PropTypes.number,
 	// If `true`, the drawer is open.
-	isOpen: PropTypes.bool,
+	open: PropTypes.bool,
 	// Properties applied to the [`Modal`](/api/modal/) element.
 	ModalProps: PropTypes.object,
 	// Callback fired when the component requests to be closed.
@@ -215,7 +205,7 @@ Drawer.propTypes = {
 Drawer.defaultProps = {
 	anchor: 'left',
 	elevation: 16,
-	isOpen: false,
+	open: false,
 	variant: 'temporary', // Mobile first.
 };
 

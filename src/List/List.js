@@ -1,17 +1,14 @@
-import React, {forwardRef, useRef} from 'react';
+import React, { forwardRef, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ListContext from './ListContext';
-import { getSpacing, useStyles } from './../system';
-import { componentPropType, stylesPropType } from './../utils/propTypes';
+import { getSpacing, useStyles } from '../system';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-function getStyles(props) {
-	const { dense, disablePadding, subheader } = props;
-
-	return getSpacing({
+const getStyles = ({ dense, disablePadding, subheader }) =>
+	getSpacing({
 		pt: disablePadding || subheader ? 0 : dense ? 1 : 2,
 		pb: disablePadding ? null : dense ? 1 : 2,
 	});
-}
 getStyles.propTypes = {
 	/**
 	 * If `true`, compact vertical padding designed for keyboard and mouse
@@ -34,18 +31,14 @@ const baseStyles = {
 };
 
 const List = forwardRef((props, ref) => {
-	ref = ref ? ref : useRef(null)
+	ref = ref ? ref : useRef(null);
 	const [
-		{classes},
-		{
-			as: Component,
-			className,
-			children,
-			dense,
-			subheader,
-			...passThru,
-		},
-	] = useStyles(props, getStyles, { baseStyles, whitelist: ['dense','subheader'] });
+		{ classes },
+		{ as: Component, className, children, dense, subheader, ...passThru },
+	] = useStyles(props, getStyles, {
+		baseStyles,
+		whitelist: ['dense', 'subheader'],
+	});
 
 	return (
 		<Component className={classes} ref={ref} {...passThru}>
@@ -55,7 +48,7 @@ const List = forwardRef((props, ref) => {
 			</ListContext.Provider>
 		</Component>
 	);
-})
+});
 
 List.displayName = 'List';
 
@@ -64,7 +57,7 @@ List.propTypes = {
 	className: PropTypes.string,
 	...componentPropType,
 	...stylesPropType,
-	...getStyles.propTypes
+	...getStyles.propTypes,
 };
 
 List.defaultProps = {

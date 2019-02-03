@@ -4,11 +4,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import ButtonBase from './../ButtonBase/ButtonBase';
-import merge from './../utils/merge';
-import { getSpacing, useStyles } from './../system';
-import { fade } from './../utils/colorHelpers';
-import { componentPropType, stylesPropType } from './../utils/propTypes';
+import ButtonBase from '../ButtonBase/ButtonBase';
+import merge from '../utils/merge';
+import { getSpacing, useStyles } from '../system';
+import { fade } from '../utils/colorHelpers';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 const FONT_SIZE_SHIFT = 0.0625;
 

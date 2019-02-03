@@ -95,12 +95,11 @@ const Intro = () => (
 );
 
 function radioReducer(state, selected) {
-	switch (['a', 'b', 'c', 'd', 'e'].includes(selected)) {
-		case true:
-			return { ...state, [selected]: true };
-		default:
-			return state;
-	}
+	console.log(selected);
+	return ['a', 'b', 'c', 'd', 'e'].reduce(
+		(acc, key) => ({ ...acc, [key]: key === selected }),
+		{},
+	);
 }
 const RadioButtons = () => {
 	const [isChecked, dispatch] = useReducer(radioReducer, {
@@ -110,10 +109,8 @@ const RadioButtons = () => {
 		d: false,
 		e: false,
 	});
-
-	const handleChange = useCallback(event => {
-		dispatch(event.target.value);
-	}, []);
+	window.isChecked = isChecked;
+	const handleChange = event => dispatch(event.target.value);
 
 	return (
 		<Fragment>
@@ -177,14 +174,13 @@ const RadioButtons = () => {
 const Checkboxes = () => {
 	const [checked, setChecked] = useState({ a: true, b: true, f: true });
 
-	const handleChange = useCallback(
-		(event, isChecked) =>
-			setChecked(state => ({
-				...state,
-				[event.target.value]: isChecked,
-			})),
-		[],
-	);
+	const handleChange = useCallback((event, isChecked) => {
+		const key = event.target.value;
+		setChecked(state => ({
+			...state,
+			[key]: isChecked,
+		}));
+	}, []);
 
 	return (
 		<Fragment>

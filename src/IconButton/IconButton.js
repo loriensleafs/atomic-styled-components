@@ -1,9 +1,9 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import ButtonBase from './../ButtonBase';
-import combine from './../utils/combine';
-import { getSpacing, useStyles } from './../system';
-import { fade } from './../utils/colorHelpers';
+import ButtonBase from '../ButtonBase';
+import combine from '../utils/combine';
+import { getSpacing, useStyles } from '../system';
+import { fade } from '../utils/colorHelpers';
 import { stylesPropType } from '../utils/propTypes';
 
 const getColorStyles = ({ color, disabled, theme: { palette } }) => {

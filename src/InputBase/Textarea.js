@@ -6,38 +6,36 @@ import React, {
 	useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import throttle from './../utils/throttle';
-import { cn, useStyles } from './../system';
+import throttle from '../utils/throttle';
+import { cn, useStyles } from '../system';
 
 const ROWS_HEIGHT = 19;
 
-function getStyles() {
-	return {
-		root: {
-			position: 'relative',
-			width: '100%',
-		},
-		textarea: {
-			boxSizing: 'border-box',
-			width: '100%',
-			height: '100%',
-			padding: '0px',
-			border: 'none',
-			outline: 'none',
-			font: 'inherit',
-			resize: 'none',
-			cursor: 'inherit',
-			background: 'transparent',
-		},
-		shadow: {
-			position: 'absolute',
-			height: 'auto',
-			visibility: 'hidden',
-			overflow: 'hidden',
-			whiteSpace: 'pre-wrap',
-		},
-	};
-}
+const baseStyles = {
+	root: {
+		position: 'relative',
+		width: '100%',
+	},
+	textarea: {
+		boxSizing: 'border-box',
+		width: '100%',
+		height: '100%',
+		padding: '0px',
+		border: 'none',
+		outline: 'none',
+		font: 'inherit',
+		resize: 'none',
+		cursor: 'inherit',
+		background: 'transparent',
+	},
+	shadow: {
+		position: 'absolute',
+		height: 'auto',
+		visibility: 'hidden',
+		overflow: 'hidden',
+		whiteSpace: 'pre-wrap',
+	},
+};
 
 const Textarea = forwardRef((props, ref) => {
 	const [
@@ -45,23 +43,28 @@ const Textarea = forwardRef((props, ref) => {
 		{
 			className,
 			defaultValue,
-			isDisabled,
+			disabled,
 			onChange,
 			rows,
 			rowsMax,
 			value: valueProp,
 			...passThru
 		},
-	] = useStyles(props, getStyles, { prefixCnTo: '' });
-	const value = useRef(valueProp);
+	] = useStyles(props, null, { baseStyles });
+	// Refs
 	const inputRef = ref ? ref : useRef(null);
 	const shadowRef = useRef(null);
 	const singleLineShadowRef = useRef(null);
+	// States
 	const [height, setHeight] = useState(Number(rows) * ROWS_HEIGHT);
 	const isControlled = value.current != null;
+	const mounted = useRef(false);
+	const value = useRef(valueProp);
 
 	const syncHeightWithShadow = useCallback(() => {
-		if (!shadowRef.current) return;
+		if (!shadowRef.current) {
+			return;
+		}
 
 		if (isControlled) {
 			shadowRef.current.value =
@@ -82,7 +85,7 @@ const Textarea = forwardRef((props, ref) => {
 		// Need a large enough difference to update the height.
 		// This prevents infinite rendering loops.
 		if (Math.abs(height - newHeight) > 1) {
-			setHeight(() => newHeight);
+			setHeight(newHeight);
 		}
 	}, [value.current]);
 
@@ -99,19 +102,28 @@ const Textarea = forwardRef((props, ref) => {
 	}, []);
 
 	useEffect(() => {
-		let resizeHandler = throttle(handleResize);
-		window.addEventListener('resize', resizeHandler);
-		return () => window.removeEventListener('resize', resizeHandler);
-	}, []);
+		let resizeHandler;
+		if (!mounted.current) {
+			resizeHandler = throttle(handleResize);
+			mounted.current = true;
+			window.addEventListener('resize', resizeHandler);
+		}
 
-	useEffect(() => syncHeightWithShadow(), [value.current]);
+		syncHeightWithShadow();
+
+		return () => {
+			if (resizeHandler) {
+				window.removeEventListener('resize', resizeHandler);
+			}
+		};
+	}, [value.current]);
 
 	return (
 		<div className={classes.root}>
 			<textarea
 				aria-hidden="true"
 				className={cn(classes.textarea, classes.shadow)}
-				disabled={isDisabled}
+				disabled={disabled}
 				readOnly
 				ref={singleLineShadowRef}
 				rows="1"
@@ -122,7 +134,7 @@ const Textarea = forwardRef((props, ref) => {
 				aria-hidden="true"
 				className={cn(classes.textarea, classes.shadow)}
 				defaultValue={defaultValue}
-				disabled={isDisabled}
+				disabled={disabled}
 				readOnly
 				ref={shadowRef}
 				rows={rows}
@@ -133,7 +145,7 @@ const Textarea = forwardRef((props, ref) => {
 				rows={rows}
 				className={cn(classes.textarea, className)}
 				defaultValue={defaultValue}
-				disabled={isDisabled}
+				disabled={disabled}
 				value={value.current}
 				onChange={handleChange}
 				ref={inputRef}
@@ -150,7 +162,7 @@ Textarea.propTypes = {
 	classes: PropTypes.object,
 	className: PropTypes.string,
 	defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	isDisabled: PropTypes.bool,
+	disabled: PropTypes.bool,
 	onChange: PropTypes.func,
 	// Number of rows to display when multiline option is set to true.
 	rows: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

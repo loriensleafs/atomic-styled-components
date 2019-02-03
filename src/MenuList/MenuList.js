@@ -9,8 +9,8 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import warning from 'warning';
-import List from './../List';
-import ownerDocument from './../utils/ownerDocument';
+import List from '../List';
+import ownerDocument from '../utils/ownerDocument';
 
 function MenuList(props) {
 	const {

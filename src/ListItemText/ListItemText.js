@@ -1,42 +1,37 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import ListContext from './../List/ListContext';
-import Typography from './../Typography';
-import combine from './../utils/combine';
-import { getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import ListContext from '../List/ListContext';
+import Typography from '../Typography';
+import combine from '../utils/combine';
+import { getSpacing, useStyles } from '../system';
+import { stylesPropType } from '../utils/propTypes';
 
-function getDenseStyles(props) {
-	return (
-		props.dense && {
-			primaryText: {
-				fontSize: 'inherit',
-			},
-			root: {
-				fontSize: '0.8125rem',
-			},
-			secondaryText: {
-				fontSize: 'inherit',
-			},
-		}
-	);
-}
-
-function getBaseStyles(props) {
-	return {
-		primaryText: {},
-		root: {
-			minWidth: 0,
-			flex: '1 1 auto',
-			lineHeight: 1.5,
-			...getSpacing({ py: 0, px: 2 }),
-			':first-child': {
-				paddingLeft: props.inset ? '56px' : 0,
-			},
+const getDenseStyles = ({ dense }) =>
+	dense && {
+		primaryText: {
+			fontSize: 'inherit',
 		},
-		secondaryText: {},
+		root: {
+			fontSize: '0.8125rem',
+		},
+		secondaryText: {
+			fontSize: 'inherit',
+		},
 	};
-}
+
+const getBaseStyles = ({ inset }) => ({
+	primaryText: {},
+	root: {
+		minWidth: 0,
+		flex: '1 1 auto',
+		lineHeight: 1.5,
+		...getSpacing({ py: 0, px: 2 }),
+		':first-child': {
+			paddingLeft: inset ? '56px' : 0,
+		},
+	},
+	secondaryText: {},
+});
 
 const getStyles = combine(getBaseStyles, getDenseStyles);
 getStyles.propTypes = {

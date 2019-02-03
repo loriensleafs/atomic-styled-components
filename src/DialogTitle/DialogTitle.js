@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from './../Typography';
-import { getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import Typography from '../Typography';
+import { getSpacing, useStyles } from '../system';
+import { stylesPropType } from '../utils/propTypes';
 
-function getStyles(props) {
-	return {
-		flex: '0 0 auto',
-		...getSpacing({ m: 0, pt: 3.5, px: 3.5, pb: 3 }),
-	};
-}
+const getStyles = () => ({
+	...getSpacing({ m: 0, pt: 3.5, px: 3.5, pb: 3 }),
+	flex: '0 0 auto',
+});
 
 function DialogTitle(props) {
 	const [
@@ -31,13 +29,8 @@ function DialogTitle(props) {
 DialogTitle.displayName = 'DialogTitle';
 
 DialogTitle.propTypes = {
-	/**
-	 * The content of the component.
-	 */
+	// The content of the component.
 	children: PropTypes.node.isRequired,
-	/**
-	 * @ignore
-	 */
 	className: PropTypes.string,
 	/**
 	 * If `true`, the children won't be wrapped by a typography component.

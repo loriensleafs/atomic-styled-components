@@ -1,25 +1,19 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import FormControlContext from './FormControlContext';
-import combine from './../utils/combine';
+import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
+import { componentPropType } from '../utils';
 
-function getWidthStyles({ isFullWidth }) {
-	return (
-		isFullWidth && {
-			width: '100%',
-		}
-	);
-}
+const getWidthStyles = ({ fullWidth }) =>
+	fullWidth && {
+		width: '100%',
+	};
 
-function getMarginStyles({ margin }) {
-	switch (margin) {
-		case 'dense':
-			return getSpacing({ mt: 2, mb: 1 });
-		case 'normal':
-			return getSpacing({ mt: 3, mb: 2 });
-	}
-}
+const getMarginStyles = ({ margin }) =>
+	(margin === 'dense' && getSpacing({ mt: 2, mb: 1 })) ||
+	(margin === 'normal' && getSpacing({ mt: 3, mb: 2 })) ||
+	null;
 
 const baseStyles = {
 	position: 'relative',
@@ -35,11 +29,8 @@ const baseStyles = {
 const getStyles = combine(getMarginStyles, getWidthStyles);
 getStyles.propTypes = {
 	// If `true`, the component will take up the full width of its container.
-	isFullWidth: PropTypes.bool,
-	/**
-	 * If `dense` or `normal`, will adjust vertical spacing of this and
-	 * contained components.
-	 */
+	fullWidth: PropTypes.bool,
+	// If `dense` or `normal`, adjusts vertical spacing of this and children.
 	margin: PropTypes.oneOf(['none', 'dense', 'normal']),
 };
 
@@ -49,54 +40,42 @@ function FormControl(props) {
 		{
 			as: Component,
 			className,
-			isDisabled,
-			isFullWidth,
-			isRequired,
-			hasError,
+			disabled,
+			error,
+			fullWidth,
 			margin,
+			required,
 			variant,
 			...passThru
 		},
 	] = useStyles(props, getStyles, {
 		baseStyles,
-		whitelist: ['isFullWidth', 'margin'],
+		whitelist: ['fullWidth', 'margin'],
 	});
-	const [hasStartAdornment, setHasStartAdornment] = useState(false);
-	const [isFilled, setIsFilled] = useState(false);
-	const [isFocused, setIsFocused] = useState(false);
+	const [startAdornment, setStartAdornment] = useState(false);
+	const [filled, setFilled] = useState(false);
+	const [focused, setFocused] = useState(false);
 
-	const handleBlur = useCallback(
-		() => isFocused && setIsFocused(() => false),
-		[],
-	);
+	const handleBlur = useCallback(() => focused && setFocused(false), []);
 
-	const handleFocus = useCallback(
-		() => !isFocused && setIsFocused(() => true),
-		[],
-	);
+	const handleFocus = useCallback(() => !focused && setFocused(true), []);
 
-	const handleDirty = useCallback(
-		() => !isFilled && setIsFilled(() => true),
-		[],
-	);
+	const handleDirty = useCallback(() => !filled && setFilled(true), []);
 
-	const handleClean = useCallback(
-		() => isFilled && setIsFilled(() => false),
-		[],
-	);
+	const handleClean = useCallback(() => filled && setFilled(false), []);
 
 	const context = {
-		hasStartAdornment,
-		hasError,
-		isDisabled,
-		isFilled,
-		isFocused,
-		isRequired,
+		error,
+		disabled,
+		filled,
+		focused,
 		margin,
 		onBlur: handleBlur,
 		onEmpty: handleClean,
 		onFilled: handleDirty,
 		onFocus: handleFocus,
+		required,
+		startAdornment,
 		variant,
 	};
 
@@ -110,11 +89,6 @@ function FormControl(props) {
 FormControl.displayName = 'FormControl';
 
 FormControl.propTypes = {
-	/**
-	 * The component used for the root node.
-	 * Either a string to use a DOM element or a component.
-	 */
-	as: componentPropType,
 	// The contents of the form control.
 	children: PropTypes.node,
 	/**
@@ -124,26 +98,24 @@ FormControl.propTypes = {
 	classes: PropTypes.object,
 	className: PropTypes.string,
 	// If `true`, the label should be displayed in an error state.
-	hasError: PropTypes.bool,
-	/**
-	 * If `true`, the label, input and helper text are displayed in a disabled
-	 * state.
-	 */
-	isDisabled: PropTypes.bool,
+	error: PropTypes.bool,
+	// If `true`, the label, input and helper text display an disabled state.
+	disabled: PropTypes.bool,
 	// If `true`, the label will indicate that the input is required.
-	isRequired: PropTypes.bool,
+	required: PropTypes.bool,
 	// The variant to use.
 	variant: PropTypes.oneOf(['standard', 'outlined', 'filled']),
 	...getStyles.propTypes,
+	...componentPropType,
 };
 
 FormControl.defaultProps = {
 	as: 'div',
-	hasError: false,
-	isDisabled: false,
-	isFullWidth: false,
-	isRequired: false,
+	error: false,
+	disabled: false,
+	fullWidth: false,
 	margin: 'none',
+	required: false,
 	variant: 'standard',
 };
 

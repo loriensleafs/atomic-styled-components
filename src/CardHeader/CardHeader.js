@@ -1,96 +1,76 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from './../Typography';
-import { getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import Typography from '../Typography';
+import { getSpacing, useStyles } from '../system';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-function getStyles() {
-	return {
-		root: {
-			display: 'flex',
-			alignItems: 'center',
-			...getSpacing({
-				py: 3,
-				px: [3, 4],
-			}),
-		},
-		avatar: {
-			flex: '0 0 auto',
-			...getSpacing({
-				mr: 3,
-			}),
-		},
-		action: {
-			flex: '0 0 auto',
-			alignSelf: 'flex-start',
-			...getSpacing({
-				mt: -2,
-				mr: [-3, -4],
-			}),
-		},
-		content: {
-			flex: '1 1 auto',
-		},
-		title: {},
-		subheader: {},
-	};
-}
+const getStyles = () => ({
+	root: {
+		display: 'flex',
+		alignItems: 'center',
+		...getSpacing({ py: 3, px: [3, 4] }),
+	},
+	avatar: {
+		flex: '0 0 auto',
+		...getSpacing({ mr: 3 }),
+	},
+	action: {
+		flex: '0 0 auto',
+		alignSelf: 'flex-start',
+		...getSpacing({ mt: -2, mr: [-3, -4] }),
+	},
+	content: {
+		flex: '1 1 auto',
+	},
+	title: {},
+	subheader: {},
+});
 getStyles.propTypes = getSpacing.propTypes;
 
-function CardTitle(props) {
-	const { avatar, className, disableTypography, title, ...passThru } = props;
+const CardTitle = ({
+	avatar,
+	className,
+	disableTypography,
+	title,
+	...passThru
+}) =>
+	title &&
+	!disableTypography &&
+	(!title.type || (title.type && title.type !== Typography)) ? (
+		<Typography
+			as="span"
+			className={className}
+			variant={avatar ? 'body2' : 'headline'}
+			{...passThru}
+		>
+			{title}
+		</Typography>
+	) : (
+		title || null
+	);
 
-	if (
-		title &&
-		!disableTypography &&
-		(!title.type || (title.type && title.type !== Typography))
-	) {
-		return (
-			<Typography
-				as="span"
-				className={className}
-				variant={avatar ? 'body2' : 'headline'}
-				{...passThru}
-			>
-				{title}
-			</Typography>
-		);
-	} else if (title) {
-		return title;
-	}
-	return null;
-}
-
-function CardSubHeader(props) {
-	const {
-		avatar,
-		className,
-		disableTypography,
-		subheader,
-		...passThru
-	} = props;
-
-	if (
-		subheader &&
-		!disableTypography &&
-		(subheader.type && subheader.type !== Typography)
-	) {
-		return (
-			<Typography
-				as="span"
-				className={className}
-				color="text.secondary"
-				variant={avatar ? 'body2' : 'body1'}
-				{...passThru}
-			>
-				{subheader}
-			</Typography>
-		);
-	} else if (subheader) {
-		return subheader;
-	}
-	return null;
-}
+const CardSubHeader = ({
+	avatar,
+	className,
+	disableTypography,
+	subheader,
+	...passThru
+}) =>
+	subheader &&
+	!disableTypography &&
+	(subheader.type && subheader.type !== Typography) ? (
+		<Typography
+			as="span"
+			className={className}
+			color="text.secondary"
+			variant={avatar ? 'body2' : 'body1'}
+			{...passThru}
+		>
+			{subheader}
+		</Typography>
+	) : (
+		subheader || null
+	);
 
 function CardHeader(props) {
 	const [
@@ -138,15 +118,6 @@ CardHeader.displayName = 'CardHeader';
 CardHeader.propTypes = {
 	// The action to display in the card header.
 	action: PropTypes.node,
-	/**
-	 * The component used for the root node.
-	 * Either a string to use a DOM element or a component.
-	 */
-	as: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-		PropTypes.object,
-	]),
 	// The Avatar for the Card Header.
 	avatar: PropTypes.node,
 	className: PropTypes.string,
@@ -172,7 +143,9 @@ CardHeader.propTypes = {
 	 * (as long as disableTypography is not `true`).
 	 */
 	titleTypographyProps: PropTypes.object,
+	...componentPropType,
 	...stylesPropType,
+	...getStyles.propTypes,
 };
 
 CardHeader.defaultProps = {

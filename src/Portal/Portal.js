@@ -1,7 +1,7 @@
 import React, { createPortal, forwardRef, useRef } from 'react';
 import PropTypes from 'prop-types';
-import ownerDocument from './../utils/ownerDocument';
-import { useDidMount } from './../hooks';
+import ownerDocument from '../utils/ownerDocument';
+import { useDidMount } from '../hooks';
 
 const Portal = forwardRef((props, ref) => {
 	ref = ref ? ref : useRef(null);

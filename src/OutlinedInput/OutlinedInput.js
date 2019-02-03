@@ -1,107 +1,94 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import InputBase from './../InputBase';
+import InputBase from '../InputBase';
 import NotchedOutline from './NotchedOutline';
-import combine from './../utils/combine';
-import { getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import combine from '../utils/combine';
+import { getSpacing, useStyles } from '../system';
+import { stylesPropType } from '../utils/propTypes';
 
-function getAdornmentStyles(props) {
-	const { hasEndAdornment, hasStartAdornment } = props;
-	const next = {};
+const getAdornmentStyles = ({ endAdornment, startAdornment }) =>
+	(endAdornment && {
+		root: getSpacing({ pl: 14 }),
+		input: getSpacing({ pl: 0 }),
+	}) ||
+	(startAdornment && {
+		root: getSpacing({ pr: 14 }),
+		input: getSpacing({ pr: 0 }),
+	});
 
-	if (hasStartAdornment) {
-		next.root = getSpacing({ pl: 14 });
-		next.input = getSpacing({ pl: 0 });
+const getNotchedOutlineStyles = ({
+	hasError,
+	disabled,
+	focused,
+	notched,
+	theme: { palette },
+}) => {
+	if (!notched) {
+		return null;
 	}
-	if (hasEndAdornment) {
-		next.root = getSpacing({ pr: 14 });
-		next.input = getSpacing({ pr: 0 });
-	}
 
-	return next;
-}
-
-function getNotchedOutlineStyles(props) {
-	const {
-		hasError,
-		isDisabled,
-		isFocused,
-		isNotched,
-		theme: { palette },
-	} = props;
 	const isLight = palette.type === 'light';
-	let next = {};
+	let next = {
+		root: {
+			borderColor: isLight
+				? 'rgba(0, 0, 0, 0.23)'
+				: 'rgba(255, 255, 255, 0.23)',
+			':focused': {
+				borderColor: palette.primary.main,
+				borderWidth: '2px',
+			},
+			':disabled': {
+				borderColor: palette.action.disabled,
+			},
+		},
+	};
 
-	if (isNotched) {
+	if (hasError) {
 		next = {
+			...next,
+			borderColor: palette.error.main,
+		};
+	}
+
+	if (!hasError && !disabled && !focused) {
+		next = {
+			...next,
 			root: {
-				borderColor: isLight
-					? 'rgba(0, 0, 0, 0.23)'
-					: 'rgba(255, 255, 255, 0.23)',
-				':focused': {
-					borderColor: palette.primary.main,
-					borderWidth: '2px',
-				},
-				':disabled': {
-					borderColor: palette.action.disabled,
+				':hover': {
+					borderColor: palette.text.primary,
+					// Reset on touch devices so as not to add specificity.
+					'@media (hover:none)': {
+						borderColor: isLight
+							? 'rgba(0, 0, 0, 0.23)'
+							: 'rgba(255, 255, 255, 0.23)',
+					},
 				},
 			},
 		};
-
-		if (hasError) {
-			next = {
-				...next,
-				borderColor: palette.error.main,
-			};
-		}
-
-		if (!hasError && !isDisabled && !isFocused) {
-			next = {
-				...next,
-				root: {
-					':hover': {
-						borderColor: palette.text.primary,
-						// Reset on touch devices so as not to add specificity.
-						'@media (hover:none)': {
-							borderColor: isLight
-								? 'rgba(0, 0, 0, 0.23)'
-								: 'rgba(255, 255, 255, 0.23)',
-						},
-					},
-				},
-			};
-		}
 	}
 
 	return next;
-}
+};
 
-function getMarginStyles({ margin }) {
-	return (
-		margin === 'dense' && {
-			input: {
-				paddingTop: '15px',
-				paddingBottom: '15px',
-			},
-		}
-	);
-}
+const getMarginStyles = ({ margin }) =>
+	margin === 'dense' && {
+		input: {
+			paddingTop: '15px',
+			paddingBottom: '15px',
+		},
+	};
 
-function getMultilineStyles({ isMultilined }) {
-	return (
-		isMultilined && {
-			root: {
-				// Prevent pading issue with isFullWidth.
-				boxSizing: 'border-box',
-				padding: '18.5px 14px',
-			},
-			input: {
-				padding: '0px',
-			},
-		}
-	);
-}
+const getMultilineStyles = ({ multilined }) =>
+	multilined && {
+		root: {
+			// Prevent pading issue with fullWidth.
+			boxSizing: 'border-box',
+			padding: '18.5px 14px',
+		},
+		input: {
+			padding: '0px',
+		},
+	};
 
 const baseStyles = {
 	root: {
@@ -121,18 +108,18 @@ const getStyles = combine(
 getStyles.propTypes = {};
 
 function OutlinedInput(props) {
-	const [{ styles }, { labelWidth, isNotched, ...passThru }] = useStyles(
+	const [{ styles }, { labelWidth, notched, ...passThru }] = useStyles(
 		props,
 		getStyles,
 		{
 			baseStyles,
 			whitelist: [
-				'hasError',
-				'hasStartAdornment',
-				'hasEndAdornment',
-				'isMultilined',
-				'isNotched',
+				'endAdornment',
+				'error',
+				'multilined',
+				'notched',
 				'margin',
+				'startAdornment',
 			],
 		},
 	);
@@ -143,12 +130,12 @@ function OutlinedInput(props) {
 				<NotchedOutline
 					labelWidth={labelWidth}
 					notched={
-						typeof isNotched !== 'undefined'
+						typeof notched !== 'undefined'
 							? notched
 							: Boolean(
-									state.hasStartAdornment ||
-										state.isFilled ||
-										state.isFocused,
+									state.startAdornment ||
+										state.filled ||
+										state.focused,
 							  )
 					}
 				/>
@@ -193,6 +180,8 @@ OutlinedInput.propTypes = {
 			]),
 		),
 	]),
+	// If `true`, the input will be disabled.
+	disabled: PropTypes.bool,
 	// End `InputAdornment` for this component.
 	endAdornment: PropTypes.node,
 	/**
@@ -200,7 +189,7 @@ OutlinedInput.propTypes = {
 	 * via context from
 	 * FormControl.
 	 */
-	hasError: PropTypes.bool,
+	error: PropTypes.bool,
 	// The id of the `input` element.
 	id: PropTypes.string,
 	/**
@@ -212,16 +201,8 @@ OutlinedInput.propTypes = {
 	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	// If `true`, the input will be disabled.
-	isDisabled: PropTypes.bool,
 	// If `true`, the input will take up the full width of its container.
-	isFullWidth: PropTypes.bool,
-	// If `true`, a textarea element will be rendered.
-	isMultiline: PropTypes.bool,
-	// If `true`, the outline is notched to accommodate the label.
-	isNotched: PropTypes.bool,
-	// If `true`, the input will be required.
-	isRequired: PropTypes.bool,
+	fullWidth: PropTypes.bool,
 	// The width of the legend.
 	labelWidth: PropTypes.number.isRequired,
 	/**
@@ -230,6 +211,8 @@ OutlinedInput.propTypes = {
 	 * FormControl.
 	 */
 	margin: PropTypes.oneOf(['dense', 'none']),
+	// If `true`, a textarea element will be rendered.
+	multiline: PropTypes.bool,
 	// Name attribute of the `input` element.
 	name: PropTypes.string,
 	/**
@@ -238,6 +221,8 @@ OutlinedInput.propTypes = {
 	 * @param {object} event The event source of the callback.
 	 * You can pull out the new value by accessing `event.target.value`.
 	 */
+	// If `true`, the outline is notched to accommodate the label.
+	notched: PropTypes.bool,
 	onChange: PropTypes.func,
 	// The short hint displayed in the input before the user enters a value.
 	placeholder: PropTypes.string,
@@ -246,6 +231,8 @@ OutlinedInput.propTypes = {
 	 * (not from interacting with the field).
 	 */
 	readOnly: PropTypes.bool,
+	// If `true`, the input will be required.
+	required: PropTypes.bool,
 	// Number of rows to display when multiline option is set to true.
 	rows: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	// Maximum number of rows to display when multiline option is set to true.
@@ -273,8 +260,8 @@ OutlinedInput.propTypes = {
 };
 
 OutlinedInput.defaultProps = {
-	isFullWidth: false,
-	isMultiline: false,
+	fullWidth: false,
+	multiline: false,
 	inputComponent: 'input',
 	type: 'text',
 };

@@ -183,18 +183,18 @@ const ButtonBase = forwardRef((props, ref) => {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (
-			focused &&
-			focusRipple &&
-			!disabled &&
-			!disableRipple &&
-			!prevFocused &&
-			keyDown.current
-		) {
-			addRipple({ center: true, pulsate: true });
-		}
-	}, [disabled, focused, keyDown]);
+	// useEffect(() => {
+	// 	if (
+	// 		focused &&
+	// 		focusRipple &&
+	// 		!disabled &&
+	// 		!disableRipple &&
+	// 		!prevFocused &&
+	// 		keyDown.current
+	// 	) {
+	// 		addRipple({ center: true, pulsate: true });
+	// 	}
+	// }, [disabled, focused, keyDown]);
 
 	return (
 		<Component

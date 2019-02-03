@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import Box from './../Box';
+import Box from '../Box';
 
 const Paper = forwardRef((props, ref) => <Box ref={ref} {...props} />);
 

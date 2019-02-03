@@ -1,22 +1,22 @@
 import React, { useCallback, useState } from 'react';
-import AppBar from './../AppBar';
-import Box from './../Box';
-import Collapse from './../Collapse';
+import AppBar from '../AppBar';
+import Box from '../Box';
+import Collapse from '../Collapse';
 import demos from './Demos';
-import Divider from './../Divider';
-import Drawer from './../Drawer';
-import Flex from './../Flex';
-import IconButton from './../IconButton';
-import List from './../List';
-import ListItem from './../ListItem';
-import ListItemText from './../ListItemText';
-import MenuIcon from './../svgIcons/Menu';
-import Toolbar from './../Toolbar';
-import Typography from './../Typography';
-import useMedia from './../hooks/useMedia';
-import merge from './../utils/merge';
+import Divider from '../Divider';
+import Drawer from '../Drawer';
+import Flex from '../Flex';
+import IconButton from '../IconButton';
+import List from '../List';
+import ListItem from '../ListItem';
+import ListItemText from '../ListItemText';
+import MenuIcon from '../svgIcons/Menu';
+import Toolbar from '../Toolbar';
+import Typography from '../Typography';
+import useMedia from '../hooks/useMedia';
+import merge from '../utils/merge';
 import { Link } from 'react-router-dom';
-import { getSpacing, getWidth } from './../system';
+import { getSpacing, getWidth } from '../system';
 
 const ComponentDemos = props => (
 	<List as="div" disablePadding {...props}>
@@ -45,15 +45,11 @@ const ComponentDemos = props => (
 );
 
 function DemoList(props) {
-	const [show, setShow] = useState({
-		API: false,
-		demos: false,
-		system: false,
-		utils: false,
-	});
+	const [showDemos, setShowDemos] = useState(false);
+	const [showAPIs, setShowAPIs] = useState(false);
 
-	const handleToggle = useCallback(
-		list => () => setShow(state => ({ ...state, [list]: !state[list] })),
+	const handleToggleDemo = useCallback(
+		() => setShowDemos(state => !state),
 		[],
 	);
 
@@ -77,10 +73,10 @@ function DemoList(props) {
 			</Flex>
 			<Box top="0px" position="sticky">
 				<List as="nav">
-					<ListItem onClick={handleToggle('demos')} button>
+					<ListItem onClick={handleToggleDemo} button>
 						<ListItemText primary="Component Demos" />
 					</ListItem>
-					<Collapse show={show.demos}>
+					<Collapse show={showDemos}>
 						<ComponentDemos onClose={props.onClose || null} />
 					</Collapse>
 				</List>
@@ -90,7 +86,7 @@ function DemoList(props) {
 }
 
 function AppNav() {
-	const [isOpen, setIsOpen] = useState(false);
+	const [open, setOpen] = useState(false);
 	const { isLg, isXl, isXxl } = useMedia();
 	const styles = merge(
 		getWidth({
@@ -99,7 +95,7 @@ function AppNav() {
 		getSpacing({ ml: [0, 0, 250] }),
 	);
 
-	const handleClose = useCallback(() => setIsOpen(() => false), []);
+	const handleClose = useCallback(() => setOpen(false), []);
 
 	return (
 		<Flex>
@@ -107,7 +103,7 @@ function AppNav() {
 				<Toolbar>
 					{!isLg && !isXl && !isXxl && (
 						<IconButton
-							onClick={() => setIsOpen(() => !isOpen)}
+							onClick={() => setOpen(!open)}
 							ml={-2.5}
 							mr={3.5}
 							color="inherit"
@@ -122,7 +118,7 @@ function AppNav() {
 				</Toolbar>
 			</AppBar>
 			<Drawer
-				isOpen={isOpen}
+				open={open}
 				onClose={handleClose}
 				ModalProps={{ keepMounted: true }}
 			>
@@ -130,7 +126,7 @@ function AppNav() {
 			</Drawer>
 			{isLg && (
 				<Box as="nav" w={[null, null, null, 250]}>
-					<Drawer variant="permanent" open>
+					<Drawer variant="permanent">
 						<DemoList />
 					</Drawer>
 				</Box>

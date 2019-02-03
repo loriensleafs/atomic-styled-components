@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import PopperJS from 'popper.js';
-import usePrevious from './../hooks/usePrevious';
-import ownerDocument from './../utils/ownerDocument';
-import { isFn } from './../utils/helpers';
+import usePrevious from '../hooks/usePrevious';
+import ownerDocument from '../utils/ownerDocument';
+import { isFn } from '../utils/helpers';
 
-function flipPlacement(placement) {
+const flipPlacement = placement => {
 	switch (placement) {
 		case 'bottom-end':
 			return 'bottom-start';
@@ -19,29 +19,24 @@ function flipPlacement(placement) {
 		default:
 			return placement;
 	}
-}
+};
 
-function getAnchor(anchor) {
-	return typeof anchor === 'function' ? anchor() : anchor;
-}
+const getAnchor = anchor => (typeof anchor === 'function' ? anchor() : anchor);
 
-function getContainer(container) {
-	container = isFn(container)
+const getContainer = container =>
+	isFn(container)
 		? container()
 		: container && container.current
 		? container.current
-		: container;
-	return container || ownerDocument().body;
-}
+		: container || ownerDocument().body;
 
-function getHasTransition({ children }) {
-	if (children) {
-		return React.Children.toArray(children).some(
-			child => isValidElement(child) && child.props.show !== undefined,
-		);
-	}
-	return false;
-}
+const getHasTransition = ({ children }) =>
+	children
+		? React.Children.toArray(children).some(
+				child =>
+					isValidElement(child) && child.props.show !== undefined,
+		  )
+		: false;
 
 function Popper(props) {
 	const {
@@ -49,27 +44,30 @@ function Popper(props) {
 		children,
 		container,
 		disablePortal,
-		isOpen,
+		open,
 		keepMounted,
 		modifiers,
 		placement: placementProps,
 		popperOptions,
 		...passThru
 	} = props;
-	const prevAnchor = usePrevious(anchor);
-	const prevDisablePortal = usePrevious(disablePortal);
-	const prevModifiers = usePrevious(modifiers);
-	const prevIsOpen = usePrevious(isOpen);
-	const prevPlacement = usePrevious(placementProps);
-	const prevPopperOptions = usePrevious(popperOptions);
-	const [placement, setPlacement] = useState(flipPlacement(placementProps));
-	const [hasExcited, setHasExcited] = useState(!isOpen);
-	const isExiting = useRef(false);
-	const containerRef = useRef(getContainer(container));
+	// Refs
+	const portalRef = useRef(getContainer(container));
 	const popperRef = useRef(null);
 	const anchorRef = useRef(getAnchor(anchor));
 	const popper = useRef(null);
+	// States
+	const [placement, setPlacement] = useState(flipPlacement(placementProps));
+	const [exited, setExited] = useState(!open);
+	const exiting = useRef(false);
 	const hasTransition = getHasTransition(props);
+	// Previous
+	const prevAnchor = usePrevious(anchor);
+	const prevDisablePortal = usePrevious(disablePortal);
+	const prevModifiers = usePrevious(modifiers);
+	const prevOpen = usePrevious(open);
+	const prevPlacement = usePrevious(placementProps);
+	const prevPopperOptions = usePrevious(popperOptions);
 
 	const handlePopperUpdate = useCallback(
 		data => {
@@ -88,12 +86,12 @@ function Popper(props) {
 	}, []);
 
 	const handleOpen = useCallback(() => {
-		if (!containerRef.current || !anchorRef.current || !isOpen) {
+		if (!portalRef.current || !anchorRef.current || !open) {
 			return;
 		}
 
 		handleClose();
-		popper.current = new PopperJS(anchorRef.current, containerRef.current, {
+		popper.current = new PopperJS(anchorRef.current, portalRef.current, {
 			placement,
 			...popperOptions,
 			modifiers: {
@@ -120,24 +118,25 @@ function Popper(props) {
 	}, []);
 
 	useEffect(() => {
-		if (prevIsOpen !== isOpen && !isOpen && !hasTransition) {
+		if (prevOpen !== open && !open && !hasTransition) {
 			handleClose();
 		}
 
 		if (
+			prevOpen !== open ||
 			prevAnchor !== anchor ||
-			prevDisablePortal !== disablePortal ||
-			prevIsOpen !== isOpen ||
 			prevModifiers !== modifiers ||
 			prevPlacement !== placement ||
+			prevDisablePortal !== disablePortal ||
 			prevPopperOptions !== popperOptions
 		) {
 			handleOpen();
 		}
-		return () => handleClose();
-	}, [anchor, disablePortal, modifiers, isOpen, placement, popperOptions]);
 
-	if (!keepMounted && !isOpen && (!hasTransition || hasExcited)) {
+		return () => handleClose();
+	}, [anchor, disablePortal, modifiers, open, placement, popperOptions]);
+
+	if (!keepMounted && !open && (!hasTransition || exited)) {
 		return null;
 	}
 
@@ -146,11 +145,11 @@ function Popper(props) {
 	};
 
 	if (hasTransition) {
-		childProps.show = isOpen;
+		childProps.show = open;
 		childProps.onExited = () => {
-			if (!isOpen && isExiting.current) {
-				isExiting.current = false;
-				setHasExcited(() => true);
+			if (!open && exiting.current) {
+				exiting.current = false;
+				setExited(true);
 			}
 		};
 	}
@@ -174,7 +173,7 @@ function Popper(props) {
 		return Popper;
 	}
 
-	return createPortal(Popper, containerRef.current);
+	return createPortal(Popper, portalRef.current);
 }
 
 Popper.displayName = 'Popper';
@@ -219,7 +218,7 @@ Popper.propTypes = {
 	 */
 	modifiers: PropTypes.object,
 	// If `true`, the popper is visible.
-	isOpen: PropTypes.bool.isRequired,
+	open: PropTypes.bool.isRequired,
 	// Popper placement.
 	placement: PropTypes.oneOf([
 		'bottom-end',

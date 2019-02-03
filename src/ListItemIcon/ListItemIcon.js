@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getColor, getSpacing, useStyles } from './../system';
-import { stylesPropType } from './../utils/propTypes';
+import { getColor, getSpacing, useStyles } from '../system';
+import { stylesPropType } from '../utils/propTypes';
 
-function getStyles() {
-	return {
-		display: 'flex',
-		flexShrink: 0,
-		alignItems: 'center',
-		...getColor({ color: 'action.active' }),
-		...getSpacing({ mr: 2 }),
-	};
-}
+const getStyles = () => ({
+	display: 'flex',
+	flexShrink: 0,
+	alignItems: 'center',
+	...getColor({ color: 'action.active' }),
+	...getSpacing({ mr: 2 }),
+});
 
 function ListItemIcon(props) {
 	const [{ classes }, { children, className, ...passThru }] = useStyles(

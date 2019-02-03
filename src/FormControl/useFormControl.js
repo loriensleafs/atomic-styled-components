@@ -1,7 +1,8 @@
 import { useContext } from 'react';
 import FormControlContext from './FormControlContext';
+import { isNil } from '../utils/helpers';
 
-export default function useFormControlContext(props, states) {
+function useFormControlContext(props, states) {
 	const context = useContext(FormControlContext);
 	const mergedProps = useMemo(
 		() =>
@@ -19,3 +20,5 @@ export default function useFormControlContext(props, states) {
 
 	return [mergedProps, context];
 }
+
+export default useFormControlContext;

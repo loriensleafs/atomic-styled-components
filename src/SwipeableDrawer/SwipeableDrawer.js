@@ -55,7 +55,7 @@ function SwipeableDrawer(props) {
 		disableBackdropTransition,
 		disableDiscovery,
 		disableSwipeToOpen,
-		isOpen,
+		open,
 		hysteresis,
 		minFlingVelocity,
 		ModalProps: { BackdropProps, ...ModalPropsProp } = {},
@@ -89,7 +89,7 @@ function SwipeableDrawer(props) {
 		const start = isHorizontal(props) ? startX.current : startY.current;
 		return Math.min(
 			Math.max(
-				isOpen ? start - current : getMaxTranslate() + start - current,
+				open ? start - current : getMaxTranslate() + start - current,
 				0,
 			),
 			getMaxTranslate(),
@@ -154,7 +154,7 @@ function SwipeableDrawer(props) {
 				? (window.innerHeight = event.touches[0].clientY)
 				: event.touches[0].clientY;
 
-		if (!isOpen) {
+		if (!open) {
 			if (disableSwipeToOpen) return;
 			if (isHorizontal(props)) {
 				if (currentX > swipeAreaWidth) return;
@@ -168,7 +168,7 @@ function SwipeableDrawer(props) {
 		startY.current = currentY;
 
 		setMaybeSwiping(() => true);
-		if (!isOpen && paperRef.current) {
+		if (!open && paperRef.current) {
 			// The ref may be null when a parent component updates while swiping.
 			setPosition(
 				getMaxTranslate() + (disableDiscovery ? 20 : -swipeAreaWidth),
@@ -232,7 +232,7 @@ function SwipeableDrawer(props) {
 				startY.current = currentY;
 
 				// Compensate for the part of the drawer displayed on the touch start.
-				if (!disableDiscovery && !isOpen) {
+				if (!disableDiscovery && !open) {
 					if (horizontalSwipe) {
 						startX.current -= swipeAreaWidth;
 					} else {
@@ -294,7 +294,7 @@ function SwipeableDrawer(props) {
 
 		const translateRatio = getTranslate(current) / getMaxTranslate();
 
-		if (isOpen) {
+		if (open) {
 			if (
 				velocity.current > minFlingVelocity ||
 				translateRatio > hysteresis
@@ -365,7 +365,7 @@ function SwipeableDrawer(props) {
 	return (
 		<Fragment>
 			<Drawer
-				isOpen={variant === 'temporary' && maybeSwiping ? true : isOpen}
+				open={variant === 'temporary' && maybeSwiping ? true : open}
 				variant={variant}
 				ModalProps={{
 					BackdropProps: {
@@ -378,7 +378,7 @@ function SwipeableDrawer(props) {
 					...PaperProps,
 					style: {
 						pinterEvents:
-							variant === 'temporary' && !isOpen ? 'none' : '',
+							variant === 'temporary' && !open ? 'none' : '',
 						...PaperProps.style,
 					},
 					ref: paperRef.current,
@@ -417,16 +417,16 @@ SwipeableDrawer.propTypes = {
 	 */
 	disableDiscovery: PropTypes.bool,
 	/**
-	 * If `true`, swipe to isOpen is disabled. This is useful in browsers where swiping triggers
-	 * navigation actions. Swipe to isOpen is disabled on iOS browsers by default.
+	 * If `true`, swipe to open is disabled. This is useful in browsers where swiping triggers
+	 * navigation actions. Swipe to open is disabled on iOS browsers by default.
 	 */
 	disableSwipeToOpen: PropTypes.bool,
 	/**
-	 * If `true`, the drawer is isOpen.
+	 * If `true`, the drawer is open.
 	 */
-	isOpen: PropTypes.bool.isRequired,
+	open: PropTypes.bool.isRequired,
 	/**
-	 * Affects how far the drawer must be isOpened/closed to change his state.
+	 * Affects how far the drawer must be opened/closed to change his state.
 	 * Specified as percent (0-1) of the width of the drawer
 	 */
 	hysteresis: PropTypes.number,
@@ -447,7 +447,7 @@ SwipeableDrawer.propTypes = {
 	 */
 	onClose: PropTypes.func.isRequired,
 	/**
-	 * Callback fired when the component requests to be isOpened.
+	 * Callback fired when the component requests to be opened.
 	 *
 	 * @param {object} event The event source of the callback
 	 */
@@ -463,7 +463,7 @@ SwipeableDrawer.propTypes = {
 	SwipeAreaProps: PropTypes.object,
 	/**
 	 * The width of the left most (or right most) area in pixels where the
-	 * drawer can be swiped isOpen from.
+	 * drawer can be swiped open from.
 	 */
 	swipeAreaWidth: PropTypes.number,
 	/**

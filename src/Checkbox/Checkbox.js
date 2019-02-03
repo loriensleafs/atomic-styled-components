@@ -1,84 +1,58 @@
-import React, { forwardRef, useState, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import SelectionControl from './../SelectionControl';
-import CheckBoxIcon from './../svgIcons/CheckBox';
-import CheckboxOutlineBlankIcon from './../svgIcons/CheckBoxOutlineBlank';
-import IndeterminateCheckBoxIcon from './../svgIcons/IndeterminateCheckBox';
-import useDidUpdate from './../hooks/useDidUpdate';
-import combine from './../utils/combine';
-import { getColor, useStyles } from './../system';
-import { isNil } from './../utils/helpers';
-import { fade } from './../utils/colorHelpers';
+import CheckBoxIcon from '../svgIcons/CheckBox';
+import CheckboxOutlineBlankIcon from '../svgIcons/CheckBoxOutlineBlank';
+import IndeterminateCheckBoxIcon from '../svgIcons/IndeterminateCheckBox';
+import SelectionControl from '../SelectionControl';
+import useInput from '../hooks/useInput';
+import useStyles from '../system/useStyles';
+import combine from '../utils/combine';
+import { fade } from '../utils/colorHelpers';
+import { stylesPropType } from '../utils/propTypes';
 
-function getColorStyles(props) {
-	const {
-		checked,
-		color,
-		disabled = false,
-		theme: { palette },
-	} = props;
-	const isBrand = color === 'primary' || color === 'secondary';
-	const isLight = palette.type === 'light';
-	const state = disabled ? 'disabled' : checked ? 'checked' : null;
-
-	switch (state) {
-		case 'disabled':
-			return {
-				...getColor({
-					color: 'action.disabled',
-				}),
-				pointerEvents: 'none',
-			};
-
-		case 'checked':
-			return {
-				...getColor({
-					color: isBrand ? `${color}.main` : 'text.secondary',
-				}),
-				':hover': {
-					backgroundColor: fade(
-						isBrand
-							? palette[color].main
-							: isLight
-							? palette.common.black
-							: palette.common.white,
-						palette.action.hoverOpacity,
-					),
-				},
-			};
-
-		default:
-			// Default colors.
-			return getColor({
-				color: 'text.secondary',
-			});
-	}
-}
-
-function getBaseStyles(props) {
-	const { getTransition } = props.theme;
-
-	return {
-		transition: getTransition('background-color', {
-			duration: 'shortest',
-			easing: 'in',
-		}),
+const getDisabledStyles = ({ disabled, theme: { palette } }) =>
+	disabled && {
+		color: palette.action.disabled,
+		pointerEvents: 'none',
 	};
-}
 
-const getStyles = combine(getBaseStyles, getColorStyles);
+const getCheckedStyles = ({ checked, color, theme: { palette } }) =>
+	checked && {
+		color:
+			color === 'primary' || color === 'secondary'
+				? palette[color].main
+				: palette.text.secondary,
+		':hover': {
+			backgroundColor: fade(
+				color === 'primary' || color === 'secondary'
+					? palette[color].main
+					: palette.type === 'light'
+					? palette.common.black
+					: palette.common.white,
+				palette.action.hoverOpacity,
+			),
+		},
+	};
+
+const getBaseStyles = ({ theme: { getTransition, palette } }) => ({
+	color: palette.text.secondary,
+	transition: getTransition('background-color', {
+		duration: 'shortest',
+	}),
+});
+
+const getStyles = combine(getBaseStyles, getCheckedStyles, getDisabledStyles);
 getStyles.propTypes = {
 	// If `true`, the component is checked.
 	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-	/**
-	 * The color of the component. It supports those theme colors that make
-	 * sense for this component.
-	 */
+	// If `true`, the checkbox will be disabled.
+	disabled: PropTypes.bool,
+	// The color of the component.  Supports theme colors that make sense.
 	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
 };
 
-const Checkbox = forwardRef((props, ref) => {
-	const [checked, setChecked] = useState(props.checked || false);
+function Checkbox(props) {
+	const [checked, handleChange] = useInput(props);
 	const [
 		{ styles },
 		{
@@ -88,61 +62,38 @@ const Checkbox = forwardRef((props, ref) => {
 			indeterminateIcon,
 			inputProps,
 			onChange,
+			type,
 			...passThru
 		},
-	] = useStyles({ ...props, checked }, getStyles, { whitelist: ['checked'] });
-
-	const handleChange = useCallback((event, isChecked) => {
-		if (isNil(props.checked)) {
-			setChecked(() => isChecked);
-		}
-		if (onChange) {
-			onChange(event, isChecked);
-		}
-	}, []);
-
-	useDidUpdate(() => {
-		if (!isNil(props.checked)) {
-			setChecked(() => props.checked);
-		}
-	}, [props.checked, checked]);
+	] = useStyles({ ...props, checked }, getStyles, {
+		whitelist: ['disabled'],
+	});
 
 	return (
 		<SelectionControl
+			checked={props.checked}
 			checkedIcon={indeterminate ? indeterminateIcon : checkedIcon}
-			inputProps={{
-				'data-indeterminate': indeterminate,
-				...inputProps,
-			}}
+			inputProps={{ 'data-indeterminate': indeterminate, ...inputProps }}
 			icon={indeterminate ? indeterminateIcon : icon}
 			onChange={handleChange}
-			ref={ref}
-			styles={{ buttonStyles: styles }}
-			type="checkbox"
+			styles={{ root: styles }}
+			type={type}
 			{...passThru}
 		/>
 	);
-});
+}
 
 Checkbox.displayName = 'Checkbox';
 
 Checkbox.propTypes = {
-	// If `true`, the component is checked.
-	checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 	// The icon to display when the component is checked.
 	checkedIcon: PropTypes.node,
+	classes: PropTypes.object,
 	/**
 	 * Override or extend the styles applied to the component.
 	 * See [CSS API](#css-api) below for more details.
 	 */
 	className: PropTypes.string,
-	/**
-	 * The color of the component. It supports those theme colors that make
-	 * sense for this component.
-	 */
-	color: PropTypes.oneOf(['primary', 'secondary', 'default']),
-	// If `true`, the switch will be disabled.
-	disabled: PropTypes.bool,
 	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
 	// The icon to display when the component is unchecked.
@@ -170,11 +121,12 @@ Checkbox.propTypes = {
 	 * @param {boolean} checked The `checked` value of the switch
 	 */
 	onChange: PropTypes.func,
-	styles: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	// The input component property `type`.
 	type: PropTypes.string,
 	// The value of the component.
 	value: PropTypes.string,
+	...getStyles.propTypes,
+	...stylesPropType,
 };
 
 Checkbox.defaultProps = {
@@ -183,6 +135,7 @@ Checkbox.defaultProps = {
 	icon: <CheckboxOutlineBlankIcon />,
 	indeterminate: false,
 	indeterminateIcon: <IndeterminateCheckBoxIcon />,
+	type: 'checkbox',
 };
 
 export default Checkbox;

@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import useSlideManager from './useSlideManager';
-import { useIsMounted, useMotion } from './../hooks';
+import { useMounted, useMotion } from './../hooks';
 import { animated, useSpring } from 'react-spring/hooks';
 import { componentPropType } from './../utils/propTypes';
 
@@ -24,23 +24,23 @@ const Slide = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
-	const [isMeasured, setIsMeasured] = useState(false);
+	const [measured, setMeasured] = useState(false);
 	const [slideIn, slideOut, _ref] = useSlideManager(direction, ref);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
-	const isMounted = useIsMounted();
+	const mounted = useMounted();
 	const Component = animated(as);
 	const transition = useSpring({
 		native: true,
 		config: { duration, easing },
-		immediate: !isMounted,
+		immediate: !mounted,
 		to: {
 			transform:
-				(appear && isMounted && isMeasured && show) ||
-				(!appear && isMounted && show)
+				(appear && mounted && measured && show) ||
+				(!appear && mounted && show)
 					? slideIn
 					: slideOut,
 			visibility:
-				(appear && isMounted && isMeasured) || !appear
+				(appear && mounted && measured) || !appear
 					? 'visible'
 					: 'hidden',
 		},
@@ -71,10 +71,10 @@ const Slide = forwardRef((props, ref) => {
 	});
 
 	useEffect(() => {
-		if (isMounted && !isMeasured) {
-			setIsMeasured(() => true);
+		if (mounted && !measured) {
+			setMeasured(true);
 		}
-	}, [isMeasured, isMounted]);
+	}, [measured, mounted]);
 
 	return (
 		<Component

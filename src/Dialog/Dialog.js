@@ -1,41 +1,35 @@
 import React, { forwardRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import Modal from './../Modal';
-import Fade from './../Fade';
-import Paper from './../Paper';
-import combine from './../utils/combine';
+import Modal from '../Modal';
+import Fade from '../Fade';
+import Paper from '../Paper';
+import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
-import { stylesPropType } from './../utils/propTypes';
+import { stylesPropType } from '../utils/propTypes';
 
-function getFullWidthStyles({ isFullWidth }) {
-	return (
-		isFullWidth && {
-			paper: {
-				width: '100%',
-			},
-		}
-	);
-}
+const getFullWidthStyles = ({ fullWidth }) =>
+	fullWidth && {
+		paper: {
+			width: '100%',
+		},
+	};
 
-function getFullScreenStyles({ isFullScreen }) {
-	return (
-		isFullScreen && {
-			container: {
-				width: '100%',
-			},
-			paper: {
-				width: '100%',
-				maxWidth: '100%',
-				height: '100%',
-				maxHeight: 'none',
-				margin: '0px',
-				borderRadius: '0px',
-			},
-		}
-	);
-}
+const getFullScreenStyles = ({ fullScreen }) =>
+	fullScreen && {
+		container: {
+			width: '100%',
+		},
+		paper: {
+			width: '100%',
+			maxWidth: '100%',
+			height: '100%',
+			maxHeight: 'none',
+			margin: '0px',
+			borderRadius: '0px',
+		},
+	};
 
-function getScrollStyles({ isFullScreen, scroll }) {
+const getScrollStyles = ({ fullScreen, scroll }) => {
 	switch (scroll) {
 		case 'body':
 			return {
@@ -44,7 +38,7 @@ function getScrollStyles({ isFullScreen, scroll }) {
 					overflowX: 'hidden',
 				},
 				paper: {
-					margin: isFullScreen ? '0px' : '48px auto',
+					margin: fullScreen ? '0px' : '48px auto',
 				},
 			};
 		case 'paper':
@@ -60,76 +54,68 @@ function getScrollStyles({ isFullScreen, scroll }) {
 				},
 			};
 	}
-}
+};
 
-function getMaxWidthStyles(props) {
-	const {
-		isFullScreen,
-		maxWidth,
-		theme: { breakpoints: bps, getMq },
-	} = props;
-
-	function getBp(bp) {
-		return getMq(bps[bp] + 48 * 2, true);
-	}
+const getMaxWidthStyles = ({
+	fullScreen,
+	maxWidth,
+	theme: { breakpoints: bps, getMq },
+}) => {
+	const getBp = bp => getMq(bps[bp] + 48 * 2, true);
 
 	switch (maxWidth) {
 		case 'xs':
 			return {
 				paper: {
 					maxWidth: `${bps[0]}px`,
-					[`${getBp(0)}`]: getSpacing({ m: isFullScreen ? 0 : 4.5 }),
+					[`${getBp(0)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 		case 'sm':
 			return {
 				paper: {
 					maxWidth: `${bps[1]}px`,
-					[`${getBp(1)}`]: getSpacing({ m: isFullScreen ? 0 : 4.5 }),
+					[`${getBp(1)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 		case 'md':
 			return {
 				paper: {
 					maxWidth: `${bps[2]}px`,
-					[`${getBp(2)}`]: getSpacing({ m: isFullScreen ? 0 : 4.5 }),
+					[`${getBp(2)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 		case 'lg':
 			return {
 				paper: {
 					maxWidth: `${bps[3]}px`,
-					[`${getBp(3)}`]: getSpacing({ m: isFullScreen ? 0 : 4.5 }),
+					[`${getBp(3)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 		case 'xl':
 			return {
 				paper: {
 					maxWidth: `${bps[4]}px`,
-					[`${getBp(4)}`]: getSpacing({ m: isFullScreen ? 0 : 4.5 }),
+					[`${getBp(4)}`]: getSpacing({ m: fullScreen ? 0 : 4.5 }),
 				},
 			};
 	}
-}
+};
 
-function getBaseStyles() {
-	return {
-		container: {
-			height: '100%',
-			outline: 'none',
-		},
-		paper: {
-			position: 'relative',
-			display: 'flex',
-			flexDirection: 'column',
-			overflowY: 'auto',
-			...getSpacing({
-				m: 4.5,
-			}),
-		},
-		root: {},
-	};
-}
+const getBaseStyles = () => ({
+	container: {
+		height: '100%',
+		outline: 'none',
+	},
+	paper: {
+		position: 'relative',
+		display: 'flex',
+		flexDirection: 'column',
+		overflowY: 'auto',
+		...getSpacing({ m: 4.5 }),
+	},
+	root: {},
+});
 
 const getStyles = combine(
 	getBaseStyles,
@@ -140,9 +126,9 @@ const getStyles = combine(
 );
 getStyles.propTypes = {
 	// If `true`, the dialog will be full-screen
-	isFullScreen: PropTypes.bool,
+	fullScreen: PropTypes.bool,
 	// If `true`, the dialog stretches to `maxWidth`.
-	isFullWidth: PropTypes.bool,
+	fullWidth: PropTypes.bool,
 	/**
 	 * Determine the max width of the dialog.
 	 * The dialog width grows with the size of the screen, this property is
@@ -170,7 +156,7 @@ const Dialog = forwardRef((props, ref) => {
 			onExit,
 			onExiting,
 			onExited,
-			isOpen,
+			open,
 			onBackdropClick,
 			onClose,
 			PaperProps,
@@ -196,7 +182,7 @@ const Dialog = forwardRef((props, ref) => {
 		<Modal
 			className={className}
 			disableBackdropClick={disableBackdropClick}
-			isOpen={isOpen}
+			open={open}
 			onBackdropClick={handleBackdropClick}
 			onClose={onClose}
 			role="dialog"
@@ -214,7 +200,7 @@ const Dialog = forwardRef((props, ref) => {
 				onExiting={onExiting}
 				onExited={onExited}
 				role="document"
-				show={isOpen}
+				show={open}
 				{...TransitionProps}
 			>
 				<Paper
@@ -250,7 +236,7 @@ Dialog.propTypes = {
 	// The easing type the animation should use.
 	ease: PropTypes.string,
 	// If `true`, the Dialog is open.
-	isOpen: PropTypes.bool.isRequired,
+	open: PropTypes.bool.isRequired,
 	// Callback fired when the backdrop is clicked.
 	onBackdropClick: PropTypes.func,
 	// Callback fired when the component requests to be closed.
@@ -286,8 +272,8 @@ Dialog.propTypes = {
 Dialog.defaultProps = {
 	disableBackdropClick: false,
 	disableEscapeKeyDown: false,
-	isFullScreen: false,
-	isFullWidth: false,
+	fullScreen: false,
+	fullWidth: false,
 	maxWidth: 'sm',
 	scroll: 'paper',
 	TransitionComponent: Fade,

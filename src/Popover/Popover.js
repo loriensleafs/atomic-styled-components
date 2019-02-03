@@ -1,24 +1,23 @@
 import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import Grow from './../Grow';
-import Modal from './../Modal';
-import Paper from './../Paper';
-import ownerDocument from './../utils/ownerDocument';
-import ownerWindow from './../utils/ownerWindow';
-import useStyles from './../system/useStyles';
-import useSize from './../hooks/useSize';
-import throttle from './../utils/throttle';
-import { componentPropType, stylesPropType } from './../utils/propTypes';
+import Grow from '../Grow';
+import Modal from '../Modal';
+import Paper from '../Paper';
+import ownerDocument from '../utils/ownerDocument';
+import ownerWindow from '../utils/ownerWindow';
+import useStyles from '../system/useStyles';
+import useSize from '../hooks/useSize';
+import throttle from '../utils/throttle';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-function getTransformOriginValue(transformOrigin) {
-	return [transformOrigin.horizontal, transformOrigin.vertical]
+const getTransformOriginValue = transformOrigin =>
+	[transformOrigin.horizontal, transformOrigin.vertical]
 		.map(n => (typeof n === 'number' ? `${n}px` : n))
 		.join(' ');
-}
 
 // Sum the scrollTop between two elements.
-function getScrollParent(parent, child) {
+const getScrollParent = (parent, child) => {
 	let element = child;
 	let scrollTop = 0;
 
@@ -27,11 +26,9 @@ function getScrollParent(parent, child) {
 		scrollTop += element.scrollTop;
 	}
 	return scrollTop;
-}
+};
 
-function getAnchor(anchor) {
-	return typeof anchor === 'function' ? anchor() : anchor;
-}
+const getAnchor = anchor => (typeof anchor === 'function' ? anchor() : anchor);
 
 const baseStyles = {
 	position: 'absolute',
@@ -55,7 +52,7 @@ const Popover = forwardRef((props, ref) => {
 		duration,
 		ease,
 		elevation,
-		isOpen,
+		open,
 		marginThreshold,
 		onEnter,
 		onEntering,
@@ -159,7 +156,7 @@ const Popover = forwardRef((props, ref) => {
 		<Modal
 			className={className}
 			container={container}
-			isOpen={isOpen}
+			open={open}
 			BackdropProps={{ invisible: true }}
 			{...passThru}
 		>
@@ -174,7 +171,7 @@ const Popover = forwardRef((props, ref) => {
 				onExiting={onExiting}
 				onExited={onExited}
 				role={role}
-				show={isOpen}
+				show={open}
 			>
 				<Paper elevation={elevation} ref={paperRef} {...PaperProps}>
 					{children}
@@ -292,7 +289,7 @@ Popover.propTypes = {
 	// Callback that is triggered at the end of the animation.
 	onExited: PropTypes.func,
 	// If `true`, the popover is visible.
-	isOpen: PropTypes.bool.isRequired,
+	open: PropTypes.bool.isRequired,
 	// Properties applied to the [`Paper`](/api/paper/) element.
 	PaperProps: PropTypes.object,
 	role: PropTypes.string,
