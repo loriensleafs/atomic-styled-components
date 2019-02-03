@@ -31,6 +31,7 @@ function useStyles(allProps, reducers, options = {}) {
 		return isObj(styles) ? merge(baseStyles, styles) : baseStyles;
 	}
 
+	// We only want to do this one time.
 	const styleProps = useMemo(
 		() =>
 			reducers.reduce(
@@ -50,10 +51,10 @@ function useStyles(allProps, reducers, options = {}) {
 
 	const dependancies = useMemo(
 		() => styleProps.map(key => key && props[key]),
-		[props],
+		[allProps],
 	);
 
-	return useMemo(() => {
+	const next = useMemo(() => {
 		let nextProps = getKeys(props)
 			.filter(key => !styleProps.includes(key) || whitelist.includes(key))
 			.reduce((acc, key) => ({ ...acc, [key]: props[key] }), {});
@@ -84,6 +85,8 @@ function useStyles(allProps, reducers, options = {}) {
 
 		return [{ classes: nextClasses, styles: nextStyles }, nextProps];
 	}, [dependancies]);
+
+	return next;
 }
 
 export default useStyles;
