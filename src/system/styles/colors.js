@@ -1,5 +1,5 @@
-import style from './../style';
-import combine from './../../utils/combine';
+import style from './style';
+import combine from '../../utils/combine';
 
 const getBg = style({
 	prop: 'bg',

@@ -68,8 +68,8 @@ export {
 	getZIndex,
 } from './styles';
 
-export { default as style } from './style';
+export { default as style } from './styles/style';
 
 export { default as useStyles } from './useStyles';
 
-export { default as variant } from './variant';
+export { default as variant } from './styles/variant';

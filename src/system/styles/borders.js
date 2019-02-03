@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import style from './../style';
-import combine from './../../utils/combine';
+import style from './style';
+import combine from '../../utils/combine';
 
 const getBorderRadius = style({
 	prop: 'radius',

@@ -1,6 +1,6 @@
-import style from './../style';
-import combine from './../../utils/combine';
-import { toPx } from './../../utils/helpers';
+import style from './style';
+import combine from '../../utils/combine';
+import { toPx } from '../../utils/helpers';
 
 const getTop = style({
 	prop: 'top',

@@ -1,6 +1,6 @@
-import style from './../style';
-import combine from './../../utils/combine';
-import { isNum, toPx } from './../../utils/helpers';
+import style from './style';
+import combine from '../../utils/combine';
+import { isNum, toPx } from '../../utils/helpers';
 
 function transformSize(val) {
 	if (!isNum(val) || val > 1) {

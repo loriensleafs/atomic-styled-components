@@ -34,7 +34,7 @@ const ComponentDemos = props => (
 			}
 
 			return (
-				<ListItem {...demoProps}>
+				<ListItem key={demo.label} {...demoProps}>
 					<Box pl={3}>
 						<ListItemText primary={demo.label} />
 					</Box>

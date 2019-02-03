@@ -29,25 +29,25 @@ function createTypography(palette, typography = {}) {
 		text: { primary, secondary },
 	} = palette;
 	const {
-		htmlFontSize = 16,
-		fontUnit = 'rem',
 		fontFamilies = {
 			paragraph: '"Roboto", "Helvetica", "Arial", sans-serif',
 			header: '"Roboto", "Helvetica", "Arial", sans-serif',
 			ui: '"Roboto", "Helvetica", "Arial", sans-serif',
 		},
 		fontSizes = FONT_SIZE_SCALE,
-		lineHeights = LINE_HEIGHT_SCALE,
 		fontWeights = {
 			light: 300,
 			regular: 400,
 			medium: 500,
 			bold: 600,
 		},
+		htmlFontSize = 16,
 		letterSpacings = {
 			normal: 'normal',
 			caps: '0.025em',
 		},
+		lineHeights = LINE_HEIGHT_SCALE,
+		unit = 'rem',
 	} = isFn(typography) ? typography(palette) : typography;
 	const pxToRem = (size = 14) => `${size / htmlFontSize}rem`;
 	const createVariant = makeCreateVariant(pxToRem);
@@ -55,13 +55,13 @@ function createTypography(palette, typography = {}) {
 	return {
 		pxToRem,
 		typography: {
-			htmlFontSize,
-			fontUnit,
 			fontFamilies,
 			fontSizes,
-			lineHeights,
 			fontWeights,
+			htmlFontSize,
 			letterSpacings,
+			lineHeights,
+			unit,
 			variants: {
 				h1: createVariant(
 					primary,

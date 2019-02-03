@@ -1,4 +1,4 @@
-import style from './../style';
+import style from './style';
 
 const getOpacity = style({
 	prop: 'opacity',

@@ -15,52 +15,51 @@ import merge from '../utils/merge';
 import { isFn } from '../utils/helpers';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-function getStyles(props) {
-	const { className, styles: stylesProp } = props;
-	const styles = merge(
-		{
-			position: 'relative',
-			display: 'inline-flex',
-			alignItems: 'center',
-			justifyContent: 'center',
-			// Removes the grey highlight.
-			WebkitTapHighlightColor: 'transparent',
-			// Reset default value
-			backgroundColor: 'transparent',
-			// Disable the focus ring for mouse, touch and keyboard users.
-			outline: 'none',
-			border: 0,
-			// Remove the margin in Safari.
-			marginTop: '0px',
-			marginRight: '0px',
-			marginBottom: '0px',
-			marginLeft: '0px',
-			// Remove the padding in Firefox.
-			paddingTop: '0px',
-			paddingRight: '0px',
-			paddingBottom: '0px',
-			paddingLeft: '0px',
-			borderRadius: 0,
-			cursor: 'pointer',
-			userSelect: 'none',
-			verticalAlign: 'middle',
-			// Reset
-			'-moz-appearance': 'none',
-			'-webkit-appearance': 'none',
-			textDecoration: 'none',
-			// So we take precedent over the style of a native <a /> element.
-			color: 'inherit',
-			':disabled': {
-				// Disable the link interactions.
-				pointerEvents: 'none',
-				cursor: 'default',
+const getStyles = ({ className, styles, ...props }) =>
+	cn(
+		className,
+		merge(
+			{
+				position: 'relative',
+				display: 'inline-flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				// Removes the grey highlight.
+				WebkitTapHighlightColor: 'transparent',
+				// Reset default value
+				backgroundColor: 'transparent',
+				// Disable the focus ring for mouse, touch and keyboard users.
+				outline: 'none',
+				border: 0,
+				// Remove the margin in Safari.
+				marginTop: '0px',
+				marginRight: '0px',
+				marginBottom: '0px',
+				marginLeft: '0px',
+				// Remove the padding in Firefox.
+				paddingTop: '0px',
+				paddingRight: '0px',
+				paddingBottom: '0px',
+				paddingLeft: '0px',
+				borderRadius: 0,
+				cursor: 'pointer',
+				userSelect: 'none',
+				verticalAlign: 'middle',
+				// Reset
+				'-moz-appearance': 'none',
+				'-webkit-appearance': 'none',
+				textDecoration: 'none',
+				// So we take precedent over the style of a native <a /> element.
+				color: 'inherit',
+				':disabled': {
+					// Disable the link interactions.
+					pointerEvents: 'none',
+					cursor: 'default',
+				},
 			},
-		},
-		isFn(stylesProp) ? stylesProp(props) : stylesProp || {},
+			isFn(styles) ? styles(props) : styles || {},
+		),
 	);
-
-	return cn(className, styles);
-}
 
 const ButtonBase = forwardRef((props, ref) => {
 	ref = ref ? ref : useRef(null);
@@ -70,10 +69,10 @@ const ButtonBase = forwardRef((props, ref) => {
 		centerRipple,
 		children,
 		className,
+		disabled,
 		disableRipple,
 		disableTouchRipple,
 		focusRipple,
-		isDisabled,
 		onBlur,
 		onFocus,
 		onFocusVisible,
@@ -91,19 +90,19 @@ const ButtonBase = forwardRef((props, ref) => {
 		...passThru
 	} = props;
 	const [rippleProps, rippleHandler, addRipple] = useRippleManager(ref);
-	const [isFocused, setIsFocused] = useState(false);
-	const prevIsFocused = usePrevious(isFocused);
+	const [focused, setFocused] = useState(false);
+	const prevFocused = usePrevious(focused);
 	const keyDown = useRef(false);
 	const Component = props.href ? 'a' : as ? as : 'button';
 	const buttonProps =
-		as === 'button' ? { disabled: isDisabled, type } : { role: 'button' };
+		as === 'button' ? { disabled: disabled, type } : { role: 'button' };
 	const classes = useMemo(() => getStyles(props), [className, styles]);
 
 	const handleMouseDown = rippleHandler(
 		{ type: 'start', center: centerRipple },
 		useCallback(() => {
-			if (isFocused) {
-				setIsFocused(false);
+			if (focused) {
+				setFocused(false);
 			}
 		}, []),
 	);
@@ -113,7 +112,7 @@ const ButtonBase = forwardRef((props, ref) => {
 	const handleMouseLeave = rippleHandler(
 		{ type: 'end' },
 		useCallback(event => {
-			if (isFocused) {
+			if (focused) {
 				event.preventDefault();
 			}
 		}, []),
@@ -133,7 +132,7 @@ const ButtonBase = forwardRef((props, ref) => {
 	const handleBlur = rippleHandler(
 		{ type: 'end' },
 		useCallback(event => {
-			setIsFocused(false);
+			setFocused(false);
 			if (onBlur) {
 				onBlur(event);
 			}
@@ -142,7 +141,7 @@ const ButtonBase = forwardRef((props, ref) => {
 
 	const handleFocus = useCallback(event => {
 		keyDown.current = false;
-		setIsFocused(true);
+		setFocused(true);
 
 		if (onFocusVisible) {
 			onFocusVisible(event);
@@ -156,7 +155,7 @@ const ButtonBase = forwardRef((props, ref) => {
 	const handleKeyDown = useCallback(event => {
 		const key = keycode(event);
 
-		if (focusRipple && !keyDown.current && isFocused && key === 'space') {
+		if (focusRipple && !keyDown.current && focused && key === 'space') {
 			keyDown.current = true;
 
 			if (onKeyDown) {
@@ -176,7 +175,7 @@ const ButtonBase = forwardRef((props, ref) => {
 	}, []);
 
 	const handleKeyUp = useCallback(event => {
-		if (focusRipple && keycode(event) === 'space' && isFocused) {
+		if (focusRipple && keycode(event) === 'space' && focused) {
 			keyDown.current = false;
 			if (onKeyUp) {
 				onKeyUp(event);
@@ -186,21 +185,21 @@ const ButtonBase = forwardRef((props, ref) => {
 
 	useEffect(() => {
 		if (
-			isFocused &&
+			focused &&
 			focusRipple &&
-			!isDisabled &&
+			!disabled &&
 			!disableRipple &&
-			!prevIsFocused &&
+			!prevFocused &&
 			keyDown.current
 		) {
 			addRipple({ center: true, pulsate: true });
 		}
-	}, [isDisabled, isFocused, keyDown]);
+	}, [disabled, focused, keyDown]);
 
 	return (
 		<Component
 			className={classes}
-			disabled={isDisabled}
+			disabled={disabled}
 			onBlur={handleBlur}
 			onContextMenu={handleContextMenu}
 			onFocus={handleFocus}
@@ -213,12 +212,12 @@ const ButtonBase = forwardRef((props, ref) => {
 			onTouchMove={handleTouchMove}
 			onTouchStart={handleTouchStart}
 			ref={ref}
-			tabIndex={isDisabled ? '-1' : tabIndex}
+			tabIndex={disabled ? '-1' : tabIndex}
 			{...buttonProps}
 			{...passThru}
 		>
 			{children}
-			{!disableRipple && !isDisabled && <Ripples {...rippleProps} />}
+			{!disableRipple && !disabled && <Ripples {...rippleProps} />}
 		</Component>
 	);
 });
@@ -240,6 +239,8 @@ ButtonBase.propTypes = {
 	// The content of the component.
 	children: PropTypes.node,
 	className: PropTypes.string,
+	// If `true`, the base button will be disabled.
+	disabled: PropTypes.bool,
 	// If `true`, the ripple effect will be disabled.
 	disableRipple: PropTypes.bool,
 	// If `true`, the touch ripple effect will be disabled.
@@ -249,8 +250,6 @@ ButtonBase.propTypes = {
 	 * `disableRipple` must also be `false`.
 	 */
 	focusRipple: PropTypes.bool,
-	// If `true`, the base button will be disabled.
-	isDisabled: PropTypes.bool,
 	onBlur: PropTypes.func,
 	onClick: PropTypes.func,
 	onFocus: PropTypes.func,

@@ -1,4 +1,4 @@
-import combine from './../../utils/combine';
+import combine from '../../utils/combine';
 import getBorders from './borders';
 import getColors from './colors';
 import getDisplay from './display';

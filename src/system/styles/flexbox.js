@@ -1,7 +1,7 @@
-import style from './../style';
-import combine from './../../utils/combine';
-import { theme } from './../../theme';
-import { responsiveBoolPropType } from './../../utils/propTypes';
+import style from './style';
+import combine from '../../utils/combine';
+import { theme } from '../../theme';
+import { responsiveBoolPropType } from '../../utils/propTypes';
 
 const getAlignContent = style({
 	prop: 'alignContent',

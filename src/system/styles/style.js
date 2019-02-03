@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { theme } from './../theme';
-import { getPath, isNil, isArr, noop } from './../utils/helpers';
+import { theme } from '../../theme';
+import { getPath, isNil, isArr, noop } from '../../utils/helpers';
 
 const propTypes = {
 	numberOrString: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -13,12 +13,11 @@ const propTypes = {
 
 const cloneFunc = fn => (...args) => fn(...args);
 
-function style(options) {
-	const { prop, cssProp, themeKey, themeMap = {}, transform } = options;
+const style = ({ prop, cssProp, themeKey, themeMap = {}, transform }) => {
 	const cssProperty = cssProp || prop;
 	const transformTheme = transform || noop;
 
-	function fn(props) {
+	const fn = props => {
 		const propValue = props[prop];
 		if (isNil(propValue)) return null;
 
@@ -51,17 +50,18 @@ function style(options) {
 		}
 
 		return styles;
-	}
-	fn.propTypes = {
-		responsive: cloneFunc(propTypes.responsive),
 	};
-	fn.propTypes.meta = {
+
+	fn.propTypes = {
+		[prop]: cloneFunc(propTypes.responsive),
+	};
+	fn.propTypes[prop].meta = {
 		prop,
 		themeKey,
 		styleType: 'responsive',
 	};
 
 	return fn;
-}
+};
 
 export default style;

@@ -1,4 +1,4 @@
-import style from './../style';
+import style from './style';
 
 const getDisplay = style({
 	prop: 'display',

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import style from './../style';
-import variant from './../variant';
-import combine from './../../utils/combine';
+import style from './style';
+import variant from './variant';
+import combine from '../../utils/combine';
 import {
 	FONT_SIZE_SCALE,
 	LINE_HEIGHT_SCALE,

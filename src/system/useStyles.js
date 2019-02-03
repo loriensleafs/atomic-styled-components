@@ -1,9 +1,9 @@
 import { useContext, useMemo } from 'react';
-import ThemeContext from './../theme/ThemeContext';
-import cn from './../system/className';
-import merge from './../utils/merge';
-import cssProps from './../utils/cssProperties';
-import { getKeys, isEq, isFn, isObj, isStr, toArr } from './../utils/helpers';
+import ThemeContext from '../theme/ThemeContext';
+import cn from '../system/className';
+import merge from '../utils/merge';
+import cssProps from '../utils/cssProperties';
+import { getKeys, isFn, isObj, isStr, toArr } from '../utils/helpers';
 
 function hasChildStyles(styles) {
 	return styles.every(

@@ -2,16 +2,11 @@ import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import ButtonBase from './../ButtonBase';
 import combine from './../utils/combine';
-import { getColors, getSpacing, useStyles } from './../system';
+import { getSpacing, useStyles } from './../system';
 import { fade } from './../utils/colorHelpers';
 import { stylesPropType } from '../utils/propTypes';
 
-function getColorStyles(props) {
-	const {
-		color,
-		isDisabled,
-		theme: { palette },
-	} = props;
+const getColorStyles = ({ color, disabled, theme: { palette } }) => {
 	const backgroundColor = {
 		':hover': {
 			backgroundColor: fade(
@@ -27,11 +22,13 @@ function getColorStyles(props) {
 		},
 	};
 
-	if (isDisabled) {
+	if (disabled) {
 		return {
 			root: {
-				...getColors({ color: 'action.disabled' }),
-				':disabled': getColors({ color: 'action.disabled' }),
+				color: palette.action.disabled,
+				':disabled': {
+					color: palette.action.disabled,
+				},
 			},
 		};
 	}
@@ -42,55 +39,51 @@ function getColorStyles(props) {
 		case 'error':
 			return {
 				root: {
-					...getColors({ color: `${color}.main` }),
 					...backgroundColor,
+					color: palette[color].main,
 				},
 			};
 		case 'inherit':
 			return {
 				root: {
-					color: 'inherit',
 					...backgroundColor,
+					color: 'inherit',
 				},
 			};
 		default:
 			return {
 				root: {
-					...getColors({ color: 'action.active' }),
 					...backgroundColor,
+					color: palette.action.active,
 				},
 			};
 	}
-}
+};
 
-function getBaseStyles(props) {
-	const { getTransition } = props.theme;
-
-	return {
-		root: {
-			position: 'relative',
-			textAlign: 'center',
-			flex: '0 0 auto',
-			fontSize: '24px',
-			width: '48px',
-			height: '48px',
-			padding: 0,
-			borderRadius: '50%',
-			transition: getTransition('background-color', {
-				duration: 'shortest',
-				easing: 'in',
-			}),
-			...getSpacing(props),
-		},
-		label: {
-			position: 'relative',
-			width: '100%',
-			display: 'flex',
-			alignItems: 'inherit',
-			justifyContent: 'inherit',
-		},
-	};
-}
+const getBaseStyles = props => ({
+	root: {
+		position: 'relative',
+		textAlign: 'center',
+		flex: '0 0 auto',
+		fontSize: '24px',
+		width: '48px',
+		height: '48px',
+		padding: 0,
+		borderRadius: '50%',
+		transition: props.theme.getTransition('background-color', {
+			duration: 'shortest',
+			easing: 'in',
+		}),
+		...getSpacing(props),
+	},
+	label: {
+		position: 'relative',
+		width: '100%',
+		display: 'flex',
+		alignItems: 'inherit',
+		justifyContent: 'inherit',
+	},
+});
 
 const getStyles = combine(getBaseStyles, getColorStyles);
 getStyles.propTypes = {
@@ -129,7 +122,7 @@ IconButton.propTypes = {
 
 IconButton.defaultProps = {
 	color: 'default',
-	isDisabled: false,
+	disabled: false,
 };
 
 export default IconButton;

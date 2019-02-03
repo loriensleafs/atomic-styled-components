@@ -1,5 +1,5 @@
 import { Client } from 'styletron-engine-atomic';
-import { isObj, isStr } from './../utils/helpers';
+import { isObj, isStr } from '../utils/helpers';
 
 const engine = window.styletronClient || new Client();
 
