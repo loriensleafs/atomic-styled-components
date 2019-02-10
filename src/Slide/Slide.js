@@ -57,8 +57,15 @@ const Slide = forwardRef((props, ref) => {
 	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const rect = useSize(ref);
 	const mounted = useMounted();
-	const slideIn = getSlideIn(direction);
-	const slideOut = mounted && getSlideOut(direction, rect);
+	// The slideIn value only needs to be calculated once.
+	const slideIn = useMemo(() => getSlideIn(direction), []);
+	/**
+	 * The slideOut value needs to be recaluculated everytime the component's
+	 * rect changes (when it's resized).
+	 */
+	const slideOut = useMemo(() => mounted && getSlideOut(direction, rect), [
+		rect,
+	]);
 	const Component = animated(as);
 
 	const handleStart = useCallback(() => {
@@ -88,9 +95,11 @@ const Slide = forwardRef((props, ref) => {
 		config: { duration, easing },
 	}));
 
-	if (!mounted || show) {
-		style.visibility = 'hidden';
-	}
+	/**
+	 * If the component is being mounted or is going to be shown
+	 * we need to make sure that it's initially hidden.
+	 */
+	if (!mounted || show) style.visibility = 'hidden';
 
 	useEffect(() => {
 		const measured = !!slideOut;
@@ -101,7 +110,17 @@ const Slide = forwardRef((props, ref) => {
 		if (measured && !ready) {
 			immediate = true;
 			onRest = () => setReady(true);
+			/**
+			 * Both states mean the component needs to be ready to be animated
+			 * back onto the screen, so we must move it to the slideOut
+			 * position first.
+			 */
 			if ((!show && !appear) || (show && appear)) transform = slideOut;
+			/**
+			 * If appear is false and show is true, we don't need to animate
+			 * the component in on the initial rendering, so we just make
+			 * the component visible immediatly.
+			 */
 			if (!appear && show) ref.current.style.visibility = 'visible';
 		} else if (ready) {
 			immediate = false;
@@ -136,8 +155,9 @@ const Slide = forwardRef((props, ref) => {
 Slide.displayName = 'Slide';
 
 Slide.propTypes = {
-	// If a child component shown on mount should be transitioned in.
+	// If the child component shown on mount should be transitioned in.
 	appear: PropTypes.bool,
+	// The component(s) that will be transitioned in/out.
 	children: PropTypes.node,
 	className: PropTypes.string,
 	// The direction the children component(s) enter/exit from.
