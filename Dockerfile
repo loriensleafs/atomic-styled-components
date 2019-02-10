@@ -1,13 +1,9 @@
-FROM node:10-alpine
+FROM node:11.9.0
 
 RUN yarn add react-scripts
 
-WORKDIR /code
+COPY . ./
 
-COPY package.json /code/package.json
 RUN yarn
-RUN mv /code/node_modules /node_modules
 
-COPY . /code
-
-CMD ["npm","start"]
+CMD ["yarn","start"]
