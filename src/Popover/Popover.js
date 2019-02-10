@@ -1,6 +1,7 @@
 import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
+import warning from 'warning';
 import Grow from '../Grow';
 import Modal from '../Modal';
 import Paper from '../Paper';
@@ -11,13 +12,37 @@ import useSize from '../hooks/useSize';
 import throttle from '../utils/throttle';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-const getTransformOriginValue = transformOrigin =>
-	[transformOrigin.horizontal, transformOrigin.vertical]
+const RECT_PROPS = ['left', 'offsetWidth', 'offsetHeight', 'top'];
+
+const getOffsetTop = (height, vertical) => {
+	if (typeof vertical === 'number') {
+		return vertical;
+	} else if (vertical === 'center') {
+		return height / 2;
+	} else if (vertical === 'bottom') {
+		return height;
+	}
+	return 0;
+};
+
+const getOffsetLeft = (width, horizontal) => {
+	if (typeof horizontal === 'number') {
+		return horizontal;
+	} else if (horizontal === 'center') {
+		return width / 2;
+	} else if (horizontal === 'right') {
+		return width;
+	}
+	return 0;
+};
+
+const getOriginValue = ({ horizontal, vertical }) =>
+	[horizontal, vertical]
 		.map(n => (typeof n === 'number' ? `${n}px` : n))
 		.join(' ');
 
 // Sum the scrollTop between two elements.
-const getScrollParent = (parent, child) => {
+const sumScrollTop = (parent, child) => {
 	let element = child;
 	let scrollTop = 0;
 
@@ -28,6 +53,13 @@ const getScrollParent = (parent, child) => {
 	return scrollTop;
 };
 
+const getContainer = (container, anchor) =>
+	container
+		? container
+		: anchor
+		? ownerDocument(getAnchor(anchor)).body
+		: undefined;
+
 const getAnchor = anchor => (typeof anchor === 'function' ? anchor() : anchor);
 
 const baseStyles = {
@@ -36,126 +68,195 @@ const baseStyles = {
 	minHeight: '16px',
 	maxWidth: 'calc(100% - 32px)',
 	maxHeight: 'calc(100% - 32px)',
+	overflowY: 'auto',
+	overflowX: 'hidden',
 	outline: 'none',
 };
 
-const Popover = forwardRef((props, ref) => {
-	const {
-		action,
-		anchorToRef,
-		anchorOrigin,
-		anchorPosition,
-		anchorReference,
-		children,
-		container: containerProp,
-		contentAnchorRef,
-		duration,
-		ease,
-		elevation,
-		open,
-		marginThreshold,
-		onEnter,
-		onEntering,
-		onEntered,
-		onExit,
-		onExiting,
-		onExited,
-		PaperProps,
-		role,
-		transformOrigin,
-		TransitionComponent,
-		...passThru
-	} = props;
-	const popoverRef = ref ? ref : useRef(null);
-	const popoverRect = useSize(popoverRef, [
-		'left',
-		'offsetWidth',
-		'offsetHeight',
-		'scrollTop',
-		'top',
-	]);
+function usePopoverPosition(popover, anchor, marginThreshold) {
+	const { top, left, offsetWidth: width, offsetHeight: height } = useSize(
+		popover.el,
+		RECT_PROPS,
+	);
+	const positionByNone = anchor.strategy === 'none';
+	const positionByAnchor = anchor.strategy === 'anchorEl';
 
+	const getAnchorAttachOffset = useCallback(() => {
+		if (
+			popover.el &&
+			popover.anchorAttachEl &&
+			positionByAnchor &&
+			popover.el.contains(popover.anchorAttachEl)
+		) {
+			const { offsetTop, clientHeight } = popover.anchorAttachEl;
+			return (
+				offsetTop +
+				clientHeight / 2 -
+				sumScrollTop(popover.el, popover.anchorAttachEl)
+			);
+		}
+		return 0;
+	}, []);
+
+	const getAnchorOffset = useCallback(anchorAttachOffset => {
+		const el = anchor.el || ownerDocument(popover.el).body;
+		const rect = el.getBoundingClientRect();
+		const vertical =
+			anchorAttachOffset === 0 ? anchor.origin.vertical : 'center';
+		return {
+			top: rect.top + getOffsetTop(rect.height, vertical),
+			left:
+				rect.left + getOffsetLeft(rect.width, anchor.origin.horizontal),
+		};
+	}, []);
+
+	const position = useMemo(() => {
+		if (popover.el && popover.contentAnchorEl) {
+			const anchorAttachOffset = getAnchorAttachOffset();
+			const popoverOrigin = {
+				horizontal: getOffsetLeft(width, popover.origin.horizontal),
+				vertical:
+					getOffsetTop(height, popover.origin.vertical) +
+					anchorAttachOffset,
+			};
+
+			if (positionByNone) {
+				return {
+					top: null,
+					left: null,
+					origin: getOriginValue(popoverOrigin),
+				};
+			}
+
+			// Offset of anchoring element.
+			const anchorOffset = getAnchorOffset(anchorAttachOffset);
+
+			// Calculate anchor positioning.
+			let anchorTop = anchorOffset.top - popoverOrigin.vertical;
+			let anchorLeft = anchorOffset.left - popoverOrigin.horizontal;
+			const anchorBottom = anchorTop + height;
+			const anchorRight = anchorLeft + width;
+
+			// Use the parent window of the anchorEl if provided.
+			const containerWindow = ownerWindow(anchor.el);
+
+			// Window thresholds require taking margin into account.
+			const heightThreshold =
+				containerWindow.innerHeight - marginThreshold;
+			const widthThreshold = containerWindow.innerWidth - marginThreshold;
+
+			// Check if the vertical axis needs to shift.
+			if (anchorTop < marginThreshold) {
+				const diff = anchorTop - marginThreshold;
+				top -= diff;
+				popoverOrigin.vertical += diff;
+			} else if (anchorBottom > heightThreshold) {
+				const diff = anchorBottom - heightThreshold;
+				top -= diff;
+				popoverOrigin.vertical += diff;
+			}
+
+			warning(
+				height < heightThreshold || !height || !heightThreshold,
+				`The popover component is too tall. Some part of it can not be seen on the screen (${height -
+					heightThreshold}px).
+				Please consider adding a 'max-height' to improve the user-experience.`,
+			);
+
+			// Check if the horizontal axis needs to shift.
+			if (anchorLeft < marginThreshold) {
+				const diff = left - marginThreshold;
+				anchorLeft -= diff;
+				popoverOrigin.horizontal += diff;
+			} else if (anchorRight > widthThreshold) {
+				const diff = anchorRight - widthThreshold;
+				left -= diff;
+				popoverOrigin.horizontal += diff;
+			}
+
+			return {
+				top: `${anchorTop}px`,
+				left: `${anchorLeft}px`,
+				origin: getOriginValue(popoverOrigin),
+			};
+		}
+	}, [top, left, width, height]);
+
+	return position;
+}
+
+const Popover = forwardRef((props, ref) => {
+	const [
+		{ styles },
+		{
+			action,
+			anchorRef,
+			anchorOrigin,
+			anchorPosition,
+			anchorStrategy,
+			children,
+			container,
+			duration,
+			ease,
+			elevation,
+			open,
+			marginThreshold,
+			onEnter,
+			onEntering,
+			onEntered,
+			onExit,
+			onExiting,
+			onExited,
+			PaperProps,
+			popoverAnchorAttachRef,
+			popoverOrigin,
+			role,
+			TransitionComponent,
+			...passThru
+		},
+	] = useStyles(props, null, { baseStyles });
 	// If the container prop is provided use it.
 	// If the anchor prop is provided, use it's parent body element.
 	// If neither are provided let the Modal take care of the container.
-	const container = containerProp
-		? containerProp
-		: anchor
-		? ownerDocument(getAnchor(anchor)).body
-		: undefined;
-
-	const handleGetOffsetTop = useCallback((rect, horizontal) => {
-		let offset = 0;
-
-		if (typeof horizontal === 'number') {
-			offset = horizontal;
-		} else if (horizontal === 'center') {
-			offset = rect.width / 2;
-		} else if (horizontal === 'right') {
-			offset = rect.width;
-		}
-		return offset;
-	}, []);
-
-	const handleGetOffsetLeft = useCallback((rect, horizontal) => {
-		let offset = 0;
-
-		if (typeof horizontal === 'number') {
-			offset = horizontal;
-		} else if (horizontal === 'center') {
-			offset = rect.width / 2;
-		} else if (horizontal === 'right') {
-			offset = rect.width;
-		}
-		return offset;
-	}, []);
-
-	const handleResize = useCallback(() => {}, [ref]);
-
-	const getAnchorOffset = useCallback(() => {}, [anchor]);
-
-	const getContentAnchorOffset = useCallback(() => {
-		let contentAnchorOffset = 0;
-
-		if (
-			popoverRef.current &&
-			contentAnchorRef.current &&
-			anchorReference === 'anchorToRef' &&
-			anchorToRef.current
-		) {
-			if (popoverRef.current.contains(contentAnchorRef.current)) {
-				const scrollTop = getScrollParent(
-					popoverRef.current,
-					contentAnchorRef.current,
-				);
-				contentAnchorOffset =
-					contentAnchorRef.current.offsetTop +
-						contentAnchorRef.clientHeight / 2 -
-						scrollTop || 0;
-			}
-		}
-
-		return contentAnchorOffset;
-	}, [contentAnchorRef.current]);
-
-	const getPositioningStyles = useCallback(element => {}, [ref.current]);
-
-	const setPositioningStyles = useCallback(element => {}, [ref.current]);
+	const containerRef = getContainer(container, anchorRef);
+	const popoverRef = ref ? ref : useRef(null);
+	const position = usePopoverPosition(
+		{
+			el: popoverRef.current,
+			anchorAttachEl: popoverAnchorAttachRef,
+			origin: popoverOrigin,
+		},
+		{
+			el: anchorRef,
+			origin: anchorOrigin,
+			position: anchorPosition,
+			anchorStrategy: anchorStrategy,
+		},
+		marginThreshold,
+	);
 
 	useEffect(() => {
 		if (action) {
-			action({
-				updatePosition: handleResize,
-			});
+			action({ updatePosition: handleResize });
 		}
 	}, []);
 
-	useEffect(() => {}, [paperRect]);
+	useEffect(() => {
+		const popoverEl = popoverRef.current;
+		if (popoverEl) {
+			if (position.top !== null) {
+				popoverEl.style.top = position.top;
+			}
+			if (position.left !== null) {
+				popoverEl.style.left = position.left;
+			}
+			popoverEl.style.transformOrigin = position.origin;
+		}
+	}, [position]);
 
 	return (
 		<Modal
-			className={className}
-			container={container}
+			container={containerRef}
 			open={open}
 			BackdropProps={{ invisible: true }}
 			{...passThru}
@@ -173,7 +274,12 @@ const Popover = forwardRef((props, ref) => {
 				role={role}
 				show={open}
 			>
-				<Paper elevation={elevation} ref={paperRef} {...PaperProps}>
+				<Paper
+					elevation={elevation}
+					ref={popoverRef}
+					styles={styles}
+					{...PaperProps}
+				>
 					{children}
 				</Paper>
 			</TransitionComponent>
@@ -197,7 +303,7 @@ Popover.propTypes = {
 	 * This is the DOM element, or a function that returns the DOM element,
 	 * that may be used to set the position of the popover.
 	 */
-	anchor: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+	anchorRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 	/**
 	 * This is the point on the anchor where the popover's
 	 * `anchorEl` will attach to. This is not used when the
@@ -231,7 +337,7 @@ Popover.propTypes = {
 	 * This determines which anchor prop to refer to to set
 	 * the position of the popover.
 	 */
-	anchorReference: PropTypes.oneOf(['anchorEl', 'anchorPosition', 'none']),
+	anchorStrategy: PropTypes.oneOf(['anchorEl', 'anchorPosition', 'none']),
 	// The content of the component.
 	children: PropTypes.node,
 	/**
@@ -293,6 +399,10 @@ Popover.propTypes = {
 	// Properties applied to the [`Paper`](/api/paper/) element.
 	PaperProps: PropTypes.object,
 	role: PropTypes.string,
+	popoverAnchorAttachRef: PropTypes.oneOfType([
+		PropTypes.object,
+		PropTypes.func,
+	]),
 	/**
 	 * This is the point on the popover which
 	 * will attach to the anchor's origin.
@@ -301,7 +411,7 @@ Popover.propTypes = {
 	 * vertical: [top, center, bottom, x(px)];
 	 * horizontal: [left, center, right, x(px)].
 	 */
-	transformOrigin: PropTypes.shape({
+	popoverOrigin: PropTypes.shape({
 		horizontal: PropTypes.oneOfType([
 			PropTypes.number,
 			PropTypes.oneOf(['left', 'center', 'right']),
@@ -322,7 +432,7 @@ Popover.propTypes = {
 };
 
 Popover.defaultProps = {
-	anchorReference: 'anchor',
+	anchorStrategy: 'anchorEl',
 	anchorOrigin: {
 		vertical: 'top',
 		horizontal: 'left',
@@ -334,7 +444,7 @@ Popover.defaultProps = {
 	ease: 'inOut',
 	elevation: 8,
 	marginThreshold: 16,
-	transformOrigin: {
+	popoverOrigin: {
 		vertical: 'top',
 		horizontal: 'left',
 	},

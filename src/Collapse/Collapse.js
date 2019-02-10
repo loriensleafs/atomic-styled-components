@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import cn from '../system/className';
 import { useMounted, useMotion, useSize } from '../hooks';
-import { animated, useSpring } from 'react-spring/hooks';
+import { animated, useSpring } from 'react-spring';
 import { componentPropType } from '../utils/propTypes';
 
 const baseStyles = { overflow: 'hidden' };

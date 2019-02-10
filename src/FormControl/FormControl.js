@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import FormControlContext from './FormControlContext';
 import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
-import { componentPropType } from '../utils';
+import { componentPropType, stylesPropType } from '../utils';
 
 const getWidthStyles = ({ fullWidth }) =>
 	fullWidth && {
@@ -48,11 +48,7 @@ function FormControl(props) {
 			variant,
 			...passThru
 		},
-	] = useStyles(props, getStyles, {
-		baseStyles,
-		whitelist: ['fullWidth', 'margin'],
-	});
-	const [startAdornment, setStartAdornment] = useState(false);
+	] = useStyles(props, getStyles, { baseStyles });
 	const [filled, setFilled] = useState(false);
 	const [focused, setFocused] = useState(false);
 
@@ -75,7 +71,6 @@ function FormControl(props) {
 		onFilled: handleDirty,
 		onFocus: handleFocus,
 		required,
-		startAdornment,
 		variant,
 	};
 
@@ -107,12 +102,13 @@ FormControl.propTypes = {
 	variant: PropTypes.oneOf(['standard', 'outlined', 'filled']),
 	...getStyles.propTypes,
 	...componentPropType,
+	...stylesPropType,
 };
 
 FormControl.defaultProps = {
 	as: 'div',
-	error: false,
 	disabled: false,
+	error: false,
 	fullWidth: false,
 	margin: 'none',
 	required: false,

@@ -72,6 +72,7 @@ function Modal(props) {
 			BackdropProps,
 			children,
 			className,
+			closeAfterTransition,
 			container: containerProp,
 			disableAutoFocus,
 			disableBackdropClick,
@@ -129,16 +130,18 @@ function Modal(props) {
 		}
 	}, []);
 
-	const handleClose = useCallback(() => {
+	const handleClose = useCallback(reason => {
 		const container = portalRef.current;
 		const doc = ownerDocument(container);
 
-		removeModal();
+		if (!(hasTransition && closeAfterTransition) || reason === 'unmount') {
+			removeModal();
+		}
+
 		doc.removeEventListener('keydown', handleDocumentKeyDown);
 		doc.removeEventListener('focus', handleFocus);
 
 		container.style.overflow = 'auto';
-
 		if (!disableRestoreFocus && lastFocus.current) {
 			if (lastFocus.current.focus) {
 				lastFocus.current.focus();
@@ -196,13 +199,14 @@ function Modal(props) {
 		}
 	}, [exited, open]);
 
-	useEffect(() => {
-		return () => {
+	useEffect(
+		() => () => {
 			if (open || (hasTransition && !exited)) {
-				handleClose();
+				handleClose('unmount');
 			}
-		};
-	}, []);
+		},
+		[],
+	);
 
 	if (!keepMounted && !open && (!hasTransition || exited)) {
 		return null;
@@ -270,7 +274,13 @@ Modal.propTypes = {
 	BackdropProps: PropTypes.object,
 	// A single child content element.
 	children: PropTypes.element,
+	classes: PropTypes.object,
 	className: PropTypes.string,
+	/**
+	 * When true the Modal waits for a nested Transition to finish before
+	 * closing.
+	 */
+	closeAfterTransition: PropTypes.bool,
 	/**
 	 * A node, component instance, or function that returns either.
 	 * The `container` will have the portal children appended to it.
@@ -340,6 +350,7 @@ Modal.propTypes = {
 
 Modal.defaultProps = {
 	BackdropComponent: Backdrop,
+	closeAfterTransition: false,
 	disableAutoFocus: false,
 	disableBackdropClick: false,
 	disableEnforceFocus: false,

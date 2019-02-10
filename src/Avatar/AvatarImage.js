@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import useStyles from '../system/useStyles';
 import cn from '../system/className';
 import merge from '../utils/merge';
 
@@ -10,11 +11,12 @@ const baseStyles = {
 	objectFit: 'cover',
 };
 
-function AvatarImage({ alt, styles: stylesProp = {}, ...props }) {
-	const styles = useMemo(() => merge(baseStyles, stylesProp), [stylesProp]);
-	const className = useMemo(() => cn(styles), [styles]);
+function AvatarImage(props) {
+	const [{ classes }, { alt, ...passThru }] = useStyles(props, null, {
+		baseStyles,
+	});
 
-	return <img alt={alt} className={className} {...props} />;
+	return <img alt={alt} className={classes} {...passThru} />;
 }
 
 AvatarImage.displayName = 'AvatarImage';

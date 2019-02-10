@@ -122,6 +122,10 @@ const getVariantStyles = ({
 
 		case 'fab':
 			return {
+				width: '56px',
+				minWidth: '0px',
+				height: '56px',
+				padding: '0px',
 				backgroundColor: isBrand
 					? palette[color].main
 					: palette.grey.light,
@@ -129,10 +133,6 @@ const getVariantStyles = ({
 					? palette[color].contrastText
 					: palette.text.primary,
 				boxShadow: elevation[6],
-				width: '56px',
-				minWidth: '0px',
-				height: '56px',
-				padding: '0px',
 				borderRadius: '50%',
 				':active': {
 					boxShadow: elevation[12],
@@ -190,6 +190,7 @@ const getStyles = props => ({
 });
 getStyles.propTypes = {
 	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
+	disabled: PropTypes.bool,
 	fullWidth: PropTypes.bool,
 	mini: PropTypes.bool,
 	size: PropTypes.oneOf(['small', 'medium', 'large']),
@@ -226,7 +227,6 @@ Button.propTypes = {
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
 	classes: PropTypes.object,
-	disabled: PropTypes.bool,
 	disableFocusRipple: PropTypes.bool,
 	disableRipple: PropTypes.bool,
 	href: PropTypes.string,

@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import useMotion from '../hooks/useMotion';
-import { animated, useSpring } from 'react-spring/hooks';
+import { useMotion, usePrevious } from '../hooks';
+import { animated, useSpring } from 'react-spring';
 import { componentPropType } from '../utils/propTypes';
 
 const Fade = forwardRef((props, ref) => {
@@ -22,11 +22,10 @@ const Fade = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
+	const prevShow = usePrevious(show);
 	const [mounted, setMounted] = useState(false);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
-	const Component = animated(as);
 	const transition = useSpring({
-		native: true,
 		config: { duration, easing },
 		opacity: (appear && !mounted) || !show ? 0 : 1,
 		onStart: () => {
@@ -54,8 +53,13 @@ const Fade = forwardRef((props, ref) => {
 			}
 		},
 	});
+	const Component = animated(as);
 
-	useEffect(() => setMounted(true), []);
+	useEffect(() => {
+		if (!mounted) {
+			setMounted(true);
+		}
+	}, [mounted]);
 
 	return (
 		<Component

@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { useMounted, useMotion } from '../hooks';
-import { animated, useSpring } from 'react-spring/hooks';
+import { animated, useSpring } from 'react-spring';
 import { componentPropType } from '../utils/propTypes';
 
 const Grow = forwardRef((props, ref) => {

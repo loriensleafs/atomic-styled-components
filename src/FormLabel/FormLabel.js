@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import useFormControl from '../FormControl/useFormControl';
+import useFormControlManager from '../FormControl/useFormControlManager';
 import useStyles from '../system/useStyles';
 import combine from '../utils/combine';
-import { componentPropType } from '../utils/propTypes';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
+
+const getDisabledStyles = ({ disabled, theme: { palette } }) =>
+	disabled && {
+		color: palette.text.disabled,
+	};
 
 const getErrorStyles = ({ error, theme: { palette } }) =>
 	error &
@@ -16,34 +21,36 @@ const getErrorStyles = ({ error, theme: { palette } }) =>
 		},
 	};
 
-const getBaseStyles = ({
-	palette,
-	typography: { fontFamlies, fontSizes },
-}) => ({
+const getFocusedStyles = ({ focused, theme: { palette } }) =>
+	focused && {
+		color: palette.primary[palette.type === 'light' ? 'dark' : 'light'],
+	};
+
+const getBaseStyles = props => ({
 	root: {
 		padding: '0px',
-		color: palette.text.secondary,
-		fontFamily: fontFamlies.ui,
-		fontSize: fontSizes[3],
+		color: props.theme.palette.text.secondary,
+		fontFamily: props.theme.typography.fontFamlies.ui,
+		fontSize: props.theme.typography.fontSizes[3],
 		lineHeight: 1,
-		':focused': {
-			color: palette.primary[palette.type],
-		},
-		':disabled': {
-			color: palette.text.disabled,
-		},
+		...getFocusedStyles(props),
+		...getDisabledStyles(props),
 	},
 	asterisk: {},
 });
 
 const getStyles = combine(getBaseStyles, getErrorStyles);
 getStyles.propTypes = {
+	// If `true`, the label should be displayed in a disabled state.
+	disabled: PropTypes.bool,
 	// If `true`, the label should be displayed in an error state.
 	error: PropTypes.bool,
+	// If `true`, the label input is focused (used by `FormGroup` components).
+	focused: PropTypes.bool,
 };
 
 function FormLabel(props) {
-	const [mergedProps] = useFormControl(props, [
+	const [mergedProps] = useFormControlManager(props, [
 		'error',
 		'disabled',
 		'filled',
@@ -55,16 +62,15 @@ function FormLabel(props) {
 		{
 			as: Component,
 			children,
-			className,
-			error,
 			disabled,
+			error,
 			filled,
 			focued,
 			required,
 			...passThru
 		},
 	] = useStyles(mergedProps, getStyles, {
-		whitelist: ['error'],
+		whitelist: ['disabled', 'error', 'focused'],
 	});
 
 	return (
@@ -86,15 +92,12 @@ FormLabel.propTypes = {
 	 */
 	classes: PropTypes.object.isRequired,
 	className: PropTypes.string,
-	// If `true`, the label should be displayed in a disabled state.
-	disabled: PropTypes.bool,
 	// If `true`, the label should use filled classes key.
 	filled: PropTypes.bool,
-	// If `true`, the label input is focused (used by `FormGroup` components).
-	focused: PropTypes.bool,
 	// If `true`, the label will indicate that the input is required.\
 	required: PropTypes.bool,
 	...componentPropType,
+	...stylesPropType,
 	...getStyles.propTypes,
 };
 

@@ -1,31 +1,26 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Paper from '../Paper';
+import useStyles from '../system/useStyles';
 import combine from '../utils/combine';
-import { getColors, useStyles } from '../system';
 import { stylesPropType } from '../utils/propTypes';
 
-function getColorStyles(props) {
-	const {
-		color,
-		theme: { palette },
-	} = props;
-
+const getColorStyles = ({ color, theme: { palette } }) => {
 	switch (color) {
 		case 'primary':
 		case 'secondary':
-			return getColors({
-				bg: `${color}.main`,
-				color: `${color}.contrastText`,
-			});
+			return {
+				color: palette[color].contrastText,
+				backgroundColor: palette[color].main,
+			};
 		case 'default':
-			return getColors({
-				bg: `grey.${palette.type}`,
-			});
+			return {
+				backgroundColor: palette.grey[palette.type],
+			};
 	}
-}
+};
 
-function getPositionStyles({ position }) {
+const getPositionStyles = ({ position }) => {
 	switch (position) {
 		case 'absolute':
 			return { position: 'absolute' };
@@ -39,11 +34,13 @@ function getPositionStyles({ position }) {
 			// 'fixed'
 			return { position: 'fixed' };
 	}
-}
+};
 
 const getStyles = combine(getPositionStyles, getColorStyles);
 getStyles.propTypes = {
+	// The color of the component.  Supports theme colors that make sense.
 	color: PropTypes.oneOf(['inherit', 'primary', 'secondary', 'default']),
+	// The positioning type.
 	position: PropTypes.oneOf([
 		'absolute',
 		'fixed',
@@ -94,17 +91,7 @@ AppBar.propTypes = {
 	// The content of the component.
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
-	/**
-	 * The color of the component. It supports those theme colors that make
-	 * sense for this component.
-	 */
-	...getColorStyles.propTypes,
-	/**
-	 * The positioning type.
-	 * Note: `sticky` is not universally supported and will fall back to
-	 * `static` when unavailable.
-	 */
-	...getPositionStyles.propTypes,
+	...getStyles.propTypes,
 	...stylesPropType,
 };
 

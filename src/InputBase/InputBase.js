@@ -8,7 +8,7 @@ import React, {
 import PropTypes from 'prop-types';
 import TextArea from 'TextArea';
 import FormControlContext from '../FormControl/FormControlContext';
-import useFormControl from '../FormControl/useFormControl';
+import useFormControlManager from '../FormControl/useFormControlManager';
 import useStyles from '../system/useStyles';
 import usePrevious from '../hooks/usePrevious';
 import combine from '../utils';
@@ -136,7 +136,7 @@ getStyles.propTypes = {
 
 const InputBase = forwardRef((props, ref) => {
 	ref = ref ? ref : useRef(null);
-	const [mergedProps, context] = useFormControl(props, [
+	const fcProps = useFormControlManager(props, [
 		'error',
 		'disabled',
 		'filled',
@@ -177,7 +177,7 @@ const InputBase = forwardRef((props, ref) => {
 			value,
 			...passThru
 		},
-	] = useStyles(mergedProps, getStyles, {
+	] = useStyles(fcProps, getStyles, {
 		whitelist: ['fullWidth', 'multiline', 'margin', 'type'],
 	});
 	const mounted = useRef(false);

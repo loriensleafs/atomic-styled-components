@@ -6,20 +6,11 @@ import cn from '../system/className';
 import { getColors, getSpacing, getText, useStyles } from '../system';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-function getColorStyles(props) {
-	const {
-		color,
-		theme: { palette },
-	} = props;
-
-	return (
-		color === 'default' &&
-		getColors({
-			bg: `grey.${palette.type}`,
-			color: 'bg.default',
-		})
-	);
-}
+const getColorStyles = ({ color, theme: { palette } }) =>
+	color === 'default' && {
+		backgroundColor: palette.grey[palette.type],
+		color: palette.bg.default,
+	};
 
 const getStyles = combine(getColors, getColorStyles, getSpacing, getText);
 getStyles.propTypes = {
@@ -47,8 +38,7 @@ const Avatar = forwardRef((props, ref) => {
 		{
 			alt,
 			as: Component,
-			children,
-			className,
+			children: childrenProp,
 			childrenClassName,
 			imgProps,
 			imgStyles,
@@ -57,26 +47,29 @@ const Avatar = forwardRef((props, ref) => {
 			srcSet,
 			...passThru
 		},
-	] = useStyles(props, getStyles, { baseStyles });
+	] = useStyles({ ...props, fontFamily: 'ui' }, getStyles, { baseStyles });
+	let children = childrenProp;
+
+	if (src || srcSet) {
+		children = (
+			<AvatarImage
+				alt={alt}
+				src={src}
+				srcSet={srcSet}
+				sizes={sizes}
+				styles={imgStyles}
+				{...imgProps}
+			/>
+		);
+	} else if (childrenClassName && isValidElement(childrenProp)) {
+		children = cloneElement(childrenProp, {
+			className: cn(childrenClassName, childrenProp.props.className),
+		});
+	}
 
 	return (
 		<Component className={classes} ref={ref} {...passThru}>
-			{src || srcSet ? (
-				<AvatarImage
-					alt={alt}
-					src={src}
-					srcSet={srcSet}
-					sizes={sizes}
-					styles={imgStyles}
-					{...imgProps}
-				/>
-			) : childrenClassName && isValidElement(children) ? (
-				cloneElement(children, {
-					className: cn(childrenClassName, children.props.className),
-				})
-			) : (
-				children
-			)}
+			{children}
 		</Component>
 	);
 });
@@ -118,7 +111,6 @@ Avatar.propTypes = {
 
 Avatar.defaultProps = {
 	as: 'div',
-	fontFamily: 'ui',
 };
 
 export default Avatar;

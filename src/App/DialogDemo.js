@@ -206,7 +206,7 @@ const SimpleDialogs = () => {
 	);
 };
 
-const Transition = props => <Slide direction="up" appear {...props} />;
+const Transition = props => <Slide direction="up" {...props} />;
 
 const FullScreenDialogs = () => {
 	const [open, setOpen] = useState(false);

@@ -67,6 +67,7 @@ module.exports = {
 		'no-restricted-syntax': 0,
 		'no-debugger': 0,
 		'no-underscore-dangle': 0,
+		'import/no-unresolved': 0,
 		semi: 0,
 		quotes: 0,
 

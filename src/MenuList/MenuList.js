@@ -29,26 +29,17 @@ function MenuList(props) {
 	const resetTabIndex = useCallback(() => {
 		if (listRef.current) {
 			const { activeElement } = ownerDocument(listRef.current);
-			const items = [];
-
-			for (let i = 0; i < listRef.current.children.length; i += 1) {
-				items.push(listRef.current.children[i]);
-			}
-
+			const items = [...listRef.current.children];
 			const focusIndex = items.indexOf(activeElement);
 
 			if (focusIndex !== -1) {
-				setTabIndex(() => focusIndex);
-				return;
+				return setTabIndex(focusIndex);
 			}
-
 			if (selectedRef.current) {
-				setTabIndex(() => items.indexOf(selectedRef.current));
-				return;
+				return setTabIndex(items.indexOf(selectedRef.current));
 			}
 		}
-
-		setTabIndex(() => 0);
+		return setTabIndex(0);
 	}, []);
 
 	const handleBlur = useCallback(event => {
@@ -68,12 +59,13 @@ function MenuList(props) {
 
 	const handleFocus = useCallback(event => {
 		if (listRef.current) {
-			for (let i = 0; i < listRef.current.children.length; i += 1) {
-				if (listRef.current.children[i] === event.currentTarget) {
-					setTabIndex(() => i);
-					break;
+			[...listRef.current.children].some((child, idx) => {
+				if (child === event.currentTarget) {
+					setTabIndex(idx);
+					return true;
 				}
-			}
+				return false;
+			});
 		}
 	}, []);
 
@@ -127,11 +119,11 @@ function MenuList(props) {
 
 	return (
 		<List
-			role="menu"
-			ref={listRef}
 			className={className}
-			onKeyDown={handleKeyDown}
 			onBlur={handleBlur}
+			onKeyDown={handleKeyDown}
+			ref={listRef}
+			role="menu"
 			{...passThru}
 		>
 			{React.Children.map(children, (child, idx) => {
@@ -141,8 +133,7 @@ function MenuList(props) {
 
 				warning(
 					child.type !== Fragment,
-					`The MenuList component doesn't accept a Fragment as a child.
-					Consider providing an array instead.`,
+					`The MenuList component doesn't accept a Fragment as a child.  Consider providing an array instead.`,
 				);
 
 				const childProps = {

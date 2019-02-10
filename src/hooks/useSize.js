@@ -33,22 +33,16 @@ const getProps = (src, target, props) => ref => {
 	return deps.reduce((a, p) => ({ ...a, [p]: props[p] }), {});
 };
 
-const reducer = props => () => (state, ref) => {
+const makeReducer = props => (state, ref) => {
 	const reducers = [];
-
-	if (contains(CLIENT, props)) {
-		reducers.push(getProps(CLIENT, props, getRef));
-	}
-
-	if (contains(RECT, props)) {
-		reducers.push(getProps(RECT, props, getRect));
-	}
-
+	if (contains(CLIENT, props)) reducers.push(getProps(CLIENT, props, getRef));
+	if (contains(RECT, props)) reducers.push(getProps(RECT, props, getRect));
 	return reducers.reduce((a, r) => ({ ...a, ...r(ref) }), state);
 };
 
 function useSize(ref, watch = RECT) {
-	const [size, dispatch] = useReducer(useMemo(reducer(toArr(watch)), []), {});
+	const reducer = useMemo(() => makeReducer(toArr(watch)), []);
+	const [size, dispatch] = useReducer(reducer, {});
 
 	const handleResize = useCallback(() => dispatch(ref), [ref]);
 

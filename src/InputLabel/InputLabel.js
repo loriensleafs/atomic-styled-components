@@ -1,50 +1,47 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FormLabel from '../FormLabel';
-import useFormControl from '../FormControl/useFormControl';
+import useFormControlManager from '../FormControl/useFormControlManager';
 import useStyles from '../system/useStyles';
 import combine from '../utils/combine';
 import { isNil } from '../utils/helpers';
+import { stylesPropType } from '../utils/propTypes';
 
 const getMarginStyles = ({ margin, variant }) => {
-	if (margin !== 'dense') {
-		return null;
-	}
-
-	switch (variant) {
-		case 'filled':
-			return {
-				transform: 'translate(12px, 20px) scale(0.75)',
-			};
-		case 'outlined':
-			return {
-				transform: 'translate(14px, 17px) scale(1)',
-			};
-		default:
-			return {
-				transform: 'translate(0, 21px) scale(1)',
-			};
+	if (margin == 'dense') {
+		switch (variant) {
+			case 'filled':
+				return {
+					transform: 'translate(12px, 20px) scale(0.75)',
+				};
+			case 'outlined':
+				return {
+					transform: 'translate(14px, 17px) scale(1)',
+				};
+			default:
+				return {
+					transform: 'translate(0, 21px) scale(1)',
+				};
+		}
 	}
 };
 
 const getShrinkStyles = ({ margin, shrink, variant }) => {
-	if (!shrink) {
-		return null;
-	}
-
-	switch (variant) {
-		case 'filled':
-			return {
-				transform:
-					margin === 'dense'
-						? 'translate(12px, 7px) scale(0.75)'
-						: 'translate(12px, 10px) scale(0.75)',
-				transformOrigin: 'top left',
-			};
-		case 'outlined':
-			return {
-				transformOrigin: 'top left',
-			};
+	if (shrink) {
+		switch (variant) {
+			case 'filled':
+				return {
+					transform:
+						margin === 'dense'
+							? 'translate(12px, 7px) scale(0.75)'
+							: 'translate(12px, 10px) scale(0.75)',
+					transformOrigin: 'top left',
+				};
+			case 'outlined':
+				return {
+					transformOrigin: 'top left',
+				};
+		}
 	}
 };
 
@@ -56,8 +53,26 @@ const getAnimatedStyles = ({ disableAnimation, theme: { getTransition } }) =>
 		}),
 	};
 
-const getStyles = combine(getAnimatedStyles, getMarginStyles, getShrinkStyles);
+const getFormControlStyles = ({ formControlDecendant }) =>
+	formControlDecendant && {
+		position: 'absolute',
+		top: '0px',
+		left: '0px',
+		// slight alteration to spec spacing to match visual spec result
+		transform: 'translate(0, 24px) scale(1)',
+	};
+
+const getStyles = combine(
+	getAnimatedStyles,
+	getMarginStyles,
+	getShrinkStyles,
+	getFormControlStyles,
+);
 getStyles.propTypes = {
+	// If `true`, the transition animation is disabled.
+	disableAnimation: PropTypes.bool,
+	// If the label is a descendant of 'FormControl'
+	formControlDecendant: PropTypes.bool,
 	// If `dense`, will adjust vertical spacing.
 	margin: PropTypes.oneOf(['dense']),
 	// If `true`, the label is shrunk.
@@ -80,27 +95,25 @@ const baseStyles = {
 };
 
 function InputLabel(props) {
-	const [mergedProps, context] = useFormControl(props, ['margin', 'variant']);
-	const shrink =
-		isNil(mergedProps.shrink) && context
-			? context.filled || context.focused || context.adornedStart
-			: mergedProps.shrink;
-
-	const [
-		{ classes },
+	const {
+		filled,
+		focused,
+		shrink: fcShrink,
+		...fcProps
+	} = useFormControlManager(props, [
+		'filled',
+		'focused',
+		'margin',
+		'variant',
+	]);
+	const shrink = (isNil(fcShrink) && (filled || focused)) || fcShrink;
+	const [{ classes }, { children, ...passThru }] = useStyles(
+		{ ...fcProps, shrink },
+		getStyles,
 		{
-			children,
-			className,
-			disableAnimation,
-			FormLabelClasses,
-			margin,
-			variant,
-			...passThru
+			baseStyles,
 		},
-	] = useStyles({ ...mergedProps, shrink }, getStyles, {
-		baseStyles,
-		whitelist: ['margin', 'variant'],
-	});
+	);
 
 	return (
 		<FormLabel data-shrink={shrink} className={classes} {...passThru}>
@@ -120,19 +133,15 @@ InputLabel.propTypes = {
 	 */
 	classes: PropTypes.object.isRequired,
 	className: PropTypes.string,
-	// If `true`, the transition animation is disabled.
-	disableAnimation: PropTypes.bool,
 	// If `true`, apply disabled class.
 	disabled: PropTypes.bool,
 	// If `true`, the label will be displayed in an error state.
+	error: PropTypes.bool,
 	// If `true`, the input of this label is focused.
 	focused: PropTypes.bool,
-	// `classes` applied to the [`FormLabel`](/api/form-label/) element.
-	// If `true`, the label will indicate that the input is required.
-	isRequired: PropTypes.bool,
-	error: PropTypes.bool,
-	FormLabelClasses: PropTypes.object,
+	required: PropTypes.bool,
 	...getStyles.propTypes,
+	...stylesPropType,
 };
 
 InputLabel.defaultProps = {

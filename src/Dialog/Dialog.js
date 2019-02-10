@@ -158,7 +158,9 @@ const Dialog = forwardRef((props, ref) => {
 			onExited,
 			open,
 			onBackdropClick,
+			onEscapeKeyDown,
 			onClose,
+			PaperComponent,
 			PaperProps,
 			TransitionComponent,
 			TransitionProps,
@@ -181,15 +183,19 @@ const Dialog = forwardRef((props, ref) => {
 	return (
 		<Modal
 			className={className}
+			closeAfterTransition
 			disableBackdropClick={disableBackdropClick}
-			open={open}
 			onBackdropClick={handleBackdropClick}
+			onEscapeKeyDown={onEscapeKeyDown}
 			onClose={onClose}
+			open={open}
 			role="dialog"
 			styles={styles.root}
 			{...passThru}
 		>
 			<TransitionComponent
+				id="dialog"
+				appear
 				className={classes.container}
 				duration={duration}
 				ease={ease}
@@ -203,14 +209,14 @@ const Dialog = forwardRef((props, ref) => {
 				show={open}
 				{...TransitionProps}
 			>
-				<Paper
+				<PaperComponent
 					elevation={23}
 					ref={ref}
 					styles={styles.paper}
 					{...PaperProps}
 				>
 					{children}
-				</Paper>
+				</PaperComponent>
 			</TransitionComponent>
 		</Modal>
 	);
@@ -275,6 +281,7 @@ Dialog.defaultProps = {
 	fullScreen: false,
 	fullWidth: false,
 	maxWidth: 'sm',
+	PaperComponent: Paper,
 	scroll: 'paper',
 	TransitionComponent: Fade,
 };

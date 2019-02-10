@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import useMotion from './../hooks/useMotion';
-import { animated, useSpring } from 'react-spring/hooks';
+import { animated, useSpring } from 'react-spring';
 import { componentPropType } from './../utils/propTypes';
 
 function Rotate(props) {

@@ -1,11 +1,40 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, {
+	forwardRef,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import PropTypes from 'prop-types';
-import useSlideManager from './useSlideManager';
-import { useMounted, useMotion } from './../hooks';
-import { animated, useSpring } from 'react-spring/hooks';
+import { useMounted, useMotion, useSize } from './../hooks';
+import { animated, useSpring } from 'react-spring';
 import { componentPropType } from './../utils/propTypes';
 
+const getSlideIn = direction =>
+	`translate${
+		direction === 'left' || direction === 'right' ? 'X' : 'Y'
+	}(0px)`;
+
+const getSlideOut = (direction, rect) => {
+	const { top, right, bottom, left, width, height } = rect;
+	switch (direction) {
+		case 'left':
+			return `translateX(${Math.abs(left) + width}px)`;
+
+		case 'right':
+			return `translateX(-${Math.abs(right) + width}px)`;
+
+		case 'up':
+			return `translateY(${Math.abs(bottom) + height}px)`;
+
+		case 'down':
+			return `translateY(-${Math.abs(top) + height}px)`;
+	}
+};
+
 const Slide = forwardRef((props, ref) => {
+	ref = ref ? ref : useRef(null);
 	const {
 		appear,
 		as,
@@ -24,67 +53,83 @@ const Slide = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
-	const [measured, setMeasured] = useState(false);
-	const [slideIn, slideOut, _ref] = useSlideManager(direction, ref);
+	const [ready, setReady] = useState(false);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
+	const rect = useSize(ref);
 	const mounted = useMounted();
+	const slideIn = getSlideIn(direction);
+	const slideOut = mounted && getSlideOut(direction, rect);
 	const Component = animated(as);
-	const transition = useSpring({
-		native: true,
+
+	const handleStart = useCallback(() => {
+		if (show && onEnter) onEnter();
+		if (!show && onExit) onExit();
+	}, [show]);
+
+	const handleFrame = useCallback(
+		val => {
+			if (show && onEntering) onEntering(val);
+			if (!show && onExiting) onExiting(val);
+		},
+		[show],
+	);
+
+	const handleRest = useCallback(() => {
+		if (show && onEntered) onEntered();
+		if (!show && onExited) onExited();
+	}, [show]);
+
+	const [transition, setTransition] = useSpring(() => ({
+		immediate: true,
+		transform: slideIn,
+		onStart: handleStart,
+		onFrame: handleFrame,
+		onRest: handleRest,
 		config: { duration, easing },
-		immediate: !mounted,
-		to: {
-			transform:
-				(appear && mounted && measured && show) ||
-				(!appear && mounted && show)
-					? slideIn
-					: slideOut,
-			visibility:
-				(appear && mounted && measured) || !appear
-					? 'visible'
-					: 'hidden',
-		},
-		onStart: () => {
-			if (show && onEnter) {
-				onEnter();
-			}
-			if (!show && onExit) {
-				onExit();
-			}
-		},
-		onFrame: val => {
-			if (show && onEntering) {
-				onEntering(val);
-			}
-			if (!show && onExiting) {
-				onExiting(val);
-			}
-		},
-		onRest: () => {
-			if (show && onEntered) {
-				onEntered();
-			}
-			if (!show && onExited) {
-				onExited();
-			}
-		},
-	});
+	}));
+
+	if (!mounted || show) {
+		style.visibility = 'hidden';
+	}
 
 	useEffect(() => {
-		if (mounted && !measured) {
-			setMeasured(true);
+		const measured = !!slideOut;
+		let onRest = handleRest;
+		let immediate;
+		let transform;
+
+		if (measured && !ready) {
+			immediate = true;
+			onRest = () => setReady(true);
+			if ((!show && !appear) || (show && appear)) transform = slideOut;
+			if (!appear && show) ref.current.style.visibility = 'visible';
+		} else if (ready) {
+			immediate = false;
+			ref.current.style.visibility = 'visible';
+			if (!show) transform = slideOut;
+			if (show) transform = slideIn;
 		}
-	}, [measured, mounted]);
+
+		if (transform) {
+			setTransition({
+				immediate,
+				transform,
+				onRest,
+				onStart: handleStart,
+				onFrame: handleFrame,
+				config: { duration, easing },
+			});
+		}
+	}, [ready, show, slideOut]);
 
 	return (
 		<Component
+			children={children}
 			className={className}
-			ref={_ref}
+			ref={ref}
 			style={{ ...style, ...transition }}
 			{...passThru}
-		>
-			{children}
-		</Component>
+		/>
 	);
 });
 

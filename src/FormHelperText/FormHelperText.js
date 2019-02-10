@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import useFormControl from '../FormControl/useFormControl';
+import useFormControlManager from '../FormControl/useFormControlManager';
 import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
-import { componentPropType } from '../utils/propTypes';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
+
+const getDisabledStyles = ({ disabled, theme: { palette } }) =>
+	disabled && {
+		color: palette.text.disabled,
+	};
 
 const getErrorStyles = ({ error, theme: { palette } }) =>
 	error && {
@@ -28,9 +33,6 @@ const getBaseStyles = ({
 	lineHeight: '1em',
 	color: palette.text.secondary,
 	textAlign: 'left',
-	':disabled': {
-		color: palette.text.disabled,
-	},
 });
 
 const getStyles = combine(
@@ -38,10 +40,17 @@ const getStyles = combine(
 	getVariantStyles,
 	getMarginStyles,
 	getErrorStyles,
+	getDisabledStyles,
 );
 getStyles.propTypes = {
+	// If `true`, the helper text should be displayed in a disabled state.
+	disabled: PropTypes.bool,
 	// If `true`, helper text should be displayed in an error state.
 	error: PropTypes.bool,
+	// If `true`, the helper text should use filled classes key.
+	filled: PropTypes.bool,
+	// If `true`, the helper text should use focused classes key.
+	focused: PropTypes.bool,
 	// If `dense`, will adjusts vertical spacing. From FormControl context.
 	margin: PropTypes.oneOf(['dense']),
 	// The variant to use.
@@ -49,7 +58,7 @@ getStyles.propTypes = {
 };
 
 function FormHelperText(props) {
-	const [mergedProps] = useFormControl(props, [
+	const mergedProps = useFormControlManager(props, [
 		'error',
 		'disabled',
 		'filled',
@@ -58,21 +67,11 @@ function FormHelperText(props) {
 		'required',
 		'variant',
 	]);
-	const [
-		{ classes, styles },
-		{
-			as: Component,
-			className,
-			error,
-			filled,
-			focused,
-			margin,
-			variant,
-			...passThru
-		},
-	] = useStyles(mergedProps, getStyles, {
-		whitelist: ['error', 'margin', 'variant'],
-	});
+	const [{ classes }, { as: Component, required, ...passThru }] = useStyles(
+		mergedProps,
+		getStyles,
+		{ whitelist: ['disabled'] },
+	);
 
 	return <Component className={classes} {...passThru} />;
 }
@@ -88,16 +87,11 @@ FormHelperText.propTypes = {
 	 */
 	classes: PropTypes.object.isRequired,
 	className: PropTypes.string,
-	// If `true`, the helper text should be displayed in a disabled state.
-	disabled: PropTypes.bool,
-	// If `true`, the helper text should use filled classes key.
-	filled: PropTypes.bool,
-	// If `true`, the helper text should use focused classes key.
-	focused: PropTypes.bool,
 	// If `true`, the helper text should use required classes key.
 	required: PropTypes.bool,
-	...componentPropType,
 	...getStyles.propTypes,
+	...componentPropType,
+	...stylesPropType,
 };
 
 FormHelperText.defaultProps = {

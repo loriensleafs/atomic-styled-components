@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from '../system/useStyles';
-import { animated, useTransition } from 'react-spring/hooks';
+import { animated, useTransition } from 'react-spring';
 
 const baseStyles = {
 	root: {
@@ -32,28 +32,11 @@ function Ripples(props) {
 	const [refMap] = useState(() => new WeakMap());
 	const [cancelMap] = useState(() => new WeakMap());
 	const [items, setItems] = useState([]);
-	const transitions = useTransition({
-		items,
-		native: true,
-		config: {
-			tension: 120,
-			friction: 26,
-		},
-		from: {
-			opacity: 0,
-			transform: 'scale(0)',
-		},
-		keys: item => item.key,
-		enter: () => next =>
-			requestAnimationFrame(async () =>
-				next(
-					{
-						opacity: 0.4,
-						transform: 'scale(1)',
-					},
-					true,
-				),
-			),
+	const transitions = useTransition(items, item => item.key, {
+		config: { tension: 120, friction: 26 },
+		from: { opacity: 0, transform: 'scale(0)' },
+		enter: item => async next =>
+			next({ opacity: 0.4, transform: 'scale(1)' }),
 		leave: item => async (next, cancel) => {
 			cancelMap.set(item, cancel);
 			await next({ opacity: 0 }, true);

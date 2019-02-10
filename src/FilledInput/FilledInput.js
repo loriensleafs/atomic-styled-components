@@ -5,15 +5,27 @@ import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-const getAdornmentStyles = ({ endAdornment, startAdornment }) =>
-	(endAdornment && {
-		root: getSpacing({ pl: 14 }),
-		input: getSpacing({ pl: 0 }),
-	}) ||
-	(startAdornment && {
+const getStartAdornmentStyles = ({ startAdornment }) =>
+	startAdornment && {
 		root: getSpacing({ pr: 14 }),
 		input: getSpacing({ pr: 0 }),
-	});
+	};
+
+const getEndAdornmentStyles = ({ endAdornment }) =>
+	endAdornment && {
+		root: getSpacing({ pl: 14 }),
+		input: getSpacing({ pl: 0 }),
+	};
+
+const getDisabledStyles = ({ disabled, theme: { palette } }) =>
+	disabled && {
+		root: {
+			backgroundColor:
+				palette.type === 'light'
+					? 'rgba(0, 0, 0, 0.12)'
+					: 'rgba(255, 255, 255, 0.09)',
+		},
+	};
 
 const getErrorStyles = ({ error, theme: { palette } }) =>
 	error && {
@@ -23,6 +35,11 @@ const getErrorStyles = ({ error, theme: { palette } }) =>
 				transform: 'scaleX(1)',
 			},
 		},
+	};
+
+const getMarginStyles = ({ margin }) =>
+	margin === 'dense' && {
+		input: getSpacing({ pt: 3.5, pb: 1.5 }),
 	};
 
 const getMultilineStyles = ({ multilined }) =>
@@ -121,16 +138,10 @@ const getBaseStyles = ({ theme: { getTransition, palette, shape } }) => ({
 						: 'rgba(255, 255, 255, 0.09)',
 			},
 		},
-		':focused:after': {
+		':focused': {
 			backgroundColor:
 				palette.type === 'light'
 					? 'rgba(0, 0, 0, 0.09)'
-					: 'rgba(255, 255, 255, 0.12)',
-		},
-		':disabled': {
-			backgroundColor:
-				palette.type === 'light'
-					? 'rgba(0, 0, 0, 0.12)'
 					: 'rgba(255, 255, 255, 0.12)',
 		},
 	},
@@ -141,30 +152,42 @@ const getBaseStyles = ({ theme: { getTransition, palette, shape } }) => ({
 
 const getStyles = combine(
 	getBaseStyles,
-	getUnderlinedStyles,
+	getMarginStyles,
 	getMultilineStyles,
+	getStartAdornmentStyles,
+	getEndAdornmentStyles,
 	getErrorStyles,
-	getAdornmentStyles,
+	getDisabledStyles,
+	getUnderlinedStyles,
 );
 getStyles.propTypes = {
 	// If `true`, the input will not have an underline.
 	disableUnderline: PropTypes.bool,
 	// If `true`, the input will be disabled.
 	disabled: PropTypes.bool,
+	// End `InputAdornment` for this component.
+	endAdornment: PropTypes.node,
 	// If `true`, the input will indicate an error. From the FormControl.
 	error: PropTypes.bool,
+	// If `dense`, will adjusts vertical spacing. From FormControl context.
+	margin: PropTypes.oneOf(['dense', 'none']),
 	// If `true`, a textarea element will be rendered.
 	multiline: PropTypes.bool,
+	// Start `InputAdornment` for this component.
+	startAdornment: PropTypes.node,
 };
 
 function FilledInput(props) {
-	const [{ styles }, { className, ...passThru }] = useStyles(
-		props,
-		getStyles,
-		{
-			whitelist: ['error', 'disabled', 'multiline'],
-		},
-	);
+	const [{ styles }, passThru] = useStyles(props, getStyles, {
+		whitelist: [
+			'endAdornment',
+			'error',
+			'disabled',
+			'margin',
+			'multiline',
+			'startAdornment',
+		],
+	});
 
 	return <InputBase styles={styles} {...passThru} />;
 }
@@ -204,8 +227,6 @@ FilledInput.propTypes = {
 			]),
 		),
 	]),
-	// End `InputAdornment` for this component.
-	endAdornment: PropTypes.node,
 	// If `true`, the input will take up the full width of its container.
 	fullWidth: PropTypes.bool,
 	// The id of the `input` element.
@@ -214,12 +235,6 @@ FilledInput.propTypes = {
 	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.
 	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	/**
-	 * If `dense`, will adjust vertical spacing. This is normally obtained via
-	 * context from
-	 * FormControl.
-	 */
-	margin: PropTypes.oneOf(['dense', 'none']),
 	// Name attribute of the `input` element.
 	name: PropTypes.string,
 	/**
@@ -236,14 +251,12 @@ FilledInput.propTypes = {
 	 * (not from interacting with the field).
 	 */
 	readOnly: PropTypes.bool,
+	// If `true`, the input will be required.
+	required: PropTypes.bool,
 	// Number of rows to display when multiline option is set to true.
 	rows: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	// Maximum number of rows to display when multiline option is set to true.
 	rowsMax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	// If `true`, the input will be required.
-	required: PropTypes.bool,
-	// Start `InputAdornment` for this component.
-	startAdornment: PropTypes.node,
 	// Type of the input element. It should be a valid HTML5 input type.
 	type: PropTypes.string,
 	// The input value, required for a controlled component.

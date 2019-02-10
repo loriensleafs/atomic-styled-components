@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InputBase from '../InputBase';
+import useFormControlManager from '../FormControl/useFormControlManager';
 import useStyles from '../system/useStyles';
 import combine from '../utils/combine';
-import { componentPropType } from '../utils/propTypes';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
+import { getSpacing } from '../system';
 
 const getErrorStyles = ({ error, theme: { palette } }) =>
 	error && {
@@ -16,90 +18,86 @@ const getErrorStyles = ({ error, theme: { palette } }) =>
 const getUnderlinedStyles = ({
 	disableUnderline,
 	error,
-	disabled,
-	focused,
 	theme: { getTransition, palette },
-}) => {
-	const isLight = palette.type === 'light';
-	const bottomLineColor = isLight
-		? 'rgba(0,0,0,0.42)'
-		: 'rgba(255,255,255, 0.7)';
-	const next = {};
-
-	if (!disableUnderline) {
-		next = {
-			':before': {
-				content: '"\\00a0"',
-				position: 'absolute',
-				right: '0px',
-				bottom: '0px',
-				left: '0px',
-				borderBottom: `1px solid ${bottomLineColor}`,
-				transition: getTransition('border-bottom-color', {
-					duration: 'shorter',
-					easing: 'out',
-				}),
-				pointerEvents: 'none',
-			},
-			':after': {
-				content: '""',
-				position: 'absolute',
-				right: '0px',
-				left: '0px',
-				bottom: '0px',
-				borderBottom: `2px solid ${palette.primary[palette.type]}`,
-				transform: 'scaleX(0)',
-				transition: getTransition('transform', {
-					duration: 'shorter',
-					easing: 'out',
-				}),
-				pointerEvents: 'none',
-			},
-			':disabled:before': {
-				borderBottomStyle: 'dotted',
-			},
-			':focused:after': {
-				transform: 'scaleX(1)',
-			},
-		};
-	}
-
-	if (!error && !focused && !disabled) {
-		next[':hover'] = {
-			borderBotom: `2px solid ${palette.text.primary}`,
+}) =>
+	!disableUnderline && {
+		':before': {
+			content: '"\\00a0"',
+			position: 'absolute',
+			right: '0px',
+			bottom: '0px',
+			left: '0px',
+			borderBottom: `1px solid ${
+				palette.type === 'light'
+					? 'rgba(0,0,0,0.42)'
+					: 'rgba(255,255,255, 0.7)'
+			}`,
+			transition: getTransition('border-bottom-color', {
+				duration: 'shorter',
+				easing: 'out',
+			}),
+			pointerEvents: 'none',
+		},
+		':after': {
+			content: '""',
+			position: 'absolute',
+			right: '0px',
+			left: '0px',
+			bottom: '0px',
+			borderBottom: `2px solid ${
+				error ? palette.error.main : palette.primary[palette.type]
+			}`,
+			transform: error ? 'scaleX(1)' : 'scaleX(0)',
+			transition: getTransition('transform', {
+				duration: 'shorter',
+				easing: 'out',
+			}),
+			pointerEvents: 'none',
+		},
+		':disabled:before': {
+			borderBottomStyle: 'dotted',
+		},
+		':focused:after': {
+			transform: 'scaleX(1)',
+		},
+		':hover:not(disabled):not(focused):before': !error && {
+			borderBotom: `2px solid ${
+				error ? palette.error.main : palette.primary[palette.type]
+			}`,
 			// Reset on touch devices so we don't add specificity.
 			'@media (hover: none)': {
 				borderBottom: `1px solid ${bottomLineColor}`,
 			},
-		};
-	}
+		},
+	};
 
-	return next;
-};
+const getFormControlStyles = ({ formControlDecendant }) =>
+	formControlDecendant && getSpacing({ mt: 3 });
 
 const baseStyles = {
 	position: 'relative',
 };
 
-const getStyles = combine(getUnderlinedStyles, getErrorStyles);
+const getStyles = combine(
+	getUnderlinedStyles,
+	getErrorStyles,
+	getFormControlStyles,
+);
 getStyles.propsTypes = {
 	// If `true`, the input will not have an underline.
 	disableUnderline: PropTypes.bool,
 	// If 'true', Input is should be displayed in an error state.
 	error: PropTypes.bool,
-	// If `true`, the input will be disabled.
-	disabled: PropTypes.bool,
+	// If the label is a descendant of 'FormControl'
+	formControlDecendant: PropTypes.bool,
 };
 
 function Input(props) {
-	const [{ styles }, { disableUnderline, ...passThru }] = useStyles(
-		props,
-		getStyles,
-		{
-			baseStyles,
-			whitelist: ['disableUnderline', 'error', 'disabled'],
-		},
-	);
+	const fcProps = useFormControlManager(props, []);
+	const [{ styles }, passThru] = useStyles(fcProps, getStyles, {
+		baseStyles,
+		whitelist: ['error'],
+	});
 
 	return <InputBase styles={styles} {...passThru} />;
 }
@@ -139,6 +137,8 @@ Input.propTypes = {
 			]),
 		),
 	]),
+	// If `true`, the input will be disabled.
+	disabled: PropTypes.bool,
 	// End `InputAdornment` for this component.
 	endAdornment: PropTypes.node,
 	// If `true`, the input will take up the full width of its container.
@@ -147,6 +147,8 @@ Input.propTypes = {
 	id: PropTypes.string,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
+	// Use that property to pass a ref callback to the native input component.
+	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	// If `dense`, will adjusts vertical spacing. From FormControl context.
 	margin: PropTypes.oneOf(['dense', 'none']),
 	// If `true`, a textarea element will be rendered.
@@ -194,6 +196,7 @@ Input.propTypes = {
 	]),
 	...getStyles.propTypes,
 	...componentPropType,
+	...stylesPropType,
 };
 
 InputBase.defaultProps = {
