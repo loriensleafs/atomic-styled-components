@@ -22,10 +22,8 @@ function Rotate(props) {
 	const transition = useSpring({
 		native: true,
 		config: { duration, easing },
-		to: {
-			display: 'inherit',
-			transform: `rotate(${deg}deg)`,
-		},
+		display: 'inherit',
+		transform: `rotate(${deg}deg)`,
 		onStart: () => onStart && onStart(),
 		onFrame: val => onUpdate && onUpdate(val),
 		onRest: () => onEnd && onEnd(),
