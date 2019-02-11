@@ -26,20 +26,35 @@ const Grow = forwardRef((props, ref) => {
 	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const Component = animated(as);
 	const transition = useSpring({
+		native: true,
 		config: { duration, easing },
-		opacity: (appear && !mounted) || !show ? 0 : 1,
-		transform: (appear && !mounted) || !show ? `scale(0)` : `scale(1)`,
+		to: {
+			opacity: (appear && !mounted) || !show ? 0 : 1,
+			transform: (appear && !mounted) || !show ? `scale(0)` : `scale(1)`,
+		},
 		onStart: () => {
-			if (show && onEnter) onEnter();
-			if (!show && onExit) onExit();
+			if (show && onEnter) {
+				onEnter();
+			}
+			if (!show && onExit) {
+				onExit();
+			}
 		},
 		onFrame: val => {
-			if (show && onEntering) onEntering(val);
-			if (!show && onExiting) onExiting(val);
+			if (show && onEntering) {
+				onEntering(val);
+			}
+			if (!show && onExiting) {
+				onExiting(val);
+			}
 		},
 		onRest: () => {
-			if (show && onEntered) onEntered();
-			if (!show && onExited) onExited();
+			if (show && onEntered) {
+				onEntered();
+			}
+			if (!show && onExited) {
+				onExited();
+			}
 		},
 	});
 

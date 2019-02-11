@@ -36,18 +36,31 @@ const Collapse = forwardRef((props, ref) => {
 	const transition = useSpring({
 		config: { duration, easing },
 		immediate: !appear && !mounted,
-		height,
+		native: true,
+		to: { height },
 		onStart: () => {
-			if (show && onEnter) onEnter();
-			if (!show && onExit) onExit();
+			if (show && onEnter) {
+				onEnter();
+			}
+			if (!show && onExit) {
+				onExit();
+			}
 		},
 		onFrame: val => {
-			if (show && onEntering) onEntering(val);
-			if (!show && onExiting) onExiting(val);
+			if (show && onEntering) {
+				onEntering(val);
+			}
+			if (!show && onExiting) {
+				onExiting(val);
+			}
 		},
 		onRest: () => {
-			if (show && onEntered) onEntered();
-			if (!show && onExited) onExited();
+			if (show && onEntered) {
+				onEntered();
+			}
+			if (!show && onExited) {
+				onExited();
+			}
 		},
 	});
 
@@ -65,12 +78,13 @@ const Collapse = forwardRef((props, ref) => {
 
 	return (
 		<Component
-			children={children}
 			className={classes}
 			ref={ref}
 			style={{ ...style, ...transition }}
 			{...passThru}
-		/>
+		>
+			{children}
+		</Component>
 	);
 });
 

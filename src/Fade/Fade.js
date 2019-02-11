@@ -1,6 +1,6 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useMotion, useMounted } from '../hooks';
+import { useMotion, usePrevious } from '../hooks';
 import { animated, useSpring } from 'react-spring';
 import { componentPropType } from '../utils/propTypes';
 
@@ -22,25 +22,44 @@ const Fade = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
-	const mounted = useMounted();
+	const prevShow = usePrevious(show);
+	const [mounted, setMounted] = useState(false);
 	const [easing, duration] = useMotion(ease, enter, exit, show);
 	const transition = useSpring({
 		config: { duration, easing },
 		opacity: (appear && !mounted) || !show ? 0 : 1,
 		onStart: () => {
-			if (show && onEnter) onEnter();
-			if (!show && onExit) onExit();
+			if (show && onEnter) {
+				onEnter();
+			}
+			if (!show && onExit) {
+				onExit();
+			}
 		},
 		onFrame: val => {
-			if (show && onEntering) onEntering(val);
-			if (!show && onExiting) onExiting(val);
+			if (show && onEntering) {
+				onEntering(val);
+			}
+			if (!show && onExiting) {
+				onExiting(val);
+			}
 		},
 		onRest: () => {
-			if (show && onEntered) onEntered();
-			if (!show && onExited) onExited();
+			if (show && onEntered) {
+				onEntered();
+			}
+			if (!show && onExited) {
+				onExited();
+			}
 		},
 	});
 	const Component = animated(as);
+
+	useEffect(() => {
+		if (!mounted) {
+			setMounted(true);
+		}
+	}, [mounted]);
 
 	return (
 		<Component
