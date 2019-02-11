@@ -93,12 +93,8 @@ function Modal(props) {
 
 	const handleBackdropClick = useCallback(event => {
 		if (event.target === event.currentTarget) {
-			if (onBackdropClick) {
-				onBackdropClick(event);
-			}
-			if (!disableBackdropClick && onClose) {
-				onClose(event, 'backdropClick');
-			}
+			if (onBackdropClick) onBackdropClick(event);
+			if (!disableBackdropClick && onClose) onClose(event, 'backdropClick');
 		}
 	}, []);
 
@@ -108,12 +104,8 @@ function Modal(props) {
 			isTopModal.current &&
 			!event.defaultPrevented
 		) {
-			if (onEscapeKeyDown) {
-				onEscapeKeyDown(event);
-			}
-			if (!disableEscapeKeyDown && onClose) {
-				onClose(event, 'escapeKeyDown');
-			}
+			if (onEscapeKeyDown) onEscapeKeyDown(event);
+			if (!disableEscapeKeyDown && onClose) onClose(event, 'escapeKeyDown');
 		}
 	}, []);
 
@@ -123,10 +115,7 @@ function Modal(props) {
 
 		if (dialog && mounted && isTopModal.current && !disableEnforceFocus) {
 			const { activeElement } = ownerDocument(container);
-
-			if (!dialog.contains(activeElement)) {
-				dialog.focus();
-			}
+			if (!dialog.contains(activeElement)) dialog.focus();
 		}
 	}, []);
 
@@ -143,9 +132,7 @@ function Modal(props) {
 
 		container.style.overflow = 'auto';
 		if (!disableRestoreFocus && lastFocus.current) {
-			if (lastFocus.current.focus) {
-				lastFocus.current.focus();
-			}
+			if (lastFocus.current.focus) lastFocus.current.focus();
 			lastFocus.current = null;
 		}
 	}, []);
@@ -188,12 +175,8 @@ function Modal(props) {
 				modal.setAttribute('aria-hidden', true);
 			}
 			if (prevOpen) {
-				if (!hasTransition) {
-					setExited(true);
-				}
-				if (hasTransition) {
-					exiting.current = true;
-				}
+				if (!hasTransition) setExited(true);
+				if (hasTransition) exiting.current = true;
 				handleClose();
 			}
 		}

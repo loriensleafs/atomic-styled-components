@@ -169,15 +169,9 @@ const Dialog = forwardRef((props, ref) => {
 	] = useStyles(props, getStyles);
 
 	const handleBackdropClick = useCallback(event => {
-		if (event.target !== event.currentTarget) {
-			return;
-		}
-		if (onBackdropClick) {
-			onBackdropClick(event);
-		}
-		if (!disableBackdropClick && onClose) {
-			onClose(event, 'backdropClick');
-		}
+		if (event.target !== event.currentTarget) return;
+		if (onBackdropClick) onBackdropClick(event);
+		if (!disableBackdropClick && onClose) onClose(event, 'backdropClick');
 	}, []);
 
 	return (
