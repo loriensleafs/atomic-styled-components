@@ -23,7 +23,7 @@ const getBaseStyles = ({
 	inset,
 	theme: {
 		palette,
-		typography: { fontFamilies, fontSizes, fontWeights },
+		typography: { fontFamilies, fontSizes, fontWeights, unit },
 	},
 }) => ({
 	lineHeight: '48px',
@@ -31,10 +31,9 @@ const getBaseStyles = ({
 	color: palette.text.secondary,
 	fontFamily: fontFamilies.ui,
 	fontWeight: fontWeights.medium,
-	fontSize: fontSizes[3],
+	fontSize: `${fontSizes[2]}${unit}`,
 	...getSpacing({
-		py: !disableGutters && 2,
-		px: !disableGutters && [1, 2],
+		px: !disableGutters ? 3 : null,
 		pl: inset ? 72 : null,
 	}),
 });
