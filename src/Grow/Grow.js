@@ -28,33 +28,19 @@ const Grow = forwardRef((props, ref) => {
 	const transition = useSpring({
 		native: true,
 		config: { duration, easing },
-		to: {
-			opacity: (appear && !mounted) || !show ? 0 : 1,
-			transform: (appear && !mounted) || !show ? `scale(0)` : `scale(1)`,
-		},
+		opacity: (appear && !mounted) || !show ? 0 : 1,
+		transform: (appear && !mounted) || !show ? `scale(0)` : `scale(1)`,
 		onStart: () => {
-			if (show && onEnter) {
-				onEnter();
-			}
-			if (!show && onExit) {
-				onExit();
-			}
+			if (show && onEnter) onEnter();
+			if (!show && onExit) onExit();
 		},
 		onFrame: val => {
-			if (show && onEntering) {
-				onEntering(val);
-			}
-			if (!show && onExiting) {
-				onExiting(val);
-			}
+			if (show && onEntering) onEntering(val);
+			if (!show && onExiting) onExiting(val);
 		},
 		onRest: () => {
-			if (show && onEntered) {
-				onEntered();
-			}
-			if (!show && onExited) {
-				onExited();
-			}
+			if (show && onEntered) onEntered();
+			if (!show && onExited) onExited();
 		},
 	});
 
