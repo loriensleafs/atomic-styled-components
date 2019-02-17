@@ -4,16 +4,35 @@ import AvatarImage from './AvatarImage';
 import combine from '../utils/combine';
 import cn from '../system/className';
 import { getColors, getSpacing, getText, useStyles } from '../system';
+import { isNil } from '../utils/helpers';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-const getColorStyles = ({ color, theme: { palette } }) =>
-	color === 'default' && {
-		backgroundColor: palette.grey[palette.type],
+const getColorStyles = ({ children, theme: { palette }, src, srcSet }) =>
+	children &&
+	isNil(src) &&
+	isNil(srcSet) && {
+		backgroundColor:
+			palette.grey[palette.type === 'light' ? 'main' : 'light'],
 		color: palette.bg.default,
 	};
 
 const getStyles = combine(getColors, getColorStyles, getSpacing, getText);
 getStyles.propTypes = {
+	/**
+	 * Used to render icon or text elements inside the Avatar.
+	 * `src` and `alt` props will not be used and no `img` will
+	 * be rendered by default.
+	 *
+	 * This can be an element, or just a string.
+	 */
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node,
+	]),
+	// The `src` attribute for the `img` element.
+	src: PropTypes.string,
+	// The `srcSet` attribute for the `img` element.
+	srcSet: PropTypes.string,
 	...getColors.propTypes,
 	...getSpacing.propTypes,
 	...getText.propTypes,
@@ -47,7 +66,10 @@ const Avatar = forwardRef((props, ref) => {
 			srcSet,
 			...passThru
 		},
-	] = useStyles({ ...props, fontFamily: 'ui' }, getStyles, { baseStyles });
+	] = useStyles({ ...props, fontFamily: 'ui' }, getStyles, {
+		baseStyles,
+		whitelist: ['children', 'src', 'srcSet'],
+	});
 	let children = childrenProp;
 
 	if (src || srcSet) {
@@ -82,17 +104,6 @@ Avatar.propTypes = {
 	 * provide an alt attribute for the rendered `img` element.
 	 */
 	alt: PropTypes.string,
-	/**
-	 * Used to render icon or text elements inside the Avatar.
-	 * `src` and `alt` props will not be used and no `img` will
-	 * be rendered by default.
-	 *
-	 * This can be an element, or just a string.
-	 */
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node,
-	]),
 	className: PropTypes.string,
 	childrenClassName: PropTypes.string,
 	classes: PropTypes.object,
@@ -100,10 +111,6 @@ Avatar.propTypes = {
 	imgProps: PropTypes.object,
 	// The `sizes` attribute for the `img` element.
 	sizes: PropTypes.string,
-	// The `src` attribute for the `img` element.
-	src: PropTypes.string,
-	// The `srcSet` attribute for the `img` element.
-	srcSet: PropTypes.string,
 	...componentPropType,
 	...stylesPropType,
 	...getStyles.propTypes,
