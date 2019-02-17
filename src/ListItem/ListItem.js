@@ -57,6 +57,9 @@ const getStyles = props => ({
 		borderBottom: `1px solid ${props.theme.palette.divider}`,
 		backgroundClip: 'padding-box',
 	},
+	container: {
+		position: 'relative',
+	},
 	root: {
 		position: 'relative',
 		width: '100%',
@@ -70,16 +73,13 @@ const getStyles = props => ({
 		...getSelectedStyles(props),
 		...getButtonStyles(props),
 		...getSpacing({
-			...props,
-			...{
-				py: props.dense || props.hasAvatar ? 1 : 1.5,
-				pl: !props.disableGutters ? [3, 3.5] : null,
-				pr: props.hasSecondaryAction
-					? 3
-					: !props.disableGutters
-					? [3, 3.5]
-					: null,
-			},
+			py: props.dense || props.hasAvatar ? 2 : 10,
+			pl: !props.disableGutters ? 3 : null,
+			pr: props.hasSecondaryAction
+				? 3
+				: !props.disableGutters
+				? [3, 3.5]
+				: null,
 		}),
 	},
 });
@@ -131,6 +131,7 @@ function ListItem(props) {
 		},
 		getStyles,
 	);
+
 	let componentProps = {
 		...passThru,
 		as: as,
@@ -151,9 +152,7 @@ function ListItem(props) {
 	}
 
 	if (hasSecondaryAction) {
-		Component = !as ? 'div' : Component;
-		componentProps.as = as;
-
+		const componentChildren = [...children];
 		// Avoids nesting of li > li
 		if (ContainerComponent === 'li') {
 			if (Component === 'li') {
@@ -165,8 +164,14 @@ function ListItem(props) {
 
 		return (
 			<ListContext.Provider value={{ alignItems, dense }}>
-				<ContainerComponent {...ContainerProps}>
-					<Component {...componentProps}>{children}</Component>
+				<ContainerComponent
+					className={classes.container}
+					{...ContainerProps}
+				>
+					<Component {...componentProps}>
+						{componentChildren}
+					</Component>
+					{componentChildren.pop()}
 				</ContainerComponent>
 			</ListContext.Provider>
 		);
