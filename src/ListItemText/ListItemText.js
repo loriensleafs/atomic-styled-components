@@ -5,6 +5,7 @@ import Typography from '../Typography';
 import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
 import { stylesPropType } from '../utils/propTypes';
+import { isNil } from '../utils/helpers';
 
 const getDenseStyles = ({ dense }) =>
 	dense && {
@@ -20,17 +21,15 @@ const getDenseStyles = ({ dense }) =>
 	};
 
 const getBaseStyles = ({ inset }) => ({
-	primaryText: {},
 	root: {
 		minWidth: 0,
 		flex: '1 1 auto',
 		lineHeight: 1.5,
-		...getSpacing({ py: 0, px: 2 }),
+		...getSpacing({ py: 0, px: 3 }),
 		':first-child': {
 			paddingLeft: inset ? '56px' : 0,
 		},
 	},
-	secondaryText: {},
 });
 
 const getStyles = combine(getBaseStyles, getDenseStyles);
@@ -61,11 +60,11 @@ function ListItemText(props) {
 
 	return (
 		<div className={classes.root} {...passThru}>
-			{primary !== null && !disableTypography ? (
+			{!isNil(primary) && !disableTypography ? (
 				<Typography
-					variant="subtitle1"
-					styles={styles.primaryText}
 					as="span"
+					styles={styles.primaryText}
+					variant="body1"
 					{...primaryTextProps}
 				>
 					{primary}
@@ -75,10 +74,10 @@ function ListItemText(props) {
 			) : (
 				children
 			)}
-			{secondary !== null && !disableTypography ? (
+			{!isNil(secondary) && !disableTypography ? (
 				<Typography
-					styles={styles.secondaryText}
 					color="text.secondary"
+					styles={styles.secondaryText}
 					{...secondaryTextProps}
 				>
 					{secondary}
