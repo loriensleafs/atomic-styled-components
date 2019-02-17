@@ -50,14 +50,14 @@ getStyles.propTypes = {
 
 function Modal(props) {
 	// Renders the modalRef into the DOM via createPortal.
-	const portalRef = useRef(getContainer(containerProp));
+	const portalRef = useRef(getContainer(props.container));
 	// Rendered into portalRef via createPortal.
 	const modalRef = useRef(null);
 	// The component children, rendered in modalRef.
 	const dialogRef = useRef(null);
 	// States
 	const [exited, setExited] = useState(!props.open);
-	const [isTopModal, addModal, removeModal] = useModals(
+	const [topModal, addModal, removeModal] = useModals(
 		modalRef.current,
 		portalRef.current,
 	);
@@ -105,7 +105,7 @@ function Modal(props) {
 	const handleDocumentKeyDown = useCallback(event => {
 		if (
 			keycode(event) === 'esc' &&
-			isTopModal.current &&
+			topModal.current &&
 			!event.defaultPrevented
 		) {
 			if (onEscapeKeyDown) {
@@ -121,7 +121,7 @@ function Modal(props) {
 		const container = portalRef.current;
 		const dialog = dialogRef.current;
 
-		if (dialog && mounted && isTopModal.current && !disableEnforceFocus) {
+		if (dialog && mounted && topModal.current && !disableEnforceFocus) {
 			const { activeElement } = ownerDocument(container);
 
 			if (!dialog.contains(activeElement)) {
@@ -167,7 +167,7 @@ function Modal(props) {
 			if (container && modal) {
 				modal.scrollTop = 0;
 
-				if (isTopModal.current) {
+				if (topModal.current) {
 					modal.removeAttribute('aria-hidden');
 				}
 				if (dialog && !dialog.contains(doc.activeElement)) {
@@ -184,7 +184,7 @@ function Modal(props) {
 				}
 			}
 		} else if (!open) {
-			if (!isTopModal.current && modal) {
+			if (!topModal.current && modal) {
 				modal.setAttribute('aria-hidden', true);
 			}
 			if (prevOpen) {
