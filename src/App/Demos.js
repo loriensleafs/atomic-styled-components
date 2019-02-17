@@ -59,6 +59,7 @@ export default [
 	},
 	{
 		label: 'Lists',
+		url: '/lists',
 	},
 	{
 		label: 'Menus',
