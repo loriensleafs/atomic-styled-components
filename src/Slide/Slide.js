@@ -99,7 +99,7 @@ const Slide = forwardRef((props, ref) => {
 	 * If the component is being mounted or is going to be shown
 	 * we need to make sure that it's initially hidden.
 	 */
-	if (!mounted || show) style.visibility = 'hidden';
+	if (!mounted || !ready) style.visibility = 'hidden';
 
 	useEffect(() => {
 		const measured = !!slideOut;
