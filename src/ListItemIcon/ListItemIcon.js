@@ -8,7 +8,7 @@ const getStyles = () => ({
 	flexShrink: 0,
 	alignItems: 'center',
 	...getColor({ color: 'action.active' }),
-	...getSpacing({ mr: 2 }),
+	...getSpacing({ mr: 3 }),
 });
 
 function ListItemIcon(props) {
