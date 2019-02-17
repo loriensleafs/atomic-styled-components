@@ -77,11 +77,8 @@ Typography.propTypes = {
 };
 
 Typography.defaultProps = {
-	mt: 0,
-	mr: 0,
-	mb: 0,
-	ml: 0,
-	variant: 'body1',
+	m: 0,
+	variant: 'body2',
 };
 
 export default Typography;
