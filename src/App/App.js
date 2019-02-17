@@ -15,6 +15,7 @@ const ButtonDemo = lazy(() => import('./ButtonDemo'));
 const CardDemo = lazy(() => import('./CardDemo'));
 const DialogDemo = lazy(() => import('./DialogDemo'));
 const DrawerDemo = lazy(() => import('./DrawerDemo'));
+const ListDemo = lazy(() => import('./ListDemo'));
 const SelectionControlDemo = React.lazy(() => import('./SelectionControlDemo'));
 
 const getGlobalStyles = ({ theme }) => `
@@ -81,6 +82,10 @@ export default function App() {
 									<Route
 										path={`/drawers`}
 										render={() => <DrawerDemo />}
+									/>
+									<Route
+										path={'/lists'}
+										component={ListDemo}
 									/>
 									<Route
 										path={`/selectioncontrols`}

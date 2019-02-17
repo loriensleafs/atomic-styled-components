@@ -36,7 +36,10 @@ const ComponentDemos = props => (
 			return (
 				<ListItem key={demo.label} {...demoProps}>
 					<Box pl={3}>
-						<ListItemText primary={demo.label} />
+						<ListItemText
+							primaryTextProps={{ variant: 'body2' }}
+							primary={demo.label}
+						/>
 					</Box>
 				</ListItem>
 			);
@@ -74,7 +77,10 @@ function DemoList(props) {
 			<Box top="0px" position="sticky">
 				<List as="nav">
 					<ListItem onClick={handleToggleDemo} button>
-						<ListItemText primary="Component Demos" />
+						<ListItemText
+							primaryTextProps={{ variant: 'body2' }}
+							primary="Component Demos"
+						/>
 					</ListItem>
 					<Collapse show={showDemos}>
 						<ComponentDemos onClose={props.onClose || null} />
