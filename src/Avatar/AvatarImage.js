@@ -1,8 +1,6 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import useStyles from '../system/useStyles';
-import cn from '../system/className';
-import merge from '../utils/merge';
 
 const baseStyles = {
 	width: '100%',
@@ -26,7 +24,7 @@ AvatarImage.propTypes = {
 	 * Used in combination with `src` or `srcSet` to
 	 * provide an alt attribute for the rendered `img` element.
 	 */
-	alt: PropTypes.bool,
+	alt: PropTypes.string,
 	// The `sizes` attribute for the `img` element.
 	sizes: PropTypes.string,
 	// The `src` attribute for the `img` element.
