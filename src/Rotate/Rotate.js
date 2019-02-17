@@ -20,7 +20,6 @@ function Rotate(props) {
 	} = props;
 	const [easing, duration] = useMotion(ease, durationProp);
 	const transition = useSpring({
-		native: true,
 		config: { duration, easing },
 		display: 'inherit',
 		transform: `rotate(${deg}deg)`,
