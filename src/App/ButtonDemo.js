@@ -6,7 +6,7 @@ import IconButton from './../IconButton';
 import List from './../List';
 import ListItem from './../ListItem';
 import ListItemText from './../ListItemText';
-import DemoBox from './DemoBox';
+import Demo from './Demo';
 import {
 	AddShoppingCartIcon,
 	AlarmIcon,
@@ -15,8 +15,8 @@ import {
 	KeyboardVoiceIcon,
 	SendIcon,
 	SaveIcon,
-} from './DemoIcons';
-import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
+} from './icons';
+import { Header, Title, Paragraph } from './typography';
 
 const Navigation = () => (
 	<Box w={200} display={['none', null, null, null, 'block']} fontSize="12px">
@@ -63,11 +63,11 @@ const Navigation = () => (
 
 const Intro = () => (
 	<Fragment>
-		<PageHeader>Buttons</PageHeader>
-		<SectionHeader>
+		<Header>Buttons</Header>
+		<Title>
 			Buttons allow users to take actions, and make choices, with a single
 			tap.
-		</SectionHeader>
+		</Title>
 		<Paragraph as="div">
 			<a href="https://material.io/design/components/buttons.html">
 				Buttons
@@ -87,7 +87,7 @@ const Intro = () => (
 
 const ContainedButtons = () => (
 	<Fragment>
-		<SectionHeader>Contained Buttons</SectionHeader>
+		<Title>Contained Buttons</Title>
 		<Paragraph>
 			<a href="https://material.io/design/components/buttons.html#contained-button">
 				Contained buttons
@@ -98,7 +98,7 @@ const ContainedButtons = () => (
 			<br />
 			The last example of this demo show how to use an upload button.
 		</Paragraph>
-		<DemoBox>
+		<Demo>
 			<Button variant="contained" m={2}>
 				Default
 			</Button>
@@ -114,13 +114,13 @@ const ContainedButtons = () => (
 			<Button variant="contained" href="#link" m={2}>
 				Link
 			</Button>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 
 const TextButtons = () => (
 	<Fragment>
-		<SectionHeader>Text Buttons</SectionHeader>
+		<Title>Text Buttons</Title>
 		<Paragraph as="div">
 			<a href="https://material.io/design/components/buttons.html#text-button">
 				Text buttons
@@ -133,7 +133,7 @@ const TextButtons = () => (
 			</ul>
 			In cards, text buttons help maintain an emphasis on card content.
 		</Paragraph>
-		<DemoBox>
+		<Demo>
 			<Button m={2}>Default</Button>
 			<Button color="primary" m={2}>
 				Primary
@@ -147,13 +147,13 @@ const TextButtons = () => (
 			<Button href="#link" m={2}>
 				Link
 			</Button>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 
 const OutlinedButtons = () => (
 	<Fragment>
-		<SectionHeader>Outlined Buttons</SectionHeader>
+		<Title>Outlined Buttons</Title>
 		<Paragraph>
 			<a href="https://material.io/design/components/buttons.html#outlined-button">
 				Text buttons
@@ -161,12 +161,12 @@ const OutlinedButtons = () => (
 			are medium-emphasis buttons. They contain actions that are
 			important, but aren’t the primary action in an app.
 		</Paragraph>
-		<SectionHeader>Alternatives</SectionHeader>
+		<Title>Alternatives</Title>
 		<Paragraph>
 			Outlined buttons are also a lower emphasis alternative to contained
 			buttons, or a higher emphasis alternative to text buttons.
 		</Paragraph>
-		<DemoBox>
+		<Demo>
 			<Button variant="outlined" m={2}>
 				Default
 			</Button>
@@ -182,20 +182,20 @@ const OutlinedButtons = () => (
 			<Button variant="outlined" href="#link" m={2}>
 				Link
 			</Button>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 
 const ButtonsWithIconsAndLabels = () => (
 	<Fragment>
-		<SectionHeader>Buttons with icons and labels</SectionHeader>
+		<Title>Buttons with icons and labels</Title>
 		<Paragraph>
 			Sometimes you might want to have icons for certain button to enhance
 			the UX of the application as we recognize logos more easily than
 			plain text. For example, if you have a delete button you can label
 			it with a dustbin icon.
 		</Paragraph>
-		<DemoBox>
+		<Demo>
 			<Button variant="contained" color="secondary" m={2}>
 				Delete
 				<DeleteIcon ml={2} />
@@ -212,13 +212,13 @@ const ButtonsWithIconsAndLabels = () => (
 				<SaveIcon mr={2} fontSize="20px" />
 				Save
 			</Button>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 
 const IconButtons = () => (
 	<Fragment>
-		<SectionHeader>Icon Buttons</SectionHeader>
+		<Title>Icon Buttons</Title>
 		<Paragraph>
 			Icon buttons are commonly found in app bars and toolbars.
 			<br />
@@ -227,7 +227,7 @@ const IconButtons = () => (
 			choice to be selected or deselected, such as adding or removing a
 			star to an item.
 		</Paragraph>
-		<DemoBox>
+		<Demo>
 			<IconButton>
 				<DeleteIcon />
 			</IconButton>
@@ -243,17 +243,17 @@ const IconButtons = () => (
 			<IconButton color="secondary">
 				<CameraIcon />
 			</IconButton>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 
 const ButtonSizes = () => (
 	<Fragment>
-		<SectionHeader>Sizes</SectionHeader>
+		<Title>Sizes</Title>
 		<Paragraph>
 			To change the size of a button use the 'size' property.
 		</Paragraph>
-		<DemoBox>
+		<Demo>
 			<Box>
 				<Flex alignItems="center">
 					<Button size="small" m={2}>
@@ -307,7 +307,7 @@ const ButtonSizes = () => (
 					</Button>
 				</Flex>
 			</Box>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 

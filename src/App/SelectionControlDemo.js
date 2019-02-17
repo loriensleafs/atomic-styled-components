@@ -11,8 +11,8 @@ import Radio from './../Radio';
 import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
 import Switch from './../Switch';
-import DemoBox from './DemoBox';
-import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
+import Demo from './Demo';
+import { Header, Title, Paragraph } from './typography';
 
 const Navigation = () => (
 	<Box
@@ -43,10 +43,8 @@ const Navigation = () => (
 
 const Intro = () => (
 	<Fragment>
-		<PageHeader>Selection Controls</PageHeader>
-		<SectionHeader>
-			Selection controls allow the user to select options.
-		</SectionHeader>
+		<Header>Selection Controls</Header>
+		<Title>Selection controls allow the user to select options.</Title>
 		<Paragraph mb={0}>
 			<a href="https://material.io/design/components/selection-controls.html">
 				Selection Controls
@@ -114,11 +112,11 @@ const RadioButtons = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Standalone Radio Buttons</SectionHeader>
+			<Title>Standalone Radio Buttons</Title>
 			<Paragraph>
 				Radio Buttons can also be used standalone, without the wrapper.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Flex
 					justifyContent="flex-start"
 					alignItems="center"
@@ -166,7 +164,7 @@ const RadioButtons = () => {
 						checkedIcon={<RadioButtonCheckedIcon fontSize="20px" />}
 					/>
 				</Flex>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -184,7 +182,7 @@ const Checkboxes = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Checkboxes</SectionHeader>
+			<Title>Checkboxes</Title>
 			<Paragraph>
 				<a href="https://material.io/design/components/selection-controls.html#checkboxes">
 					Checkboxes
@@ -198,7 +196,7 @@ const Checkboxes = () => {
 				If you have a single option, avoid using a checkbox and use an
 				on/off switch instead.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Flex
 					justifyContent="flex-start"
 					alignItems="center"
@@ -232,7 +230,7 @@ const Checkboxes = () => {
 						checkedIcon={<CheckBoxIcon fontSize="20px" />}
 					/>
 				</Flex>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -247,7 +245,7 @@ const Switches = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Switches</SectionHeader>
+			<Title>Switches</Title>
 			<Paragraph>
 				<a href="https://material.io/design/components/selection-controls.html#switches">
 					Switches
@@ -259,7 +257,7 @@ const Switches = () => {
 				The option that the switch controls, as well as the state it’s
 				in, should be made clear from the corresponding inline label.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Flex
 					justifyContent="flex-start"
 					alignItems="center"
@@ -277,7 +275,7 @@ const Switches = () => {
 					<Switch disabled checked value="e" />
 					<Switch defaultChecked value="f" color="default" />
 				</Flex>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };

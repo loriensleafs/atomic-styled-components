@@ -9,7 +9,7 @@ import CardContent from './../CardContent';
 import CardHeader from '../CardHeader/CardHeader';
 import CardMedia from './../CardMedia';
 import Collapse from './../Collapse';
-import DemoBox from './DemoBox';
+import Demo from './Demo';
 import ExpandMoreIcon from './../svgIcons/ExpandMore';
 import FavoriteIcon from './../svgIcons/Favorite';
 import Flex from './../Flex';
@@ -22,8 +22,8 @@ import Rotate from './../Rotate';
 import ShareIcon from './../svgIcons/Share';
 import Typography from './../Typography';
 import cn from './../system/className';
-import { PlayArrowIcon, SkipNextIcon, SkipPreviousIcon } from './DemoIcons';
-import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
+import { PlayArrowIcon, SkipNextIcon, SkipPreviousIcon } from './icons';
+import { Header, Title, Paragraph } from './typography';
 
 const Bullet = () => (
 	<span
@@ -64,10 +64,8 @@ const Navigation = () => (
 
 const Intro = () => (
 	<Fragment>
-		<PageHeader>Cards</PageHeader>
-		<SectionHeader>
-			Cards contain content and actions about a single subject.
-		</SectionHeader>
+		<Header>Cards</Header>
+		<Title>Cards contain content and actions about a single subject.</Title>
 		<Paragraph>
 			<a href="https://material.io/design/components/cards.html">Cards</a>{' '}
 			are surfaces that display content and actions on a single topic.
@@ -82,13 +80,13 @@ const Intro = () => (
 
 const SimpleCard = () => (
 	<Fragment>
-		<SectionHeader>Simple Card</SectionHeader>
+		<Title>Simple Card</Title>
 		<Paragraph>
 			Although cards can support multiple actions, UI controls, and an
 			overflow menu, use restraint and remember that cards are entry
 			points to more complex and detailed information.
 		</Paragraph>
-		<DemoBox justifyContent="center">
+		<Demo justifyContent="center">
 			<Card wMin={275}>
 				<CardContent>
 					<Typography color="text.secondary" mb={1}>
@@ -114,7 +112,7 @@ const SimpleCard = () => (
 					<Button size="small">Learn More</Button>
 				</CardActions>
 			</Card>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 
@@ -123,9 +121,9 @@ const ComplexInteractiveCard = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Complex Interaction</SectionHeader>
+			<Title>Complex Interaction</Title>
 			<Paragraph>On desktop, card content can expand.</Paragraph>
-			<DemoBox justifyContent="center">
+			<Demo justifyContent="center">
 				<Card wMax={400}>
 					<CardHeader
 						avatar={
@@ -221,18 +219,18 @@ const ComplexInteractiveCard = () => {
 						</CardContent>
 					</Collapse>
 				</Card>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
 
 const MediaCard = () => (
 	<Fragment>
-		<SectionHeader>Media</SectionHeader>
+		<Title>Media</Title>
 		<Paragraph>
 			Example of a card using an image to reinforce the content.
 		</Paragraph>
-		<DemoBox justifyContent="center">
+		<Demo justifyContent="center">
 			<Card wMax={345}>
 				<CardActionArea>
 					<CardMedia
@@ -260,13 +258,13 @@ const MediaCard = () => (
 					</Button>
 				</CardActions>
 			</Card>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 
 const UIControlsCard = () => (
 	<Fragment>
-		<SectionHeader>UI Controls</SectionHeader>
+		<Title>UI Controls</Title>
 		<Paragraph>
 			Supplemental actions within the card are explicitly called out using
 			icons, text, and UI controls, typically placed at the bottom of the
@@ -275,7 +273,7 @@ const UIControlsCard = () => (
 			<br />
 			Here's an example of a media control card.
 		</Paragraph>
-		<DemoBox justifyContent="center">
+		<Demo justifyContent="center">
 			<Card>
 				<Flex>
 					<Flex direction="column">
@@ -311,7 +309,7 @@ const UIControlsCard = () => (
 					/>
 				</Flex>
 			</Card>
-		</DemoBox>
+		</Demo>
 	</Fragment>
 );
 

@@ -5,7 +5,7 @@ import Avatar from './../Avatar';
 import Box from './../Box';
 import Button from './../Button';
 import CloseIcon from './../svgIcons/Close';
-import DemoBox from './DemoBox';
+import Demo from './Demo';
 import Dialog from './../Dialog/Dialog';
 import DialogActions from './../DialogActions';
 import DialogContent from './../DialogContent';
@@ -21,8 +21,8 @@ import Slide from './../Slide';
 import Toolbar from '../Toolbar';
 import Typography from './../Typography';
 import UnorderedList from './UnorderedList';
-import { PersonIcon } from './DemoIcons';
-import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
+import { PersonIcon } from './icons';
+import { Header, Title, Paragraph } from './typography';
 
 const Navigation = () => (
 	<Box
@@ -80,11 +80,11 @@ const Navigation = () => (
 
 const Intro = () => (
 	<Fragment>
-		<PageHeader>Dialogs</PageHeader>
-		<SectionHeader>
+		<Header>Dialogs</Header>
+		<Title>
 			Dialogs inform users about a task and can contain critical
 			information, require decisions, or involve multiple tasks.
-		</SectionHeader>
+		</Title>
 		<Paragraph as="div">
 			A{' '}
 			<a href="https://material.io/design/components/dialogs.html">
@@ -168,7 +168,7 @@ const SimpleDialogs = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Simple Dialogs</SectionHeader>
+			<Title>Simple Dialogs</Title>
 			<Paragraph mb={0}>
 				Simple dialogs can provide additional details or actions about a
 				list item. For example, they can display avatars, icons,
@@ -188,7 +188,7 @@ const SimpleDialogs = () => {
 					the action and closes the dialog.
 				</li>
 			</UnorderedList>
-			<DemoBox direction="column">
+			<Demo direction="column">
 				<Typography variant="subtitle1">
 					Selected: {selectedValue}
 				</Typography>
@@ -201,7 +201,7 @@ const SimpleDialogs = () => {
 					open={open}
 					onClose={handleClose}
 				/>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -217,8 +217,8 @@ const FullScreenDialogs = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Full-screen dialogs</SectionHeader>
-			<DemoBox justifyContent="center">
+			<Title>Full-screen dialogs</Title>
+			<Demo justifyContent="center">
 				<Button color="primary" variant="outlined" onClick={handleOpen}>
 					Open full-screen dialog
 				</Button>
@@ -266,7 +266,7 @@ const FullScreenDialogs = () => {
 						</ListItem>
 					</List>
 				</Dialog>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -322,7 +322,7 @@ const AlertDialogs = props => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Alerts</SectionHeader>
+			<Title>Alerts</Title>
 			<Paragraph mb={0}>
 				Alerts are urgent interruptions, requiring acknowledgement, that
 				inform the user about a situation.
@@ -353,7 +353,7 @@ const AlertDialogs = props => {
 					or “Are you sure?”
 				</li>
 			</UnorderedList>
-			<DemoBox justifyContent="center">
+			<Demo justifyContent="center">
 				<Button
 					color="primary"
 					variant="outlined"
@@ -365,12 +365,12 @@ const AlertDialogs = props => {
 					open={open.fadeInAlert}
 					onClose={handleClose('fadeInAlert')}
 				/>
-			</DemoBox>
+			</Demo>
 			<Paragraph>
 				You can also swap out the transition, the next example uses
 				Slide.
 			</Paragraph>
-			<DemoBox justifyContent="center">
+			<Demo justifyContent="center">
 				<Button
 					color="primary"
 					variant="outlined"
@@ -383,7 +383,7 @@ const AlertDialogs = props => {
 					onClose={handleClose('slideInAlert')}
 					TransitionComponent={Transition}
 				/>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -391,14 +391,14 @@ const AlertDialogs = props => {
 const OptionalDialogSizes = () => {
 	return (
 		<Fragment>
-			<SectionHeader>Optional sizes</SectionHeader>
+			<Title>Optional sizes</Title>
 			<Paragraph>
 				You can set a dialog maximum width by using the maxWidth
 				enumerable in combination with the fullWidth boolean. When the
 				fullWidth property is true, the dialog will adapt based on the
 				maxWidth value.
 			</Paragraph>
-			<DemoBox />
+			<Demo />
 		</Fragment>
 	);
 };
@@ -419,7 +419,7 @@ const ScrollableDialogs = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Scrolling long content</SectionHeader>
+			<Title>Scrolling long content</Title>
 			<Paragraph>
 				When dialogs become too long for the user’s viewport or device,
 				they scroll.
@@ -434,7 +434,7 @@ const ScrollableDialogs = () => {
 					within the body element.
 				</li>
 			</UnorderedList>
-			<DemoBox justifyContent="center">
+			<Demo justifyContent="center">
 				<Button
 					color="primary"
 					m={2}
@@ -539,7 +539,7 @@ const ScrollableDialogs = () => {
 						</Button>
 					</DialogActions>
 				</Dialog>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };

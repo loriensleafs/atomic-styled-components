@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AppBar from './../AppBar';
 import Box from './../Box';
 import Button from './../Button';
-import DemoBox from './DemoBox';
+import Demo from './Demo';
 import Drawer from './../Drawer';
 import Divider from './../Divider';
 import Flex from './../Flex';
@@ -19,8 +19,8 @@ import Toolbar from './../Toolbar';
 import Typography from './../Typography';
 import merge from './../utils/merge';
 import { getBg, getSpacing, getWidth, useStyles } from './../system';
-import { ChevronLeftIcon, InboxIcon, MailIcon } from './DemoIcons';
-import { PageHeader, SectionHeader, Paragraph } from './DemoTypography';
+import { ChevronLeftIcon, InboxIcon, MailIcon } from './icons';
+import { Header, Title, Paragraph } from './typography';
 
 const Navigation = () => (
 	<Box
@@ -70,12 +70,12 @@ const Navigation = () => (
 
 const Intro = () => (
 	<Fragment>
-		<PageHeader>Drawer</PageHeader>
-		<SectionHeader>
+		<Header>Drawer</Header>
+		<Title>
 			Navigation drawers provide access to destinations in your app. Side
 			sheets are surfaces containing supplementary content that are
 			anchored to the left or right edge of the screen.
-		</SectionHeader>
+		</Title>
 		<Paragraph as="div">
 			<a href="https://material.io/design/components/navigation-drawer.html">
 				Navigation drawers
@@ -178,7 +178,7 @@ const TemporaryDrawer = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Temporary drawer</SectionHeader>
+			<Title>Temporary drawer</Title>
 			<Paragraph>
 				Temporary navigation drawers can toggle open or closed. Closed
 				by default, the drawer opens temporarily above all other content
@@ -189,7 +189,7 @@ const TemporaryDrawer = () => {
 				the Esc key. It closes when an item is selected, handled by
 				controlling the 'open' prop.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Flex justifyContent="flex-start" wrap="wrap">
 					<Button
 						variant="outlined"
@@ -262,11 +262,7 @@ const TemporaryDrawer = () => {
 						<FullList />
 					</div>
 				</Drawer>
-				<Drawer
-					anchor="left"
-					open={left}
-					onClose={handleClose('left')}
-				>
+				<Drawer anchor="left" open={left} onClose={handleClose('left')}>
 					<div
 						tabIndex={0}
 						role="button"
@@ -276,7 +272,7 @@ const TemporaryDrawer = () => {
 						<SideList />
 					</div>
 				</Drawer>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -302,7 +298,7 @@ const SwipeableTemporaryDrawer = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Swipeable Temporary drawer</SectionHeader>
+			<Title>Swipeable Temporary drawer</Title>
 			<Paragraph>
 				You can make the drawer swipeable with the 'SwipeableDrawer'
 				component.
@@ -313,7 +309,7 @@ const SwipeableTemporaryDrawer = () => {
 				FPS. You can use the 'disableBackdropTransition' property to
 				help.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Flex justifyContent="flex-start" wrap="wrap">
 					<Button
 						variant="outlined"
@@ -404,7 +400,7 @@ const SwipeableTemporaryDrawer = () => {
 						<SideList />
 					</div>
 				</SwipeableDrawer>
-			</DemoBox>
+			</Demo>
 			<Paragraph as="div" mt={4}>
 				We are using the following set of properties on this
 				documentation website for optimal usability of the component:
@@ -484,14 +480,14 @@ const ResponsiveDrawer = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Responsive drawer</SectionHeader>
+			<Title>Responsive drawer</Title>
 			<Paragraph>
 				The Hidden responsive helper component allows showing different
 				types of drawer depending on the screen width. A temporary
 				drawer is shown for small screens while a permanent drawer is
 				shown for wider screens.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Paper elevation={2}>
 					<Flex
 						ref={containerRef}
@@ -545,7 +541,7 @@ const ResponsiveDrawer = () => {
 						</Flex>
 					</Flex>
 				</Paper>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -602,7 +598,7 @@ const PersistentDrawer = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Persistent drawer</SectionHeader>
+			<Title>Persistent drawer</Title>
 			<Paragraph>
 				Persistent navigation drawers can toggle open or closed. The
 				drawer sits on the same surface elevation as the content. It is
@@ -621,7 +617,7 @@ const PersistentDrawer = () => {
 				multiple levels of hierarchy that require using an up arrow for
 				navigation.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Paper elevation={2}>
 					<Flex
 						ref={containerRef}
@@ -675,7 +671,7 @@ const PersistentDrawer = () => {
 						</main>
 					</Flex>
 				</Paper>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
@@ -690,7 +686,7 @@ const PersistentMiniVariant = () => {
 
 	return (
 		<Fragment>
-			<SectionHeader>Mini variant drawer</SectionHeader>
+			<Title>Mini variant drawer</Title>
 			<Paragraph>
 				In this variation, the persistent navigation drawer changes its
 				width. Its resting state is as a mini-drawer at the same
@@ -701,7 +697,7 @@ const PersistentMiniVariant = () => {
 				The mini variant is recommended for apps sections that need
 				quick selection access alongside content.
 			</Paragraph>
-			<DemoBox>
+			<Demo>
 				<Paper elevation={2}>
 					<Flex
 						style={{
@@ -754,7 +750,7 @@ const PersistentMiniVariant = () => {
 						</main>
 					</Flex>
 				</Paper>
-			</DemoBox>
+			</Demo>
 		</Fragment>
 	);
 };
