@@ -6,8 +6,8 @@ import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 const getStyles = ({ dense, disablePadding, subheader }) =>
 	getSpacing({
-		pt: disablePadding || subheader ? 0 : dense ? 1 : 2,
-		pb: disablePadding ? null : dense ? 1 : 2,
+		pt: subheader ? 0 : !disablePadding ? 2 : dense ? 1 : 0,
+		pb: !disablePadding ? 2 : dense ? 1 : 0,
 	});
 getStyles.propTypes = {
 	/**
