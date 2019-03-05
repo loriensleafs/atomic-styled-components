@@ -1,31 +1,27 @@
-import { useContext, useMemo } from 'react';
-import ThemeContext from '../theme/ThemeContext';
+import { useMemo } from 'react';
+import useTheme from './../theme/useTheme';
 import cn from '../system/className';
 import merge from '../utils/merge';
-import cssProps from '../utils/cssProperties';
-import { getKeys, isFn, isObj, isStr, toArr } from '../utils/helpers';
+import { getKeys, isFn, isObj, toArr } from '../utils/helpers';
 
-function hasChildStyles(styles) {
-	return styles.every(
-		style =>
-			isStr(style) &&
-			(cssProps.includes(style) || style.startsWith('@media')),
-	);
-}
+const DEFAULT_OPTIONS = {
+	addClassNameTo: 'root',
+	baseStyles: {},
+	classes: true,
+	nested: false,
+	whitelist: [],
+};
 
-function useStyles(allProps, reducers, options = {}) {
-	const { theme } = useContext(ThemeContext);
-	const { classes = [], className = '', styles, ...props } = useMemo(
-		() => ({ ...allProps, theme }),
-		[allProps, theme],
-	);
-	const {
-		baseStyles = {},
-		cnPrefix = 'root',
-		getClasses = true,
-		whitelist = [],
-	} = options;
-	reducers = isFn(styles) ? [...toArr(reducers), styles] : toArr(reducers);
+function useStyles(passedProps, passedReducers, passedOptions = {}) {
+	const theme = useTheme();
+	const props = useMemo(() => ({ ...passedProps, theme }), [
+		passedProps,
+		theme,
+	]);
+	const options = { ...DEFAULT_OPTIONS, ...passedOptions };
+	const reducers = isFn(props.styles)
+		? [...toArr(passedReducers), props.styles]
+		: toArr(passedReducers);
 
 	// We only want to do this one time.
 	const styleProps = useMemo(
@@ -49,41 +45,63 @@ function useStyles(allProps, reducers, options = {}) {
 
 	const dependancies = useMemo(
 		() => styleProps.map(key => key && props[key]),
-		[allProps],
+		[props],
 	);
 
 	const next = useMemo(() => {
-		let nextProps = getKeys(props)
-			.filter(key => !styleProps.includes(key) || whitelist.includes(key))
+		const nextProps = getKeys(props)
+			.filter(
+				key =>
+					!styleProps.includes(key) ||
+					options.whitelist.includes(key),
+			)
 			.reduce((acc, key) => ({ ...acc, [key]: props[key] }), {});
-
-		let nextStyles = merge(
+		const nextStyles = merge(
 			reducers.length === 0
-				? baseStyles
+				? options.baseStyles
 				: reducers.reduce(
 						(acc, reducer) =>
 							isFn(reducer) ? merge(acc, reducer(props)) : acc,
-						baseStyles,
+						options.baseStyles,
 				  ),
-			isObj(styles) ? styles : {},
+			isObj(props.styles) ? props.styles : {},
 		);
-
-		let styleKeys = getKeys(nextStyles);
+		const styleKeys = getKeys(nextStyles);
 		let nextClasses;
-		if (getClasses && hasChildStyles(styleKeys)) {
-			nextClasses = cn(className, nextStyles);
-		} else if (getClasses) {
-			nextClasses = styleKeys.reduce((acc, style) => {
-				let prefix = '';
 
-				if (classes[style]) prefix.concat(classes[style]);
-				if (cnPrefix === style) prefix.concat(className);
+		if (options.classes) {
+			if (options.nested) {
+				nextClasses = styleKeys.reduce((acc, style) => {
+					let prefix = '';
 
-				return { ...acc, [style]: cn(prefix, nextStyles[style]) };
-			}, {});
+					/**
+					 * If props has a key classes, and props.classes has styles as
+					 * one of it's keys, add that key's value to the prefix.
+					 */
+					if (
+						props.classes &&
+						isObj(props.classes) &&
+						getKeys(props.classes).includes(style)
+					) {
+						prefix.concat(props.classes[style]);
+					}
+
+					/**
+					 * If props has a key className, and options.addClassNameTo
+					 * matches style, add the className to the prefix.
+					 */
+					if (props.className && options.addClassNameTo === style) {
+						prefix.concat(props.className);
+					}
+
+					return { ...acc, [style]: cn(prefix, nextStyles[style]) };
+				}, {});
+			} else {
+				nextClasses = cn(props.className, nextStyles);
+			}
 		}
 
-		return [{ classes: nextClasses, styles: nextStyles }, nextProps];
+		return { classes: nextClasses, props: nextProps, styles: nextStyles };
 	}, [dependancies]);
 
 	return next;
