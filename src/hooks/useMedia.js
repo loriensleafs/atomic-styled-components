@@ -1,37 +1,39 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { aliases, breakpoints } from '../theme/createResponsive';
-import { capitalize } from '../utils/helpers';
 
 const getBps = bps => [0, ...bps].map(bp => `(min-width: ${bp}px)`);
 
-const getMq = (mqs, { media, matches }) => {
-	const alias = aliases[mqs.indexOf(media)];
-	const next = { [`is${capitalize(alias)}`]: matches };
-
-	if (matches) {
-		next.mq = alias;
-	}
-
+const getQuery = (queries, query) => {
+	const alias = aliases[queries.indexOf(query.media)];
+	const next = { [alias]: query.matches };
+	if (query.matches) next.active = alias;
 	return next;
 };
 
-const getInitState = mqs =>
-	mqs.reduce((a, mq) => ({ ...a, ...getMq(mqs, matchMedia(mq)) }), {});
+const initialState = queries =>
+	queries.reduce(
+		(acc, q) => ({ ...acc, ...getQuery(queries, matchMedia(q)) }),
+		{},
+	);
 
 const useMedia = (bps = breakpoints) => {
-	const mqs = useMemo(() => getBps(bps), [bps]);
-	const [media, setMedia] = useState(getInitState(mqs));
+	const queries = useMemo(() => getBps(bps), [bps]);
+	const [media, setMedia] = useState(initialState(queries));
 
 	const handleChange = useCallback(
-		list => setMedia(state => ({ ...state, ...getMq(mqs, list) })),
-		[mqs],
+		list =>
+			setMedia(state => ({
+				...state,
+				...getQuery(queries, list),
+			})),
+		[queries],
 	);
 
 	useEffect(() => {
-		let lists = mqs.map(mq => matchMedia(mq));
+		let lists = queries.map(q => matchMedia(q));
 		lists.forEach(l => l.addListener(handleChange));
 		return () => lists.forEach(l => l.removeListener(handleChange));
-	}, [mqs]);
+	}, [queries]);
 
 	return media;
 };
