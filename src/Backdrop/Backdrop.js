@@ -15,6 +15,7 @@ const getStyles = ({ invisible }) => ({
 	WebkitTapHighlightColor: 'transparent',
 	// Disable scroll capabilities
 	touchAction: 'none',
+	transform: 'translate3d(0,0,0)',
 });
 getStyles.propTypes = {
 	// If `true`, the backdrop is invisible.
@@ -25,27 +26,26 @@ getStyles.propTypes = {
 };
 
 function Backdrop(props) {
-	const [{ classes }, { className, open, ...passThru }] = useStyles(
-		props,
-		getStyles,
-		{
-			whitelist: ['open'],
-		},
-	);
+	const {
+		classes,
+		props: { open, ...passThru },
+	} = useStyles(props, getStyles, {
+		whitelist: ['open'],
+	});
 
 	return (
 		<Fade
 			appear
 			aria-hidden="true"
-			className={classes}
 			ease="sharp"
 			duration={{
 				enter: 'short',
 				exit: 'shorter',
 			}}
 			show={open}
-			{...passThru}
-		/>
+		>
+			<div className={classes} {...passThru} />
+		</Fade>
 	);
 }
 
@@ -55,6 +55,7 @@ Backdrop.propTypes = {
 	className: PropTypes.string,
 	...stylesPropType,
 	...getStyles.propTypes,
+	...stylesPropType,
 };
 
 Backdrop.defaultProps = {

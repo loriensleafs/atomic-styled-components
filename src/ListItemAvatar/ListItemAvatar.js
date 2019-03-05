@@ -31,10 +31,10 @@ getStyles.propTypes = {
 
 function ListItemAvatar(props) {
 	const { alignItems, dense } = useContext(ListContext);
-	const [{ classes }, { children, className, ...passThru }] = useStyles(
-		{ ...props, alignItems, dense },
-		getStyles,
-	);
+	const {
+		classes,
+		props: { children, ...passThru },
+	} = useStyles({ ...props, alignItems, dense }, getStyles, { nested: true });
 
 	return cloneElement(children, {
 		className: classes.root,

@@ -26,9 +26,9 @@ const baseStyles = {
 
 function SelectionControl(props) {
 	const [checked, handleChange] = useInput(props);
-	const [
-		{ classes, styles },
-		{
+	const {
+		classes,
+		props: {
 			autoFocus,
 			checkedIcon,
 			disabled,
@@ -47,7 +47,8 @@ function SelectionControl(props) {
 			value,
 			...passThru
 		},
-	] = useStyles({ ...props, checked }, null, { baseStyles });
+		styles,
+	} = useStyles({ ...props, checked }, null, { baseStyles, nested: true });
 	const hasLabelFor = type === 'checkbox' || type === 'radio';
 
 	const handleFocus = useCallback(event => onFocus && onFocus(event), []);
@@ -61,7 +62,7 @@ function SelectionControl(props) {
 			onFocus={handleFocus}
 			onBlur={handleBlur}
 			role={undefined}
-			styles={{ root: styles.root }}
+			styles={styles}
 			tabIndex={null}
 			{...passThru}
 		>

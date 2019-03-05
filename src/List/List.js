@@ -32,10 +32,10 @@ const baseStyles = {
 
 const List = forwardRef((props, ref) => {
 	ref = ref ? ref : useRef(null);
-	const [
-		{ classes },
-		{ as: Component, className, children, dense, subheader, ...passThru },
-	] = useStyles(props, getStyles, {
+	const {
+		classes,
+		props: { as: Component, children, dense, subheader, ...passThru },
+	} = useStyles(props, getStyles, {
 		baseStyles,
 		whitelist: ['dense', 'subheader'],
 	});

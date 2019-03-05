@@ -32,6 +32,7 @@ const CardTitle = ({
 	className,
 	disableTypography,
 	title,
+	titleProps,
 	...passThru
 }) =>
 	title &&
@@ -41,6 +42,7 @@ const CardTitle = ({
 			as="span"
 			className={className}
 			variant={avatar ? 'body2' : 'headline'}
+			{...titleProps}
 			{...passThru}
 		>
 			{title}
@@ -54,6 +56,7 @@ const CardSubHeader = ({
 	className,
 	disableTypography,
 	subheader,
+	subheaderProps,
 	...passThru
 }) =>
 	subheader &&
@@ -64,6 +67,7 @@ const CardSubHeader = ({
 			className={className}
 			color="text.secondary"
 			variant={avatar ? 'body2' : 'body1'}
+			{...subheaderProps}
 			{...passThru}
 		>
 			{subheader}
@@ -73,21 +77,21 @@ const CardSubHeader = ({
 	);
 
 function CardHeader(props) {
-	const [
-		{ classes },
-		{
+	const {
+		classes,
+		props: {
 			action,
 			as: Component,
 			avatar,
 			className,
 			disableTypography,
 			subheader,
-			subheaderTypographyProps,
+			subheaderProps,
 			title,
-			titleTypographyProps,
+			titleProps,
 			...passThru
 		},
-	] = useStyles(props, getStyles);
+	} = useStyles(props, getStyles, { nested: true });
 
 	return (
 		<Component className={classes.root} {...passThru}>
@@ -98,14 +102,14 @@ function CardHeader(props) {
 					className={classes.title}
 					disableTypography={disableTypography}
 					title={title}
-					titleProps={titleTypographyProps}
+					titleProps={titleProps}
 				/>
 				<CardSubHeader
 					avatar={avatar}
 					className={classes.subheader}
 					disableTypography={disableTypography}
 					subheader={subheader}
-					subheaderProps={subheaderTypographyProps}
+					subheaderProps={subheaderProps}
 				/>
 			</div>
 			{action && <div className={classes.action}>{action}</div>}
@@ -135,14 +139,14 @@ CardHeader.propTypes = {
 	 * These props will be forwarded to the subheader
 	 * (as long as disableTypography is not `true`).
 	 */
-	subheaderTypographyProps: PropTypes.object,
+	subheaderProps: PropTypes.object,
 	// The content of the Card Title.
 	title: PropTypes.node,
 	/**
 	 * These props will be forwarded to the title
 	 * (as long as disableTypography is not `true`).
 	 */
-	titleTypographyProps: PropTypes.object,
+	titleProps: PropTypes.object,
 	...componentPropType,
 	...stylesPropType,
 	...getStyles.propTypes,

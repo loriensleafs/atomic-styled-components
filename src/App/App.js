@@ -1,6 +1,6 @@
 import React, { Fragment, lazy, Suspense, useContext } from 'react';
 import ThemeContext from './../theme/ThemeContext';
-import AppNav from './AppNav';
+import Navigation from './AppNav';
 import Box from './../Box';
 import CircularProgress from './../CircularProgress';
 import ErrorBoundry from './../ErrorBoundry';
@@ -42,7 +42,7 @@ export default function App() {
 			<GlobalStyle styles={getGlobalStyles} />
 			<Router history={history}>
 				<Fragment>
-					<AppNav />
+					<Navigation />
 					<Flex ml={[null, null, null, 250]}>
 						<Box w={1} wMax={1200} h={1} ml="auto" mr="auto" pt={3}>
 							<Suspense
@@ -60,28 +60,24 @@ export default function App() {
 								<Switch>
 									<Route
 										exact
-										path="/"
-										render={() => (
-											<Box w={1} mt={5.5}>
-												<div>HOME PAGE BITCHES</div>
-											</Box>
-										)}
+										path="/atomic-styled-components"
+										component={DrawerDemo}
 									/>
 									<Route
 										path={`/buttons`}
-										render={() => <ButtonDemo />}
+										component={ButtonDemo}
 									/>
 									<Route
 										path={`/cards`}
-										render={() => <CardDemo />}
+										component={CardDemo}
 									/>
 									<Route
 										path={`/dialogs`}
-										render={() => <DialogDemo />}
+										component={DialogDemo}
 									/>
 									<Route
 										path={`/drawers`}
-										render={() => <DrawerDemo />}
+										component={DrawerDemo}
 									/>
 									<Route
 										path={'/lists'}
@@ -89,7 +85,7 @@ export default function App() {
 									/>
 									<Route
 										path={`/selectioncontrols`}
-										render={() => <SelectionControlDemo />}
+										component={SelectionControlDemo}
 									/>
 								</Switch>
 							</Suspense>

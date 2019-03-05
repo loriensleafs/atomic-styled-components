@@ -1,9 +1,7 @@
 import React from 'react';
 import Flex from './../Flex';
 
-function DemoBox(props) {
-	return <Flex {...props}>{props.children}</Flex>;
-}
+const DemoBox = ({ children, ...props }) => <Flex {...props}>{children}</Flex>;
 
 DemoBox.defaultProps = {
 	position: 'relative',

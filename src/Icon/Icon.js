@@ -4,23 +4,19 @@ import combine from '../utils/combine';
 import { getColors, getFontSize, getSpacing, useStyles } from '../styles';
 import { stylesPropType } from '../utils/propTypes';
 
-const getColorStyles = ({ color, disabled }) => {
-	if (disabled) {
-		return getColors({
-			color: 'action.disabled',
-		});
-	}
+const getColorStyles = ({ color, disabled, theme: { palette } }) => {
+	if (disabled) return { color: palette.action.disabled };
 
 	switch (color) {
 		case 'primary':
 		case 'secondary':
 		case 'error':
-			return getColors({ color: `${color}.main` });
+			return { color: palette[color].main };
 		case 'active':
-			return getColors({ color: 'action.active' });
+			return { color: palette.action.active };
 		default:
 			// 'inherit'
-			return { color: 'inherit' };
+			return { root: { color: 'inherit' } };
 	}
 };
 
@@ -52,11 +48,10 @@ const baseStyles = {
 };
 
 function Icon(props) {
-	const [{ classes }, { children, className, ...passThru }] = useStyles(
-		props,
-		getStyles,
-		{ baseStyles },
-	);
+	const {
+		classes,
+		props: { children, ...passThru },
+	} = useStyles(props, getStyles, { baseStyles });
 
 	return (
 		<span

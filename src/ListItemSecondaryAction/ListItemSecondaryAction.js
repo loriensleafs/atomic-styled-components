@@ -11,7 +11,7 @@ const baseStyles = {
 };
 
 function ListItemSecondaryAction(props) {
-	const [{ classes }, passThru] = useStyles(props, null, { baseStyles });
+	const { classes, props: passThru } = useStyles(props, null, { baseStyles });
 	return <div className={classes} {...passThru} />;
 }
 

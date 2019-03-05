@@ -44,10 +44,11 @@ getStyles.propTypes = {
 
 function CardActionArea(props) {
 	const [focusVisible, setFocusVisible] = useState(false);
-	const [{ styles, classes }, { children, ...passThru }] = useStyles(
-		{ ...props, focusVisible },
-		getStyles,
-	);
+	const {
+		classes,
+		props: { children, ...passThru },
+		styles,
+	} = useStyles({ ...props, focusVisible }, getStyles, { nested: true });
 
 	const handleFocusVisible = useCallback(() => setFocusVisible(true), []);
 

@@ -53,9 +53,8 @@ getStyles.propTypes = {
 
 function Checkbox(props) {
 	const [checked, handleChange] = useInput(props);
-	const [
-		{ styles },
-		{
+	const {
+		props: {
 			checkedIcon,
 			icon,
 			indeterminate,
@@ -65,7 +64,8 @@ function Checkbox(props) {
 			type,
 			...passThru
 		},
-	] = useStyles({ ...props, checked }, getStyles, {
+		styles,
+	} = useStyles({ ...props, checked }, getStyles, {
 		whitelist: ['disabled'],
 	});
 

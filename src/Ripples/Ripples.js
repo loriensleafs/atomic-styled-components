@@ -26,8 +26,12 @@ const baseStyles = {
 };
 
 function Ripples(props) {
-	const [{ classes }, { children }] = useStyles(props, undefined, {
+	const {
+		classes,
+		props: { children },
+	} = useStyles(props, undefined, {
 		baseStyles,
+		nested: true,
 	});
 	const [refMap] = useState(() => new WeakMap());
 	const [cancelMap] = useState(() => new WeakMap());

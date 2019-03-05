@@ -123,10 +123,12 @@ getStyles.propTypes = {
 
 function Switch(props) {
 	const [checked, handleChange] = useInput(props);
-	const [
-		{ styles, classes },
-		{ icon, inputProps, onChange, type, ...passThru },
-	] = useStyles({ ...props, checked }, getStyles, {
+	const {
+		classes,
+		props: { icon, inputProps, onChange, type, ...passThru },
+		styles,
+	} = useStyles({ ...props, checked }, getStyles, {
+		nested: true,
 		whitelist: ['disabled'],
 	});
 	const IconComponent = icon ? icon : 'span';

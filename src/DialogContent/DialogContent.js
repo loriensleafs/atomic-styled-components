@@ -12,10 +12,10 @@ const getStyles = () => ({
 });
 
 function DialogContent(props) {
-	const [{ classes }, { children, className, ...passThru }] = useStyles(
-		props,
-		getStyles,
-	);
+	const {
+		classes,
+		props: { children, ...passThru },
+	} = useStyles(props, getStyles);
 
 	return (
 		<div className={classes} {...passThru}>

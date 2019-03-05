@@ -93,7 +93,6 @@ const Intro = () => (
 );
 
 function radioReducer(state, selected) {
-	console.log(selected);
 	return ['a', 'b', 'c', 'd', 'e'].reduce(
 		(acc, key) => ({ ...acc, [key]: key === selected }),
 		{},
@@ -107,7 +106,6 @@ const RadioButtons = () => {
 		d: false,
 		e: false,
 	});
-	window.isChecked = isChecked;
 	const handleChange = event => dispatch(event.target.value);
 
 	return (

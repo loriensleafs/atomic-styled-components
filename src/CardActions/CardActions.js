@@ -16,10 +16,10 @@ const getStyles = () => ({
 });
 
 function CardActions(props) {
-	const [
-		{ classes },
-		{ children, className, disableActionSpacing, ...passThru },
-	] = useStyles(props, getStyles);
+	const {
+		classes,
+		props: { children, className, disableActionSpacing, ...passThru },
+	} = useStyles(props, getStyles, { nested: true });
 
 	return (
 		<div className={classes.root} {...passThru}>

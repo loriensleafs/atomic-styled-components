@@ -546,43 +546,30 @@ const ResponsiveDrawer = () => {
 	);
 };
 
-function getPersistentStyles(props) {
-	const {
-		open,
-		theme: { getTransition },
-	} = props;
-
-	return {
-		paper: {
-			...getWidth({
-				w: open ? 'calc(100% - 250px)' : 1,
-			}),
-			...getSpacing({
-				ml: open ? 250 : 0,
-			}),
-			transition: getTransition(
-				['margin', 'width'],
-				open ? 'entering' : 'leaving',
-				'sharp',
-			),
-		},
-		content: {
-			flexGrow: 1,
-			transition: getTransition(
-				'margin',
-				open ? 'entering' : 'leaving',
-				'sharp',
-			),
-			...getBg({
-				bg: 'bg.default',
-			}),
-			...getSpacing({
-				ml: open ? 250 : 0,
-				p: 3.5,
-			}),
-		},
-	};
-}
+const getPersistentStyles = ({ open, theme }) => ({
+	paper: {
+		...getWidth({ w: open ? 'calc(100% - 250px)' : 1 }),
+		...getSpacing({ ml: open ? 250 : 0 }),
+		transition: theme.getTransition(
+			['margin', 'width'],
+			open ? 'entering' : 'leaving',
+			'sharp',
+		),
+	},
+	content: {
+		flexGrow: 1,
+		transition: theme.getTransition(
+			'margin',
+			open ? 'entering' : 'leaving',
+			'sharp',
+		),
+		...getBg({ bg: 'bg.default' }),
+		...getSpacing({
+			ml: open ? 250 : 0,
+			p: 3.5,
+		}),
+	},
+});
 getPersistentStyles.propTypes = {
 	open: PropTypes.bool,
 };
@@ -590,7 +577,7 @@ getPersistentStyles.propTypes = {
 const PersistentDrawer = () => {
 	const containerRef = useRef();
 	const [open, setOpen] = useState(true);
-	const [{ styles, classes }] = useStyles({ open }, getPersistentStyles);
+	const { classes, styles } = useStyles({ open }, getPersistentStyles);
 
 	const handleToggle = useCallback(() => setOpen(state => !state), []);
 
@@ -626,7 +613,10 @@ const PersistentDrawer = () => {
 							overflow: 'hidden',
 						}}
 					>
-						<AppBar position="fixed" styles={styles.paper}>
+						<AppBar
+							position="fixed"
+							styles={{ root: styles.paper }}
+						>
 							<Toolbar disableGutters={!open}>
 								<Box
 									ml={2.5}
@@ -678,7 +668,7 @@ const PersistentDrawer = () => {
 
 const PersistentMiniVariant = () => {
 	const [open, setOpen] = useState(true);
-	const [{ styles, classes }] = useStyles({ open }, getPersistentStyles);
+	const { classes, styles } = useStyles({ open }, getPersistentStyles);
 
 	const handleToggle = useCallback(() => setOpen(state => !state), []);
 

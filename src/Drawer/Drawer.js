@@ -114,9 +114,9 @@ const SlidingDrawer = ({ anchor, children, variant, ...passThru }) => (
 );
 
 function Drawer(props) {
-	const [
-		{ styles, classes },
-		{
+	const {
+		classes,
+		props: {
 			anchor,
 			BackdropProps = {},
 			children,
@@ -130,7 +130,8 @@ function Drawer(props) {
 			variant,
 			...passThru
 		},
-	] = useStyles(props, getStyles, { whitelist: ['variant'] });
+		styles,
+	} = useStyles(props, getStyles, { nested: true, whitelist: ['variant'] });
 	const isTemporary = variant === 'temporary';
 	const isPermanent = variant === 'permanent';
 

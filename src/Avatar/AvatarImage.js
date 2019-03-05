@@ -10,7 +10,10 @@ const baseStyles = {
 };
 
 function AvatarImage(props) {
-	const [{ classes }, { alt, ...passThru }] = useStyles(props, null, {
+	const {
+		classes,
+		props: { alt, ...passThru },
+	} = useStyles(props, null, {
 		baseStyles,
 	});
 

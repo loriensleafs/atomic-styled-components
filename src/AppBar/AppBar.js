@@ -14,9 +14,7 @@ const getColorStyles = ({ color, theme: { palette } }) => {
 				backgroundColor: palette[color].main,
 			};
 		case 'default':
-			return {
-				backgroundColor: palette.grey[palette.type],
-			};
+			return { backgroundColor: palette.grey[palette.type] };
 	}
 };
 
@@ -63,13 +61,10 @@ const baseStyles = {
 };
 
 const AppBar = forwardRef((props, ref) => {
-	const [{ styles }, { children, ...passThru }] = useStyles(
-		props,
-		getStyles,
-		{
-			baseStyles,
-		},
-	);
+	const {
+		props: { children, ...passThru },
+		styles,
+	} = useStyles(props, getStyles, { baseStyles });
 
 	return (
 		<Paper

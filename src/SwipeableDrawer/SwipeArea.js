@@ -14,25 +14,19 @@ const getPositionStyles = props => {
 				bottom: 'auto',
 				right: '0px',
 			};
-
 		case 'right':
 			return {
 				left: 'auto',
 				right: '0px',
 			};
-
 		case 'bottom':
 			return {
 				top: 'auto',
 				bottom: '0px',
 				right: '0px',
 			};
-
 		case 'left':
-			return {
-				right: 'auto',
-			};
-
+			return { right: 'auto' };
 		default:
 			return null;
 	}
@@ -47,11 +41,10 @@ const baseStyles = {
 };
 
 function SwipeArea(props) {
-	const [{ classes }, { className, width, ...passThru }] = useStyles(
-		props,
-		getPositionStyles,
-		{ baseStyles },
-	);
+	const {
+		classes,
+		props: { width, ...passThru },
+	} = useStyles(props, getPositionStyles, { baseStyles });
 
 	return (
 		<div

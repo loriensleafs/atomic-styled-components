@@ -204,10 +204,11 @@ getStyles.propTypes = {
 };
 
 const Button = React.forwardRef((props, ref) => {
-	const [
-		{ styles, classes },
-		{ children, disableFocusRipple, ...passThru },
-	] = useStyles(props, getStyles, { whitelist: ['disabled'] });
+	const {
+		classes,
+		props: { children, disableFocusRipple, ...passThru },
+		styles,
+	} = useStyles(props, getStyles, { nested: true, whitelist: ['disabled'] });
 
 	return (
 		<ButtonBase

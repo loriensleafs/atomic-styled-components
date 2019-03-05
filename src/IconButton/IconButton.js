@@ -96,10 +96,11 @@ getStyles.propTypes = {
 };
 
 const IconButton = forwardRef((props, ref) => {
-	const [{ styles, classes }, { children, ...passThru }] = useStyles(
-		props,
-		getStyles,
-	);
+	const {
+		classes,
+		props: { children, ...passThru },
+		styles,
+	} = useStyles(props, getStyles, { nested: true });
 
 	return (
 		<ButtonBase styles={styles.root} ref={ref} {...passThru}>

@@ -142,9 +142,9 @@ getStyles.propTypes = {
 };
 
 const Dialog = forwardRef((props, ref) => {
-	const [
-		{ styles, classes },
-		{
+	const {
+		classes,
+		props: {
 			children,
 			className,
 			disableBackdropClick,
@@ -166,7 +166,8 @@ const Dialog = forwardRef((props, ref) => {
 			TransitionProps,
 			...passThru
 		},
-	] = useStyles(props, getStyles);
+		styles,
+	} = useStyles(props, getStyles, { nested: true });
 
 	const handleBackdropClick = useCallback(event => {
 		if (event.target !== event.currentTarget) {

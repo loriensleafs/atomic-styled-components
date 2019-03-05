@@ -9,7 +9,7 @@ import React, {
 import PropTypes from 'prop-types';
 import ButtonBase from './../ButtonBase';
 import ListContext from './../List/ListContext';
-import { getBg, getSpacing, useStyles } from './../system';
+import { getSpacing, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 const checkForAvatar = props =>
@@ -30,26 +30,28 @@ const checkForSecondaryAction = props => {
 	);
 };
 
-const getButtonStyles = ({ button, theme: { getTransition } }) =>
+const getButtonStyles = ({ button, theme: { getTransition, palette } }) =>
 	button && {
 		transition: getTransition('background-color', {
 			duration: 'shortest',
 		}),
 		':hover': {
-			...getBg({ bg: 'action.hover' }),
+			backgroundColor: palette.action.hover,
 			textDecoration: 'none',
 		},
 	};
 
 const getDisabledStyles = ({ disabled }) => disabled && { opacity: 0.5 };
 
-const getFocusVisibleStyles = ({ focused }) =>
-	focused ? getBg({ bg: 'action.hover' }) : null;
+const getFocusVisibleStyles = ({ focused, theme: { palette } }) =>
+	focused && { backgroundColor: palette.action.hover };
 
-const getSelectedStyles = ({ selected }) =>
+const getSelectedStyles = ({ selected, theme: { palette } }) =>
 	selected && {
-		...getBg({ bg: 'action.selected' }),
-		':hover': getBg({ bg: 'action.selected' }),
+		backgroundColor: palette.action.selected,
+		':hover': {
+			backgroundColor: palette.action.selected,
+		},
 	};
 
 const getStyles = props => ({
@@ -66,6 +68,7 @@ const getStyles = props => ({
 		display: 'flex',
 		justifyContent: 'flex-start',
 		alignItems: props.alignItems,
+		borderRadius: props.theme.shape.borderRadius.round,
 		textDecoration: 'none',
 		textAlign: 'left',
 		...getDisabledStyles(props),
@@ -107,9 +110,9 @@ function ListItem(props) {
 	const hasSecondaryAction = useMemo(() => checkForSecondaryAction(props), [
 		props.children,
 	]);
-	const [
-		{ styles, classes },
-		{
+	const {
+		classes,
+		props: {
 			as,
 			button,
 			children,
@@ -120,16 +123,18 @@ function ListItem(props) {
 			divider,
 			...passThru
 		},
-	] = useStyles(
+		styles,
+	} = useStyles(
 		{
 			...props,
 			alignItems,
 			dense,
+			focused,
 			hasAvatar,
 			hasSecondaryAction,
-			focused,
 		},
 		getStyles,
+		{ nested: true },
 	);
 
 	let componentProps = {

@@ -65,13 +65,12 @@ function Modal(props) {
 	const mounted = useMounted();
 	const lastFocus = useRef();
 	const hasTransition = getHasTransition(props);
-	const [
-		{ classes },
-		{
+	const {
+		classes,
+		props: {
 			BackdropComponent,
 			BackdropProps,
 			children,
-			className,
 			closeAfterTransition,
 			container: containerProp,
 			disableAutoFocus,
@@ -88,7 +87,7 @@ function Modal(props) {
 			open,
 			...passThru
 		},
-	] = useStyles({ ...props, exited }, getStyles);
+	} = useStyles({ ...props, exited }, getStyles);
 	const prevOpen = usePrevious(open);
 
 	const handleBackdropClick = useCallback(event => {

@@ -27,10 +27,14 @@ getStyles.propTypes = {
 };
 
 function DialogActions(props) {
-	const [
-		{ classes, styles },
-		{ children, className, disableActionSpacing, ...passThru },
-	] = useStyles(props, getStyles, { whitelist: ['disableActionSpacing'] });
+	const {
+		classes,
+		props: { children, className, disableActionSpacing, ...passThru },
+		styles,
+	} = useStyles(props, getStyles, {
+		nested: true,
+		whitelist: ['disableActionSpacing'],
+	});
 
 	return (
 		<div className={classes.root} {...passThru}>

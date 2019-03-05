@@ -37,11 +37,10 @@ const baseStyles = {
 };
 
 function Divider(props) {
-	const [{ classes }, { children, as: Component }] = useStyles(
-		props,
-		getStyles,
-		{ baseStyles },
-	);
+	const {
+		classes,
+		props: { children, as: Component },
+	} = useStyles(props, getStyles, { baseStyles });
 
 	return <Component className={classes}>{children}</Component>;
 }

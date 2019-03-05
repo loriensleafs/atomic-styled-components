@@ -3,10 +3,10 @@ import Box from '../Box';
 import { getFlexbox, useStyles } from './../system';
 
 const Flex = forwardRef((props, ref) => {
-	const [{ styles }, { children, ...passThru }] = useStyles(
-		props,
-		getFlexbox,
-	);
+	const {
+		props: { children, ...passThru },
+		styles,
+	} = useStyles(props, getFlexbox);
 
 	return (
 		<Box ref={ref} styles={styles} {...passThru}>

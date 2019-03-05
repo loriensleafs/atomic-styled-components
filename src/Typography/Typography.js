@@ -19,8 +19,11 @@ const TAGS = {
 	overline: 'span',
 };
 
-function getColorStyles(props) {
-	const { color } = props;
+const getBaseStyles = props => {
+	const {
+		color,
+		theme: { palettes },
+	} = props;
 
 	switch (color) {
 		case 'primary':
@@ -28,18 +31,13 @@ function getColorStyles(props) {
 		case 'textPrimary':
 		case 'textSecondary':
 		case 'error':
-			return getColor({
-				color: `${color}.main`,
-			});
-
+			return { color: palettes[color].main };
 		case 'inherit':
-			return {
-				color: 'inherit',
-			};
+			return { color: 'inherit' };
 	}
-}
+};
 
-const getStyles = combine(getColorStyles, getText, getColor, getSpacing);
+const getStyles = combine(getBaseStyles, getText, getColor, getSpacing);
 getStyles.propTypes = {
 	...getColor.propTypes,
 	...getSpacing.propTypes,
@@ -47,10 +45,11 @@ getStyles.propTypes = {
 };
 
 function Typography(props) {
-	const [
-		{ classes },
-		{ as, children, paragraph, variant, ...passThru },
-	] = useStyles(props, getStyles, {
+	const {
+		classes,
+		props: { as, children, paragraph, variant, ...passThru },
+	} = useStyles(props, getStyles, {
+		nested: false,
 		whitelist: ['variant'],
 	});
 	const Component = as ? as : paragraph ? 'p' : TAGS[variant] || 'span';

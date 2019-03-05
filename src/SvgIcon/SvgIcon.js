@@ -4,7 +4,7 @@ import combine from './../utils/combine';
 import { getSpacing, getText, useStyles } from './../system';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
-function getColorStyles(props) {
+const getColorStyles = props => {
 	const {
 		disabled,
 		color,
@@ -12,50 +12,34 @@ function getColorStyles(props) {
 	} = props;
 
 	if (props.disabled) {
-		return {
-			color: palette.action.disabled,
-		};
+		return { color: palette.action.disabled };
 	} else if (
 		color === 'primary' ||
 		color === 'secondary' ||
 		color === 'error'
 	) {
-		return {
-			color: palette[color].main,
-		};
+		return { color: palette[color].main };
 	} else if (color === 'active') {
-		return {
-			color: palette.action.active,
-		};
+		return { color: palette.action.active };
 	}
-}
+};
 
-function getTextStyles({ fontSize }) {
-	return (
-		fontSize &&
-		fontSize === 'inherit' && {
-			fontSize: 'inherit',
-		}
-	);
-}
+const getTextStyles = ({ fontSize }) =>
+	fontSize && fontSize === 'inherit' && { fontSize: 'inherit' };
 
-function getBaseStyles(props) {
-	const { getTransition } = props.theme;
-
-	return {
-		width: '1em',
-		height: '1em',
-		userSelect: 'none',
-		fontSize: '24px',
-		display: 'inline-block',
-		flexShrink: 0,
-		fill: 'currentColor',
-		transition: getTransition('fill', {
-			duration: 'shorter',
-			easing: 'in',
-		}),
-	};
-}
+const getBaseStyles = ({ theme }) => ({
+	width: '1em',
+	height: '1em',
+	userSelect: 'none',
+	fontSize: '24px',
+	display: 'inline-block',
+	flexShrink: 0,
+	fill: 'currentColor',
+	transition: theme.getTransition('fill', {
+		duration: 'shorter',
+		easing: 'in',
+	}),
+});
 
 const getStyles = combine(
 	getBaseStyles,
@@ -89,18 +73,17 @@ getStyles.propTypes = {
 };
 
 const SvgIcon = forwardRef((props, ref) => {
-	const [
-		{ classes },
-		{
+	const {
+		classes,
+		props: {
 			as: Component,
 			children,
-			className,
 			nativeColor,
 			titleAccess,
 			viewBox,
 			...passThru
 		},
-	] = useStyles(props, getStyles);
+	} = useStyles(props, getStyles);
 
 	return (
 		<Component

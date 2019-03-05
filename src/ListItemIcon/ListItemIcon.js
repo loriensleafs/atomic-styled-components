@@ -1,21 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getColor, getSpacing, useStyles } from '../system';
+import { getSpacing, useStyles } from '../system';
 import { stylesPropType } from '../utils/propTypes';
 
-const getStyles = () => ({
+const getStyles = ({ theme: { palette } }) => ({
 	display: 'flex',
 	flexShrink: 0,
 	alignItems: 'center',
-	...getColor({ color: 'action.active' }),
+	color: palette.action.active,
 	...getSpacing({ mr: 3 }),
 });
 
 function ListItemIcon(props) {
-	const [{ classes }, { children, className, ...passThru }] = useStyles(
-		props,
-		getStyles,
-	);
+	const {
+		classes,
+		props: { children, className, ...passThru },
+	} = useStyles(props, getStyles);
 
 	return (
 		<div className={classes} {...passThru}>

@@ -10,10 +10,10 @@ const getStyles = () => ({
 });
 
 function DialogTitle(props) {
-	const [
-		{ classes },
-		{ children, className, disableTypography, ...passThru },
-	] = useStyles(props, getStyles);
+	const {
+		classes,
+		props: { children, disableTypography, ...passThru },
+	} = useStyles(props, getStyles);
 
 	return (
 		<div className={classes} {...passThru}>

@@ -4,22 +4,18 @@ import combine from './../utils/combine';
 import { getHeight, getSpacing, useStyles } from './../system';
 import { stylesPropType } from './../utils/propTypes';
 
-function getGutterStyles({ disableGutters }) {
-	return getSpacing({
-		px: !disableGutters ? [3, 3.5] : null,
-	});
-}
+const getGutterStyles = ({ disableGutters }) =>
+	getSpacing({ px: !disableGutters ? [3, 3.5] : null });
 
-function getVariantStyles({ variant }) {
+const getVariantStyles = ({ variant }) => {
 	switch (variant) {
 		case 'dense':
 			return getHeight({ hMin: 48 });
-
 		default:
 			// 'regular'
 			return getHeight({ hMin: [48, 56, 64] });
 	}
-}
+};
 
 const getStyles = combine(getVariantStyles, getGutterStyles);
 getStyles.propTypes = {
@@ -36,11 +32,10 @@ const baseStyles = {
 };
 
 function Toolbar(props) {
-	const [{ classes }, { children, className, ...passThru }] = useStyles(
-		props,
-		getStyles,
-		{ baseStyles },
-	);
+	const {
+		classes,
+		props: { children, ...passThru },
+	} = useStyles(props, getStyles, { baseStyles });
 
 	return (
 		<div className={classes} {...passThru}>

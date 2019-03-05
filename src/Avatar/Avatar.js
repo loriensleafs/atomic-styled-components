@@ -52,9 +52,9 @@ const baseStyles = {
 };
 
 const Avatar = forwardRef((props, ref) => {
-	const [
-		{ classes },
-		{
+	const {
+		classes,
+		props: {
 			alt,
 			as: Component,
 			children: childrenProp,
@@ -66,7 +66,7 @@ const Avatar = forwardRef((props, ref) => {
 			srcSet,
 			...passThru
 		},
-	] = useStyles({ ...props, fontFamily: 'ui' }, getStyles, {
+	} = useStyles({ ...props, fontFamily: 'ui' }, getStyles, {
 		baseStyles,
 		whitelist: ['children', 'src', 'srcSet'],
 	});
