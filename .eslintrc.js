@@ -107,6 +107,7 @@ module.exports = {
 				extensions: ['.js'],
 			},
 		], //
+		'react/no-multi-comp': 0,
 		'react/jsx-handler-names': 0,
 		'react/jsx-indent': 0, // Incompatible with prettier
 		'react/jsx-indent-props': 0, // Incompatible with prettier
