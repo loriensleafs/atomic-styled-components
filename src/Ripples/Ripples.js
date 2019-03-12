@@ -37,17 +37,24 @@ function Ripples(props) {
 	const [cancelMap] = useState(() => new WeakMap());
 	const [items, setItems] = useState([]);
 	const transitions = useTransition(items, item => item.key, {
-		config: { tension: 120, friction: 26 },
 		from: { opacity: 0, transform: 'scale(0)' },
 		enter: item => async next =>
-			next({ opacity: 0.4, transform: 'scale(1)' }),
+			await next({ opacity: 0.4, transform: 'scale(1)' }),
 		leave: item => async (next, cancel) => {
 			cancelMap.set(item, cancel);
-			await next({ opacity: 0 }, true);
+			await next({ opacity: 0 });
 		},
+		update: item => async next =>
+			item.pulsate &&
+			(await next({ transform: `scale(${item.in ? 1 : 0.8})` })),
 		onRest: item =>
 			item.pulsate &&
-			setItems(state => state.map(i => ({ ...i, in: !state.in }))),
+			setItems(state => {
+				return state.map(i => {
+					return item.key === i.key ? { ...i, in: !i.in } : i;
+				});
+			}),
+		config: { tension: 120, friction: 26 },
 	});
 
 	useEffect(
@@ -62,10 +69,10 @@ function Ripples(props) {
 
 	return (
 		<div className={classes.root}>
-			{transitions.map(({ item, props }) => (
+			{transitions.map(({ key, item, props }) => (
 				<animated.div
 					className={classes.ink}
-					key={item.key}
+					key={key}
 					ref={ref => ref && refMap.set(item, ref)}
 					style={{
 						...{

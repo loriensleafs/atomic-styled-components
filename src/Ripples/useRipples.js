@@ -1,5 +1,8 @@
 import { useCallback, useRef } from 'react';
 
+/**
+ * The id of the next ripple that is created.
+ */
 let key = 0;
 
 /**
@@ -67,15 +70,54 @@ function getRect(props) {
  * @returns {array}
  * @public
  */
-export default function useRippleManager(ref) {
-	const actions = useRef(null);
-
-	const dispatcher = useCallback(dispatch => (actions.current = dispatch), [
-		actions.current,
-	]);
+export default function useRipples(ref) {
+	/**
+	 * Action used to update the ripples state.
+	 */
+	const updateRipple = useRef(null);
 
 	/**
-	 * Create an event handle to start/end a ripple lifecycle.
+	 * Creates the updateRipple action.  Adds or removes a ripple.
+	 * @param {Object} action Payload describing how the state should update.
+	 * @param {String} action.type The type of update. Can be 'add' or 'remove'.
+	 * @param {Object} action.ripple Describes size and location of the ripple.
+	 */
+	const actionCreator = useCallback(
+		action => (updateRipple.current = action),
+		[updateRipple.current],
+	);
+
+	/**
+	 * Create a new ripple.
+	 * @param {Object} props
+	 * @param {boolean} [props.center] Whether or not the ripple is centered.
+	 * @param {boolean} [props.pulsate] Whether or not the ripple pulsates.
+	 * @param {object} [props.rect] The size of the ripple.
+	 * @param {number} [props.x] The coordinate of the horizontal center point.
+	 * @param {number} [props.y] The coordinate of the vertical center point.
+	 * @public
+	 */
+	const add = useCallback(
+		({ center, pulsate, rect, x, y }) =>
+			updateRipple.current({
+				type: 'add',
+				ripple: getRect({
+					center,
+					pulsate,
+					rect: rect
+						? rect
+						: ref &&
+						  ref.current &&
+						  ref.current.getBoundingClientRect().toJSON(),
+					x,
+					y,
+				}),
+			}),
+		[updateRipple],
+	);
+
+	/**
+	 * Create an event handle to start or end a ripple's lifecycle.
 	 * @param {Object} props
 	 * @param {string} props.type Lifecycle type.
 	 * @param {boolean} [props.center] Whether or not the ripple is centered.
@@ -84,20 +126,20 @@ export default function useRippleManager(ref) {
 	 * @returns {function} The event handler.
 	 * @public
 	 */
-	const eventHandler = useCallback(
+	const createHandler = useCallback(
 		(props, cb) => event => {
 			const { type, center, pulsate } = props;
-
-			if (event.defaultPrevented || !actions.current) {
-				return;
-			}
 
 			if (cb) {
 				cb(event);
 			}
 
+			if (event.defaultPrevented || !updateRipple.current) {
+				return;
+			}
+
 			if (type === 'start') {
-				actions.current({
+				updateRipple.current({
 					type: 'add',
 					ripple: getRect({
 						center,
@@ -120,44 +162,23 @@ export default function useRippleManager(ref) {
 					}),
 				});
 			} else if (type === 'end') {
-				actions.current({ type: 'remove' });
+				updateRipple.current({ type: 'remove' });
 			}
 		},
-		[actions],
+		[updateRipple],
 	);
 
 	/**
-	 * Start a new ripple.
-	 * @param {Object} props
-	 * @param {boolean} [props.center] Whether or not the ripple is centered.
-	 * @param {boolean} [props.pulsate] Whether or not the ripple pulsates.
-	 * @param {object} [props.rect] The size of the ripple.
-	 * @param {number} [props.x] The coordinate of the horizontal center point.
-	 * @param {number} [props.y] The coordinate of the vertical center point.
-	 * @public
+	 * Remove a ripple.
 	 */
-	const add = useCallback(
-		({ center, pulsate, rect, x, y }) =>
-			actions.current({
-				type: 'add',
-				ripple: getRect({
-					center,
-					pulsate,
-					rect: rect
-						? rect
-						: ref &&
-						  ref.current &&
-						  ref.current.getBoundingClientRect().toJSON(),
-					x,
-					y,
-				}),
-			}),
-		[actions],
-	);
-
-	const remove = useCallback(() => actions.current({ type: 'remove' }), [
-		actions,
+	const remove = useCallback(() => updateRipple.current({ type: 'remove' }), [
+		updateRipple,
 	]);
 
-	return [{ children: dispatcher }, eventHandler, add, remove];
+	return {
+		add,
+		createHandler,
+		props: { children: actionCreator },
+		remove,
+	};
 }
