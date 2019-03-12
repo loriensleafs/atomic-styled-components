@@ -83,6 +83,7 @@ module.exports = {
 		'no-alert': 'error', // airbnb is using warn
 		'no-param-reassign': 0, // airbnb use error
 		'no-prototype-builtins': 0, // airbnb use error
+		'no-return-await': 0,
 		'no-useless-return': 0,
 		'no-void': 0,
 		'object-shorthand': 0,
