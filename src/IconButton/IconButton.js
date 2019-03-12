@@ -39,22 +39,27 @@ const getColorStyles = ({ color, disabled, theme: { palette } }) => {
 		case 'error':
 			return {
 				root: {
-					...backgroundColor,
 					color: palette[color].main,
+					':hover': {
+						backgroundColor: fade(
+							palette[color].main,
+							palette.action.hoverOpacity,
+						),
+					},
 				},
 			};
 		case 'inherit':
 			return {
 				root: {
-					...backgroundColor,
 					color: 'inherit',
+					...backgroundColor,
 				},
 			};
 		default:
 			return {
 				root: {
-					...backgroundColor,
 					color: palette.action.active,
+					...backgroundColor,
 				},
 			};
 	}
@@ -103,7 +108,7 @@ const IconButton = forwardRef((props, ref) => {
 	} = useStyles(props, getStyles, { nested: true });
 
 	return (
-		<ButtonBase styles={styles.root} ref={ref} {...passThru}>
+		<ButtonBase styles={styles.root} ref={ref} centerRipple {...passThru}>
 			<span className={classes.label}>{children}</span>
 		</ButtonBase>
 	);
