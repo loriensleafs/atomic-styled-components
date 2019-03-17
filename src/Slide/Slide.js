@@ -1,14 +1,8 @@
-import React, {
-	forwardRef,
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { cloneElement, memo, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useMounted, useMotion, useSize } from './../hooks';
+import cn from '../system/className';
 import { animated, useSpring } from 'react-spring';
+import { useMeasure, useMotion } from './../hooks';
 import { componentPropType } from './../utils/propTypes';
 
 const getSlideIn = direction =>
@@ -33,13 +27,17 @@ const getSlideOut = (direction, rect) => {
 	}
 };
 
-const Slide = forwardRef((props, ref) => {
-	ref = ref ? ref : useRef(null);
+const baseStyles = {
+	willChange: 'transform',
+};
+
+const Slide = memo(props => {
 	const {
 		appear,
 		as,
-		children,
+		children: childrenProp,
 		className,
+		disableWrapper,
 		direction,
 		duration: { enter, exit },
 		ease,
@@ -53,102 +51,79 @@ const Slide = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
-	const [ready, setReady] = useState(false);
+	const classes = useMemo(() => cn(className, baseStyles), [className]);
+	const [rect, ref] = useMeasure();
 	const [easing, duration] = useMotion(ease, enter, exit, show);
-	const rect = useSize(ref);
-	const mounted = useMounted();
-	// The slideIn value only needs to be calculated once.
+	const [init, setInit] = useState(false);
+	const [ready, setReady] = useState(false);
+	const [started, setStarted] = useState(false);
+	// Only calculate the slideIn value once.
 	const slideIn = useMemo(() => getSlideIn(direction), []);
-	/**
-	 * The slideOut value needs to be recaluculated everytime the component's
-	 * rect changes (when it's resized).
-	 */
-	const slideOut = useMemo(() => mounted && getSlideOut(direction, rect), [
-		rect,
-	]);
-	const Component = animated(as);
+	// Recalculate the slideOut value when the rect changes.
+	const slideOut = useMemo(() => getSlideOut(direction, rect), [rect]);
 
-	const handleStart = useCallback(() => {
+	function onStart() {
 		if (show && onEnter) onEnter();
 		if (!show && onExit) onExit();
-	}, [show]);
+	}
 
-	const handleFrame = useCallback(
-		val => {
-			if (show && onEntering) onEntering(val);
-			if (!show && onExiting) onExiting(val);
-		},
-		[show],
-	);
+	function onFrame(val) {
+		if (show && onEntering) onEntering(val);
+		if (!show && onExiting) onExiting(val);
+	}
 
-	const handleRest = useCallback(() => {
-		if (show && onEntered) onEntered();
-		if (!show && onExited) onExited();
-	}, [show]);
+	function onRest() {
+		if (!init) setInit(true);
+		if (init && !ready) setReady(true);
+		if (init && ready && !started) setStarted(true);
+		if (ready && show && onEntered) onEntered();
+		if (ready && !show && onExited) onExited();
+	}
 
-	const [transition, setTransition] = useSpring(() => ({
+	const [{ transform }, setTransition] = useSpring(() => ({
+		config: { duration, easing },
 		immediate: true,
 		transform: slideIn,
-		onStart: handleStart,
-		onFrame: handleFrame,
-		onRest: handleRest,
-		config: { duration, easing },
+		onStart,
+		onFrame,
 	}));
 
-	/**
-	 * If the component is being mounted or is going to be shown
-	 * we need to make sure that it's initially hidden.
-	 */
-	if (!mounted || !ready) style.visibility = 'hidden';
+	if (!ready) style.visibility = 'hidden';
+
+	const Component = animated(as);
+	const children = disableWrapper ? (
+		cloneElement(childrenProp, {
+			...childrenProp.props,
+			className: classes,
+			ref,
+		})
+	) : (
+		<animated.div className={classes} ref={ref}>
+			{childrenProp}
+		</animated.div>
+	);
 
 	useEffect(() => {
-		const measured = !!slideOut;
-		let onRest = handleRest;
-		let immediate;
-		let transform;
-
-		if (measured && !ready) {
-			immediate = true;
-			onRest = () => setReady(true);
-			/**
-			 * Both states mean the component needs to be ready to be animated
-			 * back onto the screen, so we must move it to the slideOut
-			 * position first.
-			 */
-			if ((!show && !appear) || (show && appear)) transform = slideOut;
-			/**
-			 * If appear is false and show is true, we don't need to animate
-			 * the component in on the initial rendering, so we just make
-			 * the component visible immediatly.
-			 */
-			if (!appear && show) ref.current.style.visibility = 'visible';
-		} else if (ready) {
-			immediate = false;
+		if (ready && !started) {
 			ref.current.style.visibility = 'visible';
-			if (!show) transform = slideOut;
-			if (show) transform = slideIn;
 		}
-
-		if (transform) {
-			setTransition({
-				immediate,
-				transform,
-				onRest,
-				onStart: handleStart,
-				onFrame: handleFrame,
-				config: { duration, easing },
-			});
-		}
-	}, [ready, show, slideOut]);
+		setTransition({
+			immediate: !ready,
+			transform: (!ready && appear && show) || !show ? slideOut : slideIn,
+			onRest,
+			onStart,
+			onFrame,
+		});
+	}, [init, ready, started, show]);
 
 	return (
 		<Component
-			children={children}
 			className={className}
-			ref={ref}
-			style={{ ...style, ...transition }}
+			style={{ ...style, willChange: 'transform', transform }}
 			{...passThru}
-		/>
+		>
+			{children}
+		</Component>
 	);
 });
 
@@ -162,6 +137,7 @@ Slide.propTypes = {
 	className: PropTypes.string,
 	// The direction the children component(s) enter/exit from.
 	direction: PropTypes.oneOf(['down', 'right', 'up', 'left']),
+	disableWrapper: PropTypes.bool,
 	duration: PropTypes.shape({
 		// The duration type the animation should use to transition in.
 		enter: PropTypes.string,
@@ -191,6 +167,7 @@ Slide.defaultProps = {
 	appear: false,
 	as: 'div',
 	direction: 'down',
+	disableWrapper: false,
 	duration: {
 		enter: 'entering',
 		exit: 'leaving',

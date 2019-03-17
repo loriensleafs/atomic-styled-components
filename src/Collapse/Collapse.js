@@ -1,20 +1,24 @@
-import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import React, { cloneElement, memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import cn from '../system/className';
-import { useMounted, useMotion, useSize } from '../hooks';
 import { animated, useSpring } from 'react-spring';
+import { useMeasure, useMotion, usePrevious } from '../hooks';
 import { componentPropType } from '../utils/propTypes';
 
-const baseStyles = { overflow: 'hidden' };
+const baseStyles = {
+	position: 'relative',
+	overflow: 'hidden',
+	willChange: 'height',
+};
 
-const Collapse = forwardRef((props, ref) => {
-	ref = ref ? ref : useRef(null);
+const Collapse = memo(props => {
 	const {
 		appear,
 		as,
-		children,
+		children: childrenProp,
 		className,
 		collapseTo,
+		disableWrapper,
 		duration: { enter, exit },
 		ease,
 		onEnter,
@@ -28,14 +32,17 @@ const Collapse = forwardRef((props, ref) => {
 		...passThru
 	} = props;
 	const classes = useMemo(() => cn(className, baseStyles), [className]);
-	const mounted = useMounted();
-	const { scrollHeight } = useSize(ref, 'scrollHeight');
-	const [height, setHeight] = useState(show ? 'auto' : collapseTo);
+	const prevShow = usePrevious(show);
+	const [rect, ref] = useMeasure();
 	const [easing, duration] = useMotion(ease, enter, exit, show);
-	const transition = useSpring({
+	const { height } = useSpring({
 		config: { duration, easing },
-		immediate: !appear && !mounted,
-		height,
+		from: {
+			height: show ? collapseTo : rect.height,
+		},
+		to: {
+			height: show ? rect.height : collapseTo,
+		},
 		onStart: () => {
 			if (show && onEnter) onEnter();
 			if (!show && onExit) onExit();
@@ -49,28 +56,24 @@ const Collapse = forwardRef((props, ref) => {
 			if (!show && onExited) onExited();
 		},
 	});
-	const Component = animated(as);
 
-	useEffect(
-		() =>
-			setHeight(
-				show
-					? height === 'auto'
-						? scrollHeight + 1
-						: scrollHeight
-					: collapseTo,
-			),
-		[scrollHeight, show],
+	const Component = animated(as);
+	const children = disableWrapper ? (
+		cloneElement(childrenProp, { ...childrenProp.props, ref })
+	) : (
+		<animated.div ref={ref}>{childrenProp}</animated.div>
 	);
 
 	return (
 		<Component
-			children={children}
 			className={classes}
-			ref={ref}
-			style={{ ...style, ...transition }}
+			style={{
+				height: show && prevShow === show ? 'auto' : height,
+			}}
 			{...passThru}
-		/>
+		>
+			{children}
+		</Component>
 	);
 });
 
@@ -83,6 +86,7 @@ Collapse.propTypes = {
 	className: PropTypes.string,
 	// The height the animated container should be when collapsed.
 	collapseTo: PropTypes.number,
+	disableWrapper: PropTypes.bool,
 	duration: PropTypes.shape({
 		// The duration type the animation should use to transition in.
 		enter: PropTypes.string,
@@ -112,6 +116,7 @@ Collapse.defaultProps = {
 	appear: false,
 	as: 'div',
 	collapseTo: 0,
+	disableWrapper: false,
 	duration: {
 		enter: 'standard',
 		exit: 'standard',

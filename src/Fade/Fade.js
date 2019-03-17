@@ -1,10 +1,15 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useMotion, useMounted } from '../hooks';
+import cn from '../system/className';
 import { animated, useSpring } from 'react-spring';
+import { useMotion, useMounted } from '../hooks';
 import { componentPropType } from '../utils/propTypes';
 
-const Fade = forwardRef((props, ref) => {
+const baseStyles = {
+	willChange: 'opacity',
+};
+
+const Fade = memo(props => {
 	const {
 		appear,
 		as,
@@ -22,9 +27,10 @@ const Fade = forwardRef((props, ref) => {
 		style = {},
 		...passThru
 	} = props;
+	const classes = useMemo(() => cn(className, baseStyles), [className]);
 	const mounted = useMounted();
 	const [easing, duration] = useMotion(ease, enter, exit, show);
-	const transition = useSpring({
+	const { opacity } = useSpring({
 		config: { duration, easing },
 		opacity: (appear && !mounted) || !show ? 0 : 1,
 		onStart: () => {
@@ -44,12 +50,12 @@ const Fade = forwardRef((props, ref) => {
 
 	return (
 		<Component
-			children={children}
-			className={className}
-			ref={ref}
-			style={{ ...style, ...transition }}
+			className={classes}
+			style={{ ...style, opacity }}
 			{...passThru}
-		/>
+		>
+			{children}
+		</Component>
 	);
 });
 
