@@ -19,32 +19,14 @@ const TAGS = {
 	overline: 'span',
 };
 
-const getBaseStyles = props => {
-	const {
-		color,
-		theme: { palettes },
-	} = props;
-
-	switch (color) {
-		case 'primary':
-		case 'secondary':
-		case 'textPrimary':
-		case 'textSecondary':
-		case 'error':
-			return { color: palettes[color].main };
-		case 'inherit':
-			return { color: 'inherit' };
-	}
-};
-
-const getStyles = combine(getBaseStyles, getText, getColor, getSpacing);
+const getStyles = combine(getText, getColor, getSpacing);
 getStyles.propTypes = {
 	...getColor.propTypes,
 	...getSpacing.propTypes,
 	...getText.propTypes,
 };
 
-function Typography(props) {
+const Typography = React.memo(props => {
 	const {
 		classes,
 		props: { as, children, paragraph, variant, ...passThru },
@@ -59,7 +41,7 @@ function Typography(props) {
 			{children}
 		</Component>
 	);
-}
+});
 
 Typography.displayName = 'Typography';
 
