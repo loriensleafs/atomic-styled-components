@@ -1,4 +1,5 @@
-import React, { Fragment, memo, useState } from 'react';
+import React, { Fragment, memo, useEffect, useRef, useState } from 'react';
+import usePrevious from '../hooks/usePrevious';
 import AppBar from '../AppBar';
 import Box from '../Box';
 import Collapse from '../Collapse';
@@ -35,12 +36,14 @@ const AppHeader = ({ onToggle }) => {
 			<Toolbar>
 				{!media.lg && !media.xl && !media.xxl && (
 					<IconButton
-						onClick={onToggle('drawer')}
+						onClick={onToggle}
 						ml={-2.5}
 						mr={3.5}
 						color="inherit"
 						aria-label="Menu"
-					/>
+					>
+						<MenuIcon />
+					</IconButton>
 				)}
 				<Typography variant="h6" color="inherit">
 					Atomic Styled Components
@@ -69,84 +72,74 @@ const DrawerToolbar = () => (
 	</Flex>
 );
 
-const ContentList = ({ items, listId, onItemClick, ...props }) => (
-	<List as="div" disablePadding key={listId} {...props}>
-		{items.map(({ disabled, id, label, url }) => (
-			<ListItem
-				as={!disabled ? Link : null}
-				button
-				disabled={disabled}
-				key={`${listId}-item-${id}`}
-				onClick={onItemClick && onItemClick('drawer', 'close')}
-				styles={{ root: getSpacing({ pl: 4 }) }}
-				to={!disabled ? url : null}
-			>
-				<ListItemText
-					primary={label}
-					primaryTextProps={{ variant: 'body2' }}
-				/>
-			</ListItem>
-		))}
-	</List>
-);
+const DrawerContent = memo(({ onItemClick }) => {
+	const [open, setOpen] = useState(false);
 
-const DrawerContent = memo(({ onItemClick, open }) => (
-	<Fragment>
-		<DrawerToolbar />
-		<List as="nav" disablePadding>
-			<ListItem
-				button
-				key="componentDemos"
-				onClick={onItemClick('componentDemos')}
-			>
-				<ListItemText
-					primary="Component Demos"
-					primaryTextProps={{ variant: 'body2' }}
-				/>
-			</ListItem>
-			<Collapse show={open.includes('componentDemos')}>
-				<ContentList
-					items={data.componentDemos.sections}
-					listId="componentDemosList"
-					onItemClick={onItemClick}
-				/>
-			</Collapse>
-		</List>
-	</Fragment>
-));
+	return (
+		<Box w={250} tabIndex={-1}>
+			<DrawerToolbar />
+			<List as="nav" disablePadding>
+				<ListItem
+					button
+					key="componentDemos"
+					onClick={() => setOpen(state => !state)}
+				>
+					<ListItemText
+						primary="Component Demos"
+						primaryTextProps={{ variant: 'body2' }}
+					/>
+				</ListItem>
+				<Collapse show={open}>
+					<List as="div" disablePadding key="componentDemosList">
+						{data.componentDemos.sections.map(
+							({ disabled, id, label, url }) => (
+								<ListItem
+									as={!disabled ? Link : null}
+									button
+									disabled={disabled}
+									key={`componentDemosList-item-${id}`}
+									onClick={() => onItemClick && onItemClick()}
+									styles={{ root: getSpacing({ pl: 4 }) }}
+									to={!disabled ? url : null}
+								>
+									<ListItemText
+										primary={label}
+										primaryTextProps={{ variant: 'body2' }}
+									/>
+								</ListItem>
+							),
+						)}
+					</List>
+				</Collapse>
+			</List>
+		</Box>
+	);
+});
 
 function AppNavigation() {
 	const media = useMedia();
-	const [open, setOpen] = useState([]);
+	const isMobile = !media.lg && !media.xl && !media.xxl;
+	const [drawerOpen, setDrawerOpen] = useState(false);
 
-	const handleToggle = (item, toggle) => () =>
-		setOpen(prevItems =>
-			toggle === 'close' || (isNil(toggle) && prevItems.includes(item))
-				? prevItems.filter(prevItem => prevItem !== item)
-				: [...prevItems, item],
-		);
+	const toggleDrawer = () => setDrawerOpen(state => !state);
 
 	return (
 		<Fragment>
-			<AppHeader onToggle={handleToggle} />
+			<AppHeader onToggle={() => setDrawerOpen(state => !state)} />
 			<Flex>
-				<Drawer
-					open={open.includes('drawer')}
-					onClose={handleToggle('drawer', 'close')}
-				>
-					<Box w={250} tabIndex={-1}>
-						<DrawerContent onItemClick={handleToggle} open={open} />
-					</Box>
-				</Drawer>
+				{isMobile && (
+					<Drawer
+						ModalProps={{ keepMounted: true }}
+						open={drawerOpen}
+						onClose={() => setDrawerOpen(false)}
+					>
+						<DrawerContent onItemClick={toggleDrawer} />
+					</Drawer>
+				)}
 				{media.lg && (
 					<Box as="nav" w={[null, null, null, 250]}>
 						<Drawer variant="permanent">
-							<Box w={250} tabIndex={-1}>
-								<DrawerContent
-									onItemClick={handleToggle}
-									open={open}
-								/>
-							</Box>
+							<DrawerContent />
 						</Drawer>
 					</Box>
 				)}
