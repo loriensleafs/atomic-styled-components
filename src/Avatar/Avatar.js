@@ -3,20 +3,31 @@ import PropTypes from 'prop-types';
 import AvatarImage from './AvatarImage';
 import combine from '../utils/combine';
 import cn from '../system/className';
-import { getColors, getSpacing, getText, useStyles } from '../system';
-import { isNil } from '../utils/helpers';
+import { getColors, getSpacing, getText, useStyles, getColor } from '../system';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-const getColorStyles = ({ children, theme: { palette }, src, srcSet }) =>
-	children &&
-	isNil(src) &&
-	isNil(srcSet) && {
-		backgroundColor:
-			palette.grey[palette.type === 'light' ? 'main' : 'light'],
-		color: palette.bg.default,
-	};
+const getColorStyles = props => {
+	const {
+		children,
+		src,
+		srcSet,
+		theme: { palette },
+	} = props;
+	const colorStyles =
+		!src && !srcSet && children
+			? {
+					backgroundColor:
+						palette.grey[
+							palette.type === 'light' ? 'main' : 'light'
+						],
+					color: palette.bg.default,
+			  }
+			: {};
 
-const getStyles = combine(getColors, getColorStyles, getSpacing, getText);
+	return { ...getColor(props), ...colorStyles };
+};
+
+const getStyles = combine(getColorStyles, getSpacing, getText);
 getStyles.propTypes = {
 	/**
 	 * Used to render icon or text elements inside the Avatar.
@@ -40,12 +51,12 @@ getStyles.propTypes = {
 
 const baseStyles = {
 	position: 'relative',
+	width: '40px',
+	height: '40px',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
 	flexShrink: 0,
-	width: '40px',
-	height: '40px',
 	borderRadius: '50%',
 	overflow: 'hidden',
 	userSelect: 'none',
