@@ -51,15 +51,15 @@ const getColorStyles = ({ color, disabled, theme: { palette } }) => {
 		case 'inherit':
 			return {
 				root: {
-					color: 'inherit',
 					...backgroundColor,
+					color: 'inherit',
 				},
 			};
 		default:
 			return {
 				root: {
-					color: palette.action.active,
 					...backgroundColor,
+					color: palette.action.active,
 				},
 			};
 	}
@@ -97,6 +97,7 @@ getStyles.propTypes = {
 	 * sense for this component.
 	 */
 	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
+	disabled: PropTypes.bool,
 	...getSpacing.propTypes,
 };
 

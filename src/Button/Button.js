@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ButtonBase from '../ButtonBase/ButtonBase';
-import merge from '../utils/merge';
+import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
 import { fade } from '../utils/colorHelpers';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
@@ -20,36 +20,47 @@ const getSizeStyles = ({
 		typography: { fontFamilies, fontSizes, fontWeights, unit },
 	},
 }) => {
-	const styles = {
+	const dimensionStyles = {
+		height: mini ? '40px' : null,
+		width: mini ? '40px' : fullWidth ? '100%' : null,
+	};
+	const typographyStyles = {
 		fontFamily: fontFamilies.ui,
 		fontSize: `${fontSizes[2] - FONT_SIZE_SHIFT}${unit}`,
 		fontWeight: fontWeights.medium,
-		height: mini ? '40px' : null,
-		width: mini ? '40px' : fullWidth ? '100%' : null,
 	};
 
 	switch (size) {
 		case 'small':
 			return {
-				...styles,
-				...getSpacing({ py: 1, px: 2 }),
-				minHeight: '31px',
-				minWidth: '64px',
+				root: {
+					...dimensionStyles,
+					...typographyStyles,
+					...getSpacing({ py: 1, px: 2 }),
+					minHeight: '31px',
+					minWidth: '64px',
+				},
 			};
 		case 'large':
 			return {
-				...styles,
-				...getSpacing({ py: 2, px: 3.5 }),
-				minHeight: '42px',
+				root: {
+					...dimensionStyles,
+					...typographyStyles,
+					...getSpacing({ py: 2, px: 3.5 }),
+					minHeight: '42px',
+				},
 			};
 		default:
 			// 'medium'
 			return {
-				...styles,
-				...getSpacing({ py: 2, px: 3 }),
-				fontSize: fontSizes[2] + unit,
-				minHeight: '36px',
-				minWidth: '64px',
+				root: {
+					...dimensionStyles,
+					...typographyStyles,
+					...getSpacing({ py: 2, px: 3 }),
+					fontSize: `${fontSizes[2]}${unit}`,
+					minHeight: '36px',
+					minWidth: '64px',
+				},
 			};
 	}
 };
@@ -66,128 +77,138 @@ const getVariantStyles = ({
 	switch (variant) {
 		case 'outlined':
 			return {
-				color: isBrand
-					? palette[color].main
-					: isDefault
-					? palette.text.primary
-					: 'inherit',
-				border: isBrand
-					? `1px solid ${fade(palette[color].main, 0.5)}`
-					: `1px solid ${fade(
-							palette.grey[isLight ? 'main' : 'dark'],
-							0.5,
-					  )}`,
-				borderRadius: shape.borderRadius.round,
-				':hover': {
-					backgroundColor: fade(
-						isBrand ? palette[color].main : palette.text.primary,
-						palette.action.hoverOpacity,
-					),
+				root: {
+					color: isBrand
+						? palette[color].main
+						: isDefault
+						? palette.text.primary
+						: 'inherit',
 					border: isBrand
-						? `1px solid ${palette[color].main}`
-						: `1px solid ${
-								palette.grey[isLight ? 'main' : 'dark']
-						  }`,
-				},
-				':disabled': {
-					color: palette.action.disabled,
-					border: `1px solid ${palette.action.disabled}`,
+						? `1px solid ${fade(palette[color].main, 0.5)}`
+						: `1px solid ${fade(
+								palette.grey[isLight ? 'main' : 'dark'],
+								0.5,
+						  )}`,
+					borderRadius: shape.borderRadius.round,
+					':hover': {
+						backgroundColor: fade(
+							isBrand
+								? palette[color].main
+								: palette.text.primary,
+							palette.action.hoverOpacity,
+						),
+						border: isBrand
+							? `1px solid ${palette[color].main}`
+							: `1px solid ${
+									palette.grey[isLight ? 'main' : 'dark']
+							  }`,
+					},
+					':disabled': {
+						color: palette.action.disabled,
+						border: `1px solid ${palette.action.disabled}`,
+					},
 				},
 			};
 
 		case 'contained':
 			return {
-				backgroundColor: isBrand
-					? palette[color].main
-					: palette.grey.light,
-				color: isBrand
-					? palette[color].contrastText
-					: palette.text.primary,
-				boxShadow: elevation[2],
-				borderRadius: shape.borderRadius.round,
-				':active': {
-					boxShadow: elevation[8],
-				},
-				':hover': {
+				root: {
 					backgroundColor: isBrand
-						? palette[color].dark
+						? palette[color].main
 						: palette.grey.light,
-				},
-				':disabled': {
-					backgroundColor: palette.action.disabledBg,
-					color: palette.action.disabled,
-					boxShadow: 'none',
+					color: isBrand
+						? palette[color].contrastText
+						: palette.text.primary,
+					boxShadow: elevation[2],
+					borderRadius: shape.borderRadius.round,
+					':active': {
+						boxShadow: elevation[8],
+					},
+					':hover': {
+						backgroundColor: isBrand
+							? palette[color].dark
+							: palette.grey.light,
+					},
+					':disabled': {
+						backgroundColor: palette.action.disabledBg,
+						color: palette.action.disabled,
+						boxShadow: 'none',
+					},
 				},
 			};
 
 		case 'fab':
 			return {
-				width: '56px',
-				minWidth: '0px',
-				height: '56px',
-				padding: '0px',
-				backgroundColor: isBrand
-					? palette[color].main
-					: palette.grey.light,
-				color: isBrand
-					? palette[color].contrastText
-					: palette.text.primary,
-				boxShadow: elevation[6],
-				borderRadius: '50%',
-				':active': {
-					boxShadow: elevation[12],
-				},
-				':hover': {
+				root: {
+					width: '56px',
+					minWidth: '0px',
+					height: '56px',
+					padding: '0px',
 					backgroundColor: isBrand
-						? palette[color].dark
+						? palette[color].main
 						: palette.grey.light,
+					color: isBrand
+						? palette[color].contrastText
+						: palette.text.primary,
+					boxShadow: elevation[6],
+					borderRadius: '50%',
+					':active': {
+						boxShadow: elevation[12],
+					},
+					':hover': {
+						backgroundColor: isBrand
+							? palette[color].dark
+							: palette.grey.light,
+					},
 				},
 			};
 
 		default:
 			// 'text'
 			return {
-				...getSpacing({ py: 1.5, px: 2 }),
-				color: isBrand
-					? palette[color].main
-					: isDefault
-					? palette.text.primary
-					: 'inherit',
-				borderRadius: shape.borderRadius.round,
-				':hover': {
-					backgroundColor: fade(
-						isBrand ? palette[color].main : palette.text.primary,
-						palette.action.hoverOpacity,
-					),
+				root: {
+					...getSpacing({ py: 1.5, px: 2 }),
+					color: isBrand
+						? palette[color].main
+						: isDefault
+						? palette.text.primary
+						: 'inherit',
+					borderRadius: shape.borderRadius.round,
+					':hover': {
+						backgroundColor: fade(
+							isBrand
+								? palette[color].main
+								: palette.text.primary,
+							palette.action.hoverOpacity,
+						),
+					},
+					':disabled': { color: palette.action.disabled },
 				},
-				':disabled': { color: palette.action.disabled },
 			};
 	}
 };
 
-const getStyles = props => ({
-	root: merge(
-		{
-			boxSizing: 'border-box',
-			textTransform: 'uppercase',
-			transition: props.theme.getTransition(
-				['background-color', 'color', 'box-shadow', 'border'],
-				{ duration: 'short' },
-			),
-			':hover': {
-				textDecoration: 'none',
-			},
+const getBaseStyles = props => ({
+	root: {
+		boxSizing: 'border-box',
+		textTransform: 'uppercase',
+		transition: props.theme.getTransition(
+			['background-color', 'color', 'box-shadow', 'border'],
+			{ duration: 'short' },
+		),
+		':hover': {
+			textDecoration: 'none',
 		},
-		getVariantStyles(props),
-		getSizeStyles(props),
-		getSpacing(props),
-	),
+		...getSpacing(props),
+	},
 	label: {
 		display: 'inherit',
 		alignItems: 'inherit',
 		justifyContent: 'inherit',
 	},
 });
+
+const getStyles = combine(getBaseStyles, getVariantStyles, getSizeStyles);
 getStyles.propTypes = {
 	color: PropTypes.oneOf(['default', 'inherit', 'primary', 'secondary']),
 	disabled: PropTypes.bool,
@@ -208,7 +229,10 @@ const Button = React.forwardRef((props, ref) => {
 		classes,
 		props: { children, disableFocusRipple, ...passThru },
 		styles,
-	} = useStyles(props, getStyles, { nested: true, whitelist: ['disabled'] });
+	} = useStyles(props, getStyles, {
+		nested: true,
+		whitelist: ['disabled', 'disableFocusRipple'],
+	});
 
 	return (
 		<ButtonBase
