@@ -76,8 +76,8 @@ const ButtonBase = forwardRef((props, ref) => {
 	const focus = useFocus(ref);
 	const ripple = useRipples(ref);
 	const keyDown = useRef(true);
-	const Component = props.href ? 'a' : as ? as : 'button';
 	const isButton = as === 'button';
+	const Component = props.href ? 'a' : as ? as : 'button';
 	const buttonProps = isButton ? { disabled, type } : { role: 'button' };
 
 	const handleMouseDown = ripple.createHandler(
