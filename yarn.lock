@@ -9784,10 +9784,10 @@ react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-spring@^8.0.11:
-  version "8.0.11"
-  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-8.0.11.tgz#73b11e04bb61b3c297d2a92364fb32d6c9c34c32"
-  integrity sha512-CCW4Nj6pWJyZrBp/PWF1PopI9x0lj+6imx4sWzzPLXYoLuhUQbbYQgcNRh6KvshwiGJJABlVREUIB/Tm8/36/g==
+react-spring@^8.0.15:
+  version "8.0.15"
+  resolved "http://nexus.pubfactory.com/nexus/content/groups/npm-all/react-spring/-/react-spring-8.0.15.tgz#050d54edc334582c858bc100182d37bd7ab61d59"
+  integrity sha512-VXeqy7FCaNPiIPe1Yk4R4yfQn+BwJEofJ1Jkib7iAFouJJE7eUMhiReszYWYztCekmCAQvmsCxlOEKGK8J2O1w==
   dependencies:
     "@babel/runtime" "^7.3.1"
 
