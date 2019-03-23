@@ -100,6 +100,8 @@ module.exports = {
 		'jsx-a11y/label-has-associated-control': 'error',
 		'jsx-a11y/label-has-for': 0,
 		'jsx-a11y/no-autofocus': 0, // We are a library, people do what they want.
+		'jsx-a11y/click-events-have-key-events': 0,
+		'jsx-a11y/no-static-element-interactions': 0,
 		'react/jsx-curly-brace-presence': 0, // airbnb use error, it's buggy
 		'react/jsx-wrap-multilines': 0,
 		'react/jsx-filename-extension': [
