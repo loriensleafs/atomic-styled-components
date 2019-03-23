@@ -3,30 +3,31 @@
 /* eslint-disable no-restricted-globals */
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import ButtonBase from '../ButtonBase/ButtonBase';
 import { getSpacing, useStyles } from '../system';
 import { fade } from '../utils/colorHelpers';
 import combine from '../utils/combine';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
-const FONT_SIZE_SHIFT = 0.0625;
+const FONT_SIZE_OFFSET = 0.0625;
 
-const getSizeStyles = ({
-	fullWidth,
-	mini,
-	size,
-	theme: {
-		typography: { fontFamilies, fontSizes, fontWeights, unit },
-	},
-}) => {
-	const dimensionStyles = {
+const getSizeStyles = props => {
+	const {
+		fullWidth,
+		mini,
+		size,
+		theme: {
+			typography: { fontFamilies, fontSizes, fontWeights, unit },
+		},
+	} = props;
+	const dimensions = {
 		height: mini ? '40px' : null,
 		width: mini ? '40px' : fullWidth ? '100%' : null,
 	};
-	const typographyStyles = {
+	const typography = {
 		fontFamily: fontFamilies.ui,
-		fontSize: `${fontSizes[2] - FONT_SIZE_SHIFT}${unit}`,
+		fontSize: `${fontSizes[2] - FONT_SIZE_OFFSET}${unit}`,
 		fontWeight: fontWeights.medium,
 	};
 
@@ -34,8 +35,8 @@ const getSizeStyles = ({
 		case 'small':
 			return {
 				root: {
-					...dimensionStyles,
-					...typographyStyles,
+					...dimensions,
+					...typography,
 					...getSpacing({ py: 1, px: 2 }),
 					minHeight: '31px',
 					minWidth: '64px',
@@ -44,8 +45,8 @@ const getSizeStyles = ({
 		case 'large':
 			return {
 				root: {
-					...dimensionStyles,
-					...typographyStyles,
+					...dimensions,
+					...typography,
 					...getSpacing({ py: 2, px: 3.5 }),
 					minHeight: '42px',
 				},
@@ -54,8 +55,8 @@ const getSizeStyles = ({
 			// 'medium'
 			return {
 				root: {
-					...dimensionStyles,
-					...typographyStyles,
+					...dimensions,
+					...typography,
 					...getSpacing({ py: 2, px: 3 }),
 					fontSize: `${fontSizes[2]}${unit}`,
 					minHeight: '36px',
@@ -65,11 +66,12 @@ const getSizeStyles = ({
 	}
 };
 
-const getVariantStyles = ({
-	color,
-	variant,
-	theme: { elevation, palette, shape },
-}) => {
+const getVariantStyles = props => {
+	const {
+		color,
+		variant,
+		theme: { elevation, palette, shape },
+	} = props;
 	const isBrand = color === 'primary' || color === 'secondary';
 	const isDefault = color === 'default';
 	const isLight = palette.type === 'light';
@@ -224,7 +226,7 @@ getStyles.propTypes = {
 	]),
 };
 
-const Button = React.forwardRef((props, ref) => {
+const Button = forwardRef((props, ref) => {
 	const {
 		classes,
 		props: { children, disableFocusRipple, ...passThru },
@@ -256,9 +258,9 @@ Button.propTypes = {
 	disableRipple: PropTypes.bool,
 	href: PropTypes.string,
 	type: PropTypes.string,
+	...getStyles.propTypes,
 	...componentPropType,
 	...stylesPropType,
-	...getStyles.propTypes,
 };
 
 Button.defaultProps = {
