@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Box from './../Box';
 import Button from './../Button';
 import Flex from './../Flex';
@@ -62,7 +62,7 @@ const Navigation = () => (
 );
 
 const Intro = () => (
-	<Fragment>
+	<>
 		<Header>Buttons</Header>
 		<Title>
 			Buttons allow users to take actions, and make choices, with a single
@@ -82,11 +82,11 @@ const Intro = () => (
 				<li>Toolbars</li>
 			</ul>
 		</Paragraph>
-	</Fragment>
+	</>
 );
 
 const ContainedButtons = () => (
-	<Fragment>
+	<>
 		<Title>Contained Buttons</Title>
 		<Paragraph>
 			<a href="https://material.io/design/components/buttons.html#contained-button">
@@ -115,11 +115,11 @@ const ContainedButtons = () => (
 				Link
 			</Button>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const TextButtons = () => (
-	<Fragment>
+	<>
 		<Title>Text Buttons</Title>
 		<Paragraph as="div">
 			<a href="https://material.io/design/components/buttons.html#text-button">
@@ -148,11 +148,11 @@ const TextButtons = () => (
 				Link
 			</Button>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const OutlinedButtons = () => (
-	<Fragment>
+	<>
 		<Title>Outlined Buttons</Title>
 		<Paragraph>
 			<a href="https://material.io/design/components/buttons.html#outlined-button">
@@ -183,11 +183,11 @@ const OutlinedButtons = () => (
 				Link
 			</Button>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const ButtonsWithIconsAndLabels = () => (
-	<Fragment>
+	<>
 		<Title>Buttons with icons and labels</Title>
 		<Paragraph>
 			Sometimes you might want to have icons for certain button to enhance
@@ -213,11 +213,11 @@ const ButtonsWithIconsAndLabels = () => (
 				Save
 			</Button>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const IconButtons = () => (
-	<Fragment>
+	<>
 		<Title>Icon Buttons</Title>
 		<Paragraph>
 			Icon buttons are commonly found in app bars and toolbars.
@@ -244,11 +244,11 @@ const IconButtons = () => (
 				<CameraIcon />
 			</IconButton>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const ButtonSizes = () => (
-	<Fragment>
+	<>
 		<Title>Sizes</Title>
 		<Paragraph>
 			To change the size of a button use the 'size' property.
@@ -308,7 +308,7 @@ const ButtonSizes = () => (
 				</Flex>
 			</Box>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 export default () => (

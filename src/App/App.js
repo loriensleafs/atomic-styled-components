@@ -1,4 +1,4 @@
-import React, { Fragment, lazy, Suspense, useContext } from 'react';
+import React, { lazy, Suspense, useContext } from 'react';
 import ThemeContext from './../theme/ThemeContext';
 import Navigation from './AppNav';
 import Box from './../Box';
@@ -43,7 +43,7 @@ export default function App() {
 		<ErrorBoundry>
 			<GlobalStyle styles={getGlobalStyles} />
 			<Router history={history}>
-				<Fragment>
+				<>
 					<Navigation />
 					<Flex ml={[null, null, null, 250]}>
 						<Box w={1} wMax={1200} h={1} ml="auto" mr="auto" pt={3}>
@@ -93,7 +93,7 @@ export default function App() {
 							</Suspense>
 						</Box>
 					</Flex>
-				</Fragment>
+				</>
 			</Router>
 		</ErrorBoundry>
 	);

@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useReducer, useState } from 'react';
+import React, { useCallback, useReducer, useState } from 'react';
 import Box from './../Box';
 import Checkbox from './../Checkbox';
 import CheckBoxIcon from './../svgIcons/CheckBox';
@@ -42,7 +42,7 @@ const Navigation = () => (
 );
 
 const Intro = () => (
-	<Fragment>
+	<>
 		<Header>Selection Controls</Header>
 		<Title>Selection controls allow the user to select options.</Title>
 		<Paragraph mb={0}>
@@ -89,7 +89,7 @@ const Intro = () => (
 				</Paragraph>
 			</li>
 		</Box>
-	</Fragment>
+	</>
 );
 
 function radioReducer(state, selected) {
@@ -109,7 +109,7 @@ const RadioButtons = () => {
 	const handleChange = event => dispatch(event.target.value);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Standalone Radio Buttons</Title>
 			<Paragraph>
 				Radio Buttons can also be used standalone, without the wrapper.
@@ -163,7 +163,7 @@ const RadioButtons = () => {
 					/>
 				</Flex>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -179,7 +179,7 @@ const Checkboxes = () => {
 	}, []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Checkboxes</Title>
 			<Paragraph>
 				<a href="https://material.io/design/components/selection-controls.html#checkboxes">
@@ -229,7 +229,7 @@ const Checkboxes = () => {
 					/>
 				</Flex>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -242,7 +242,7 @@ const Switches = () => {
 	}, []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Switches</Title>
 			<Paragraph>
 				<a href="https://material.io/design/components/selection-controls.html#switches">
@@ -274,7 +274,7 @@ const Switches = () => {
 					<Switch defaultChecked value="f" color="default" />
 				</Flex>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 

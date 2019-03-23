@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import AddIcon from './../svgIcons/Add';
 import AppBar from './../AppBar';
 import Avatar from './../Avatar';
@@ -79,7 +79,7 @@ const Navigation = () => (
 );
 
 const Intro = () => (
-	<Fragment>
+	<>
 		<Header>Dialogs</Header>
 		<Title>
 			Dialogs inform users about a task and can contain critical
@@ -101,7 +101,7 @@ const Intro = () => (
 			Dialogs are purposefully interruptive, so they should be used
 			sparingly.
 		</Paragraph>
-	</Fragment>
+	</>
 );
 
 const emails = ['username@gmail.com', 'user02@gmail.com'];
@@ -167,7 +167,7 @@ const SimpleDialogs = () => {
 	}, []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Simple Dialogs</Title>
 			<Paragraph mb={0}>
 				Simple dialogs can provide additional details or actions about a
@@ -202,7 +202,7 @@ const SimpleDialogs = () => {
 					onClose={handleClose}
 				/>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -216,7 +216,7 @@ const FullScreenDialogs = () => {
 	const handleClose = useCallback(() => setOpen(false), []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Full-screen dialogs</Title>
 			<Demo justifyContent="center">
 				<Button color="primary" variant="outlined" onClick={handleOpen}>
@@ -267,7 +267,7 @@ const FullScreenDialogs = () => {
 					</List>
 				</Dialog>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -321,7 +321,7 @@ const AlertDialogs = props => {
 	);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Alerts</Title>
 			<Paragraph mb={0}>
 				Alerts are urgent interruptions, requiring acknowledgement, that
@@ -384,13 +384,13 @@ const AlertDialogs = props => {
 					TransitionComponent={Transition}
 				/>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
 const OptionalDialogSizes = () => {
 	return (
-		<Fragment>
+		<>
 			<Title>Optional sizes</Title>
 			<Paragraph>
 				You can set a dialog maximum width by using the maxWidth
@@ -399,7 +399,7 @@ const OptionalDialogSizes = () => {
 				maxWidth value.
 			</Paragraph>
 			<Demo />
-		</Fragment>
+		</>
 	);
 };
 
@@ -418,7 +418,7 @@ const ScrollableDialogs = () => {
 	const handleClose = useCallback(() => setOpen(false), []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Scrolling long content</Title>
 			<Paragraph>
 				When dialogs become too long for the user’s viewport or device,
@@ -540,7 +540,7 @@ const ScrollableDialogs = () => {
 					</DialogActions>
 				</Dialog>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 

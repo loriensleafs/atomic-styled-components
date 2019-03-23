@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from './../AppBar';
 import Box from './../Box';
@@ -69,7 +69,7 @@ const Navigation = () => (
 );
 
 const Intro = () => (
-	<Fragment>
+	<>
 		<Header>Drawer</Header>
 		<Title>
 			Navigation drawers provide access to destinations in your app. Side
@@ -90,11 +90,11 @@ const Intro = () => (
 			</a>{' '}
 			are supplementary surfaces primarily used on tablet and desktop.
 		</Paragraph>
-	</Fragment>
+	</>
 );
 
 const DemoList = () => (
-	<Fragment>
+	<>
 		<List>
 			<ListItem button>
 				<ListItemIcon>
@@ -142,7 +142,7 @@ const DemoList = () => (
 				<ListItemText primary="Spam email" />
 			</ListItem>
 		</List>
-	</Fragment>
+	</>
 );
 
 const SideList = () => (
@@ -177,7 +177,7 @@ const TemporaryDrawer = () => {
 	);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Temporary drawer</Title>
 			<Paragraph>
 				Temporary navigation drawers can toggle open or closed. Closed
@@ -273,7 +273,7 @@ const TemporaryDrawer = () => {
 					</div>
 				</Drawer>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -297,7 +297,7 @@ const SwipeableTemporaryDrawer = () => {
 	);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Swipeable Temporary drawer</Title>
 			<Paragraph>
 				You can make the drawer swipeable with the 'SwipeableDrawer'
@@ -424,12 +424,12 @@ const SwipeableTemporaryDrawer = () => {
 					{`<SwipeableDrawer disableBackdropTransition={!iOS} disableDiscover={iOS} />`}
 				</Box>
 			</Paragraph>
-		</Fragment>
+		</>
 	);
 };
 
 const MainContent = () => (
-	<Fragment>
+	<>
 		<Box px={[3, 3.5]} hMin={[48, 56, 64]} />
 		<Typography>
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -461,7 +461,7 @@ const MainContent = () => (
 			accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
 			ultrices sagittis orci a.
 		</Typography>
-	</Fragment>
+	</>
 );
 
 const ResponsiveDrawer = () => {
@@ -479,7 +479,7 @@ const ResponsiveDrawer = () => {
 	const handleClose = useCallback(() => setOpen(false), []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Responsive drawer</Title>
 			<Paragraph>
 				The Hidden responsive helper component allows showing different
@@ -542,7 +542,7 @@ const ResponsiveDrawer = () => {
 					</Flex>
 				</Paper>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -584,7 +584,7 @@ const PersistentDrawer = () => {
 	const handleClose = useCallback(() => setOpen(false), []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Persistent drawer</Title>
 			<Paragraph>
 				Persistent navigation drawers can toggle open or closed. The
@@ -662,7 +662,7 @@ const PersistentDrawer = () => {
 					</Flex>
 				</Paper>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -675,7 +675,7 @@ const PersistentMiniVariant = () => {
 	const handleClose = useCallback(() => setOpen(false), []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Mini variant drawer</Title>
 			<Paragraph>
 				In this variation, the persistent navigation drawer changes its
@@ -741,7 +741,7 @@ const PersistentMiniVariant = () => {
 					</Flex>
 				</Paper>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 

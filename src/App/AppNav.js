@@ -1,5 +1,4 @@
-import React, { Fragment, memo, useEffect, useRef, useState } from 'react';
-import usePrevious from '../hooks/usePrevious';
+import React, { memo, useState } from 'react';
 import AppBar from '../AppBar';
 import Box from '../Box';
 import Collapse from '../Collapse';
@@ -18,7 +17,6 @@ import useMedia from '../hooks/useMedia';
 import merge from '../utils/merge';
 import { Link } from 'react-router-dom';
 import { getSpacing, getWidth, useStyles } from '../system';
-import { isNil } from '../utils/helpers';
 
 const getAppHeaderStyles = () =>
 	merge(
@@ -124,7 +122,7 @@ function AppNavigation() {
 	const toggleDrawer = () => setDrawerOpen(state => !state);
 
 	return (
-		<Fragment>
+		<>
 			<AppHeader onToggle={() => setDrawerOpen(state => !state)} />
 			<Flex>
 				{isMobile && (
@@ -144,7 +142,7 @@ function AppNavigation() {
 					</Box>
 				)}
 			</Flex>
-		</Fragment>
+		</>
 	);
 }
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import Avatar from './../Avatar';
 import Box from './../Box';
 import Button from './../Button';
@@ -63,7 +63,7 @@ const Navigation = () => (
 );
 
 const Intro = () => (
-	<Fragment>
+	<>
 		<Header>Cards</Header>
 		<Title>Cards contain content and actions about a single subject.</Title>
 		<Paragraph>
@@ -75,11 +75,11 @@ const Intro = () => (
 			Elements, like text and images, should be placed on them in a way
 			that clearly indicates hierarchy.
 		</Paragraph>
-	</Fragment>
+	</>
 );
 
 const SimpleCard = () => (
-	<Fragment>
+	<>
 		<Title>Simple Card</Title>
 		<Paragraph>
 			Although cards can support multiple actions, UI controls, and an
@@ -113,14 +113,14 @@ const SimpleCard = () => (
 				</CardActions>
 			</Card>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const ComplexInteractiveCard = () => {
 	const [expanded, setExpanded] = useState(false);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Complex Interaction</Title>
 			<Paragraph>On desktop, card content can expand.</Paragraph>
 			<Demo justifyContent="center">
@@ -220,12 +220,12 @@ const ComplexInteractiveCard = () => {
 					</Collapse>
 				</Card>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
 const MediaCard = () => (
-	<Fragment>
+	<>
 		<Title>Media</Title>
 		<Paragraph>
 			Example of a card using an image to reinforce the content.
@@ -259,11 +259,11 @@ const MediaCard = () => (
 				</CardActions>
 			</Card>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const UIControlsCard = () => (
-	<Fragment>
+	<>
 		<Title>UI Controls</Title>
 		<Paragraph>
 			Supplemental actions within the card are explicitly called out using
@@ -310,7 +310,7 @@ const UIControlsCard = () => (
 				</Flex>
 			</Card>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 export default () => (

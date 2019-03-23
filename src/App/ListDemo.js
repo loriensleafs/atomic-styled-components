@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Avatar from './../Avatar';
 import Box from './../Box';
 import Card from './../Card';
@@ -37,7 +37,7 @@ import {
 import { Header, Title, Subtitle, Paragraph } from './typography';
 
 const Intro = () => (
-	<Fragment>
+	<>
 		<Header>Lists</Header>
 		<Title>Lists are continuous, vertical indexes of text or images.</Title>
 		<Paragraph as="div">
@@ -46,7 +46,7 @@ const Intro = () => (
 			containing primary and supplemental actions, which are represented
 			by icons and text.
 		</Paragraph>
-	</Fragment>
+	</>
 );
 
 const CardList = props => (
@@ -56,7 +56,7 @@ const CardList = props => (
 const ListItemLink = props => <ListItem button as="a" {...props} />;
 
 const SimpleList = () => (
-	<Fragment>
+	<>
 		<Title>Simple List</Title>
 		<Demo>
 			<Card w={1} wMax={360} bg="common.white">
@@ -111,7 +111,7 @@ const SimpleList = () => (
 			</a>{' '}
 			of the documentation.
 		</Paragraph>
-	</Fragment>
+	</>
 );
 
 const NestedList = () => {
@@ -120,7 +120,7 @@ const NestedList = () => {
 	const handleClick = useCallback(() => setOpen(state => !state), []);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Nested List</Title>
 			<Demo>
 				<CardList
@@ -166,12 +166,12 @@ const NestedList = () => {
 					</Collapse>
 				</CardList>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
 const FolderList = () => (
-	<Fragment>
+	<>
 		<Title>Folder List</Title>
 		<Demo>
 			<CardList>
@@ -198,7 +198,7 @@ const FolderList = () => (
 				</ListItem>
 			</CardList>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const SelectedListItem = () => {
@@ -210,7 +210,7 @@ const SelectedListItem = () => {
 	);
 
 	return (
-		<Fragment>
+		<>
 			<Title>Selected ListItem</Title>
 			<Demo>
 				<Card w={1} wMax={360} bg="common.white">
@@ -255,12 +255,12 @@ const SelectedListItem = () => {
 					</List>
 				</Card>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
 const AlignListItems = () => (
-	<Fragment>
+	<>
 		<Title>Align list items</Title>
 		<Demo>
 			<CardList>
@@ -274,7 +274,7 @@ const AlignListItems = () => (
 					<ListItemText
 						primary="Brunch this weekend?"
 						secondary={
-							<Fragment>
+							<>
 								<Typography
 									as="span"
 									styles={{ display: 'inline' }}
@@ -285,7 +285,7 @@ const AlignListItems = () => (
 								{
 									" - I'll be in your neighborhood doing errands this..."
 								}
-							</Fragment>
+							</>
 						}
 					/>
 				</ListItem>
@@ -299,7 +299,7 @@ const AlignListItems = () => (
 					<ListItemText
 						primary="Summer BBQ"
 						secondary={
-							<Fragment>
+							<>
 								<Typography
 									as="span"
 									styles={{ display: 'inline' }}
@@ -310,7 +310,7 @@ const AlignListItems = () => (
 								{
 									" — Wish I could come, but I'm out of town this…"
 								}
-							</Fragment>
+							</>
 						}
 					/>
 				</ListItem>
@@ -324,7 +324,7 @@ const AlignListItems = () => (
 					<ListItemText
 						primary="Oui Oui"
 						secondary={
-							<Fragment>
+							<>
 								<Typography
 									as="span"
 									styles={{ display: 'inline' }}
@@ -335,13 +335,13 @@ const AlignListItems = () => (
 								{
 									' — Do you have Paris recommendations? Have you ever…'
 								}
-							</Fragment>
+							</>
 						}
 					/>
 				</ListItem>
 			</CardList>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const CheckboxAsPrimaryControl = () => {
@@ -364,7 +364,7 @@ const CheckboxAsPrimaryControl = () => {
 	);
 
 	return (
-		<Fragment>
+		<>
 			<Subtitle>Checkbox</Subtitle>
 			<Paragraph>
 				A checkbox can either be a primary action or a secondary action.
@@ -399,7 +399,7 @@ const CheckboxAsPrimaryControl = () => {
 					))}
 				</CardList>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -423,7 +423,7 @@ const CheckboxAsSecondaryControl = () => {
 	);
 
 	return (
-		<Fragment>
+		<>
 			<Paragraph>
 				The checkbox is the secondary action for the list item and a
 				seperate target.
@@ -450,7 +450,7 @@ const CheckboxAsSecondaryControl = () => {
 					))}
 				</CardList>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
@@ -474,7 +474,7 @@ const SwitchAsSecondaryControl = () => {
 	);
 
 	return (
-		<Fragment>
+		<>
 			<Subtitle>Switch</Subtitle>
 			<Paragraph>
 				The switch is the secondary action and a seperate target.
@@ -507,21 +507,21 @@ const SwitchAsSecondaryControl = () => {
 					</ListItem>
 				</CardList>
 			</Demo>
-		</Fragment>
+		</>
 	);
 };
 
 const ListControls = () => (
-	<Fragment>
+	<>
 		<Title>List Controls</Title>
 		<CheckboxAsPrimaryControl />
 		<CheckboxAsSecondaryControl />
 		<SwitchAsSecondaryControl />
-	</Fragment>
+	</>
 );
 
 const PinnedSubheaderList = () => (
-	<Fragment>
+	<>
 		<Title>Pinned Subheader List</Title>
 		<Paragraph>
 			Upon scrolling, subheaders remain pinned to the top of the screen
@@ -554,11 +554,11 @@ const PinnedSubheaderList = () => (
 				))}
 			</CardList>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 const InsetList = () => (
-	<Fragment>
+	<>
 		<Title>Inset List</Title>
 		<Demo>
 			<CardList as="nav">
@@ -573,7 +573,7 @@ const InsetList = () => (
 				</ListItem>
 			</CardList>
 		</Demo>
-	</Fragment>
+	</>
 );
 
 export default () => (
