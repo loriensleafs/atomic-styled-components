@@ -6,8 +6,10 @@ import CircularProgress from './../CircularProgress';
 import ErrorBoundry from './../ErrorBoundry';
 import Flex from './../Flex';
 import GlobalStyle from './../GlobalStyle';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import { Router, Switch, Route } from 'react-router';
+
+import TextField from '../TextField';
 
 const history = createBrowserHistory();
 
