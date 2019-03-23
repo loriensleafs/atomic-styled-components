@@ -89,9 +89,14 @@ const ButtonBase = forwardRef((props, ref) => {
 
 	const handleMouseLeave = ripple.createHandler(
 		{ type: 'end' },
-		useCallback(event => focus.visible && event.preventDefault(), [
-			focus.visible,
-		]),
+		useCallback(
+			event => {
+				if (focus.visible) {
+					event.preventDefault();
+				}
+			},
+			[focus.visible],
+		),
 	);
 
 	const handleTouchStart = ripple.createHandler({
@@ -108,7 +113,9 @@ const ButtonBase = forwardRef((props, ref) => {
 		useCallback(
 			event => {
 				focus.blurHandler(event);
-				if (onBlur) onBlur(event);
+				if (onBlur) {
+					onBlur(event);
+				}
 			},
 			[focus.visible],
 		),
@@ -116,10 +123,15 @@ const ButtonBase = forwardRef((props, ref) => {
 
 	const handleFocus = useCallback(
 		event => {
-			if (disabled) return;
+			if (disabled) {
+				return;
+			}
+
 			event.persist();
 			focus.focusHandler(event);
-			if (onFocus) onFocus(event);
+			if (onFocus) {
+				onFocus(event);
+			}
 		},
 		[focus.visible],
 	);
@@ -133,7 +145,9 @@ const ButtonBase = forwardRef((props, ref) => {
 				ripple.add({ pulsate: true, center: true });
 			}
 
-			if (onKeyDown) onKeyDown(event);
+			if (onKeyDown) {
+				onKeyDown(event);
+			}
 
 			if (
 				event.target === event.currentTarget &&
@@ -142,7 +156,9 @@ const ButtonBase = forwardRef((props, ref) => {
 				!(ref.current.tagName === 'A' && ref.current.href)
 			) {
 				event.preventDefault();
-				if (onClick) onClick(event);
+				if (onClick) {
+					onClick(event);
+				}
 			}
 		},
 		[focus.visible],
@@ -157,7 +173,9 @@ const ButtonBase = forwardRef((props, ref) => {
 				ripple.add({ pulsate: true, center: true });
 			}
 
-			if (onKeyUp) onKeyUp(event);
+			if (onKeyUp) {
+				onKeyUp(event);
+			}
 		},
 		[focus.visible],
 	);

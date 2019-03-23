@@ -85,15 +85,17 @@ export default function useFocus(ref) {
 		focusVisible,
 	]);
 
-	const blurHandler = useCallback(
-		() => focusVisible && setFocusVisible(false),
-		[focusVisible],
-	);
+	const blurHandler = useCallback(() => {
+		if (focusVisible) {
+			setFocusVisible(false);
+		}
+	}, [focusVisible]);
 
-	const mouseDownHandler = useCallback(
-		() => focusVisible && setFocusVisible(false),
-		[focusVisible],
-	);
+	const mouseDownHandler = useCallback(() => {
+		if (focusVisible) {
+			setFocusVisible(false);
+		}
+	}, [focusVisible]);
 
 	useEffect(() => {
 		ownerWindow(ref.current).addEventListener('keyup', handleKeyUp);
