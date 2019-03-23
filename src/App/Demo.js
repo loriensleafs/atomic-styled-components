@@ -17,4 +17,4 @@ Demo.defaultProps = {
 	radius: 'round',
 };
 
-export default DemoBox;
+export default Demo;
