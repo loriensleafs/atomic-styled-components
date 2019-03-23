@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import useStyles from '../system/useStyles';
 import { animated, useTransition } from 'react-spring';
+import useStyles from '../system/useStyles';
 
 const baseStyles = {
 	root: {
@@ -29,7 +28,7 @@ function Ripples(props) {
 	const {
 		classes,
 		props: { children },
-	} = useStyles(props, undefined, {
+	} = useStyles(props, null, {
 		baseStyles,
 		nested: true,
 	});
@@ -38,7 +37,7 @@ function Ripples(props) {
 	const [items, setItems] = useState([]);
 	const transitions = useTransition(items, item => item.key, {
 		from: { opacity: 0, transform: 'scale(0)' },
-		enter: item => async next =>
+		enter: () => async next =>
 			await next({ opacity: 0.4, transform: 'scale(1)' }),
 		leave: item => async (next, cancel) => {
 			cancelMap.set(item, cancel);
@@ -47,13 +46,15 @@ function Ripples(props) {
 		update: item => async next =>
 			item.pulsate &&
 			(await next({ transform: `scale(${item.in ? 1 : 0.8})` })),
-		onRest: item =>
-			item.pulsate &&
-			setItems(state => {
-				return state.map(i => {
-					return item.key === i.key ? { ...i, in: !i.in } : i;
-				});
-			}),
+		onRest: item => {
+			if (item.pulsate) {
+				setItems(state =>
+					state.map(i =>
+						item.key === i.key ? { ...i, in: !i.in } : i,
+					),
+				);
+			}
+		},
 		config: { tension: 120, friction: 26 },
 	});
 

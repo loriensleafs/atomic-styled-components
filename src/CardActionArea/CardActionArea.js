@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 import ButtonBase from '../ButtonBase';
 import useStyles from '../system/useStyles';
 import { stylesPropType } from '../utils/propTypes';

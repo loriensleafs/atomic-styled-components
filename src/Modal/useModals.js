@@ -71,14 +71,11 @@ function useModalManager(modal, container) {
 		return;
 	}, []);
 
-	useEffect(
-		() => {
-			if (isTopModal.current !== checkIsTopModal()) {
-				isTopModal.current = !isTopModal.current;
-			}
-		},
-		[modals],
-	);
+	useEffect(() => {
+		if (isTopModal.current !== checkIsTopModal()) {
+			isTopModal.current = !isTopModal.current;
+		}
+	}, [modals]);
 
 	return [isTopModal, addModal, removeModal];
 }

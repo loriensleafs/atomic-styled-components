@@ -46,15 +46,12 @@ export let durations = {
 	leaving: 195,
 };
 
-function getDuration(duration) {
-	return isStr(duration) && durations[duration]
+const getDuration = duration =>
+	isStr(duration) && durations[duration]
 		? toMs(durations[duration])
 		: toMs(duration);
-}
 
-function getDelay(delay) {
-	return isStr(delay) ? delay : toMs(delay);
-}
+const getDelay = delay => (isStr(delay) ? delay : toMs(delay));
 
 /**
  * Motion properties that are added to the theme object.

@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { getFontSize, getSpacing, useStyles } from '../styles';
 import combine from '../utils/combine';
-import { getColors, getFontSize, getSpacing, useStyles } from '../styles';
 import { stylesPropType } from '../utils/propTypes';
 
 const getColorStyles = ({ color, disabled, theme: { palette } }) => {

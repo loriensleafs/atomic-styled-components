@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from '../system/useStyles';
+import React from 'react';
 import Fade from '../Fade';
+import useStyles from '../system/useStyles';
 import { stylesPropType } from '../utils/propTypes';
 
 const getStyles = ({ invisible }) => ({
@@ -39,8 +39,8 @@ function Backdrop(props) {
 			aria-hidden="true"
 			ease="sharp"
 			duration={{
-				enter: 'short',
-				exit: 'shorter',
+				enter: 'shorter',
+				exit: 'shortest',
 			}}
 			show={open}
 		>

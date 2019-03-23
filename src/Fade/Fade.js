@@ -1,15 +1,15 @@
-import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import cn from '../system/className';
+import React, { useMemo } from 'react';
 import { animated, useSpring } from 'react-spring';
 import { useMotion, useMounted } from '../hooks';
+import cn from '../system/className';
 import { componentPropType } from '../utils/propTypes';
 
 const baseStyles = {
 	willChange: 'opacity',
 };
 
-const Fade = memo(props => {
+function Fade(props) {
 	const {
 		appear,
 		as,
@@ -57,7 +57,7 @@ const Fade = memo(props => {
 			{children}
 		</Component>
 	);
-});
+}
 
 Fade.displayName = 'Fade';
 

@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import combine from '../utils/combine';
+import React from 'react';
 import { getSizing, getSpacing, useStyles } from '../system';
+import combine from '../utils/combine';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 const MEDIA_COMPONENTS = ['video', 'audio', 'picture', 'iframe', 'img'];

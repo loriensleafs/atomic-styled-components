@@ -1,26 +1,26 @@
-import React, { useCallback, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useRef, useState } from 'react';
 import AppBar from './../AppBar';
 import Box from './../Box';
 import Button from './../Button';
-import Demo from './Demo';
-import Drawer from './../Drawer';
 import Divider from './../Divider';
+import Drawer from './../Drawer';
 import Flex from './../Flex';
 import IconButton from './../IconButton';
 import List from './../List';
 import ListItem from './../ListItem';
 import ListItemIcon from './../ListItemIcon';
 import ListItemText from './../ListItemText';
-import MenuIcon from './../svgIcons/Menu';
 import Paper from './../Paper';
+import MenuIcon from './../svgIcons/Menu';
 import SwipeableDrawer from './../SwipeableDrawer';
+import { getBg, getSpacing, getWidth, useStyles } from './../system';
 import Toolbar from './../Toolbar';
 import Typography from './../Typography';
 import merge from './../utils/merge';
-import { getBg, getSpacing, getWidth, useStyles } from './../system';
+import Demo from './Demo';
 import { ChevronLeftIcon, InboxIcon, MailIcon } from './icons';
-import { Header, Title, Paragraph } from './typography';
+import { Header, Paragraph, Title } from './typography';
 
 const Navigation = () => (
 	<Box

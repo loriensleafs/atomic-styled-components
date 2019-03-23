@@ -1,20 +1,14 @@
-import React, {
-	Fragment,
-	useCallback,
-	useContext,
-	useRef,
-	useState,
-} from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import Drawer from './../Drawer';
-import SwipeArea from './SwipeArea';
-import ThemeContext from './../theme/ThemeContext';
 import {
 	useDidMount,
 	useDidUpdate,
 	usePrevious,
 	useWillUnmount,
 } from './../hooks';
+import ThemeContext from './../theme/ThemeContext';
+import SwipeArea from './SwipeArea';
 
 // This value is closed to what browsers are using internally to
 // trigger a native scroll.
@@ -363,7 +357,7 @@ function SwipeableDrawer(props) {
 	});
 
 	return (
-		<Fragment>
+		<>
 			<Drawer
 				open={variant === 'temporary' && maybeSwiping ? true : open}
 				variant={variant}
@@ -395,7 +389,7 @@ function SwipeableDrawer(props) {
 						{...SwipeAreaProps}
 					/>
 				)}
-		</Fragment>
+		</>
 	);
 }
 

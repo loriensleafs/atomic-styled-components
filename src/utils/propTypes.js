@@ -42,7 +42,7 @@ const responsiveNumPropType = PropTypes.oneOfType([
 	PropTypes.arrayOf(PropTypes.number),
 ]);
 
-const responsiveStrPropType = PropTypes.oneOfType([
+const responsiveStringPropType = PropTypes.oneOfType([
 	PropTypes.string,
 	PropTypes.arrayOf(PropTypes.string),
 ]);
@@ -53,9 +53,9 @@ const responsivePropType = PropTypes.oneOfType([
 	PropTypes.array,
 ]);
 
-const responsiveNumOrStrPropType = PropTypes.oneOf([
+const responsiveNumOrStringPropType = PropTypes.oneOf([
 	responsiveNumPropType,
-	responsiveStrPropType,
+	responsiveStringPropType,
 ]);
 
 export {
@@ -68,7 +68,7 @@ export {
 	stylesPropType,
 	responsiveBoolPropType,
 	responsiveNumPropType,
-	responsiveStrPropType,
+	responsiveStringPropType,
 	responsivePropType,
-	responsiveNumOrStrPropType,
+	responsiveNumOrStringPropType,
 };

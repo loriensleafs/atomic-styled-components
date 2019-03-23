@@ -1,18 +1,18 @@
 import React, { useCallback, useReducer, useState } from 'react';
 import Box from './../Box';
 import Checkbox from './../Checkbox';
-import CheckBoxIcon from './../svgIcons/CheckBox';
-import CheckboxOutlineBlankIcon from './../svgIcons/CheckBoxOutlineBlank';
 import Flex from './../Flex';
 import List from './../List';
 import ListItem from './../ListItem';
 import ListItemText from './../ListItemText';
 import Radio from './../Radio';
-import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
+import CheckBoxIcon from './../svgIcons/CheckBox';
+import CheckboxOutlineBlankIcon from './../svgIcons/CheckBoxOutlineBlank';
 import RadioButtonCheckedIcon from './../svgIcons/RadioButtonChecked';
+import RadioButtonUncheckedIcon from './../svgIcons/RadioButtonUnchecked';
 import Switch from './../Switch';
 import Demo from './Demo';
-import { Header, Title, Paragraph } from './typography';
+import { Header, Paragraph, Title } from './typography';
 
 const Navigation = () => (
 	<Box

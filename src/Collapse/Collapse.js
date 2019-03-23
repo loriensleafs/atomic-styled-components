@@ -1,8 +1,8 @@
-import React, { cloneElement, memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import cn from '../system/className';
+import React, { cloneElement, useMemo } from 'react';
 import { animated, useSpring } from 'react-spring';
 import { useMeasure, useMotion, usePrevious } from '../hooks';
+import cn from '../system/className';
 import { componentPropType } from '../utils/propTypes';
 
 const baseStyles = {
@@ -11,7 +11,7 @@ const baseStyles = {
 	willChange: 'height',
 };
 
-const Collapse = memo(props => {
+function Collapse(props) {
 	const {
 		appear,
 		as,
@@ -75,7 +75,7 @@ const Collapse = memo(props => {
 			{children}
 		</Component>
 	);
-});
+}
 
 Collapse.displayName = 'Collapse';
 

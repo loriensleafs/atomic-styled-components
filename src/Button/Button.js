@@ -2,12 +2,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-restricted-globals */
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import ButtonBase from '../ButtonBase/ButtonBase';
-import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
 import { fade } from '../utils/colorHelpers';
+import combine from '../utils/combine';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
 const FONT_SIZE_SHIFT = 0.0625;

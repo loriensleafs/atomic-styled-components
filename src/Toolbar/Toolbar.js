@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import combine from './../utils/combine';
+import React from 'react';
 import { getHeight, getSpacing, useStyles } from './../system';
+import combine from './../utils/combine';
 import { stylesPropType } from './../utils/propTypes';
 
 const getGutterStyles = ({ disableGutters }) =>

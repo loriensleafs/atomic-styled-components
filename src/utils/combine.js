@@ -1,8 +1,8 @@
-import merge from './../utils/merge';
 import { isFn, isObj } from './../utils/helpers';
+import merge from './../utils/merge';
 
-function reduce(reducers, props) {
-	return reducers.reduce(
+const reduce = (reducers, props) =>
+	reducers.reduce(
 		(acc, reducer) =>
 			isFn(reducer)
 				? merge(acc, reducer(props))
@@ -11,12 +11,8 @@ function reduce(reducers, props) {
 				: acc,
 		{},
 	);
-}
 
-function combine(...reducers) {
-	return function(arg) {
-		return isFn(arg) ? arg(reducers) : reduce(reducers, arg);
-	};
-}
+const combine = (...reducers) => arg =>
+	isFn(arg) ? arg(reducers) : reduce(reducers, arg);
 
 export default combine;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CardHeader from '../CardHeader/CardHeader';
 import Avatar from './../Avatar';
 import Box from './../Box';
 import Button from './../Button';
@@ -6,24 +7,23 @@ import Card from './../Card';
 import CardActionArea from './../CardActionArea';
 import CardActions from './../CardActions';
 import CardContent from './../CardContent';
-import CardHeader from '../CardHeader/CardHeader';
 import CardMedia from './../CardMedia';
 import Collapse from './../Collapse';
-import Demo from './Demo';
-import ExpandMoreIcon from './../svgIcons/ExpandMore';
-import FavoriteIcon from './../svgIcons/Favorite';
 import Flex from './../Flex';
 import IconButton from './../IconButton';
 import List from './../List';
 import ListItem from './../ListItem';
 import ListItemText from './../ListItemText';
-import MoreVertIcon from './../svgIcons/MoreVert';
 import Rotate from './../Rotate';
+import ExpandMoreIcon from './../svgIcons/ExpandMore';
+import FavoriteIcon from './../svgIcons/Favorite';
+import MoreVertIcon from './../svgIcons/MoreVert';
 import ShareIcon from './../svgIcons/Share';
-import Typography from './../Typography';
 import cn from './../system/className';
+import Typography from './../Typography';
+import Demo from './Demo';
 import { PlayArrowIcon, SkipNextIcon, SkipPreviousIcon } from './icons';
-import { Header, Title, Paragraph } from './typography';
+import { Header, Paragraph, Title } from './typography';
 
 const Bullet = () => (
 	<span

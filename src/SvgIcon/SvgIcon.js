@@ -1,7 +1,7 @@
-import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import combine from './../utils/combine';
+import React, { forwardRef } from 'react';
 import { getSpacing, getText, useStyles } from './../system';
+import combine from './../utils/combine';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 const getColorStyles = props => {

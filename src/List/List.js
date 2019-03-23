@@ -1,8 +1,8 @@
-import React, { forwardRef, useRef } from 'react';
 import PropTypes from 'prop-types';
-import ListContext from './ListContext';
+import React, { forwardRef, useRef } from 'react';
 import { getSpacing, useStyles } from '../system';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
+import ListContext from './ListContext';
 
 const getStyles = ({ dense, disablePadding, subheader }) =>
 	getSpacing({

@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '../Typography';
+import React from 'react';
 import { getSpacing, useStyles } from '../system';
+import Typography from '../Typography';
 import { stylesPropType } from '../utils/propTypes';
 
 const getStyles = () => ({

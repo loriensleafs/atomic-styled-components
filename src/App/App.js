@@ -1,15 +1,13 @@
+import { createBrowserHistory } from 'history';
 import React, { lazy, Suspense, useContext } from 'react';
-import ThemeContext from './../theme/ThemeContext';
-import Navigation from './AppNav';
+import { Route, Router, Switch } from 'react-router';
 import Box from './../Box';
 import CircularProgress from './../CircularProgress';
 import ErrorBoundry from './../ErrorBoundry';
 import Flex from './../Flex';
 import GlobalStyle from './../GlobalStyle';
-import { createBrowserHistory } from 'history';
-import { Router, Switch, Route } from 'react-router';
-
-import TextField from '../TextField';
+import ThemeContext from './../theme/ThemeContext';
+import Navigation from './AppNav';
 
 const history = createBrowserHistory();
 

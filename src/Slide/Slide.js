@@ -1,7 +1,7 @@
-import React, { cloneElement, memo, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import cn from '../system/className';
+import React, { cloneElement, useEffect, useMemo, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
+import cn from '../system/className';
 import { useMeasure, useMotion } from './../hooks';
 import { componentPropType } from './../utils/propTypes';
 
@@ -31,7 +31,7 @@ const baseStyles = {
 	willChange: 'transform',
 };
 
-const Slide = memo(props => {
+function Slide(props) {
 	const {
 		appear,
 		as,
@@ -125,7 +125,7 @@ const Slide = memo(props => {
 			{children}
 		</Component>
 	);
-});
+}
 
 Slide.displayName = 'Slide';
 

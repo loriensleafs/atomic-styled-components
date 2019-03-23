@@ -1,13 +1,13 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import useInput from '../hooks/useInput';
+import SelectionControl from '../SelectionControl';
 import CheckBoxIcon from '../svgIcons/CheckBox';
 import CheckboxOutlineBlankIcon from '../svgIcons/CheckBoxOutlineBlank';
 import IndeterminateCheckBoxIcon from '../svgIcons/IndeterminateCheckBox';
-import SelectionControl from '../SelectionControl';
-import useInput from '../hooks/useInput';
 import useStyles from '../system/useStyles';
-import combine from '../utils/combine';
 import { fade } from '../utils/colorHelpers';
+import combine from '../utils/combine';
 import { stylesPropType } from '../utils/propTypes';
 
 const getDisabledStyles = ({ disabled, theme: { palette } }) =>

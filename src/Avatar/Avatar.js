@@ -1,10 +1,10 @@
-import React, { cloneElement, forwardRef, isValidElement } from 'react';
 import PropTypes from 'prop-types';
-import AvatarImage from './AvatarImage';
-import combine from '../utils/combine';
+import React, { cloneElement, forwardRef, isValidElement } from 'react';
+import { getColor, getColors, getSpacing, getText, useStyles } from '../system';
 import cn from '../system/className';
-import { getColors, getSpacing, getText, useStyles, getColor } from '../system';
+import combine from '../utils/combine';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
+import AvatarImage from './AvatarImage';
 
 const getColorStyles = props => {
 	const {

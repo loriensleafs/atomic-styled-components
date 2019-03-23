@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import combine from './../utils/combine';
+import React, { memo } from 'react';
 import { getColor, getSpacing, getText, useStyles } from './../system';
+import combine from './../utils/combine';
 import { componentPropType, stylesPropType } from './../utils/propTypes';
 
 const TAGS = {
@@ -26,7 +26,7 @@ getStyles.propTypes = {
 	...getText.propTypes,
 };
 
-const Typography = React.memo(props => {
+const Typography = memo(props => {
 	const {
 		classes,
 		props: { as, children, paragraph, variant, ...passThru },

@@ -1,3 +1,5 @@
+import keycode from 'keycode';
+import PropTypes from 'prop-types';
 import React, {
 	cloneElement,
 	isValidElement,
@@ -6,19 +8,13 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import { createPortal, findDOMNode } from 'react-dom';
-import PropTypes from 'prop-types';
+import { createPortal } from 'react-dom';
 import Backdrop from '../Backdrop';
-import isWindow from 'dom-helpers/query/isWindow';
-import scrollbarSize from 'dom-helpers/util/scrollbarSize';
-import css from 'dom-helpers/style';
-import keycode from 'keycode';
-import useModals from './useModals';
-import ownerDocument from '../utils/ownerDocument';
-import ownerWindow from '../utils/ownerWindow';
+import { useMounted, usePrevious } from '../hooks';
 import useStyles from '../system/useStyles';
-import { useMounted, usePrevious, useWillUnmount } from '../hooks';
 import { isFn } from '../utils/helpers';
+import ownerDocument from '../utils/ownerDocument';
+import useModals from './useModals';
 
 const getContainer = container =>
 	isFn(container)

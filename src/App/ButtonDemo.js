@@ -13,10 +13,10 @@ import {
 	CameraIcon,
 	DeleteIcon,
 	KeyboardVoiceIcon,
-	SendIcon,
 	SaveIcon,
+	SendIcon,
 } from './icons';
-import { Header, Title, Paragraph } from './typography';
+import { Header, Paragraph, Title } from './typography';
 
 const Navigation = () => (
 	<Box w={200} display={['none', null, null, null, 'block']} fontSize="12px">

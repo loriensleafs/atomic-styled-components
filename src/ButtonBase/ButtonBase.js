@@ -1,9 +1,9 @@
-import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
 import Ripples, { useRipples } from '../Ripples';
-import useFocus from './useFocus';
 import useStyles from '../system/useStyles';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
+import useFocus from './useFocus';
 
 const baseStyles = {
 	position: 'relative',

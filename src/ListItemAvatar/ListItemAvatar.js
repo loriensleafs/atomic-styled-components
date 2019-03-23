@@ -1,8 +1,8 @@
-import React, { cloneElement, useContext } from 'react';
 import PropTypes from 'prop-types';
+import { cloneElement, useContext } from 'react';
 import ListContext from '../List/ListContext';
-import combine from '../utils/combine';
 import { getFontSize, getSpacing, useStyles } from '../system';
+import combine from '../utils/combine';
 import { stylesPropType } from '../utils/propTypes';
 
 const getDenseStyles = ({ dense }) =>

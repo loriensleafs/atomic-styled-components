@@ -1,8 +1,8 @@
 import React from 'react';
-import ThemeContext from './ThemeContext';
-import createTheme from './createTheme';
-import { engine } from './../system/className';
 import { Provider as StyleProvider } from 'styletron-react';
+import { engine } from './../system/className';
+import createTheme from './createTheme';
+import ThemeContext from './ThemeContext';
 
 let theme = {};
 

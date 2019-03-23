@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 class ErrorBoundry extends Component {
 	state = {
@@ -18,7 +18,7 @@ class ErrorBoundry extends Component {
 		if (this.state.hasError) {
 			// You can render any custom fallback UI
 			return (
-				<Fragment>
+				<>
 					<h1>Something went wrong.</h1>
 					<p>
 						<b>Error: </b>
@@ -28,7 +28,7 @@ class ErrorBoundry extends Component {
 						<b>Info: </b>
 						{this.state.info}
 					</p>
-				</Fragment>
+				</>
 			);
 		}
 		return this.props.children;

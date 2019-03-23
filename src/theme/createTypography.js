@@ -4,25 +4,21 @@ const FONT_SIZE_SCALE = [0.625, 0.75, 0.875, 1, 1.25, 1.5, 2.125, 3, 3.75, 6];
 
 const LINE_HEIGHT_SCALE = [1.125, 1.25, 1.5, 1.75, 2, 2.125, 3, 4.5, 5.5, 6.5];
 
-function makeCreateVariant(pxToRem) {
-	return function(
-		color,
-		fontFamily,
-		fontWeight,
-		fontSize,
-		lineHeight,
-		uppercase = false,
-	) {
-		return {
-			color,
-			fontFamily,
-			fontWeight,
-			fontSize: pxToRem(fontSize),
-			lineHeight,
-			...(uppercase ? { textTransform: 'uppercase' } : null),
-		};
-	};
-}
+const makeCreateVariant = pxToRem => (
+	color,
+	fontFamily,
+	fontWeight,
+	fontSize,
+	lineHeight,
+	uppercase = false,
+) => ({
+	color,
+	fontFamily,
+	fontWeight,
+	fontSize: pxToRem(fontSize),
+	lineHeight,
+	...(uppercase ? { textTransform: 'uppercase' } : null),
+});
 
 function createTypography(palette, typography = {}) {
 	const {

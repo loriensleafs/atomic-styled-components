@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import combine from '../utils/combine';
+import React from 'react';
 import { getSpacing, useStyles } from '../system';
+import combine from '../utils/combine';
 
 const getSpacingStyles = ({ disableActionSpacing }) =>
 	disableActionSpacing && {

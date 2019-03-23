@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import React, { forwardRef } from 'react';
 import Modal from '../Modal';
 import Paper from '../Paper';
 import Slide from '../Slide';

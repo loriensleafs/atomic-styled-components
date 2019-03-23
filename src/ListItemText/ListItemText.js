@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 import ListContext from '../List/ListContext';
+import { getSpacing, useStyles } from '../system';
 import Typography from '../Typography';
 import combine from '../utils/combine';
-import { getSpacing, useStyles } from '../system';
-import { stylesPropType } from '../utils/propTypes';
 import { isNil } from '../utils/helpers';
+import { stylesPropType } from '../utils/propTypes';
 
 const getDenseStyles = ({ dense }) =>
 	dense && {

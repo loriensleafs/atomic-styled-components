@@ -1,11 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import AddIcon from './../svgIcons/Add';
+import Toolbar from '../Toolbar';
 import AppBar from './../AppBar';
 import Avatar from './../Avatar';
 import Box from './../Box';
 import Button from './../Button';
-import CloseIcon from './../svgIcons/Close';
-import Demo from './Demo';
 import Dialog from './../Dialog/Dialog';
 import DialogActions from './../DialogActions';
 import DialogContent from './../DialogContent';
@@ -18,11 +16,13 @@ import ListItem from './../ListItem';
 import ListItemAvatar from './../ListItemAvatar';
 import ListItemText from './../ListItemText';
 import Slide from './../Slide';
-import Toolbar from '../Toolbar';
+import AddIcon from './../svgIcons/Add';
+import CloseIcon from './../svgIcons/Close';
 import Typography from './../Typography';
-import UnorderedList from './UnorderedList';
+import Demo from './Demo';
 import { PersonIcon } from './icons';
-import { Header, Title, Paragraph } from './typography';
+import { Header, Paragraph, Title } from './typography';
+import UnorderedList from './UnorderedList';
 
 const Navigation = () => (
 	<Box

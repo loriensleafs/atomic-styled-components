@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
 	Children,
 	isValidElement,
@@ -6,7 +7,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import PropTypes from 'prop-types';
 import ButtonBase from './../ButtonBase';
 import ListContext from './../List/ListContext';
 import { getSpacing, useStyles } from './../system';

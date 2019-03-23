@@ -3,11 +3,8 @@ import Avatar from './../Avatar';
 import Box from './../Box';
 import Card from './../Card';
 import Checkbox from './../Checkbox';
-import Code from './Code';
 import Collapse from './../Collapse';
-import Demo from './Demo';
 import Divider from './../Divider';
-import ExpandMoreIcon from './../svgIcons/ExpandMore';
 import Flex from './../Flex';
 import IconButton from './../IconButton';
 import List from './../List';
@@ -18,9 +15,12 @@ import ListItemSecondaryAction from './../ListItemSecondaryAction';
 import ListItemText from './../ListItemText';
 import ListSubheader from './../ListSubheader';
 import Rotate from './../Rotate';
+import ExpandMoreIcon from './../svgIcons/ExpandMore';
 import Switch from './../Switch';
-import Typography from './../Typography';
 import { getSpacing } from './../system';
+import Typography from './../Typography';
+import Code from './Code';
+import Demo from './Demo';
 import {
 	BeachAccessIcon,
 	BlueToothIcon,
@@ -29,12 +29,12 @@ import {
 	ImageIcon,
 	InboxIcon,
 	SendIcon,
-	StarIcon,
 	StarBorderIcon,
+	StarIcon,
 	WifiIcon,
 	WorkIcon,
 } from './icons';
-import { Header, Title, Subtitle, Paragraph } from './typography';
+import { Header, Paragraph, Subtitle, Title } from './typography';
 
 const Intro = () => (
 	<>

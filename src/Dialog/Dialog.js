@@ -1,10 +1,10 @@
-import React, { forwardRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../Modal';
+import React, { forwardRef, useCallback } from 'react';
 import Fade from '../Fade';
+import Modal from '../Modal';
 import Paper from '../Paper';
-import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
+import combine from '../utils/combine';
 import { stylesPropType } from '../utils/propTypes';
 
 const getFullWidthStyles = ({ fullWidth }) =>
@@ -279,6 +279,10 @@ Dialog.propTypes = {
 Dialog.defaultProps = {
 	disableBackdropClick: false,
 	disableEscapeKeyDown: false,
+	duration: {
+		enter: 'shorter',
+		exit: 'shortest',
+	},
 	fullScreen: false,
 	fullWidth: false,
 	maxWidth: 'sm',

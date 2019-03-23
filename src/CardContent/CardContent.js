@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { getSpacing, useStyles } from '../system';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
 
