@@ -19,14 +19,20 @@ const FOCUS_KEYS = [
 	40, // 'ArrowDown',
 ];
 
+/**
+ * The amount of time between checking if an element has focus.
+ */
 const CHECK_DURATION = 50;
 
+/**
+ * Maximum amount of times to check if an element has focus.
+ */
 const MAX_CHECKS = 5;
 
 /**
  * Gets the current active element of the document.
- * @param {HTMLElement} ref
- * @returns {HTMLElement}
+ * @param   {element} ref - Element to get the current ownerDocument of.
+ * @returns {element} The active element of the current owner document.
  */
 const findActiveElement = ref => {
 	let { activeElement } = ownerDocument(ref);
@@ -42,11 +48,24 @@ const findActiveElement = ref => {
 
 /**
  * Checks if a focus key has been pressed.
- * @param {Object} event The event object.
- * @returns {bool} If true a focus key was pressed, otherwise false.
+ * @param   {object} event The event object.
+ * @returns {bool}   If true a focus key was pressed, otherwise false.
  */
 const isFocusKey = event => FOCUS_KEYS.includes(event.keyCode);
 
+/**
+ * The focus state of an element.
+ * @param  {object}       ref - Mutable reference to the input HTML element.
+ * @param  {element}      ref.current - Current input HTML element.
+ * @return {object}       API - The API of the hook.
+ * @return {function}     API.handleBlur - Handler for blur events.
+ * @return {function}     API.handleFocus - Handler for focus events.
+ * @return {function}     API.handleMouseDown - Handler for mouse down events.
+ * @return {boolean|null} API.previous - The previous state value of
+ * API.visible.
+ * @return {function}     API.set - Manually set the focus's visibility state.
+ * @return {boolean}      API.visible - True if the element has focus, else false.
+ */
 export default function useFocus(ref) {
 	const [focusVisible, setFocusVisible] = useState(false);
 	const prevFocusVisible = usePrevious(focusVisible);
@@ -66,6 +85,11 @@ export default function useFocus(ref) {
 		}
 	};
 
+	/**
+	 * Schedule check to see if a ref has been focused.
+	 * @param {element} ref - The element to check the focus of.
+	 * @param {number}  timesChecked - How many times the ref has been checked.
+	 */
 	const checkFocusVisible = (ref, timesChecked = 1) => {
 		focusTimer.current = setTimeout(() => {
 			const activeElement = findActiveElement(ref);
@@ -81,17 +105,26 @@ export default function useFocus(ref) {
 		}, CHECK_DURATION);
 	};
 
-	const focusHandler = useCallback(() => checkFocusVisible(ref.current), [
+	/**
+	 * Memoized callback for focus events.
+	 */
+	const handleFocus = useCallback(() => checkFocusVisible(ref.current), [
 		focusVisible,
 	]);
 
-	const blurHandler = useCallback(() => {
+	/**
+	 * A memoized callback for blur events.
+	 */
+	const handleBlur = useCallback(() => {
 		if (focusVisible) {
 			setFocusVisible(false);
 		}
 	}, [focusVisible]);
 
-	const mouseDownHandler = useCallback(() => {
+	/**
+	 * Memoized callback for mouse down events.
+	 */
+	const handleMouseDown = useCallback(() => {
 		if (focusVisible) {
 			setFocusVisible(false);
 		}
@@ -104,11 +137,11 @@ export default function useFocus(ref) {
 	}, []);
 
 	return {
-		blurHandler,
-		focusHandler,
-		mouseDownHandler,
+		handleBlur,
+		handleFocus,
+		handleMouseDown,
+		previous: prevFocusVisible,
 		set: setFocusVisible,
 		visible: focusVisible,
-		previous: prevFocusVisible,
 	};
 }

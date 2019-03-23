@@ -44,8 +44,8 @@ const baseStyles = {
 	},
 };
 
-const ButtonBase = forwardRef((props, ref) => {
-	ref = ref ? ref : useRef(null);
+const ButtonBase = forwardRef((props, refProp) => {
+	const ref = refProp ? refProp : useRef(null);
 	const {
 		classes,
 		props: {
@@ -82,7 +82,7 @@ const ButtonBase = forwardRef((props, ref) => {
 
 	const handleMouseDown = ripple.createHandler(
 		{ type: 'start', center: centerRipple },
-		focus.mouseDownHandler,
+		focus.handleMouseDown,
 	);
 
 	const handleMouseUp = ripple.createHandler({ type: 'end' });
@@ -112,7 +112,8 @@ const ButtonBase = forwardRef((props, ref) => {
 		{ type: 'end' },
 		useCallback(
 			event => {
-				focus.blurHandler(event);
+				focus.handleBlur(event);
+
 				if (onBlur) {
 					onBlur(event);
 				}
@@ -128,7 +129,8 @@ const ButtonBase = forwardRef((props, ref) => {
 			}
 
 			event.persist();
-			focus.focusHandler(event);
+			focus.handleFocus(event);
+
 			if (onFocus) {
 				onFocus(event);
 			}
@@ -156,6 +158,7 @@ const ButtonBase = forwardRef((props, ref) => {
 				!(ref.current.tagName === 'A' && ref.current.href)
 			) {
 				event.preventDefault();
+
 				if (onClick) {
 					onClick(event);
 				}
