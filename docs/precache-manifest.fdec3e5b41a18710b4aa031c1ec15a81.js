@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "2f6261aafa48bc0a7d81",
-    "url": "/atomic-styled-components/static/js/main.0ef897a0.chunk.js"
+    "revision": "f91dab5d9af33d059a63",
+    "url": "/atomic-styled-components/static/js/main.cb97f2b8.chunk.js"
   },
   {
     "revision": "505cc8d58137706e98fe",
@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/atomic-styled-components/static/js/8.5c8c2820.chunk.js"
   },
   {
-    "revision": "ea327e5fd3a2178d265be64cdb79bcac",
+    "revision": "0fabca7cd9ef4db364d6dc22912892e9",
     "url": "/atomic-styled-components/index.html"
   }
 ];
