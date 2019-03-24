@@ -1,116 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { forwardRef } from 'react';
 import InputBase from '../InputBase';
+import { getSpacing } from '../system';
 import combine from '../utils/combine';
-import { getSpacing, useStyles } from '../system';
-import { componentPropType, stylesPropType } from '../utils/propTypes';
-
-const getStartAdornmentStyles = ({ startAdornment }) =>
-	startAdornment && {
-		root: getSpacing({ pr: 14 }),
-		input: getSpacing({ pr: 0 }),
-	};
-
-const getEndAdornmentStyles = ({ endAdornment }) =>
-	endAdornment && {
-		root: getSpacing({ pl: 14 }),
-		input: getSpacing({ pl: 0 }),
-	};
-
-const getDisabledStyles = ({ disabled, theme: { palette } }) =>
-	disabled && {
-		root: {
-			backgroundColor:
-				palette.type === 'light'
-					? 'rgba(0, 0, 0, 0.12)'
-					: 'rgba(255, 255, 255, 0.09)',
-		},
-	};
-
-const getErrorStyles = ({ error, theme: { palette } }) =>
-	error && {
-		root: {
-			':after': {
-				borderBottomColor: palette.error.main,
-				transform: 'scaleX(1)',
-			},
-		},
-	};
-
-const getMarginStyles = ({ margin }) =>
-	margin === 'dense' && {
-		input: getSpacing({ pt: 3.5, pb: 1.5 }),
-	};
-
-const getMultilineStyles = ({ multilined }) =>
-	multilined && {
-		root: {
-			// Prevent pading issue with isFullWidth.
-			boxSizing: 'border-box',
-			padding: '27px 12px 10px',
-		},
-		input: {
-			padding: '0px',
-		},
-	};
-
-const getUnderlinedStyles = ({
-	disabled,
-	disableUnderline,
-	error,
-	focused,
-	theme: { getTransition, palette },
-}) => {
-	const isLight = palette.type === 'light';
-	const bottomLineColor = isLight
-		? 'rgba(0,0,0,0.42)'
-		: 'rgba(255,255,255, 0.7)';
-	let next = {};
-
-	if (!disableUnderline) {
-		next = {
-			root: {
-				':before': {
-					content: '"\\00a0"',
-					position: 'absolute',
-					right: '0px',
-					bottom: '0px',
-					left: '0px',
-					borderBottom: `1px solid ${bottomLineColor}`,
-					transition: getTransition('border-bottom-color', {
-						duration: 'shorter',
-					}),
-					pointerEvents: 'none',
-				},
-				':after': {
-					content: '""',
-					position: 'absolute',
-					right: '0px',
-					bottom: '0px',
-					left: '0px',
-					borderBottom: `2px solid ${palette.primary[palette.type]}`,
-					transform: 'scaleX(0)',
-					transition: getTransition('transform', {
-						duration: 'shorter',
-						easing: 'out',
-					}),
-					pointerEvents: 'none',
-				},
-				':disabled:before': {
-					borderBottom: `1px dotted ${bottomLineColor}`,
-				},
-			},
-		};
-
-		if (!error && !disabled && !focused) {
-			next.root[':hover'] = {
-				borderBottom: `1px solid ${palette.text.primary}`,
-			};
-		}
-	}
-
-	return next;
-};
+import { stylesPropType } from '../utils/propTypes';
 
 const getBaseStyles = ({ theme: { getTransition, palette, shape } }) => ({
 	root: {
@@ -138,28 +31,152 @@ const getBaseStyles = ({ theme: { getTransition, palette, shape } }) => ({
 						: 'rgba(255, 255, 255, 0.09)',
 			},
 		},
-		':focused': {
-			backgroundColor:
-				palette.type === 'light'
-					? 'rgba(0, 0, 0, 0.09)'
-					: 'rgba(255, 255, 255, 0.12)',
-		},
 	},
 	input: {
 		padding: '27px 12px 10px',
 	},
 });
 
-const getStyles = combine(
+const getDisabledStyles = ({ disabled, theme: { palette } }) =>
+	disabled && {
+		root: {
+			backgroundColor:
+				palette.type === 'light'
+					? 'rgba(0, 0, 0, 0.12)'
+					: 'rgba(255, 255, 255, 0.09)',
+			':before': {
+				borderBottomStyle: 'dotted',
+			},
+			':hover:before': {
+				borderBottom: `1px dotted ${palette.text.disabled}`,
+			},
+		},
+	};
+
+const getEndAdornmentStyles = ({ endAdornment }) =>
+	endAdornment && {
+		root: getSpacing({ pl: 14 }),
+		input: getSpacing({ pl: 0 }),
+	};
+
+const getErrorStyles = ({ disabled, error, theme: { palette } }) =>
+	!disabled &&
+	error && {
+		root: {
+			':after': {
+				borderBottomColor: palette.error.main,
+				transform: 'scaleX(1)',
+			},
+		},
+	};
+
+const getFocusedStyles = ({ disabled, focused, theme: { palette } }) =>
+	!disabled &&
+	focused && {
+		root: {
+			backgroundColor:
+				palette.type === 'light'
+					? 'rgba(0, 0, 0, 0.09)'
+					: 'rgba(255, 255, 255, 0.09)',
+			':before': {
+				borderBottom: `1px solid ${
+					palette.type === 'light'
+						? 'rgba(0,0,0,0.42)'
+						: 'rgba(255,255,255, 0.7)'
+				}`,
+			},
+			':after': {
+				transform: 'scaleX(1)',
+			},
+			':hover:before': {
+				borderBottom: `1px solid ${
+					palette.type === 'light'
+						? 'rgba(0,0,0,0.42)'
+						: 'rgba(255,255,255, 0.7)'
+				}`,
+			},
+		},
+	};
+
+const getMarginStyles = ({ margin }) =>
+	margin === 'dense' && {
+		input: getSpacing({ pt: 3.5, pb: 1.5 }),
+	};
+
+const getMultilineStyles = ({ multilined }) =>
+	multilined && {
+		root: {
+			// Prevent pading issue with isFullWidth.
+			boxSizing: 'border-box',
+			padding: '27px 12px 10px',
+		},
+		input: {
+			padding: '0px',
+		},
+	};
+
+const getUnderlineStyles = ({
+	disableUnderline,
+	theme: { getTransition, palette },
+}) =>
+	!disableUnderline && {
+		root: {
+			':before': {
+				content: '"\\00a0"',
+				position: 'absolute',
+				right: '0px',
+				bottom: '0px',
+				left: '0px',
+				borderBottom: `1px solid ${
+					palette.type === 'light'
+						? 'rgba(0,0,0,0.42)'
+						: 'rgba(255,255,255, 0.7)'
+				}`,
+				transition: getTransition('border-bottom-color', {
+					duration: 'shorter',
+					easing: 'out',
+				}),
+				pointerEvents: 'none',
+			},
+			':after': {
+				content: '""',
+				position: 'absolute',
+				right: '0px',
+				left: '0px',
+				bottom: '0px',
+				borderBottom: `2px solid ${palette.primary[palette.type]}`,
+				transform: 'scaleX(0)',
+				transition: getTransition('transform', {
+					duration: 'shorter',
+					easing: 'out',
+				}),
+				pointerEvents: 'none',
+			},
+			':hover:before': {
+				borderBottom: `1px solid ${palette.text.primary}`,
+			},
+		},
+	};
+
+const getStartAdornmentStyles = ({ startAdornment }) =>
+	startAdornment && {
+		root: getSpacing({ pr: 14 }),
+		input: getSpacing({ pr: 0 }),
+	};
+
+const getFilledInputStyles = combine(
 	getBaseStyles,
+	getEndAdornmentStyles,
 	getMarginStyles,
 	getMultilineStyles,
 	getStartAdornmentStyles,
-	getEndAdornmentStyles,
-	getErrorStyles,
+	getUnderlineStyles,
 	getDisabledStyles,
-	getUnderlinedStyles,
+	getErrorStyles,
+	getFocusedStyles,
 );
+
+const getStyles = props => getFilledInputStyles(props);
 getStyles.propTypes = {
 	// If `true`, the input will not have an underline.
 	disableUnderline: PropTypes.bool,
@@ -177,20 +194,9 @@ getStyles.propTypes = {
 	startAdornment: PropTypes.node,
 };
 
-function FilledInput(props) {
-	const [{ styles }, passThru] = useStyles(props, getStyles, {
-		whitelist: [
-			'endAdornment',
-			'error',
-			'disabled',
-			'margin',
-			'multiline',
-			'startAdornment',
-		],
-	});
-
-	return <InputBase styles={styles} {...passThru} />;
-}
+const FilledInput = forwardRef((props, ref) => (
+	<InputBase ref={ref} styles={getStyles} {...props} />
+));
 
 FilledInput.displayName = 'FilledInput';
 
@@ -275,12 +281,11 @@ FilledInput.propTypes = {
 		),
 	]),
 	...getStyles.propTypes,
-	...componentPropType,
 	...stylesPropType,
 };
 
 InputBase.defaultProps = {
-	as: 'input',
+	inputComponent: 'input',
 	fullWidth: false,
 	multiline: false,
 	type: 'text',
