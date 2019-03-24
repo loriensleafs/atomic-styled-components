@@ -117,11 +117,11 @@ const getTypeStyles = ({ type }) => {
 
 const getStyles = combine(
 	getBaseStyles,
-	getDisabledStyles,
-	getTypeStyles,
+	getFullWidthStyles,
 	getMarginStyles,
 	getMultilineStyles,
-	getFullWidthStyles,
+	getTypeStyles,
+	getDisabledStyles,
 );
 getStyles.propTypes = {
 	focused: PropTypes.bool,
@@ -148,7 +148,6 @@ const InputBase = forwardRef((props, refProp) => {
 	const {
 		classes,
 		props: {
-			as,
 			autoComplete,
 			autoFocus,
 			className,
@@ -158,6 +157,7 @@ const InputBase = forwardRef((props, refProp) => {
 			id,
 			fullWidth,
 			multiline,
+			inputComponent,
 			inputProps: inputPropsProp,
 			name,
 			onBlur,
@@ -258,7 +258,7 @@ const InputBase = forwardRef((props, refProp) => {
 		}
 	}, []);
 
-	let InputComponent = as;
+	let InputComponent = inputComponent;
 	let inputProps = { ref };
 
 	if (typeof InputComponent !== 'string') {
@@ -380,6 +380,11 @@ InputBase.propTypes = {
 	error: PropTypes.bool,
 	// The id of the `input` element.
 	id: PropTypes.string,
+	/**
+	 * The component used for the native input.
+	 * Either a string to use a DOM element or a component.
+	 */
+	inputComponent: PropTypes.elementType,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.

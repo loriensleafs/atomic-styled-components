@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react';
 import InputBase from '../InputBase';
 import { getSpacing } from '../system';
 import combine from '../utils/combine';
-import { componentPropType, stylesPropType } from '../utils/propTypes';
+import { stylesPropType } from '../utils/propTypes';
 
 const getBaseStyles = () => ({
 	position: 'relative',
@@ -45,6 +45,9 @@ const getFocusedStyles = ({ focused, theme: { palette } }) =>
 					: 'rgba(255,255,255, 0.7)'
 			}`,
 		},
+		':after': {
+			transform: 'scaleX(1)',
+		},
 		':hover:before': {
 			borderBottom: `1px solid ${
 				palette.type === 'light'
@@ -52,17 +55,13 @@ const getFocusedStyles = ({ focused, theme: { palette } }) =>
 					: 'rgba(255,255,255, 0.7)'
 			}`,
 		},
-		':after': {
-			transform: 'scaleX(1)',
-		},
 	};
 
 const getFormControlStyles = ({ formControl }) =>
 	formControl.enabled && getSpacing({ mt: 3 });
 
-const getUnderlinedStyles = ({
+const getUnderlineStyles = ({
 	disableUnderline,
-	error,
 	theme: { getTransition, palette },
 }) =>
 	!disableUnderline && {
@@ -89,9 +88,7 @@ const getUnderlinedStyles = ({
 			right: '0px',
 			left: '0px',
 			bottom: '0px',
-			borderBottom: `2px solid ${
-				error ? palette.error.main : palette.primary[palette.type]
-			}`,
+			borderBottom: `2px solid ${palette.primary[palette.type]}`,
 			transform: 'scaleX(0)',
 			transition: getTransition('transform', {
 				duration: 'shorter',
@@ -114,7 +111,7 @@ const getUnderlinedStyles = ({
 
 const getInputStyles = combine(
 	getBaseStyles,
-	getUnderlinedStyles,
+	getUnderlineStyles,
 	getDisabledStyles,
 	getErrorStyles,
 	getFocusedStyles,
@@ -178,6 +175,11 @@ Input.propTypes = {
 	fullWidth: PropTypes.bool,
 	// The id of the `input` element.
 	id: PropTypes.string,
+	/**
+	 * The component used for the native input.
+	 * Either a string to use a DOM element or a component.
+	 */
+	inputComponent: PropTypes.elementType,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.
@@ -228,12 +230,11 @@ Input.propTypes = {
 		),
 	]),
 	...getStyles.propTypes,
-	...componentPropType,
 	...stylesPropType,
 };
 
 InputBase.defaultProps = {
-	as: 'input',
+	inputComponent: 'input',
 	fullWidth: false,
 	multiline: false,
 	type: 'text',
