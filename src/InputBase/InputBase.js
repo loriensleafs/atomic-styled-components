@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
 	forwardRef,
 	useCallback,
@@ -5,15 +6,74 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import PropTypes from 'prop-types';
-import TextArea from 'TextArea';
-import FormControlContext from '../FormControl/FormControlContext';
-import useFormControlManager from '../FormControl/useFormControlManager';
-import useStyles from '../system/useStyles';
+import { FormControlContext, useFormControl } from '../FormControl';
 import usePrevious from '../hooks/usePrevious';
-import combine from '../utils';
-import { isFilled } from 'utils';
+import useStyles from '../system/useStyles';
+import combine from '../utils/combine';
 import { componentPropType } from '../utils/propTypes';
+import { isFilled } from './utils';
+
+const getBaseStyles = props => {
+	const {
+		theme: {
+			getTransition,
+			typography: { fontFamilies, fontSizes, unit },
+			palette,
+		},
+	} = props;
+	const isLight = palette.type === 'light';
+	const placeholder = {
+		color: 'currentColor',
+		opacity: isLight ? 0.42 : 0.5,
+		transition: getTransition('opacity', { duration: 'shorter' }),
+	};
+
+	return {
+		formControl: {},
+		input: {
+			boxSizing: 'content-box',
+			width: '100%',
+			minWidth: '0px',
+			margin: '0px',
+			padding: '6px 0 7px',
+			display: 'block',
+			font: 'inherit',
+			border: '0px',
+			background: 'none',
+			color: 'currentColor',
+			WebkitTapHighlightColor: 'transparent',
+			'::-webkit-search-decoration': {
+				'-webkit-appearance': 'none',
+			},
+			'::-webkit-input-placeholder': placeholder,
+			'::-moz-placeholder': placeholder,
+			'::-ms-input-placeholder': placeholder,
+			':disabled': {
+				opacity: 1,
+			},
+			':focus': {
+				outline: 0,
+			},
+			':invalid': {
+				boxShadow: 'none',
+			},
+		},
+		root: {
+			display: 'inline-flex',
+			alignItems: 'center',
+			color: palette.text.primary,
+			fontFamily: fontFamilies.ui,
+			fontSize: `${fontSizes[3]}${unit}`,
+			lineHeight: '1.1875em',
+			cursor: 'text',
+		},
+	};
+};
+
+const getDisabledStyles = ({ disabled, theme: { palette } }) =>
+	disabled && {
+		root: { color: palette.text.disabled, cursor: 'default' },
+	};
 
 const getFullWidthStyles = ({ fullWidth }) =>
 	fullWidth && {
@@ -41,7 +101,7 @@ const getMultilineStyles = ({ multiline, theme: { spacing } }) =>
 	};
 
 const getTypeStyles = ({ type }) => {
-	const next = {};
+	let next = {};
 
 	if (type === 'search') {
 		next = {
@@ -49,82 +109,23 @@ const getTypeStyles = ({ type }) => {
 			'-webkit-appearance': 'textfield',
 		};
 	}
-
 	if (type !== 'text') {
 		next = { ...next, height: '1.1875em' };
 	}
-
 	return { input: next };
-};
-
-const getBaseStyles = ({
-	theme: {
-		getTransition,
-		typography: { fontFamilies, fontSizes },
-		palette,
-	},
-}) => {
-	const isLight = palette.type === 'light';
-	const placeholder = {
-		color: 'currentColor',
-		opacity: isLight ? 0.42 : 0.5,
-		transition: getTransition('opacity', { duration: 'shorter' }),
-	};
-
-	return {
-		formControl: {},
-		input: {
-			boxSizing: 'content-box',
-			width: '100%',
-			minWidth: '0px',
-			margin: '0px',
-			padding: '6px 0 7px',
-			display: 'block',
-			border: '0px',
-			background: 'none',
-			color: 'currentColor',
-			WebkitTapHighlightColor: 'transparent',
-			'::-webkit-search-decoration': {
-				'-webkit-appearance': 'none',
-			},
-			'::-webkit-input-placeholder': placeholder,
-			'::-moz-placeholder': placeholder,
-			'::-ms-input-placeholder': placeholder,
-			'::-ms-input-placeholder': placeholder,
-			':disabled': {
-				opacity: 1,
-			},
-			':focus': {
-				outline: 0,
-			},
-			':invalid': {
-				boxShadow: 'none',
-			},
-		},
-		root: {
-			display: 'inline-flex',
-			alignItems: 'center',
-			color: palette.text.primary,
-			fontFamily: fontFamilies.ui,
-			fontSize: fontSizes[3],
-			lineHeight: '1.1875em',
-			cursor: 'text',
-			':disabled': {
-				color: palette.text.disabled,
-				cursor: 'default',
-			},
-		},
-	};
 };
 
 const getStyles = combine(
 	getBaseStyles,
+	getDisabledStyles,
 	getTypeStyles,
 	getMarginStyles,
 	getMultilineStyles,
 	getFullWidthStyles,
 );
 getStyles.propTypes = {
+	focused: PropTypes.bool,
+	formControl: PropTypes.object,
 	// If `true`, the input will take up the full width of its container.
 	fullWidth: PropTypes.bool,
 	// If `dense`, adjusts vertical spacing. From the FormControl context.
@@ -134,30 +135,30 @@ getStyles.propTypes = {
 	type: PropTypes.string,
 };
 
-const InputBase = forwardRef((props, ref) => {
-	ref = ref ? ref : useRef(null);
-	const fcProps = useFormControlManager(props, [
-		'error',
+const InputBase = forwardRef((props, refProp) => {
+	const ref = refProp ? refProp : useRef(null);
+	const fc = useFormControl(props, [
 		'disabled',
+		'error',
 		'filled',
 		'margin',
 		'required',
 	]);
-	const [
-		{ classes },
-		{
+	const [focused, setFocused] = useState(fc.enabled ? fc.focused : false);
+	const {
+		classes,
+		props: {
 			as,
 			autoComplete,
 			autoFocus,
 			className,
 			defaultValue,
+			disabled,
 			endAdornment,
-			error,
 			id,
 			fullWidth,
 			multiline,
-			inputProps,
-			margin,
+			inputProps: inputPropsProp,
 			name,
 			onBlur,
 			onChange,
@@ -170,6 +171,7 @@ const InputBase = forwardRef((props, ref) => {
 			placeholder,
 			readOnly,
 			renderPrefix,
+			required,
 			rows,
 			rowsMax,
 			startAdornment,
@@ -177,26 +179,36 @@ const InputBase = forwardRef((props, ref) => {
 			value,
 			...passThru
 		},
-	] = useStyles(fcProps, getStyles, {
-		whitelist: ['fullWidth', 'multiline', 'margin', 'type'],
-	});
-	const mounted = useRef(false);
-	const [focused, setFocused] = useState(false);
-	const isControlled = value !== null;
+	} = useStyles(
+		{
+			...props,
+			disabled: fc.disabled,
+			error: fc.error,
+			focused,
+			formControl: fc,
+			margin: fc.margin,
+		},
+		getStyles,
+		{
+			nested: true,
+			whitelist: ['fullWidth', 'multiline', 'type'],
+		},
+	);
+	const controlled = useRef(value !== null);
 	const prevDisabled = usePrevious(disabled);
 
 	const checkDirty = useCallback(obj => {
 		if (isFilled(obj)) {
-			if (context && context.onFilled) {
-				context.onFilled();
+			if (fc.enabled && fc.onFilled) {
+				fc.onFilled();
 			}
 			if (onFilled) {
 				onFilled();
 			}
 			return;
 		}
-		if (context && context.onEmpty) {
-			context.onEmpty();
+		if (fc.enabled && fc.onEmpty) {
+			fc.onEmpty();
 		}
 		if (onEmpty) {
 			onEmpty();
@@ -205,33 +217,31 @@ const InputBase = forwardRef((props, ref) => {
 
 	const handleBlur = useCallback(event => {
 		setFocused(false);
-
 		if (onBlur) {
 			onBlur(event);
 		}
-		if (context && context.onBlur) {
-			context.onBlur(event);
+		if (fc.enabled && fc.onBlur) {
+			fc.onBlur(event);
 		}
 	}, []);
 
 	const handleFocus = useCallback(event => {
-		if (context && context.disabled) {
+		if (fc.enabled && fc.disabled) {
 			event.stopPropagation();
 			return;
 		}
 
 		setFocused(true);
-
 		if (onFocus) {
 			onFocus(event);
 		}
-		if (context && context.onFocus) {
-			context.focus(event);
+		if (fc.enabled && fc.onFocus) {
+			fc.focus(event);
 		}
 	}, []);
 
 	const handleChange = useCallback(event => {
-		if (!isControlled) {
+		if (!controlled.current) {
 			checkDirty(ref.current);
 		}
 		if (onChange) {
@@ -253,7 +263,7 @@ const InputBase = forwardRef((props, ref) => {
 
 	if (typeof InputComponent !== 'string') {
 		inputProps = {
-			...inputProps,
+			...inputPropsProp,
 			disabled: disabled,
 			required: required,
 			type,
@@ -262,14 +272,14 @@ const InputBase = forwardRef((props, ref) => {
 		if (rows && !rowsMax) {
 			InputComponent = 'textarea';
 			inputProps = {
-				...inputProps,
+				...inputPropsProp,
 				disabled: disabled,
 				required: required,
 			};
 		} else {
 			InputComponent = TextArea;
 			inputProps = {
-				...inputProps,
+				...inputPropsProp,
 				disabled,
 				required,
 				rowsMax,
@@ -277,7 +287,7 @@ const InputBase = forwardRef((props, ref) => {
 		}
 	} else {
 		inputProps = {
-			...inputProps,
+			...inputPropsProp,
 			disabled,
 			required,
 			type,
@@ -285,14 +295,19 @@ const InputBase = forwardRef((props, ref) => {
 	}
 
 	useEffect(() => {
-		if ((!mounted.current && !isControlled) || isControlled) {
-			mounted.current = true;
-			checkDirty(props);
+		if (!controlled.current) {
+			checkDirty(ref.current);
 		}
-		if (!prevDisabled && disabled && context && context.onBlur) {
-			context.onBlur();
+	}, []);
+
+	useEffect(() => {
+		if (!prevDisabled && disabled && fc.enabled && fc.onBlur) {
+			fc.onBlur();
 		}
-	}, [disabled, mounted, value]);
+		if (controlled.current) {
+			checkDirty({ value });
+		}
+	}, [disabled, value]);
 
 	return (
 		<div className={classes.root} onClick={handleClick} {...passThru}>
@@ -300,11 +315,12 @@ const InputBase = forwardRef((props, ref) => {
 			{startAdornment}
 			<FormControlContext.Provider value={null}>
 				<InputComponent
-					aria-invalid={error}
+					aria-invalid={fc.error}
 					autoComplete={autoComplete}
 					autoFocus={autoFocus}
 					className={classes.input}
 					defaultValue={defaultValue}
+					disabled={fc.disabled}
 					id={id}
 					name={name}
 					onBlur={handleBlur}
@@ -314,6 +330,7 @@ const InputBase = forwardRef((props, ref) => {
 					onKeyUp={onKeyUp}
 					placeholder={placeholder}
 					readOnly={readOnly}
+					required={fc.required}
 					rows={rows}
 					value={value}
 					{...inputProps}
@@ -422,4 +439,4 @@ InputBase.defaultProps = {
 	type: 'text',
 };
 
-export default InpupBase;
+export default InputBase;

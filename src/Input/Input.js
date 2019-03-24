@@ -1,19 +1,64 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { forwardRef } from 'react';
 import InputBase from '../InputBase';
-import useFormControlManager from '../FormControl/useFormControlManager';
-import useStyles from '../system/useStyles';
+import { getSpacing } from '../system';
 import combine from '../utils/combine';
 import { componentPropType, stylesPropType } from '../utils/propTypes';
-import { getSpacing } from '../system';
 
-const getErrorStyles = ({ error, theme: { palette } }) =>
+const getBaseStyles = () => ({
+	position: 'relative',
+});
+
+const getDisabledStyles = ({
+	disabled,
+	disableUnderline,
+	theme: { palette },
+}) =>
+	disabled &&
+	!disableUnderline && {
+		':before': {
+			borderBottomStyle: 'dotted',
+		},
+		':hover:before': {
+			borderBottom: `1px dotted ${palette.text.disabled}`,
+		},
+	};
+
+const getErrorStyles = ({ error, disableUnderline, theme: { palette } }) =>
+	!disableUnderline &&
 	error && {
+		':hover:before': {
+			borderBottom: `2px solid ${palette.error.main}`,
+		},
 		':after': {
 			borderBottomColor: palette.error.main,
 			transform: 'scaleX(1)',
 		},
 	};
+
+const getFocusedStyles = ({ focused, theme: { palette } }) =>
+	focused && {
+		':before': {
+			borderBottom: `1px solid ${
+				palette.type === 'light'
+					? 'rgba(0,0,0,0.42)'
+					: 'rgba(255,255,255, 0.7)'
+			}`,
+		},
+		':hover:before': {
+			borderBottom: `1px solid ${
+				palette.type === 'light'
+					? 'rgba(0,0,0,0.42)'
+					: 'rgba(255,255,255, 0.7)'
+			}`,
+		},
+		':after': {
+			transform: 'scaleX(1)',
+		},
+	};
+
+const getFormControlStyles = ({ formControl }) =>
+	formControl.enabled && getSpacing({ mt: 3 });
 
 const getUnderlinedStyles = ({
 	disableUnderline,
@@ -47,60 +92,48 @@ const getUnderlinedStyles = ({
 			borderBottom: `2px solid ${
 				error ? palette.error.main : palette.primary[palette.type]
 			}`,
-			transform: error ? 'scaleX(1)' : 'scaleX(0)',
+			transform: 'scaleX(0)',
 			transition: getTransition('transform', {
 				duration: 'shorter',
 				easing: 'out',
 			}),
 			pointerEvents: 'none',
 		},
-		':disabled:before': {
-			borderBottomStyle: 'dotted',
-		},
-		':focused:after': {
-			transform: 'scaleX(1)',
-		},
-		':hover:not(disabled):not(focused):before': !error && {
-			borderBotom: `2px solid ${
-				error ? palette.error.main : palette.primary[palette.type]
-			}`,
+		':hover:before': {
+			borderBottom: `2px solid ${palette.text.primary}`,
 			// Reset on touch devices so we don't add specificity.
 			'@media (hover: none)': {
-				borderBottom: `1px solid ${bottomLineColor}`,
+				borderBottom: `1px solid ${
+					palette.type === 'light'
+						? 'rgba(0, 0, 0, 0.42)'
+						: 'rgba(255, 255, 255, 0.7)'
+				}`,
 			},
 		},
 	};
 
-const getFormControlStyles = ({ formControlDecendant }) =>
-	formControlDecendant && getSpacing({ mt: 3 });
-
-const baseStyles = {
-	position: 'relative',
-};
-
-const getStyles = combine(
+const getInputStyles = combine(
+	getBaseStyles,
 	getUnderlinedStyles,
+	getDisabledStyles,
 	getErrorStyles,
+	getFocusedStyles,
 	getFormControlStyles,
 );
+
+const getStyles = props => ({ root: getInputStyles(props) });
 getStyles.propsTypes = {
 	// If `true`, the input will not have an underline.
 	disableUnderline: PropTypes.bool,
 	// If 'true', Input is should be displayed in an error state.
 	error: PropTypes.bool,
 	// If the label is a descendant of 'FormControl'
-	formControlDecendant: PropTypes.bool,
+	formControl: PropTypes.bool,
 };
 
-function Input(props) {
-	const fcProps = useFormControlManager(props, []);
-	const [{ styles }, passThru] = useStyles(fcProps, getStyles, {
-		baseStyles,
-		whitelist: ['error'],
-	});
-
-	return <InputBase styles={styles} {...passThru} />;
-}
+const Input = forwardRef((props, ref) => (
+	<InputBase ref={ref} styles={getStyles} {...props} />
+));
 
 Input.displayName = 'Input';
 
@@ -119,7 +152,7 @@ Input.propTypes = {
 	 * Override or extend the styles applied to the component.
 	 * See [CSS API](#css-api) below for more details.
 	 */
-	classes: PropTypes.object.isRequired,
+	classes: PropTypes.object,
 	// The CSS class name of the wrapper element.
 	className: PropTypes.string,
 	// The default input value, useful when not controlling the component.
