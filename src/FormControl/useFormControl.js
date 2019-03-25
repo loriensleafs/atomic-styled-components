@@ -1,9 +1,11 @@
 import { useContext, useMemo } from 'react';
+import { getKeys, isObj } from '../utils/helpers';
 import FormControlContext from './FormControlContext';
 
 export default function useFormControl(props, states) {
 	const formControl = useContext(FormControlContext);
-	const formControlEnabled = typeof formControl !== 'undefined';
+	const formControlEnabled =
+		isObj(formControl) && getKeys(formControl).length > 0;
 	const mergedProps = useMemo(
 		() =>
 			states.reduce(
@@ -18,7 +20,7 @@ export default function useFormControl(props, states) {
 					}
 					return acc;
 				},
-				{ enabled: formControlEnabled },
+				{ formControlEnabled },
 			),
 		[formControl, props],
 	);
