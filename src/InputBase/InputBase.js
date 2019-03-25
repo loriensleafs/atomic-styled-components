@@ -12,6 +12,7 @@ import useStyles from '../system/useStyles';
 import combine from '../utils/combine';
 import { componentPropType } from '../utils/propTypes';
 import { isFilled } from './utils';
+import { isNil } from '../utils/helpers';
 
 const getBaseStyles = props => {
 	const {
@@ -48,9 +49,6 @@ const getBaseStyles = props => {
 			'::-webkit-input-placeholder': placeholder,
 			'::-moz-placeholder': placeholder,
 			'::-ms-input-placeholder': placeholder,
-			':disabled': {
-				opacity: 1,
-			},
 			':focus': {
 				outline: 0,
 			},
@@ -75,6 +73,9 @@ const getDisabledStyles = ({ disabled, theme: { palette } }) =>
 		root: {
 			color: palette.text.disabled,
 			cursor: 'default',
+		},
+		input: {
+			opacity: 1,
 		},
 	};
 
@@ -129,8 +130,13 @@ const getStyles = combine(
 	getDisabledStyles,
 );
 getStyles.propTypes = {
+	// If `true`, the input will be disabled.
+	disabled: PropTypes.bool,
+	// If `true`, the input will indicate an error. From FormControl context.
+	error: PropTypes.bool,
+	filled: PropTypes.bool,
 	focused: PropTypes.bool,
-	formControl: PropTypes.object,
+	formControlEnabled: PropTypes.object,
 	// If `true`, the input will take up the full width of its container.
 	fullWidth: PropTypes.bool,
 	// If `dense`, adjusts vertical spacing. From the FormControl context.
@@ -142,14 +148,20 @@ getStyles.propTypes = {
 
 const InputBase = forwardRef((props, refProp) => {
 	const ref = refProp ? refProp : useRef(null);
-	const fc = useFormControl(props, [
+	const { formControlEnabled, ...fc } = useFormControl(props, [
 		'disabled',
 		'error',
 		'filled',
 		'margin',
+		'onBlur',
+		'onEmpty',
+		'onFilled',
+		'onFocus',
 		'required',
 	]);
-	const [focused, setFocused] = useState(fc.enabled ? fc.focused : false);
+	const [focused, setFocused] = useState(
+		formControlEnabled ? fc.focused : false,
+	);
 	const {
 		classes,
 		props: {
@@ -187,72 +199,79 @@ const InputBase = forwardRef((props, refProp) => {
 	} = useStyles(
 		{
 			...props,
-			disabled: fc.disabled,
-			error: fc.error,
+			...fc,
 			focused,
-			formControl: fc,
-			margin: fc.margin,
+			formControlEnabled,
 		},
 		getStyles,
 		{
 			nested: true,
-			whitelist: ['fullWidth', 'multiline', 'type'],
+			whitelist: [
+				'endAdornment',
+				'fullWidth',
+				'multiline',
+				'startAdornment',
+				'type',
+			],
 		},
 	);
-	const controlled = useRef(value !== null);
+	const controlled = !isNil(value);
 	const prevDisabled = usePrevious(disabled);
 
 	const checkDirty = useCallback(obj => {
 		if (isFilled(obj)) {
-			if (fc.enabled && fc.onFilled) {
+			if (formControlEnabled && fc.onFilled) {
 				fc.onFilled();
 			}
-			if (onFilled) {
-				onFilled();
+			if (props.onFilled) {
+				props.onFilled();
 			}
 			return;
 		}
-		if (fc.enabled && fc.onEmpty) {
+		if (formControlEnabled && fc.onEmpty) {
 			fc.onEmpty();
 		}
-		if (onEmpty) {
-			onEmpty();
+		if (props.onEmpty) {
+			props.onEmpty();
 		}
 	}, []);
 
 	const handleBlur = useCallback(event => {
 		setFocused(false);
-		if (onBlur) {
-			onBlur(event);
+		if (props.onBlur) {
+			props.onBlur(event);
 		}
-		if (fc.enabled && fc.onBlur) {
+		if (formControlEnabled && fc.onBlur) {
 			fc.onBlur(event);
 		}
 	}, []);
 
 	const handleFocus = useCallback(event => {
-		if (fc.enabled && fc.disabled) {
+		if (formControlEnabled && fc.disabled) {
 			event.stopPropagation();
 			return;
 		}
 
 		setFocused(true);
-		if (onFocus) {
-			onFocus(event);
+		if (props.onFocus) {
+			props.onFocus(event);
 		}
-		if (fc.enabled && fc.onFocus) {
-			fc.focus(event);
+		if (formControlEnabled && fc.onFocus) {
+			fc.onFocus(event);
 		}
 	}, []);
 
-	const handleChange = useCallback(event => {
-		if (!controlled.current) {
-			checkDirty(ref.current);
-		}
-		if (onChange) {
-			onChange(event);
-		}
-	}, []);
+	const handleChange = useCallback(
+		event => {
+			if (!controlled) {
+				checkDirty(ref.current);
+			}
+			if (onChange) {
+				onChange(event);
+			}
+		},
+		[controlled],
+	);
 
 	const handleClick = useCallback(event => {
 		if (ref.current && event.currentTarget === event.target) {
@@ -264,59 +283,58 @@ const InputBase = forwardRef((props, refProp) => {
 	}, []);
 
 	let InputComponent = inputComponent;
-	let inputProps = { ref };
+	let inputProps = {
+		...inputPropsProp,
+		ref,
+	};
 
 	if (typeof InputComponent !== 'string') {
 		inputProps = {
-			...inputPropsProp,
-			disabled: disabled,
-			required: required,
 			type,
+			...inputProps,
 		};
 	} else if (multiline) {
 		if (rows && !rowsMax) {
 			InputComponent = 'textarea';
-			inputProps = {
-				...inputPropsProp,
-				disabled: disabled,
-				required: required,
-			};
 		} else {
 			InputComponent = TextArea;
 			inputProps = {
-				...inputPropsProp,
-				disabled,
-				required,
 				rowsMax,
+				...inputProps,
 			};
 		}
 	} else {
 		inputProps = {
-			...inputPropsProp,
-			disabled,
-			required,
 			type,
+			...inputProps,
 		};
 	}
 
 	useEffect(() => {
-		if (!controlled.current) {
+		if (!controlled) {
 			checkDirty(ref.current);
 		}
 	}, []);
 
 	useEffect(() => {
-		if (!prevDisabled && disabled && fc.enabled && fc.onBlur) {
+		if (!prevDisabled && disabled && formControlEnabled && fc.onBlur) {
 			fc.onBlur();
 		}
-		if (controlled.current) {
+		if (controlled) {
 			checkDirty({ value });
 		}
 	}, [disabled, value]);
 
 	return (
 		<div className={classes.root} onClick={handleClick} {...passThru}>
-			{renderPrefix && renderPrefix({ ...fc, focused, startAdornment })}
+			{renderPrefix &&
+				renderPrefix({
+					disabled: fc.disabled,
+					error: fc.error,
+					filled: fc.filled,
+					focused,
+					startAdornment,
+				})}
 			{startAdornment}
 			<FormControlContext.Provider value={null}>
 				<InputComponent
@@ -335,6 +353,7 @@ const InputBase = forwardRef((props, refProp) => {
 					onKeyUp={onKeyUp}
 					placeholder={placeholder}
 					readOnly={readOnly}
+					ref={ref}
 					required={fc.required}
 					rows={rows}
 					value={value}
@@ -350,7 +369,8 @@ InputBase.displayName = 'InputBase';
 
 InputBase.propTypes = {
 	/**
-	 * This property helps users to fill forms faster, especially on mobile devices.
+	 * This property helps users to fill forms faster, especially on mobile
+	 * devices.
 	 * The name can be confusing, as it's more like an autofill.
 	 * You can learn more about it here:
 	 * https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
@@ -377,12 +397,8 @@ InputBase.propTypes = {
 			]),
 		),
 	]),
-	// If `true`, the input will be disabled.
-	disabled: PropTypes.bool,
 	// End `InputAdornment` for this component.
 	endAdornment: PropTypes.node,
-	//  If `true`, the input will indicate an error. From FormControl context.
-	error: PropTypes.bool,
 	// The id of the `input` element.
 	id: PropTypes.string,
 	/**
@@ -392,14 +408,11 @@ InputBase.propTypes = {
 	inputComponent: PropTypes.elementType,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	// Use that property to pass a ref callback to the native input component.
-	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	// Name attribute of the `input` element.
 	name: PropTypes.string,
 	onBlur: PropTypes.func,
 	/**
 	 * Callback fired when the value is changed.
-	 *
 	 * @param {object} event The event source of the callback.
 	 * You can pull out the new value by accessing `event.target.value`.
 	 */
