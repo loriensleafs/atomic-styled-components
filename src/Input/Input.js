@@ -112,10 +112,10 @@ const getUnderlineStyles = ({
 const getInputStyles = combine(
 	getBaseStyles,
 	getUnderlineStyles,
-	getDisabledStyles,
-	getErrorStyles,
-	getFocusedStyles,
 	getFormControlStyles,
+	getDisabledStyles,
+	getFocusedStyles,
+	getErrorStyles,
 );
 
 const getStyles = props => ({ root: getInputStyles(props) });

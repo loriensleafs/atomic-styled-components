@@ -172,8 +172,8 @@ const getFilledInputStyles = combine(
 	getStartAdornmentStyles,
 	getUnderlineStyles,
 	getDisabledStyles,
-	getErrorStyles,
 	getFocusedStyles,
+	getErrorStyles,
 );
 
 const getStyles = props => getFilledInputStyles(props);
