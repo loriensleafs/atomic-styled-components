@@ -54,14 +54,15 @@ const FormControl = forwardRef((props, ref) => {
 			defaultValue,
 			disabled,
 			error,
+			filled: filledProp,
 			fullWidth,
 			margin,
 			required,
 			variant,
 			...passThru
 		},
-	} = useStyles(props, getStyles, { baseStyles });
-	const [filled, setFilled] = useState(defaultValue && defaultValue !== '');
+	} = useStyles(props, getStyles, { baseStyles, whitelist: ['margin'] });
+	const [filled, setFilled] = useState(filledProp);
 	const [focused, setFocused] = useState(false);
 
 	const handleBlur = useCallback(() => setFocused(false), []);
