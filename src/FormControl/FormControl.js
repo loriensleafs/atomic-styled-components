@@ -1,30 +1,30 @@
-import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import FormControlContext from './FormControlContext';
-import combine from '../utils/combine';
+import React, { forwardRef, useCallback, useEffect, useState } from 'react';
 import { getSpacing, useStyles } from '../system';
 import { componentPropType, stylesPropType } from '../utils';
-
-const getWidthStyles = ({ fullWidth }) =>
-	fullWidth && {
-		width: '100%',
-	};
-
-const getMarginStyles = ({ margin }) =>
-	(margin === 'dense' && getSpacing({ mt: 2, mb: 1 })) ||
-	(margin === 'normal' && getSpacing({ mt: 3, mb: 2 })) ||
-	null;
+import combine from '../utils/combine';
+import FormControlContext from './FormControlContext';
 
 const baseStyles = {
 	position: 'relative',
 	minWidth: '0px',
-	margin: '0px',
-	padding: '0px',
 	display: 'inline-flex',
 	flexDirection: 'column',
 	border: '0px',
 	verticalAlign: 'top',
 };
+
+const getMarginStyles = ({ margin }) =>
+	margin === 'dense'
+		? getSpacing({ mt: 2, mb: 1 })
+		: margin === 'normal'
+		? getSpacing({ mt: 3, mb: 2 })
+		: {
+				margin: '0px',
+				padding: '0px',
+		  };
+
+const getWidthStyles = ({ fullWidth }) => fullWidth && { width: '100%' };
 
 const getStyles = combine(getMarginStyles, getWidthStyles);
 getStyles.propTypes = {
@@ -34,12 +34,24 @@ getStyles.propTypes = {
 	margin: PropTypes.oneOf(['none', 'dense', 'normal']),
 };
 
-function FormControl(props) {
-	const [
-		{ classes },
-		{
+/**
+ * Provides context such as filled/focused/error/required for form inputs.
+ * Relying on the context provides high flexibility and ensures that the state
+ * always stays consistent across the children of the `FormControl`.
+ * This context is used by the following components:
+ *  - FormLabel
+ *  - FormHelperText
+ *  - Input
+ *  - InputLabel
+ *
+ * ⚠️ Only one input can be used within a FormControl.
+ */
+const FormControl = forwardRef((props, ref) => {
+	const {
+		classes,
+		props: {
 			as: Component,
-			className,
+			defaultValue,
 			disabled,
 			error,
 			fullWidth,
@@ -48,19 +60,25 @@ function FormControl(props) {
 			variant,
 			...passThru
 		},
-	] = useStyles(props, getStyles, { baseStyles });
-	const [filled, setFilled] = useState(false);
+	} = useStyles(props, getStyles, { baseStyles });
+	const [filled, setFilled] = useState(defaultValue && defaultValue !== '');
 	const [focused, setFocused] = useState(false);
 
-	const handleBlur = useCallback(() => focused && setFocused(false), []);
+	const handleBlur = useCallback(() => setFocused(false), []);
 
-	const handleFocus = useCallback(() => !focused && setFocused(true), []);
+	const handleFocus = useCallback(() => setFocused(true), []);
 
-	const handleDirty = useCallback(() => !filled && setFilled(true), []);
+	const handleDirty = useCallback(() => setFilled(true), []);
 
-	const handleClean = useCallback(() => filled && setFilled(false), []);
+	const handleClean = useCallback(() => setFilled(false), []);
 
-	const context = {
+	useEffect(() => {
+		if (disabled && focused) {
+			setFocused(false);
+		}
+	}, [disabled, focused]);
+
+	const childContext = {
 		error,
 		disabled,
 		filled,
@@ -75,11 +93,11 @@ function FormControl(props) {
 	};
 
 	return (
-		<FormControlContext.Provider value={context}>
-			<Component className={classes} {...passThru} />
+		<FormControlContext.Provider value={childContext}>
+			<Component className={classes} ref={ref} {...passThru} />
 		</FormControlContext.Provider>
 	);
-}
+});
 
 FormControl.displayName = 'FormControl';
 
@@ -92,6 +110,21 @@ FormControl.propTypes = {
 	 */
 	classes: PropTypes.object,
 	className: PropTypes.string,
+	// The default input value. Important for setting initial filled state.
+	defaultValue: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.number,
+		PropTypes.bool,
+		PropTypes.object,
+		PropTypes.arrayOf(
+			PropTypes.oneOfType([
+				PropTypes.string,
+				PropTypes.number,
+				PropTypes.bool,
+				PropTypes.object,
+			]),
+		),
+	]),
 	// If `true`, the label should be displayed in an error state.
 	error: PropTypes.bool,
 	// If `true`, the label, input and helper text display an disabled state.
