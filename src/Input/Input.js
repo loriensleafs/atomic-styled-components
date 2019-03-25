@@ -234,8 +234,8 @@ Input.propTypes = {
 };
 
 InputBase.defaultProps = {
-	inputComponent: 'input',
 	fullWidth: false,
+	inputComponent: 'input',
 	multiline: false,
 	type: 'text',
 };
