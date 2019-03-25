@@ -57,8 +57,8 @@ const getFocusedStyles = ({ focused, theme: { palette } }) =>
 		},
 	};
 
-const getFormControlStyles = ({ formControl }) =>
-	formControl.enabled && getSpacing({ mt: 3 });
+const getFormControlStyles = ({ formControlEnabled }) =>
+	formControlEnabled && getSpacing({ mt: 3 });
 
 const getUnderlineStyles = ({
 	disableUnderline,
@@ -125,7 +125,7 @@ getStyles.propsTypes = {
 	// If 'true', Input is should be displayed in an error state.
 	error: PropTypes.bool,
 	// If the label is a descendant of 'FormControl'
-	formControl: PropTypes.bool,
+	formControlEnabled: PropTypes.bool,
 };
 
 const Input = forwardRef((props, ref) => (
@@ -182,8 +182,6 @@ Input.propTypes = {
 	inputComponent: PropTypes.elementType,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	// Use that property to pass a ref callback to the native input component.
-	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	// If `dense`, will adjusts vertical spacing. From FormControl context.
 	margin: PropTypes.oneOf(['dense', 'none']),
 	// If `true`, a textarea element will be rendered.
@@ -192,7 +190,6 @@ Input.propTypes = {
 	name: PropTypes.string,
 	/**
 	 * Callback fired when the value is changed.
-	 *
 	 * @param {object} event The event source of the callback.
 	 * You can pull out the new value by accessing `event.target.value`.
 	 */
