@@ -311,7 +311,7 @@ const InputBase = forwardRef((props, refProp) => {
 
 	return (
 		<div className={classes.root} onClick={handleClick} {...passThru}>
-			{renderPrefix && renderPrefix({ startAdornment, focused })}
+			{renderPrefix && renderPrefix({ ...fc, focused, startAdornment })}
 			{startAdornment}
 			<FormControlContext.Provider value={null}>
 				<InputComponent
