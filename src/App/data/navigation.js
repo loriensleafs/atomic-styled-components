@@ -175,9 +175,9 @@ export default {
 			},
 			{
 				id: 'text-fields',
-				disabled: true,
+				disabled: false,
 				label: 'Text Fields',
-				url: '/text-fields',
+				url: '/textfields',
 			},
 			{
 				id: 'toggle-button',

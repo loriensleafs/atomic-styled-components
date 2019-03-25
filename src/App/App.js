@@ -16,7 +16,8 @@ const CardDemo = lazy(() => import('./CardDemo'));
 const DialogDemo = lazy(() => import('./DialogDemo'));
 const DrawerDemo = lazy(() => import('./DrawerDemo'));
 const ListDemo = lazy(() => import('./ListDemo'));
-const SelectionControlDemo = React.lazy(() => import('./SelectionControlDemo'));
+const SelectionControlDemo = lazy(() => import('./SelectionControlDemo'));
+const TextFieldDemo = lazy(() => import('./TextFieldDemo'));
 
 const getGlobalStyles = ({ theme }) => `
 	* {
@@ -26,6 +27,7 @@ const getGlobalStyles = ({ theme }) => `
 		margin: 0;
 		min-height:100%;
 		background-color: ${theme.palette.bg.default};
+		-webkit-font-smoothing: antialiased;
 	}
 	body, #root {
 		height: 100%;
@@ -86,6 +88,10 @@ export default function App() {
 									<Route
 										path={`/selectioncontrols`}
 										component={SelectionControlDemo}
+									/>
+									<Route
+										path={`/textfields`}
+										component={TextFieldDemo}
 									/>
 								</Switch>
 							</Suspense>
