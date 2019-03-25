@@ -120,16 +120,16 @@ const TextField = forwardRef((props, ref) => {
 			{...InputProps}
 		/>
 	);
-
 	return (
 		<FormControl
 			className={className}
-			defaultValue={
-				defaultValue
-					? defaultValue
-					: InputProps && InputProps.defaultValue
-					? InputProps.defaultValue
-					: null
+			filled={
+				(defaultValue && defaultValue !== '') ||
+				(value && value !== '') ||
+				(InputProps &&
+					InputProps.defaultValue &&
+					InputProps.defaultValue !== '') ||
+				(InputProps && InputProps.value && InputProps.value !== '')
 			}
 			error={error}
 			fullWidth={fullWidth}
