@@ -7,6 +7,7 @@ import React, {
 	useState,
 } from 'react';
 import { FormControlContext, useFormControl } from '../FormControl';
+import TextArea from './Textarea';
 import usePrevious from '../hooks/usePrevious';
 import useStyles from '../system/useStyles';
 import combine from '../utils/combine';
@@ -36,7 +37,10 @@ const getBaseStyles = props => {
 			width: '100%',
 			minWidth: '0px',
 			margin: '0px',
-			padding: '6px 0 7px',
+			paddingTop: '6px',
+			paddingRight: '0px',
+			paddingBottom: '7px',
+			paddingLeft: '0px',
 			display: 'block',
 			font: 'inherit',
 			border: '0px',
@@ -89,7 +93,7 @@ const getFullWidthStyles = ({ fullWidth }) =>
 const getMarginStyles = ({ margin, theme: { spacing } }) =>
 	margin === 'dense' && {
 		input: {
-			paddingTop: `${spacing[0] - 1}px`,
+			paddingTop: `${spacing[1] - 1}px`,
 		},
 	};
 
@@ -124,8 +128,8 @@ const getTypeStyles = ({ type }) => {
 const getStyles = combine(
 	getBaseStyles,
 	getFullWidthStyles,
-	getMarginStyles,
 	getMultilineStyles,
+	getMarginStyles,
 	getTypeStyles,
 	getDisabledStyles,
 );
