@@ -1,10 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '../Typography';
-import useFormControlManager from '../FormControl/useFormControlManager';
+import useFormControl from '../FormControl/useFormControl';
 import combine from '../utils/combine';
 import { getSpacing, useStyles } from '../system';
 import { stylesPropType, componentPropType } from '../utils/propTypes';
+
+const baseStyles = {
+	height: '0.01em', // Fixes IE 11 flexbox alignment.  Will remove eventually.
+	maxHeight: '2em',
+	display: 'flex',
+	alignItems: 'center',
+};
 
 const getPositionStyles = ({ position }) =>
 	(position === 'start' && getSpacing({ mr: 2 })) ||
@@ -14,16 +21,7 @@ const getVariantStyles = ({ variant }) =>
 	variant === 'filled' && getSpacing({ mt: 3 });
 
 const getDisabledPointerEventsStyles = ({ disabledPointerEvents }) =>
-	disabledPointerEvents && {
-		pointerEvents: 'none',
-	};
-
-const baseStyles = {
-	height: '0.01em', // Fixes IE 11 flexbox alignment.  Will remove eventually.
-	maxHeight: '2em',
-	display: 'flex',
-	alignItems: 'center',
-};
+	disabledPointerEvents && { pointerEvents: 'none' };
 
 const getStyles = combine(
 	getPositionStyles,
@@ -47,11 +45,11 @@ getStyles.propTypes = {
 };
 
 function InputAdornment(props) {
-	const mergedProps = useFormControlManager(props, ['variant']);
-	const [
-		{ classes },
-		{ as: Component, children, disableTypography, ...passThru },
-	] = useStyles(mergedProps, getStyles, { baseStyles });
+	const { formControlEnabled, ...fc } = useFormControl(props, ['variant']);
+	const {
+		classes,
+		props: { as: Component, children, disableTypography, ...passThru },
+	} = useStyles({ ...props, ...fc }, getStyles, { baseStyles });
 
 	return (
 		<Component className={classes} {...passThru}>
