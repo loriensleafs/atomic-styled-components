@@ -1,74 +1,25 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { forwardRef } from 'react';
 import InputBase from '../InputBase';
-import NotchedOutline from './NotchedOutline';
+import { getSpacing } from '../system';
 import combine from '../utils/combine';
-import { getSpacing, useStyles } from '../system';
-import { stylesPropType } from '../utils/propTypes';
+import { componentPropType, stylesPropType } from '../utils/propTypes';
+import NotchedOutline from './NotchedOutline';
 
-const getAdornmentStyles = ({ endAdornment, startAdornment }) =>
-	(endAdornment && {
+const getBaseStyles = () => ({
+	root: {
+		position: 'relative',
+	},
+	input: {
+		padding: '18.5px 14px',
+	},
+});
+
+const getEndAdornmentStyles = ({ endAdornment }) =>
+	endAdornment && {
 		root: getSpacing({ pl: 14 }),
 		input: getSpacing({ pl: 0 }),
-	}) ||
-	(startAdornment && {
-		root: getSpacing({ pr: 14 }),
-		input: getSpacing({ pr: 0 }),
-	});
-
-const getNotchedOutlineStyles = ({
-	hasError,
-	disabled,
-	focused,
-	notched,
-	theme: { palette },
-}) => {
-	if (!notched) {
-		return null;
-	}
-
-	const isLight = palette.type === 'light';
-	let next = {
-		root: {
-			borderColor: isLight
-				? 'rgba(0, 0, 0, 0.23)'
-				: 'rgba(255, 255, 255, 0.23)',
-			':focused': {
-				borderColor: palette.primary.main,
-				borderWidth: '2px',
-			},
-			':disabled': {
-				borderColor: palette.action.disabled,
-			},
-		},
 	};
-
-	if (hasError) {
-		next = {
-			...next,
-			borderColor: palette.error.main,
-		};
-	}
-
-	if (!hasError && !disabled && !focused) {
-		next = {
-			...next,
-			root: {
-				':hover': {
-					borderColor: palette.text.primary,
-					// Reset on touch devices so as not to add specificity.
-					'@media (hover:none)': {
-						borderColor: isLight
-							? 'rgba(0, 0, 0, 0.23)'
-							: 'rgba(255, 255, 255, 0.23)',
-					},
-				},
-			},
-		};
-	}
-
-	return next;
-};
 
 const getMarginStyles = ({ margin }) =>
 	margin === 'dense' && {
@@ -90,61 +41,50 @@ const getMultilineStyles = ({ multilined }) =>
 		},
 	};
 
-const baseStyles = {
-	root: {
-		position: 'relative',
-	},
-	input: {
-		padding: '18.5px 14px',
-	},
-};
+const getStartAdornmentStyles = ({ startAdornment }) =>
+	startAdornment && {
+		root: getSpacing({ pr: 14 }),
+		input: getSpacing({ pr: 0 }),
+	};
 
-const getStyles = combine(
-	getMultilineStyles,
+const getOutlinedInputStyles = combine(
+	getBaseStyles,
 	getMarginStyles,
-	getNotchedOutlineStyles,
-	getAdornmentStyles,
+	getMultilineStyles,
+	getEndAdornmentStyles,
+	getStartAdornmentStyles,
 );
+
+const getStyles = props => getOutlinedInputStyles(props);
 getStyles.propTypes = {};
 
-function OutlinedInput(props) {
-	const [{ styles }, { labelWidth, notched, ...passThru }] = useStyles(
-		props,
-		getStyles,
-		{
-			baseStyles,
-			whitelist: [
-				'endAdornment',
-				'error',
-				'multilined',
-				'notched',
-				'margin',
-				'startAdornment',
-			],
-		},
-	);
-
-	return (
+const OutlinedInput = forwardRef(
+	({ labelWidth, notched, notchedOutlineProps, ...props }, ref) => (
 		<InputBase
-			renderPrefix={state => (
+			ref={ref}
+			renderPrefix={({
+				filled,
+				focused,
+				startAdornment,
+				...passThru
+			}) => (
 				<NotchedOutline
+					focused={focused}
 					labelWidth={labelWidth}
 					notched={
 						typeof notched !== 'undefined'
 							? notched
-							: Boolean(
-									state.startAdornment ||
-										state.filled ||
-										state.focused,
-							  )
+							: Boolean(startAdornment || filled || focused)
 					}
+					{...passThru}
+					{...notchedOutlineProps}
 				/>
 			)}
-			styles={styles}
-			{...passThru}
+			styles={getStyles}
+			{...props}
 		/>
-	);
-}
+	),
+);
 
 OutlinedInput.displayName = 'OutlinedInput';
 
@@ -162,7 +102,7 @@ OutlinedInput.propTypes = {
 	 * Override or extend the styles applied to the component.
 	 * See [CSS API](#css-api) below for more details.
 	 */
-	classes: PropTypes.object.isRequired,
+	classes: PropTypes.object,
 	// The CSS class name of the wrapper element.
 	className: PropTypes.string,
 	// The default input value, useful when not controlling the component.
@@ -196,7 +136,7 @@ OutlinedInput.propTypes = {
 	 * The component used for the native input.
 	 * Either a string to use a DOM element or a component.
 	 */
-	inputComponent: componentPropType,
+	inputComponent: PropTypes.any,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
 	// Use that property to pass a ref callback to the native input component.
@@ -261,8 +201,8 @@ OutlinedInput.propTypes = {
 
 OutlinedInput.defaultProps = {
 	fullWidth: false,
-	multiline: false,
 	inputComponent: 'input',
+	multiline: false,
 	type: 'text',
 };
 

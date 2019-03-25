@@ -1,18 +1,23 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { forwardRef } from 'react';
 import useStyles from '../system/useStyles';
+import combine from '../utils/combine';
 import { stylesPropType } from '../utils/propTypes';
 
-const getStyles = ({ theme: { getTransition, shape } }) => ({
+const getBaseStyles = ({ theme: { getTransition, palette, shape } }) => ({
 	root: {
 		position: 'absolute',
-		bottom: 0,
-		right: 0,
-		top: -5,
-		left: 0,
-		margin: 0,
-		padding: 0,
+		bottom: '0px',
+		right: '0px',
+		top: '-5px',
+		left: '0px',
+		margin: '0px',
+		padding: '0px',
 		pointerEvents: 'none',
+		borderColor:
+			palette.type === 'light'
+				? 'rgba(0, 0, 0, 0.23)'
+				: 'rgba(255, 255, 255, 0.23)',
 		borderRadius: shape.borderRadius.round,
 		borderStyle: 'solid',
 		borderWidth: '1px',
@@ -23,6 +28,15 @@ const getStyles = ({ theme: { getTransition, shape } }) => ({
 				easing: 'out',
 			},
 		),
+		':hover': {
+			borderColor: palette.text.primary,
+			'@media (hover: none)': {
+				borderColor:
+					palette.type === 'light'
+						? 'rgba(0, 0, 0, 0.23)'
+						: 'rgba(255, 255, 255, 0.23)',
+			},
+		},
 	},
 	legend: {
 		padding: '0px',
@@ -35,20 +49,54 @@ const getStyles = ({ theme: { getTransition, shape } }) => ({
 	},
 });
 
-function NotchedOutline(props) {
-	const [
-		{ classes },
-		{
-			children,
-			className,
-			labelWidth: labelWidthProp,
-			notched,
-			style,
-			...passThru
+const getDisabledStyles = ({ disabled, theme: { palette } }) =>
+	disabled && {
+		root: {
+			borderColor: palette.action.disabled,
 		},
-	] = useStyles(props, getStyles);
+	};
 
-	const labelWidth = labelWidthProp > 0 ? labelWidthProp * 0.75 + 8 : 0;
+const getErrorStyles = ({ disabled, error, theme: { palette } }) =>
+	!disabled &&
+	error && {
+		root: {
+			borderColor: palette.error.main,
+		},
+	};
+
+const getFocusedStyles = ({ disabled, focused, theme: { palette } }) =>
+	!disabled &&
+	focused && {
+		root: {
+			borderColor: palette.primary.main,
+			borderWidth: '2px',
+		},
+	};
+
+const getStyles = combine(
+	getBaseStyles,
+	getDisabledStyles,
+	getFocusedStyles,
+	getErrorStyles,
+);
+getStyles.propTypes = {
+	disabled: PropTypes.bool,
+	error: PropTypes.bool,
+	focused: PropTypes.bool,
+};
+
+const NotchedOutline = forwardRef((props, ref) => {
+	const {
+		classes,
+		props: { children, labelWidth, notched, style, ...passThru },
+	} = useStyles(props, getStyles, { nested: true });
+	const labelStyle = {
+		/**
+		 * IE 11: fieldset with legend does not render a border radius. This
+		 * maintains consistency by always having a legend rendered.
+		 */
+		width: notched ? (labelWidth > 0 ? labelWidth * 0.75 + 8 : 0) : 0.01,
+	};
 
 	return (
 		<fieldset
@@ -58,24 +106,17 @@ function NotchedOutline(props) {
 				...style,
 			}}
 			className={classes.root}
+			ref={ref}
 			{...passThru}
 		>
-			<legend
-				className={classes.legend}
-				style={{
-					// IE 11: fieldset with legend does not render
-					// a border radius. This maintains consistency
-					// by always having a legend rendered
-					width: notched ? labelWidth : 0.01,
-				}}
-			>
+			<legend className={classes.legend} style={labelStyle}>
 				{/* Use the nominal use case of the legend, avoid rendering artefacts. */}
 				{/* eslint-disable-next-line react/no-danger */}
 				<span dangerouslySetInnerHTML={{ __html: '&#8203;' }} />
 			</legend>
 		</fieldset>
 	);
-}
+});
 
 NotchedOutline.displayName = 'NotchedOutline';
 
@@ -93,6 +134,7 @@ NotchedOutline.propTypes = {
 	// If `true`, the outline is notched to accommodate the label.
 	notched: PropTypes.bool.isRequired,
 	style: PropTypes.object,
+	...getStyles.propTypes,
 	...stylesPropType,
 };
 
