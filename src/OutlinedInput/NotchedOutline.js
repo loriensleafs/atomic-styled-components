@@ -88,28 +88,31 @@ getStyles.propTypes = {
 const NotchedOutline = forwardRef((props, ref) => {
 	const {
 		classes,
-		props: { children, labelWidth, notched, style, ...passThru },
+		props: {
+			children,
+			labelWidth: labelWidthProp,
+			notched,
+			style,
+			...passThru
+		},
 	} = useStyles(props, getStyles, { nested: true });
-	const labelStyle = {
-		/**
-		 * IE 11: fieldset with legend does not render a border radius. This
-		 * maintains consistency by always having a legend rendered.
-		 */
-		width: notched ? (labelWidth > 0 ? labelWidth * 0.75 + 8 : 0) : 0.01,
-	};
+	const labelWidth = labelWidthProp > 0 ? labelWidthProp * 0.75 + 8 : 0;
 
 	return (
 		<fieldset
 			aria-hidden
 			style={{
-				paddingRight: 8 + (notched ? 0 : labelWidth / 2),
+				paddingLeft: `${8 + (notched ? 0 : labelWidth / 2)}px`,
 				...style,
 			}}
 			className={classes.root}
 			ref={ref}
 			{...passThru}
 		>
-			<legend className={classes.legend} style={labelStyle}>
+			<legend
+				className={classes.legend}
+				style={{ width: `${notched ? labelWidth : 0}px` }}
+			>
 				{/* Use the nominal use case of the legend, avoid rendering artefacts. */}
 				{/* eslint-disable-next-line react/no-danger */}
 				<span dangerouslySetInnerHTML={{ __html: '&#8203;' }} />

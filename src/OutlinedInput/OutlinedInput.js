@@ -56,7 +56,12 @@ const getOutlinedInputStyles = combine(
 );
 
 const getStyles = props => getOutlinedInputStyles(props);
-getStyles.propTypes = {};
+getStyles.propTypes = {
+	// End `InputAdornment` for this component.
+	endAdornment: PropTypes.node,
+	// Start `InputAdornment` for this component.
+	startAdornment: PropTypes.node,
+};
 
 const OutlinedInput = forwardRef(
 	({ labelWidth, notched, notchedOutlineProps, ...props }, ref) => (
@@ -122,14 +127,13 @@ OutlinedInput.propTypes = {
 	]),
 	// If `true`, the input will be disabled.
 	disabled: PropTypes.bool,
-	// End `InputAdornment` for this component.
-	endAdornment: PropTypes.node,
 	/**
 	 * If `true`, the input will indicate an error. This is normally obtained
-	 * via context from
-	 * FormControl.
+	 * via context from FormControl.
 	 */
 	error: PropTypes.bool,
+	// If `true`, the input will take up the full width of its container.
+	fullWidth: PropTypes.bool,
 	// The id of the `input` element.
 	id: PropTypes.string,
 	/**
@@ -139,10 +143,6 @@ OutlinedInput.propTypes = {
 	inputComponent: PropTypes.any,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	// Use that property to pass a ref callback to the native input component.
-	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-	// If `true`, the input will take up the full width of its container.
-	fullWidth: PropTypes.bool,
 	// The width of the legend.
 	labelWidth: PropTypes.number.isRequired,
 	/**
@@ -157,7 +157,6 @@ OutlinedInput.propTypes = {
 	name: PropTypes.string,
 	/**
 	 * Callback fired when the value is changed.
-	 *
 	 * @param {object} event The event source of the callback.
 	 * You can pull out the new value by accessing `event.target.value`.
 	 */
@@ -177,8 +176,6 @@ OutlinedInput.propTypes = {
 	rows: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	// Maximum number of rows to display when multiline option is set to true.
 	rowsMax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	// Start `InputAdornment` for this component.
-	startAdornment: PropTypes.node,
 	// Type of the input element. It should be a valid HTML5 input type.
 	type: PropTypes.string,
 	// The input value, required for a controlled component.
