@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
 	forwardRef,
 	useCallback,
@@ -5,9 +6,8 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import PropTypes from 'prop-types';
-import throttle from '../utils/throttle';
 import { cn, useStyles } from '../system';
+import throttle from '../utils/throttle';
 
 const ROWS_HEIGHT = 19;
 
@@ -38,9 +38,9 @@ const baseStyles = {
 };
 
 const Textarea = forwardRef((props, ref) => {
-	const [
-		{ classes },
-		{
+	const {
+		classes,
+		props: {
 			className,
 			defaultValue,
 			disabled,
@@ -48,33 +48,27 @@ const Textarea = forwardRef((props, ref) => {
 			rows,
 			rowsMax,
 			value: valueProp,
+			style,
 			...passThru
 		},
-	] = useStyles(props, null, { baseStyles });
-	// Refs
-	const inputRef = ref ? ref : useRef(null);
+	} = useStyles(props, null, { baseStyles, nested: true });
 	const shadowRef = useRef(null);
-	const singleLineShadowRef = useRef(null);
-	// States
+	const singlelineShadowRef = useRef(null);
+	const [value, setValue] = useState(value || defaultValue || '');
 	const [height, setHeight] = useState(Number(rows) * ROWS_HEIGHT);
-	const isControlled = value.current != null;
-	const mounted = useRef(false);
-	const value = useRef(valueProp);
+	const controlled = valueProp != null;
 
 	const syncHeightWithShadow = useCallback(() => {
 		if (!shadowRef.current) {
 			return;
 		}
-
-		if (isControlled) {
-			shadowRef.current.value =
-				value.current == null ? '' : String(value);
+		if (controlled) {
+			shadowRef.current.value = value;
 		}
 
+		let newHeight = shadowRef.current.scrollHeight;
 		let lineHeight = singlelineShadowRef.current.scrollHeight;
 		lineHeight = lineHeight === 0 ? ROWS_HEIGHT : lineHeight;
-
-		let newHeight = shadowRef.current.scrollHeight;
 
 		if (Number(rowsMax) >= Number(rows)) {
 			newHeight = Math.min(Number(rowsMax) * lineHeight, newHeight);
@@ -87,36 +81,38 @@ const Textarea = forwardRef((props, ref) => {
 		if (Math.abs(height - newHeight) > 1) {
 			setHeight(newHeight);
 		}
-	}, [value.current]);
+	}, [height, value]);
 
-	const handleChange = useCallback(event => {
-		value.current = event.target.value;
+	const handleChange = useCallback(
+		event => {
+			setValue(event.target.value);
+			if (onChange) {
+				onChange(event);
+			}
+		},
+		[value],
+	);
 
-		if (!isControlled) {
-			shadowRef.current.value = value.current;
-			syncHeightWithShadow();
-		}
-		if (onChange) {
-			onChange(event);
-		}
+	const handleResize = useCallback(throttle(syncHeightWithShadow), [
+		height,
+		value,
+	]);
+
+	useEffect(() => {
+		syncHeightWithShadow();
+		window.addEventListener('resize', handleResize);
+		() => {
+			window.removeEventListener('resize', handleResize);
+			handleResize.cancel();
+		};
 	}, []);
 
 	useEffect(() => {
-		let resizeHandler;
-		if (!mounted.current) {
-			resizeHandler = throttle(handleResize);
-			mounted.current = true;
-			window.addEventListener('resize', resizeHandler);
+		if (!controlled) {
+			shadowRef.current.value = value;
+			syncHeightWithShadow();
 		}
-
-		syncHeightWithShadow();
-
-		return () => {
-			if (resizeHandler) {
-				window.removeEventListener('resize', resizeHandler);
-			}
-		};
-	}, [value.current]);
+	}, [value]);
 
 	return (
 		<div className={classes.root}>
@@ -125,7 +121,7 @@ const Textarea = forwardRef((props, ref) => {
 				className={cn(classes.textarea, classes.shadow)}
 				disabled={disabled}
 				readOnly
-				ref={singleLineShadowRef}
+				ref={singlelineShadowRef}
 				rows="1"
 				tabIndex={-1}
 				value=""
@@ -139,16 +135,16 @@ const Textarea = forwardRef((props, ref) => {
 				ref={shadowRef}
 				rows={rows}
 				tabIndex={-1}
-				value={value.current}
+				value={value}
 			/>
 			<textarea
 				rows={rows}
 				className={cn(classes.textarea, className)}
 				defaultValue={defaultValue}
 				disabled={disabled}
-				value={value.current}
+				value={value}
 				onChange={handleChange}
-				ref={inputRef}
+				ref={ref}
 				style={{ height, ...style }}
 				{...passThru}
 			/>
