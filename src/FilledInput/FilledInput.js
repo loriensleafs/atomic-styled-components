@@ -78,6 +78,12 @@ const getFocusedStyles = ({ disabled, focused, theme: { palette } }) =>
 				palette.type === 'light'
 					? 'rgba(0, 0, 0, 0.09)'
 					: 'rgba(255, 255, 255, 0.09)',
+			':hover': {
+				backgroundColor:
+					palette.type === 'light'
+						? 'rgba(0, 0, 0, 0.09)'
+						: 'rgba(255, 255, 255, 0.09)',
+			},
 			':before': {
 				borderBottom: `1px solid ${
 					palette.type === 'light'
@@ -239,8 +245,6 @@ FilledInput.propTypes = {
 	id: PropTypes.string,
 	// Attributes applied to the `input` element.
 	inputProps: PropTypes.object,
-	// Use that property to pass a ref callback to the native input component.
-	inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	// Name attribute of the `input` element.
 	name: PropTypes.string,
 	/**
