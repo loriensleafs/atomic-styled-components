@@ -72,7 +72,10 @@ const getBaseStyles = props => {
 
 const getDisabledStyles = ({ disabled, theme: { palette } }) =>
 	disabled && {
-		root: { color: palette.text.disabled, cursor: 'default' },
+		root: {
+			color: palette.text.disabled,
+			cursor: 'default',
+		},
 	};
 
 const getFullWidthStyles = ({ fullWidth }) =>
@@ -112,7 +115,9 @@ const getTypeStyles = ({ type }) => {
 	if (type !== 'text') {
 		next = { ...next, height: '1.1875em' };
 	}
-	return { input: next };
+	return {
+		input: next,
+	};
 };
 
 const getStyles = combine(
